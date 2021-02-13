@@ -18,6 +18,7 @@
   "type": "module",
   "devDependencies": {
     "@types/gulp": "^4.0.8",
+    "del": "^6.0.0",
     "gulp": "^4.0.2",
     "gulp-util": "^3.0.8",
     "simple-git": "^2.34.2",

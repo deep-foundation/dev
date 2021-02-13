@@ -1,0 +1,3 @@
+[submodule "packages/store"]
+	path = packages/store
+	url = https://github.com/deepcase/store.git
