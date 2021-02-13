@@ -1,0 +1,27 @@
+{
+  "name": "deepcase",
+  "version": "0.0.0",
+  "description": "Deepcase ecosystem monorepo.",
+  "author": "ivansglazunov",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/deepcase/deepcase/issues"
+  },
+  "homepage": "https://github.com/deepcase/deepcase#readme",
+  "scripts": {
+    "gulp": "gulp"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/deepcase/deepcase.git"
+  },
+  "type": "module",
+  "devDependencies": {
+    "@types/gulp": "^4.0.8",
+    "gulp": "^4.0.2",
+    "gulp-util": "^3.0.8",
+    "simple-git": "^2.34.2",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.1.5"
+  }
+}
