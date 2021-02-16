@@ -9,3 +9,6 @@
 	path = packages/store-gh-pages
 	url = https://github.com/deepcase/store.git
   branch=gh-pages
+[submodule "packages/hasura"]
+	path = packages/hasura
+	url = https://github.com/deepcase/hasura
