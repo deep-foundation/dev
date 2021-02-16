@@ -1,3 +1,7 @@
 [submodule "packages/store"]
 	path = packages/store
 	url = https://github.com/deepcase/store.git
+[submodule "packages/store-example"]
+	path = packages/store-example
+	url = https://github.com/deepcase/store.git
+  branch=example

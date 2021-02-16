@@ -10,9 +10,15 @@ import Git from 'simple-git/promise';
 const git = Git();
 const argv = require('minimist')(process.argv.slice(2));
 
-gulp.task('assets:update', () => (
-  gulp.src('assets/*', { base: 'assets' }).pipe(gulp.dest('./applications/'))
-));
+gulp.task('assets:update', () => {
+  const packages = fs.readdirSync(`${__dirname}/packages`);
+  let g = gulp.src('assets/*', { base: 'assets' }).pipe(gulp.dest(`./`));
+  for (let p in packages) {
+    const pckg = packages[p];
+    g = g.pipe(gulp.dest(`./packages/${pckg}/`));
+  }
+  return g;
+});
 
 gulp.task('package:insert', async () => {
   await git.submoduleAdd(argv.url, `packages/${argv.name}`);
