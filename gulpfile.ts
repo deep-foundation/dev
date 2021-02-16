@@ -29,11 +29,17 @@ gulp.task('package:delete', async () => {
   await git.rm(`packages/${argv.name}`);
 });
 
-gulp.task('packages:update', async () => {
+gulp.task('packages:get', async () => {
   await git.submoduleUpdate();
   const packages = fs.readdirSync(`${__dirname}/packages`);
   for (let p in packages) {
     const pckg = packages[p];
     await concurrently([`(cd ${__dirname}/packages/${pckg} && npm i)`]);
   }
+});
+
+gulp.task('packages:set', async () => {
+  await git.add('*');
+  await git.commit('packages:set');
+  await git.push();
 });
