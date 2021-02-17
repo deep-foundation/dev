@@ -2,11 +2,10 @@ image:
   file: .gitpod.Dockerfile
 
 tasks:
-  - init: npm install && (screen -d -m "sudo docker-up") && npx gulp packages:get && (cd packages/hasura && npm run docker-local)
+  - init: npm install && ((yes | sudo apt install screen) && screen -d -m sudo docker-up) && npx gulp packages:get && (cd packages/hasura && npm run docker-local)
 
 vscode:
   extensions:
-    - tabnine.tabnine-vscode@3.2.7:e4LnpmT2eZcnC+7y5pZ+DA==
     - ms-azuretools.vscode-docker@1.9.1:QdS6HgHvji4YGIWRWKXrLA==
     - graphql.vscode-graphql@0.3.8:jHk/gSNypa0bHc+cU2gp8w==
     - yzhang.markdown-all-in-one@3.4.0:GR9Y7wA3m2/LsuZxLaCFtg==
