@@ -12,3 +12,9 @@
 [submodule "packages/hasura"]
 	path = packages/hasura
 	url = https://github.com/deepcase/hasura
+[submodule "packages/hasura-example"]
+	path = packages/hasura-example
+	url = https://github.com/deepcase/hasura
+[submodule "packages/hasura-gh-pages"]
+	path = packages/hasura-gh-pages
+	url = https://github.com/deepcase/hasura
