@@ -2,7 +2,7 @@
 	path = packages/store
 	url = https://github.com/deepcase/store.git
 [submodule "packages/store-example"]
-	path = packages/store-example
+	path = packag∑es/store-example
 	url = https://github.com/deepcase/store.git
   branch=example
 [submodule "packages/store-gh-pages"]
