@@ -43,3 +43,29 @@ gulp.task('packages:set', async () => {
   await git.commit('packages:set');
   await git.push();
 });
+
+gulp.task('packages:links', async () => {
+  const packages = fs.readdirSync(`${__dirname}/packages`);
+  const npmPackages = {};
+  for (let p in packages) {
+    try {
+      const pa = packages[p];
+      const pckg = require(`./packages/${pa}/package.json`);
+      npmPackages[pckg.name] = pa;
+      await concurrently([`(cd ${__dirname}/packages/${pa} && npm link)`]);
+    } catch (error) {}
+  }
+  for (let p in packages) {
+    try {
+      const pa = packages[p];
+      const pckg = require(`./packages/${pa}/package.json`);
+      const deps = [...Object.keys(pckg.dependencies), ...Object.keys(pckg.devDependencies)];
+      const needed = deps.filter(d => npmPackages[d]);
+      if (needed.length) {
+        for (let n in needed) {
+          await concurrently([`(cd ${__dirname}/packages/${pa} && npm link ${needed[n]})`]);
+        }
+      }
+    } catch (error) {}
+  }
+});
