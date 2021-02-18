@@ -2,7 +2,21 @@ image:
   file: .gitpod.Dockerfile
 
 tasks:
-  - init: npm install && ((yes | sudo apt install screen) && screen -d -m sudo docker-up) && npx gulp packages:get && (cd packages/hasura && npm run docker-local)
+  - init: (
+      npm install && (
+        (yes | sudo apt install screen) && screen -d -m sudo docker-up
+      ) && (
+        npx gulp packages:get
+      ) && (
+        npx gulp packages:links
+      ) && (
+        cd packages/store-example && npm run dev -- -p 3000
+      ) && (
+        cd packages/hasura-example && npm run dev -- -p 3001
+      ) && (
+        cd packages/hasura && AUTH_WEBHOOK=http://dockerhost:3001/api/auth/webhook npm run docker-local
+      )
+    )
 
 vscode:
   extensions:
