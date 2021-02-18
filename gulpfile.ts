@@ -52,7 +52,7 @@ gulp.task('packages:links', async () => {
       const pa = packages[p];
       const pckg = require(`./packages/${pa}/package.json`);
       npmPackages[pckg.name] = pa;
-      await concurrently([`(cd ${__dirname}/packages/${pa} && npm link)`]);
+      await concurrently([`(cd ${__dirname}/packages/${pa} && npm link && npm run build)`]);
     } catch (error) {}
   }
   for (let p in packages) {
