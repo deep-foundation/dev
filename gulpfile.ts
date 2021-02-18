@@ -30,7 +30,7 @@ gulp.task('package:delete', async () => {
 });
 
 gulp.task('packages:get', async () => {
-  await git.submoduleUpdate(['--remote']);
+  await git.submoduleUpdate();
   const packages = fs.readdirSync(`${__dirname}/packages`);
   for (let p in packages) {
     const pckg = packages[p];
