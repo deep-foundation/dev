@@ -2,7 +2,7 @@ image:
   file: .gitpod.Dockerfile
 
 tasks:
-  - init: npm install && ((yes | sudo apt install screen) && screen -d -m sudo docker-up) && npx gulp packages:get
+  - init: npm install && ((yes | sudo apt install screen) && screen -d -m sudo docker-up) && npx gulp packages:get && (cd packages/hasura && npm run docker-local)
 
 vscode:
   extensions:
