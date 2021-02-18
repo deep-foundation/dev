@@ -12,7 +12,7 @@
   "scripts": {
     "gulp": "gulp",
     "prepare": "(yes | sudo apt install screen) && screen -d -m sudo docker-up",
-    "packages": "(yes | npx gulp packages:get && npx gulp packages:links)",
+    "packages": "(yes | npx gulp packages:get)",
     "store": "(cd packages/store-example && screen -d -m npm run dev -- -p 3000)",
     "hasura": "(cd packages/hasura-example && screen -d -m npm run dev -- -p 3001)",
     "docker": "(cd packages/hasura && (AUTH_WEBHOOK=http://dockerhost:3001/api/auth/webhook npm run docker-local))",
