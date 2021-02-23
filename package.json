@@ -11,12 +11,12 @@
   "homepage": "https://github.com/deepcase/deepcase#readme",
   "scripts": {
     "gulp": "gulp",
-    "prepare": "(yes | sudo apt install screen) && screen -d -m sudo docker-up",
+    "prepare": "(yes | sudo apt install screen) && (yes | sudo apt install rsync) && screen -d -m sudo docker-up",
     "packages": "(yes | npx gulp packages:get)",
     "store": "(cd packages/store-example && screen -d -m npm run dev -- -p 3000)",
     "hasura": "(cd packages/hasura-example && screen -d -m npm run dev -- -p 3001)",
     "docker": "(cd packages/hasura && (AUTH_WEBHOOK=http://dockerhost:3001/api/auth/webhook npm run docker-local))",
-    "gitpod": "npm install && (npm run prepare && npm run packages && npm run store && npm run hasura && npm run docker)"
+    "start": "npm install && (npm run prepare && npm run packages && npm run store && npm run hasura && npm run docker)"
   },
   "repository": {
     "type": "git",

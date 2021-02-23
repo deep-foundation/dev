@@ -51,8 +51,10 @@ gulp.task('packages:links', async () => {
     try {
       const pa = packages[p];
       const pckg = require(`./packages/${pa}/package.json`);
-      npmPackages[pckg.name] = pa;
-      await concurrently([`(cd ${__dirname}/packages/${pa} && npm link && npm run build)`]);
+      if (pckg?.scripts?.['package:build']) {
+        npmPackages[pckg.name] = pa;
+        await concurrently([`(cd ${__dirname}/packages/${pa} && npm run package:build)`]);
+      }
     } catch (error) {}
   }
   for (let p in packages) {
@@ -63,8 +65,17 @@ gulp.task('packages:links', async () => {
       const needed = deps.filter(d => npmPackages[d]);
       if (needed.length) {
         for (let n in needed) {
-          await concurrently([`(cd ${__dirname}/packages/${pa} && npm link ${needed[n]})`]);
+          await concurrently([`(rm -rf ${__dirname}/packages/${pa}/node_modules/${needed[n]} && mkdir -p ${__dirname}/packages/${pa}/node_modules/${needed[n]} && rsync -av --progress ${__dirname}/packages/${npmPackages[needed[n]]}/ ${__dirname}/packages/${pa}/node_modules/${needed[n]} --exclude node_modules --exclude *.ts --exclude *.tsx)`]);
         }
+      }
+    } catch (error) {}
+  }
+  for (let p in packages) {
+    try {
+      const pa = packages[p];
+      const pckg = require(`./packages/${pa}/package.json`);
+      if (pckg?.scripts?.['package:unbuild']) {
+        await concurrently([`(cd ${__dirname}/packages/${pa} && npm run package:unbuild)`]);
       }
     } catch (error) {}
   }
