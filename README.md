@@ -9,4 +9,4 @@
 - `npx gulp package:insert --url HTTPGITURL --name NAMEINPACKAGESDIRECTORY` insert submodule
 - `npx gulp package:delete --name NAMEINPACKAGESDIRECTORY` delete submodule
 - `npx gulp assets:update` copy all assets from ./assets in to each package
-- `npx gulp packages:links` npm linking all repos **first time called automatically in workspace**
+- `npx gulp packages:sync` sync all dependenced packages in workspace

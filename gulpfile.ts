@@ -44,7 +44,7 @@ gulp.task('packages:set', async () => {
   await git.push();
 });
 
-gulp.task('packages:links', async () => {
+gulp.task('packages:sync', async () => {
   const packages = fs.readdirSync(`${__dirname}/packages`);
   const npmPackages = {};
   for (let p in packages) {
