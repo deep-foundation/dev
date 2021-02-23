@@ -14,7 +14,7 @@
     "prepare": "(yes | sudo apt install screen); (yes | sudo apt install rsync); screen -d -m sudo docker-up",
     "packages": "(yes | npx gulp packages:get); (npx gulp packages:sync)",
     "store": "(cd packages/store-example; screen -d -m npm run screen)",
-    "hasura": "(cd packages/hasura-example; screen -d -m npm run screen; npm run migrate)",
+    "hasura": "(cd packages/hasura-example; screen -d -m npm run screen; sleep 7; npm run migrate)",
     "docker": "(cd packages/hasura; screen -d -m npm run screen)",
     "start": "npm install; (npm run prepare; npm run packages; sleep 3; npm run docker; sleep 5; npm run store; sleep 3; npm run hasura;)"
   },
