@@ -10,3 +10,8 @@ vscode:
     - graphql.vscode-graphql@0.3.8:jHk/gSNypa0bHc+cU2gp8w==
     - yzhang.markdown-all-in-one@3.4.0:GR9Y7wA3m2/LsuZxLaCFtg==
     - ms-vscode.vscode-typescript-tslint-plugin@1.2.2:0nQ3PEEA0NPEt3UcbCYiIQ==
+
+ports:
+  - port: 3000-8080
+    onOpen: ignore
+    visibility: public
