@@ -7,6 +7,8 @@ import minimist from 'minimist';
 import * as gulp from 'gulp';
 import Git from 'simple-git/promise';
 
+process.setMaxListeners(0);
+
 const git = Git();
 const argv = require('minimist')(process.argv.slice(2));
 
@@ -47,33 +49,69 @@ gulp.task('packages:set', async () => {
 gulp.task('packages:sync', async () => {
   const packages = fs.readdirSync(`${__dirname}/packages`);
   const npmPackages = {};
+  console.log('find buildable packages');
   for (let p in packages) {
+    const pa = packages[p];
     try {
-      const pa = packages[p];
+      console.log(pa);
       const pckg = require(`./packages/${pa}/package.json`);
-      if (pckg?.scripts?.['package:build']) {
-        npmPackages[pckg.name] = pa;
-        await concurrently([`(cd ${__dirname}/packages/${pa} && npm run package:build)`]);
-      }
-    } catch (error) {}
+      console.log(pa, 'loaded as', pckg.name);
+      npmPackages[pckg.name] = { pckgname: pckg.name, dirname: pa, depended: [], builded: false, pckg };
+    } catch (error) {
+      console.log(pa, 'error');
+    }
   }
+  console.log('make depended tree');
   for (let p in packages) {
     try {
       const pa = packages[p];
       const pckg = require(`./packages/${pa}/package.json`);
-      const deps = [...Object.keys(pckg.dependencies), ...Object.keys(pckg.devDependencies)];
-      const needed = deps.filter(d => npmPackages[d]);
+      const depended = [...Object.keys({ ...pckg?.dependencies, ...pckg?.devDependencies, ...pckg?.peerDependencies })];
+      const needed = depended.filter(d => pckg.name != d && !!npmPackages[d]);
       if (needed.length) {
         for (let n in needed) {
-          await concurrently([`(rm -rf ${__dirname}/packages/${pa}/node_modules/${needed[n]} && mkdir -p ${__dirname}/packages/${pa}/node_modules/${needed[n]} && rsync -av --progress ${__dirname}/packages/${npmPackages[needed[n]]}/ ${__dirname}/packages/${pa}/node_modules/${needed[n]} --exclude node_modules --exclude *.ts --exclude *.tsx)`]);
+          console.log(needed[n], pckg.name);
+          npmPackages[needed[n]].depended.push(pckg.name);
         }
       }
-    } catch (error) {}
+    } catch (error) {
+      // console.error(error);
+    }
   }
+  console.log('build and sync to all depended');
+  let parentPkgName;
+  const _npmPackages = Object.keys(npmPackages);
+  while ((parentPkgName = _npmPackages.find(n1 => {
+    return !npmPackages[n1].builded && !_npmPackages.find(n2 => !!~npmPackages[n2].depended.indexOf(n1))
+  }), !!parentPkgName)) {
+    const parentPkg = npmPackages[parentPkgName];
+    parentPkg.builded = true;
+    console.log('build', parentPkgName);
+    try {
+      if (parentPkg.pckg?.scripts?.['package:build']) {
+        await concurrently([`(cd ${__dirname}/packages/${parentPkg.dirname} && npm run package:build)`]);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+    for (let c in parentPkg.depended) {
+      console.log('sync', parentPkgName, 'to', parentPkg.depended[c]);
+      try {
+        console.log(`(rm -rf ${__dirname}/packages/${npmPackages[parentPkg.depended[c]].dirname}/node_modules/${parentPkg.pckgname} && mkdir -p ${__dirname}/packages/${npmPackages[parentPkg.depended[c]].dirname}/node_modules/${parentPkg.pckgname} && rsync -av --progress ${__dirname}/packages/${parentPkg.dirname}/ ${__dirname}/packages/${npmPackages[parentPkg.depended[c]].dirname}/node_modules/${parentPkg.pckgname} --exclude node_modules --exclude *.ts --exclude *.tsx --include *.d.ts)`);
+        await concurrently([`(rm -rf ${__dirname}/packages/${npmPackages[parentPkg.depended[c]].dirname}/node_modules/${parentPkg.pckgname} && mkdir -p ${__dirname}/packages/${npmPackages[parentPkg.depended[c]].dirname}/node_modules/${parentPkg.pckgname} && rsync -av --progress ${__dirname}/packages/${parentPkg.dirname}/ ${__dirname}/packages/${npmPackages[parentPkg.depended[c]].dirname}/node_modules/${parentPkg.pckgname} --exclude node_modules --exclude *.ts --exclude *.tsx --include *.d.ts)`]);
+      } catch (error) {
+        console.error(error);
+        console.log({ npmPackages, parentPkg, c });
+      }
+    }
+    parentPkg.depended = [];
+  }
+  console.log('unbuild all');
   for (let p in packages) {
     try {
       const pa = packages[p];
       const pckg = require(`./packages/${pa}/package.json`);
+      console.log('unbuild', pckg.name);
       if (pckg?.scripts?.['package:unbuild']) {
         await concurrently([`(cd ${__dirname}/packages/${pa} && npm run package:unbuild)`]);
       }

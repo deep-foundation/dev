@@ -11,12 +11,12 @@
   "homepage": "https://github.com/deepcase/deepcase#readme",
   "scripts": {
     "gulp": "gulp",
-    "prepare": "(yes | sudo apt install screen); (yes | sudo apt install rsync); screen -d -m sudo docker-up",
+    "prepare": "(yes | sudo apt install screen); (yes | sudo apt install rsync); screen -S docker -d -m sudo docker-up",
     "packages": "(yes | npx gulp packages:get); (npx gulp packages:sync)",
-    "store": "(cd packages/store-example; screen -d -m npm run screen)",
-    "hasura": "(cd packages/hasura-example; screen -d -m npm run screen; sleep 20; npm run migrate)",
-    "docker": "(cd packages/hasura; screen -d -m npm run screen)",
-    "start": "npm install; (npm run prepare; npm run packages; sleep 3; npm run docker; sleep 5; npm run store; sleep 3; npm run hasura;)"
+    "store-example": "(cd packages/store-example; screen -S store-example -d -m npm run gitpod)",
+    "hasura-example": "(cd packages/hasura-example; screen -S hasura-example -d -m npm run gitpod; sleep 20; npm run unmigrate && npm run migrate)",
+    "hasura": "(cd packages/hasura; screen -S hasura -d -m npm run gitpod)",
+    "start": "npm install; (npm run prepare; npm run packages; sleep 3; npm run hasura; sleep 10; npm run store-example; sleep 10; npm run hasura-example;)"
   },
   "repository": {
     "type": "git",

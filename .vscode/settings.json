@@ -1,3 +1,5 @@
 {
-    "workbench.colorTheme": "Default Dark+"
+    "workbench.colorTheme": "Default Dark+",
+    "editor.tabSize": 2,
+    "files.autoSave": "off"
 }
