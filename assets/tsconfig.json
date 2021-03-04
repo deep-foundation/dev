@@ -17,6 +17,9 @@
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "isolatedModules": true,
-    "declaration": true
-  },
+    "declaration": true,
+    "typeRoots": [
+      "./node_modules/@types"
+    ]
+  }
 }
