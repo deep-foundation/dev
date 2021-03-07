@@ -24,3 +24,6 @@
 [submodule "packages/materialized-path"]
 	path = packages/materialized-path
 	url = https://github.com/deepcase/materialized-path.git
+[submodule "packages/atomic-models-hasura-permissions"]
+	path = packages/atomic-models-hasura-permissions
+	url = https://github.com/deepcase/atomic-models-hasura-permission.git
