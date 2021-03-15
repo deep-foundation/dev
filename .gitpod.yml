@@ -1,9 +1,5 @@
 image:
   file: .gitpod.Dockerfile
-
-tasks:
-  - init: npm run start
-
 vscode:
   extensions:
     - ms-azuretools.vscode-docker@1.9.1:QdS6HgHvji4YGIWRWKXrLA==
