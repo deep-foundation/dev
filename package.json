@@ -13,14 +13,14 @@
     "gulp": "gulp",
     "gitpod-prepare": "(yes | sudo apt install screen); (yes | sudo apt install rsync); screen -S docker -d -m sudo docker-up",
     "packages": "(yes | npx gulp packages:get); (npx gulp packages:sync)",
-    "hasura": "(cd packages/hasura; screen -S hasura -d -m npm run local)",
-    "store-example": "(cd packages/store-example; screen -S store-example -d -m npm run local)",
-    "hasura-example": "(cd packages/hasura-example; screen -S hasura-example -d -m npm run local; sleep 20; npm run unmigrate && npm run migrate)",
-    "start": "npm install; (npm run packages; sleep 3; npm run hasura; sleep 10; npm run store-example; sleep 10; npm run hasura-example;)",
-    "hasura-gitpod": "(cd packages/hasura; screen -S hasura -d -m npm run gitpod)",
-    "store-example-gitpod": "(cd packages/store-example; screen -S store-example -d -m npm run gitpod)",
-    "hasura-example-gitpod": "(cd packages/hasura-example; screen -S hasura-example -d -m npm run gitpod; sleep 20; npm run unmigrate && npm run migrate)",
-    "gitpod": "npm run gitpod-prepare && npm install; (npm run packages; sleep 3; npm run hasura; sleep 10; npm run store-example; sleep 10; npm run hasura-example;)"
+    "local-hasura": "(cd packages/hasura; screen -S hasura -d -m npm run local)",
+    "local-store-example": "(cd packages/store-example; screen -S store-example -d -m npm run local)",
+    "local-hasura-example": "(cd packages/hasura-example; screen -S hasura-example -d -m npm run local; sleep 20; npm run local-unmigrate && npm run local-migrate)",
+    "local": "npm install; (npm run packages; sleep 3; npm run local-hasura; sleep 10; npm run local-store-example; sleep 10; npm run local-hasura-example;)",
+    "gitpod-hasura": "(cd packages/hasura; screen -S hasura -d -m npm run gitpod)",
+    "gitpod-store-example": "(cd packages/store-example; screen -S store-example -d -m npm run gitpod)",
+    "gitpod-hasura-example": "(cd packages/hasura-example; screen -S hasura-example -d -m npm run gitpod; sleep 20; npm run gitpod-unmigrate && npm run gitpod-migrate)",
+    "gitpod": "npm run gitpod-prepare && npm install; (npm run packages; sleep 3; npm run gitpod-hasura; sleep 10; npm run gitpod-store-example; sleep 10; npm run gitpod-hasura-example;)"
   },
   "repository": {
     "type": "git",
