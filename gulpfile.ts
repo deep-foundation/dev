@@ -32,6 +32,7 @@ gulp.task('package:delete', async () => {
 });
 
 gulp.task('packages:get', async () => {
+  await git.submoduleInit();
   await git.submoduleUpdate();
   const packages = fs.readdirSync(`${__dirname}/packages`);
   for (let p in packages) {
