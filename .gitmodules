@@ -4,11 +4,11 @@
 [submodule "packages/store-example"]
 	path = packages/store-example
 	url = https://github.com/deepcase/store.git
-	branch=example
+	branch = example
 [submodule "packages/store-gh-pages"]
 	path = packages/store-gh-pages
 	url = https://github.com/deepcase/store.git
-	branch=gh-pages
+	branch = gh-pages
 [submodule "packages/hasura"]
 	path = packages/hasura
 	url = https://github.com/deepcase/hasura
@@ -30,3 +30,7 @@
 [submodule "packages/deepgraph"]
 	path = packages/deepgraph
 	url = https://github.com/deepcase/deepgraph.git
+[submodule "packages/deepgraph-app"]
+	path = packages/deepgraph-app
+	url = https://github.com/deepcase/deepgraph.git
+	branch = app
