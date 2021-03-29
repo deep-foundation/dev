@@ -27,3 +27,6 @@
 [submodule "packages/atomic-models-hasura-permissions"]
 	path = packages/atomic-models-hasura-permissions
 	url = https://github.com/deepcase/atomic-models-hasura-permission.git
+[submodule "packages/deepgraph"]
+	path = packages/deepgraph
+	url = https://github.com/deepcase/deepgraph.git

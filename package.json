@@ -16,11 +16,13 @@
     "local-hasura": "(cd packages/hasura; screen -S hasura -d -m npm run local)",
     "local-store-example": "(cd packages/store-example; screen -S store-example -d -m npm run local)",
     "local-hasura-example": "(cd packages/hasura-example; screen -S hasura-example -d -m npm run local; sleep 20; npm run local-unmigrate && npm run local-migrate)",
-    "local": "npm install; (npm run packages; sleep 3; npm run local-hasura; sleep 10; npm run local-store-example; sleep 10; npm run local-hasura-example;)",
+    "local-materialized-path": "(cd packages/materialized-path; npm run local-unmigrate && npm run local-migrate && npm run local-test)",
+    "local": "npm install; (npm run packages; sleep 3; npm run local-hasura; sleep 10; npm run local-materialized-path; npm run local-store-example; sleep 10; npm run local-hasura-example;)",
     "gitpod-hasura": "(cd packages/hasura; screen -S hasura -d -m npm run gitpod)",
     "gitpod-store-example": "(cd packages/store-example; screen -S store-example -d -m npm run gitpod)",
     "gitpod-hasura-example": "(cd packages/hasura-example; screen -S hasura-example -d -m npm run gitpod; sleep 20; npm run gitpod-unmigrate && npm run gitpod-migrate)",
-    "gitpod": "npm run gitpod-prepare && npm install; (npm run packages; sleep 3; npm run gitpod-hasura; sleep 10; npm run gitpod-store-example; sleep 10; npm run gitpod-hasura-example;)"
+    "gitpod-materialized-path": "(cd packages/materialized-path; npm run gitpod-unmigrate && npm run gitpod-migrate && npm run gitpod-test)",
+    "gitpod": "npm run gitpod-prepare && npm install; (npm run packages; sleep 3; npm run gitpod-hasura; sleep 10; npm run gitpod-materialized-path; npm run gitpod-store-example; sleep 10; npm run gitpod-hasura-example;)"
   },
   "repository": {
     "type": "git",
