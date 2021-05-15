@@ -34,3 +34,6 @@
 	path = packages/deepgraph-app
 	url = https://github.com/deepcase/deepgraph.git
 	branch = app
+[submodule "packages/deep.foundation"]
+	path = packages/deep.foundation
+	url = https://github.com/deepcase/deepcase.github.io.git
