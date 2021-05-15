@@ -37,7 +37,8 @@
 [submodule "packages/deep.foundation"]
 	path = packages/deep.foundation
 	url = https://github.com/deepcase/deepcase.github.io.git
+	branch = sources
 [submodule "packages/deep.foundation-gh-pages"]
 	path = packages/deep.foundation-gh-pages
 	url = https://github.com/deepcase/deepcase.github.io.git
-	branch = gh-pages
+	branch = main
