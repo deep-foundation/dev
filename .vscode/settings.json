@@ -6,5 +6,6 @@
         "activityBar.background": "#181818",
         "titleBar.activeBackground": "#181818",
         "titleBar.activeForeground": "#F9FAFF"
-    }
+    },
+    "editor.wordWrap": "on"
 }

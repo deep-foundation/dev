@@ -10,5 +10,6 @@
 - `npm run gulp -- package:delete --name NAMEINPACKAGESDIRECTORY` delete submodule
 - `npm run gulp -- assets:update` copy all assets from ./assets in to each package
 - `npm run gulp -- packages:sync` sync all dependenced packages in workspace
+
 - `npm run gitpod` in gitpod for fully start
 - `npm run local` for locally fully start

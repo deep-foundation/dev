@@ -2,7 +2,6 @@
   "name": "@deepcase/deepcase",
   "private": true,
   "version": "0.0.0",
-  "description": "Deepcase ecosystem monorepo.",
   "author": "ivansglazunov",
   "license": "ISC",
   "bugs": {
@@ -11,18 +10,17 @@
   "homepage": "https://github.com/deepcase/deepcase#readme",
   "scripts": {
     "gulp": "gulp",
-    "gitpod-prepare": "(yes | sudo apt install screen); (yes | sudo apt install rsync); screen -S docker -d -m sudo docker-up",
+    "gitpod-prepare": "(yes | sudo apt install screen); (yes | sudo apt install rsync); (yes | sudo apt install net-tools); screen -L -Logfile docker.log -S docker -d -m sudo docker-up",
     "packages": "(yes | npx gulp packages:get); (npx gulp packages:sync)",
-    "local-hasura": "(cd packages/hasura; screen -S hasura -d -m npm run local)",
-    "local-store-example": "(cd packages/store-example; screen -S store-example -d -m npm run local)",
-    "local-hasura-example": "(cd packages/hasura-example; screen -S hasura-example -d -m npm run local; sleep 20; npm run local-unmigrate && npm run local-migrate)",
-    "local-materialized-path": "(cd packages/materialized-path; npm run local-unmigrate && npm run local-migrate && npm run local-test)",
-    "local": "npm ci; (npm run packages; sleep 3; npm run local-hasura; sleep 10; npm run local-materialized-path; npm run local-store-example; sleep 10; npm run local-hasura-example;)",
-    "gitpod-hasura": "(cd packages/hasura; screen -S hasura -d -m npm run gitpod)",
-    "gitpod-store-example": "(cd packages/store-example; screen -S store-example -d -m npm run gitpod)",
-    "gitpod-hasura-example": "(cd packages/hasura-example; screen -S hasura-example -d -m npm run gitpod; sleep 20; npm run gitpod-unmigrate && npm run gitpod-migrate)",
-    "gitpod-materialized-path": "(cd packages/materialized-path; npm run gitpod-unmigrate && npm run gitpod-migrate && npm run gitpod-test)",
-    "gitpod": "npm run gitpod-prepare && npm ci; (npm run packages; sleep 3; npm run gitpod-hasura; sleep 10; npm run gitpod-materialized-path; npm run gitpod-store-example; sleep 10; npm run gitpod-hasura-example;)"
+    "hasura-example": "(cd packages/hasura-example; screen -L -Logfile hasura-example.log -S hasura-example -d -m bash -c 'PORT=3001 npm run dev'; sleep 20; npm run unmigrate; npm run migrate;)",
+    "deepgraph-app": "(cd packages/deepgraph-app; screen -L -Logfile deepgraph-app.log -S deepgraph-app -d -m bash -c 'PORT=3007 npm run dev';)",
+    "hasura": "(export JWT_SECRET='{\"type\":\"HS256\", \"key\": \"3EK6FD+o0+c7tzBNVfjpMkNDi2yARAAKzQlk8O2IKoxQu4nF7EdAh8s3TwpHwrdWT6R\"}'; cd packages/hasura; screen -L -Logfile hasura.log -S hasura -d -m npm run docker)",
+    "store-example": "(cd packages/store-example; screen -L -Logfile store-example.log -S store-example -d -m bash -c 'PORT=3002 npm run dev';)",
+    "materialized-path": "(cd packages/materialized-path; npm run unmigrate; npm run migrate && npm run test)",
+
+    "local": "npm ci; (npm run hasura; sleep 10; npm run materialized-path; npm run store-example; sleep 10; export JWT_SECRET='3EK6FD+o0+c7tzBNVfjpMkNDi2yARAAKzQlk8O2IKoxQu4nF7EdAh8s3TwpHwrdWT6R'; export MIGRATIONS_HASURA_PATH=localhost:8080; export MIGRATIONS_HASURA_SSL=0; export MIGRATIONS_HASURA_SECRET=myadminsecretkey; export MIGRATIONS_HASURA_SECRET=myadminsecretkey; export MIGRATIONS_EXAMPLE_URL=localhost:3001; export NEXT_PUBLIC_HASURA_PATH=localhost:8080; export NEXT_PUBLIC_HASURA_SSL=0; npm run hasura-example; npm run deepgraph-app;)",
+
+    "gitpod": "npm run gitpod-prepare && npm ci; (npm run hasura; sleep 10; npm run materialized-path; npm run store-example; sleep 10; export JWT_SECRET='3EK6FD+o0+c7tzBNVfjpMkNDi2yARAAKzQlk8O2IKoxQu4nF7EdAh8s3TwpHwrdWT6R'; export MIGRATIONS_HASURA_PATH=$(echo $(gp url 8080) | awk -F[/:] '{print $4}'); export MIGRATIONS_HASURA_SSL=1; export MIGRATIONS_HASURA_SECRET=myadminsecretkey; export MIGRATIONS_HASURA_SECRET=myadminsecretkey; export MIGRATIONS_EXAMPLE_URL=$(gp url 3001); export NEXT_PUBLIC_HASURA_PATH=$(echo $(gp url 8080) | awk -F[/:] '{print $4}'); export NEXT_PUBLIC_HASURA_SSL=1; npm run hasura-example; npm run deepgraph-app;)"
   },
   "repository": {
     "type": "git",
