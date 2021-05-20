@@ -18,9 +18,7 @@
     "hasura": "(export JWT_SECRET='{\"type\":\"HS256\", \"key\": \"3EK6FD+o0+c7tzBNVfjpMkNDi2yARAAKzQlk8O2IKoxQu4nF7EdAh8s3TwpHwrdWT6R\"}'; cd packages/hasura; screen -L -Logfile hasura.log -S hasura -d -m npm run docker)",
     "store-example": "(cd packages/store-example; screen -L -Logfile store-example.log -S store-example -d -m bash -c 'PORT=3002 npm run dev';)",
     "materialized-path": "(cd packages/materialized-path; npm run unmigrate; npm run migrate && npm run test)",
-
     "local": "npm ci; (npm run hasura; sleep 10; npm run materialized-path; npm run store-example; sleep 10; export JWT_SECRET='3EK6FD+o0+c7tzBNVfjpMkNDi2yARAAKzQlk8O2IKoxQu4nF7EdAh8s3TwpHwrdWT6R'; export MIGRATIONS_HASURA_PATH=localhost:8080; export MIGRATIONS_HASURA_SSL=0; export MIGRATIONS_HASURA_SECRET=myadminsecretkey; export MIGRATIONS_HASURA_SECRET=myadminsecretkey; export MIGRATIONS_EXAMPLE_URL=localhost:3001; export NEXT_PUBLIC_HASURA_PATH=localhost:8080; export NEXT_PUBLIC_HASURA_SSL=0; export HASURA_PATH=localhost:8080; export HASURA_SSL=0; npm run hasura-example; npm run deepgraph-app; npm run deepgraph;)",
-
     "gitpod": "npm ci; npm run gitpod-prepare; (npm run hasura; sleep 10; npm run materialized-path; npm run store-example; sleep 10; export JWT_SECRET='3EK6FD+o0+c7tzBNVfjpMkNDi2yARAAKzQlk8O2IKoxQu4nF7EdAh8s3TwpHwrdWT6R'; export MIGRATIONS_HASURA_PATH=$(echo $(gp url 8080) | awk -F[/:] '{print $4}'); export MIGRATIONS_HASURA_SSL=1; export MIGRATIONS_HASURA_SECRET=myadminsecretkey; export MIGRATIONS_HASURA_SECRET=myadminsecretkey; export MIGRATIONS_EXAMPLE_URL=$(gp url 3001); export NEXT_PUBLIC_HASURA_PATH=$(echo $(gp url 8080) | awk -F[/:] '{print $4}'); export NEXT_PUBLIC_HASURA_SSL=1; export HASURA_PATH=$(echo $(gp url 8080) | awk -F[/:] '{print $4}'); export HASURA_SSL=1; npm run hasura-example; npm run deepgraph-app; npm run deepgraph;)"
   },
   "repository": {
