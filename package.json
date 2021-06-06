@@ -14,7 +14,7 @@
     "packages": "(npx gulp packages:get); (npm run packages-ci);",
     "packages-ci": "(cd packages; for d in */; do (cd $d && npm ci); done)",
     "hasura-example": "(cd packages/hasura-example; screen -S hasura-example -d -m bash -c 'PORT=3001 npm run dev'; sleep 20; npm run unmigrate; npm run migrate;)",
-    "deepgraph": "(cd packages/deepgraph; npm run unmigrate; npm run migrate;)",
+    "deepgraph": "(cd packages/deepgraph; npm run migrate;)",
     "deepgraph-app": "(cd packages/deepgraph-app; screen -S deepgraph-app -d -m bash -c 'PORT=3007 npm run dev';)",
     "hasura": "(export JWT_SECRET='{\"type\":\"HS256\", \"key\": \"3EK6FD+o0+c7tzBNVfjpMkNDi2yARAAKzQlk8O2IKoxQu4nF7EdAh8s3TwpHwrdWT6R\"}'; cd packages/hasura; screen -S hasura -d -m npm run docker)",
     "store-example": "(cd packages/store-example; screen -S store-example -d -m bash -c 'PORT=3002 npm run dev';)",
