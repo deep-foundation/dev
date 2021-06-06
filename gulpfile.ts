@@ -36,8 +36,12 @@ gulp.task('packages:get', async () => {
   await git.submoduleUpdate();
   const packages = fs.readdirSync(`${__dirname}/packages`);
   for (let p in packages) {
-    const pckg = packages[p];
-    await concurrently([`(cd ${__dirname}/packages/${pckg} && npm ci)`]);
+    try {
+      const pckg = packages[p];
+      await concurrently([`(cd ${__dirname}/packages/${pckg} && npm ci)`]);
+    } catch(error) {
+      console.log(error);
+    }
   }
 });
 
