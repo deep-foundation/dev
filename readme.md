@@ -17,7 +17,7 @@ npm run packages && npm run local
 
 ## unsafe gulp methods 
 
-- **attemption! before work checkout to branch from detached commits in each needed submodule**
+- **attention! before work checkout to branch from detached commits in each needed submodule**
 - `npm run gulp -- packages:get` clone and install all packages **starts automatically in workspace**
 - `(cd packages/hasura && npm run docker-local)` start docker postgres and hasura locally **starts automatically in workspace**
 - `npm run gulp -- packages:set` fast git add git commit and git push deepcase repo
