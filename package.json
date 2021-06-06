@@ -10,16 +10,18 @@
   "homepage": "https://github.com/deepcase/deepcase#readme",
   "scripts": {
     "gulp": "gulp",
-    "gitpod-prepare": "(yes | sudo apt install screen); (yes | sudo apt install rsync); (yes | sudo apt install net-tools); screen -L -Logfile docker.log -S docker -d -m sudo docker-up",
-    "packages": "(yes | npx gulp packages:get); (npx gulp packages:sync)",
-    "hasura-example": "(cd packages/hasura-example; screen -L -Logfile hasura-example.log -S hasura-example -d -m bash -c 'PORT=3001 npm run dev'; sleep 20; npm run unmigrate; npm run migrate;)",
+    "gitpod-prepare": "(yes | sudo apt install screen); (yes | sudo apt install rsync); (yes | sudo apt install net-tools); screen -S docker -d -m sudo docker-up",
+    "packages": "(npx gulp packages:get); (npm run packages-ci); (npx gulp packages:sync)",
+    "packages-ci": "(cd packages; for d in */; do (cd $d && npm ci); done)",
+    "hasura-example": "(cd packages/hasura-example; screen -S hasura-example -d -m bash -c 'PORT=3001 npm run dev'; sleep 20; npm run unmigrate; npm run migrate;)",
     "deepgraph": "(cd packages/deepgraph; npm run unmigrate; npm run migrate;)",
-    "deepgraph-app": "(cd packages/deepgraph-app; screen -L -Logfile deepgraph-app.log -S deepgraph-app -d -m bash -c 'PORT=3007 npm run dev';)",
-    "hasura": "(export JWT_SECRET='{\"type\":\"HS256\", \"key\": \"3EK6FD+o0+c7tzBNVfjpMkNDi2yARAAKzQlk8O2IKoxQu4nF7EdAh8s3TwpHwrdWT6R\"}'; cd packages/hasura; screen -L -Logfile hasura.log -S hasura -d -m npm run docker)",
-    "store-example": "(cd packages/store-example; screen -L -Logfile store-example.log -S store-example -d -m bash -c 'PORT=3002 npm run dev';)",
+    "deepgraph-app": "(cd packages/deepgraph-app; screen -S deepgraph-app -d -m bash -c 'PORT=3007 npm run dev';)",
+    "hasura": "(export JWT_SECRET='{\"type\":\"HS256\", \"key\": \"3EK6FD+o0+c7tzBNVfjpMkNDi2yARAAKzQlk8O2IKoxQu4nF7EdAh8s3TwpHwrdWT6R\"}'; cd packages/hasura; screen -S hasura -d -m npm run docker)",
+    "store-example": "(cd packages/store-example; screen -S store-example -d -m bash -c 'PORT=3002 npm run dev';)",
     "materialized-path": "(cd packages/materialized-path; npm run unmigrate; npm run migrate && npm run test)",
     "local": "export MIGRATIONS_ID_TYPE_SQL=bigint; export MIGRATIONS_ID_TYPE_GQL=bigint; npm ci; (npm run hasura; sleep 10; npm run materialized-path; npm run store-example; sleep 10; export JWT_SECRET='3EK6FD+o0+c7tzBNVfjpMkNDi2yARAAKzQlk8O2IKoxQu4nF7EdAh8s3TwpHwrdWT6R'; export MIGRATIONS_HASURA_PATH=localhost:8080; export MIGRATIONS_HASURA_SSL=0; export MIGRATIONS_HASURA_SECRET=myadminsecretkey; export MIGRATIONS_HASURA_SECRET=myadminsecretkey; export MIGRATIONS_EXAMPLE_URL=localhost:3001; export NEXT_PUBLIC_HASURA_PATH=localhost:8080; export NEXT_PUBLIC_HASURA_SSL=0; export HASURA_PATH=localhost:8080; export HASURA_SSL=0; npm run hasura-example; npm run deepgraph-app; npm run deepgraph;)",
-    "gitpod": "export MIGRATIONS_ID_TYPE_SQL=bigint; export MIGRATIONS_ID_TYPE_GQL=bigint; npm ci; npm run gitpod-prepare; (npm run hasura; sleep 10; npm run materialized-path; npm run store-example; sleep 10; export JWT_SECRET='3EK6FD+o0+c7tzBNVfjpMkNDi2yARAAKzQlk8O2IKoxQu4nF7EdAh8s3TwpHwrdWT6R'; export MIGRATIONS_HASURA_PATH=$(echo $(gp url 8080) | awk -F[/:] '{print $4}'); export MIGRATIONS_HASURA_SSL=1; export MIGRATIONS_HASURA_SECRET=myadminsecretkey; export MIGRATIONS_HASURA_SECRET=myadminsecretkey; export MIGRATIONS_EXAMPLE_URL=$(gp url 3001); export NEXT_PUBLIC_HASURA_PATH=$(echo $(gp url 8080) | awk -F[/:] '{print $4}'); export NEXT_PUBLIC_HASURA_SSL=1; export HASURA_PATH=$(echo $(gp url 8080) | awk -F[/:] '{print $4}'); export HASURA_SSL=1; npm run hasura-example; npm run deepgraph-app; npm run deepgraph;)"
+    "gitpod": "export MIGRATIONS_ID_TYPE_SQL=bigint; export MIGRATIONS_ID_TYPE_GQL=bigint; npm ci; npm run gitpod-prepare; (npm run hasura; sleep 10; npm run materialized-path; npm run store-example; sleep 10; export JWT_SECRET='3EK6FD+o0+c7tzBNVfjpMkNDi2yARAAKzQlk8O2IKoxQu4nF7EdAh8s3TwpHwrdWT6R'; export MIGRATIONS_HASURA_PATH=$(echo $(gp url 8080) | awk -F[/:] '{print $4}'); export MIGRATIONS_HASURA_SSL=1; export MIGRATIONS_HASURA_SECRET=myadminsecretkey; export MIGRATIONS_HASURA_SECRET=myadminsecretkey; export MIGRATIONS_EXAMPLE_URL=$(gp url 3001); export NEXT_PUBLIC_HASURA_PATH=$(echo $(gp url 8080) | awk -F[/:] '{print $4}'); export NEXT_PUBLIC_HASURA_SSL=1; export HASURA_PATH=$(echo $(gp url 8080) | awk -F[/:] '{print $4}'); export HASURA_SSL=1; npm run hasura-example; npm run deepgraph-app; npm run deepgraph;)",
+    "rm-migrates": "find . -type f -name '.migrate' -exec rm {} +"
   },
   "repository": {
     "type": "git",
