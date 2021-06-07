@@ -6,9 +6,9 @@
 
 ```sh
 # just run in gitppod
-npm run packages && npm run gitpod
+npm ci && npm run packages && npm run gitpod
 # or locally
-npm run packages && npm run local
+npm ci && npm run packages && npm run local
 ```
 
 - `npm run packages` before all

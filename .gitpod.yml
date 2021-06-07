@@ -13,4 +13,4 @@ vscode:
     - hediet.vscode-drawio
     - ms-azuretools.vscode-docker
 tasks:
-  - init: git config --global url."https://".insteadOf git://; git config --global url."https://github.com/".insteadOf ssh://git@github.com/;
+  - init: npm run git-shh-to-https
