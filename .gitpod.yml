@@ -1,9 +1,9 @@
 image:
   file: .gitpod.Dockerfile
 ports:
-  - port: 3000-8080
-    onOpen: ignore
-    visibility: public
+- port: 3000-8080
+  onOpen: ignore
+  visibility: public
 vscode:
   extensions:
     - ms-azuretools.vscode-docker@1.9.1:QdS6HgHvji4YGIWRWKXrLA==
@@ -12,3 +12,5 @@ vscode:
     - ms-vscode.vscode-typescript-tslint-plugin@1.2.2:0nQ3PEEA0NPEt3UcbCYiIQ==
     - hediet.vscode-drawio
     - ms-azuretools.vscode-docker
+tasks:
+- init: git config --global url."https://".insteadOf git://; git config --global url."https://github.com/".insteadOf ssh://git@github.com/;
