@@ -6,7 +6,7 @@
 
 ```sh
 # just run in gitppod
-npm ci && npm run packages && npm run gitpod
+npm run git-shh-to-https && npm ci && npm run packages && npm run gitpod
 # or locally
 npm ci && npm run packages && npm run local
 ```
