@@ -14,6 +14,7 @@ npm ci && npm run packages && npm run local
 - `npm run packages` before all
 - `npm run gitpod` in gitpod for fully start
 - `npm run local` for locally fully start
+- `npm run rm-migrates` for delete all artifacts .migrate of npm migrate package
 
 ## unsafe gulp methods 
 

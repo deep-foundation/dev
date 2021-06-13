@@ -10,7 +10,7 @@
   "homepage": "https://github.com/deepcase/deepcase#readme",
   "scripts": {
     "gulp": "gulp",
-    "gitpod-prepare": "(yes | sudo apt install screen); (yes | sudo apt install rsync); (yes | sudo apt install net-tools); screen -S docker -d -m sudo docker-up",
+    "gitpod-prepare": "npm run git-shh-to-https; (yes | sudo apt install screen); (yes | sudo apt install rsync); (yes | sudo apt install net-tools); screen -S docker -d -m sudo docker-up",
     "packages": "(npx gulp packages:get); (npm run packages-ci);",
     "packages-ci": "(cd packages; for d in */; do (cd $d && npm ci); done)",
     "hasura-example": "(cd packages/hasura-example; screen -S hasura-example -d -m bash -c 'PORT=3001 npm run dev'; sleep 20; npm run unmigrate; npm run migrate;)",

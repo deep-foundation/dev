@@ -16,4 +16,4 @@ vscode:
     - ms-azuretools.vscode-docker
 
 tasks:
-  - init: npm run git-shh-to-https
+  - init: npm run gitpod-prepare
