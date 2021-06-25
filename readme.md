@@ -9,6 +9,8 @@
 npm run git-shh-to-https && npm ci && npm run packages && npm run gitpod
 # or locally
 npm ci && npm run packages && npm run local
+# stop and clear all dockers composes/containers/volumes
+(cd packages/hasura/local/; docker-compose down; docker rm -f $(docker ps -a -q); docker volume rm $(docker volume ls -q))
 ```
 
 - `npm run packages` before all
