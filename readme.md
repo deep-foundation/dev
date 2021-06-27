@@ -5,7 +5,7 @@
 ## safe methods
 
 ```sh
-# befire all
+# befire all only once
 npm ci && npm run packages
 # just run in gitppod
 npm run git-shh-to-https && npm run gitpod
