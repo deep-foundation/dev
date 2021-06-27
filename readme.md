@@ -7,7 +7,7 @@
 ```sh
 # befire all only once
 npm ci && npm run packages
-# just run in gitppod
+# just run in gitpod
 npm ci && npm run git-shh-to-https && npm run gitpod
 # or locally
 npm run local
