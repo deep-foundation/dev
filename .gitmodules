@@ -1,14 +1,3 @@
-[submodule "packages/store"]
-	path = packages/store
-	url = https://github.com/deepcase/store.git
-[submodule "packages/store-example"]
-	path = packages/store-example
-	url = https://github.com/deepcase/store.git
-	branch = example
-[submodule "packages/store-gh-pages"]
-	path = packages/store-gh-pages
-	url = https://github.com/deepcase/store.git
-	branch = gh-pages
 [submodule "packages/hasura"]
 	path = packages/hasura
 	url = https://github.com/deepcase/hasura

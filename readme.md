@@ -5,14 +5,14 @@
 ## safe methods
 
 ```sh
-# befire all only once
+# before all ONLY ONCE PER ONE GITPOD CONTAINER
 npm ci && npm run packages
 # just run in gitpod
 npm ci && npm run git-shh-to-https && npm run gitpod
-# or locally
-npm run local
 # stop and clear all dockers composes/containers/volumes
 (npm run rm-migrates; killall screen; cd packages/hasura/local/; docker-compose down; docker rm -f $(docker ps -a -q); docker volume rm $(docker volume ls -q))
+# or locally
+npm run local
 ```
 
 - `npm run packages` before all

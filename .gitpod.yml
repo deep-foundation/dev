@@ -5,6 +5,9 @@ ports:
   - port: 3000-8080
     onOpen: ignore
     visibility: public
+  - port: 3007
+    onOpen: open-browser
+    visibility: public
 
 vscode:
   extensions:
