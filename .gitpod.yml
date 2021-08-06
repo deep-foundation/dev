@@ -19,4 +19,4 @@ vscode:
     - ms-azuretools.vscode-docker
 
 tasks:
-  - init: npm run gitpod-prepare
+  - init: npm run gitpod-prepare && gp open readme.md
