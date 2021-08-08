@@ -16,10 +16,10 @@
 [submodule "packages/atomic-models-hasura-permissions"]
 	path = packages/atomic-models-hasura-permissions
 	url = https://github.com/deepcase/atomic-models-hasura-permission.git
-[submodule "packages/deepgraph"]
-	path = packages/deepgraph
-	url = https://github.com/deepcase/deepgraph.git
-[submodule "packages/deepgraph-app"]
-	path = packages/deepgraph-app
-	url = https://github.com/deepcase/deepgraph.git
+[submodule "packages/deeplinks"]
+	path = packages/deeplinks
+	url = https://github.com/deepcase/deeplinks.git
+[submodule "packages/deeplinks-app"]
+	path = packages/deeplinks-app
+	url = https://github.com/deepcase/deeplinks.git
 	branch = app
