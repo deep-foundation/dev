@@ -8,15 +8,14 @@
   ],
   "website": "https://deep.foundation/",
   "repository": "https://github.com/deepcase/deeplinks",
-  "logo": "",
   "success_url": "/",
   "env": {},
-  "formation": {
+  "formation": [{
     "web": {
       "quantity": 1,
       "size": "standard-1x"
     }
-  },
+  }],
   "image": "menzorg/deeplinks-app",
   "buildpacks": [
     {
