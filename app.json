@@ -22,9 +22,6 @@
       "url": "heroku-community/apt"
     },
     {
-      "url": "https://github.com/hasura/graphql-engine-heroku"
-    },
-    {
       "url": "heroku/nodejs"
     }
   ],
