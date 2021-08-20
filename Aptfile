@@ -1,1 +1,1 @@
-screen jq libpq-dev
+screen jq libpq-dev curl
