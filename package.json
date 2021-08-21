@@ -4,6 +4,10 @@
   "version": "0.0.0",
   "author": "ivansglazunov",
   "license": "ISC",
+  "engines": {
+    "node": ">=15.10",
+    "npm": ">=7.5.3"
+  },
   "bugs": {
     "url": "https://github.com/deepcase/deepcase/issues"
   },
