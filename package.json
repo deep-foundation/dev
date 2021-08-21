@@ -15,7 +15,7 @@
   "scripts": {
     "gulp": "gulp",
     "app-json-validate": "app.json validate",
-    "heroku-prebuild": "which screen && npm ci && npm run packages; echo '====000===='; ls ./packages; echo '====000===='; ls ./packages/hasura/; (cd packages/hasura-example; PORT=3001 npm run build) && (cd packages/deeplinks-app; PORT=3007 npm run build;)",
+    "heroku-prebuild": "mkdir $2/screen; export $SCREENDIR=$2/screen; npm ci && npm run packages; echo '====000===='; ls ./packages; echo '====000===='; ls ./packages/hasura/; (cd packages/hasura-example; PORT=3001 npm run build) && (cd packages/deeplinks-app; PORT=3007 npm run build;)",
     "heroku-postbuild": "export MIGRATIONS_ID_TYPE_SQL=bigint; export MIGRATIONS_ID_TYPE_GQL=bigint; (npm run heroku-hasura; sleep 10; npm run materialized-path; sleep 10; export SCREENDIR=$(pwd); export MIGRATIONS_ID_TYPE_SQL=bigint; export MIGRATIONS_ID_TYPE_GQL=bigint; export JWT_SECRET='3EK6FD+o0+c7tzBNVfjpMkNDi2yARAAKzQlk8O2IKoxQu4nF7EdAh8s3TwpHwrdWT6R'; export MIGRATIONS_HASURA_PATH=localhost:8080 export MIGRATIONS_HASURA_SSL=0; export MIGRATIONS_HASURA_SECRET=myadminsecretkey; export MIGRATIONS_EXAMPLE_URL=$localhost:3001; export MIGRATIONS_DEEPLINKS_APP_URL=localhost:3007; npm run heroku-hasura-example; npm run deeplinks;)",
     "heroku-hasura": "export HASURA_GRAPHQL_DATABASE_URL=$DATABASE_URL; screen -S hasura -d -m bash -c './graphql-engine serve'",
     "heroku-hasura-example": "(cd packages/hasura-example; screen -S hasura-example -d -m bash -c 'PORT=3001 npm run start'; sleep 20; npm run unmigrate; npm run migrate;)",
