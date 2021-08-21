@@ -13,6 +13,7 @@
   },
   "homepage": "https://github.com/deepcase/deepcase#readme",
   "scripts": {
+    "start": "npm run heroku-deeplinks-app",
     "gulp": "gulp",
     "app-json-validate": "app.json validate",
     "heroku-prebuild": "npm ci",
