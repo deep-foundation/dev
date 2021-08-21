@@ -1,1 +1,2 @@
 web: npm run heroku-deeplinks-app
+release: (export MIGRATIONS_ID_TYPE_SQL=bigint; export MIGRATIONS_ID_TYPE_GQL=bigint; export JWT_SECRET='3EK6FD+o0+c7tzBNVfjpMkNDi2yARAAKzQlk8O2IKoxQu4nF7EdAh8s3TwpHwrdWT6R'; export MIGRATIONS_HASURA_PATH=localhost:8080 export MIGRATIONS_HASURA_SSL=0; export MIGRATIONS_HASURA_SECRET=myadminsecretkey; export MIGRATIONS_EXAMPLE_URL=$localhost:3001; export MIGRATIONS_DEEPLINKS_APP_URL=localhost:3007; npm run heroku-hasura-example; npm run deeplinks;)
