@@ -11,9 +11,9 @@
   "scripts": {
     "gulp": "gulp",
     "app-json-validate": "app.json validate",
-    "heroku-prebuild": "curl https://raw.githubusercontent.com/Menzorg/hasura-binary/main/graphql-engine && npm ci && npm run packages",
+    "heroku-prebuild": "npm ci && npm run packages",
     "heroku-postbuild": "export MIGRATIONS_ID_TYPE_SQL=bigint; export MIGRATIONS_ID_TYPE_GQL=bigint; (npm run heroku-hasura; sleep 10; npm run materialized-path; sleep 10; export JWT_SECRET='3EK6FD+o0+c7tzBNVfjpMkNDi2yARAAKzQlk8O2IKoxQu4nF7EdAh8s3TwpHwrdWT6R'; export MIGRATIONS_HASURA_PATH=localhost:8080 export MIGRATIONS_HASURA_SSL=0; export MIGRATIONS_HASURA_SECRET=myadminsecretkey; export MIGRATIONS_EXAMPLE_URL=$localhost:3001; export MIGRATIONS_DEEPLINKS_APP_URL=localhost:3007; npm run hasura-example; npm run deeplinks-app; npm run deeplinks;)",
-    "heroku-hasura": "export HASURA_GRAPHQL_DATABASE_URL=$DATABASE_URL; graphql-engine serve",
+    "heroku-hasura": "export HASURA_GRAPHQL_DATABASE_URL=$DATABASE_URL; ./graphql-engine serve",
     "gitpod-prepare": "npm run git-shh-to-https; (yes | sudo apt install screen); (yes | sudo apt install rsync); (yes | sudo apt install net-tools); screen -S docker -d -m sudo docker-up",
     "packages": "(npx gulp packages:get); (npm run packages-ci);",
     "packages-ci": "(cd packages; for d in */; do (echo $d && cd $d && npm ci); done; exit 0)",
