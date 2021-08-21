@@ -1,1 +1,1 @@
-web: npm run heroku-deeplinks-app
+web: npm start

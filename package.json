@@ -25,6 +25,7 @@
     "hasura-example": "(cd packages/hasura-example; screen -S hasura-example -d -m bash -c 'PORT=3001 npm run dev'; sleep 20; npm run unmigrate; npm run migrate;)",
     "deeplinks": "(cd packages/deeplinks; npm run unmigrate; npm run migrate;)",
     "heroku-deeplinks-app": "(cd packages/deeplinks-app; PORT=3007 npm run build && npm run start';)",
+    "start": "npm run heroku-deeplinks-app",
     "deeplinks-app": "(cd packages/deeplinks-app; screen -S deeplinks-app -d -m bash -c 'PORT=3007 npm run build && PORT=3007 npm run start';)",
     "hasura": "(export JWT_SECRET='{\"type\":\"HS256\", \"key\": \"3EK6FD+o0+c7tzBNVfjpMkNDi2yARAAKzQlk8O2IKoxQu4nF7EdAh8s3TwpHwrdWT6R\"}'; cd packages/hasura; screen -S hasura -d -m npm run docker)",
     "materialized-path": "(cd packages/materialized-path; npm run unmigrate;npm run migrate && npm run test)",
