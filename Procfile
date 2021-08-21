@@ -1,2 +1,2 @@
 web: npm run heroku-deeplinks-app
-release: npm run heroku-release
+release: echo "hello!"; exit 0;
