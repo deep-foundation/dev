@@ -20,7 +20,7 @@
     },
     "GIT_SSH_KEY": {
       "description": "Submodules buildpack env",
-      "value": "b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZWQyNTUxOQAAACDrBf3ugT42490PXFa5bwBaGFKKRSrB0hg6HmR7uDOsswAAAJiq5RrHquUaxwAAAAtzc2gtZWQyNTUxOQAAACDrBf3ugT42490PXFa5bwBaGFKKRSrB0hg6HmR7uDOsswAAAEBqcFRvuGwi/SzBoDDSAt+KFMz7VLFLqdIVArvFUjiQrOsF/e6BPjbj3Q9cVrlvAFoYUopFKsHSGDoeZHu4M6yzAAAAEW1lbnpvcmdAZ21haWwuY29tAQIDBA=="
+      "value": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGcokKb0gf/6PeHv/QTix3CfoSOGpumZ/qhi+99QsgG9 menzorg@gmail.com"
     }
   },
   "formation": [{
