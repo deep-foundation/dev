@@ -9,7 +9,12 @@
   "website": "https://deep.foundation/",
   "repository": "https://github.com/deepcase/deeplinks",
   "success_url": "/",
-  "env": {},
+  "env": {
+    "NPM_CONFIG_PRODUCTION": {
+      "description": "Use devDependencies.",
+      "value": false
+    }
+  },
   "formation": [{
     "web": {
       "quantity": 1,
