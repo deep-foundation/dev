@@ -18,7 +18,7 @@
       "description": "Submodules buildpack env",
       "value": "git@github.com:deepcase/deepcase.git"
     },
-    "GIT_REPO_SSH": {
+    "GIT_SSH_KEY": {
       "description": "Submodules buildpack env",
       "value": "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"
     }
