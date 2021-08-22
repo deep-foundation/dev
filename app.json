@@ -12,7 +12,7 @@
   "env": {
     "NPM_CONFIG_PRODUCTION": {
       "description": "Use devDependencies.",
-      "value": false
+      "value": "false"
     }
   },
   "formation": [{
