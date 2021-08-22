@@ -20,7 +20,7 @@
     },
     "GIT_SSH_KEY": {
       "description": "Submodules buildpack env",
-      "value": "b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW\\nQyNTUxOQAAACBnKJCm9IH/+j3h7/0E4sdwn6Ejhqbpmf6oYvvfULIBvQAAAJj0Ginu9Bop\\n7gAAAAtzc2gtZWQyNTUxOQAAACBnKJCm9IH/+j3h7/0E4sdwn6Ejhqbpmf6oYvvfULIBvQ\\nAAAEDCl/hPWlbT9Z2pHJXXOgRp0p4vDHWlR5LZuntygeaDJGcokKb0gf/6PeHv/QTix3Cf\\noSOGpumZ/qhi+99QsgG9AAAAEW1lbnpvcmdAZ21haWwuY29tAQIDBA=="
+      "value": "-----BEGIN OPENSSH PRIVATE KEY-----\\nb3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW\\nQyNTUxOQAAACBnKJCm9IH/+j3h7/0E4sdwn6Ejhqbpmf6oYvvfULIBvQAAAJj0Ginu9Bop\\n7gAAAAtzc2gtZWQyNTUxOQAAACBnKJCm9IH/+j3h7/0E4sdwn6Ejhqbpmf6oYvvfULIBvQ\\nAAAEDCl/hPWlbT9Z2pHJXXOgRp0p4vDHWlR5LZuntygeaDJGcokKb0gf/6PeHv/QTix3Cf\\noSOGpumZ/qhi+99QsgG9AAAAEW1lbnpvcmdAZ21haWwuY29tAQIDBA==\\n-----END RSA PRIVATE KEY-----"
     }
   },
   "formation": [{
