@@ -20,7 +20,7 @@
     },
     "GIT_SSH_KEY": {
       "description": "Submodules buildpack env",
-      "value": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGcokKb0gf/6PeHv/QTix3CfoSOGpumZ/qhi+99QsgG9 menzorg@gmail.com"
+      "value": "b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW\\nQyNTUxOQAAACBnKJCm9IH/+j3h7/0E4sdwn6Ejhqbpmf6oYvvfULIBvQAAAJj0Ginu9Bop\\n7gAAAAtzc2gtZWQyNTUxOQAAACBnKJCm9IH/+j3h7/0E4sdwn6Ejhqbpmf6oYvvfULIBvQ\\nAAAEDCl/hPWlbT9Z2pHJXXOgRp0p4vDHWlR5LZuntygeaDJGcokKb0gf/6PeHv/QTix3Cf\\noSOGpumZ/qhi+99QsgG9AAAAEW1lbnpvcmdAZ21haWwuY29tAQIDBA=="
     }
   },
   "formation": [{
@@ -33,15 +33,6 @@
   "buildpacks": [
     {
       "url": "https://github.com/SectorLabs/heroku-buildpack-git-submodule.git"
-    },
-    {
-      "url": "heroku-community/apt"
-    },
-    {
-      "url": "https://github.com/Menzorg/hasura-1.3.2-buildpack.git"
-    },
-    {
-      "url": "heroku/nodejs"
     }
   ],
   "addons": [
