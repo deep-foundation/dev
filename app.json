@@ -13,6 +13,14 @@
     "NPM_CONFIG_PRODUCTION": {
       "description": "Use devDependencies.",
       "value": "false"
+    },
+    "GIT_REPO_URL": {
+      "description": "Submodules buildpack env",
+      "value": "git@github.com:deepcase/deepcase.git"
+    },
+    "GIT_REPO_SSH": {
+      "description": "Submodules buildpack env",
+      "value": "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"
     }
   },
   "formation": [{
