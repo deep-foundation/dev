@@ -14,10 +14,11 @@
   "homepage": "https://github.com/deepcase/deepcase#readme",
   "scripts": {
     "gulp": "gulp",
-    "heroku-prebuild": "ls; echo '============='; ls packages; echo '=============' ls packages/hasura; echo '============='",
+    "heroku-prebuild": "npm ci; npm run packages-ci",
     "heroku-postbuild": "echo '============='",
     "heroku-hasura": "export HASURA_GRAPHQL_DATABASE_URL=$DATABASE_URL ./graphql-engine serve",
-    "heroku-hasura-example": "(cd packages/hasura-example; screen -S hasura-example -d -m bash -c 'PORT=3001 npm run start'; sleep 20; npm run unmigrate; npm run migrate;)",
+    "heroku-hasura-example": "(cd packages/hasura-example; PORT=3001 npm run start;)",
+    "heroku-hasura-example-migrations": "(cd packages/hasura-example; npm run unmigrate; npm run migrate;)",
     "heroku-deeplinks-app": "(cd packages/deeplinks-app; PORT=3007 npm start';)",
     "gitpod-prepare": "npm run git-shh-to-https; (yes | sudo apt install screen); (yes | sudo apt install rsync); (yes | sudo apt install net-tools); screen -S docker -d -m sudo docker-up",
     "packages": "(npx gulp packages:get); (npm run packages-ci);",

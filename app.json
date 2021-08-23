@@ -25,6 +25,15 @@
   "buildpacks": [
     {
       "url": "https://github.com/dmathieu/heroku-buildpack-submodules"
+    },
+    {
+      "url": "heroku-community/apt"
+    },
+    {
+      "url": "https://github.com/Menzorg/hasura-1.3.2-buildpack.git"
+    },
+    {
+      "url": "heroku/nodejs"
     }
   ],
   "addons": [
