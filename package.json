@@ -14,7 +14,7 @@
   "homepage": "https://github.com/deepcase/deepcase#readme",
   "scripts": {
     "gulp": "gulp", 
-    "heroku-postbuild": "npm run packages-ci; docker ps;",
+    "heroku-postbuild": "docker ps; npm run packages-ci; ",
     "heroku-hasura": "export HASURA_GRAPHQL_DATABASE_URL=$DATABASE_URL ./graphql-engine serve",
     "heroku-hasura-example": "(cd packages/hasura-example; PORT=3001 npm run dev;)",
     "heroku-hasura-example-migrations": "(cd packages/hasura-example; npm run unmigrate; npm run migrate;)",
