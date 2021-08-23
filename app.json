@@ -75,7 +75,7 @@
       "url": "https://github.com/dmathieu/heroku-buildpack-submodules"
     },
     {
-      "url": "https://github.com/xuanxu/docker-image-buildpack.git"
+      "url": "heroku-community/apt"
     },
     {
       "url": "heroku/nodejs"
