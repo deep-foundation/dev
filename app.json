@@ -67,18 +67,6 @@
     "web": {
       "quantity": 1,
       "size": "free"
-    },
-    "hasura": {
-      "quantity": 1,
-      "size": "free"
-    },
-    "hasura-example": {
-      "quantity": 1,
-      "size": "free"
-    },
-    "deeplinks-app:": {
-      "quantity": 1,
-      "size": "free"
     }
   }],
   "image": "menzorg/deeplinks-app",
@@ -87,18 +75,12 @@
       "url": "https://github.com/dmathieu/heroku-buildpack-submodules"
     },
     {
-      "url": "heroku-community/apt"
-    },
-    {
-      "url": "https://github.com/Menzorg/hasura-1.3.2-buildpack.git"
+      "url": "https://github.com/xuanxu/docker-image-buildpack.git"
     },
     {
       "url": "heroku/nodejs"
     }
   ],
-  "scripts": {
-    "postdeploy": " (npm run materialized-path; sleep 25;) && (npm run heroku-hasura-example-migrations; sleep 25;) && (npm run deeplinks;)"
-  },
   "addons": [
     {
       "plan": "heroku-postgresql",
