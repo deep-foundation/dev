@@ -13,14 +13,6 @@
     "NPM_CONFIG_PRODUCTION": {
       "description": "Use devDependencies.",
       "value": "false"
-    },
-    "GIT_REPO_URL": {
-      "description": "Submodules buildpack env",
-      "value": "git@github.com:deepcase/deepcase.git"
-    },
-    "GIT_SSH_KEY": {
-      "description": "Submodules buildpack env",
-      "value": "-----BEGIN OPENSSH PRIVATE KEY-----\nb3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW\nQyNTUxOQAAACBnKJCm9IH/+j3h7/0E4sdwn6Ejhqbpmf6oYvvfULIBvQAAAJj0Ginu9Bop\n7gAAAAtzc2gtZWQyNTUxOQAAACBnKJCm9IH/+j3h7/0E4sdwn6Ejhqbpmf6oYvvfULIBvQ\nAAAEDCl/hPWlbT9Z2pHJXXOgRp0p4vDHWlR5LZuntygeaDJGcokKb0gf/6PeHv/QTix3Cf\noSOGpumZ/qhi+99QsgG9AAAAEW1lbnpvcmdAZ21haWwuY29tAQIDBA==\n-----END OPENSSH PRIVATE KEY-----\n"
     }
   },
   "formation": [{
@@ -32,7 +24,7 @@
   "image": "menzorg/deeplinks-app",
   "buildpacks": [
     {
-      "url": "https://github.com/SectorLabs/heroku-buildpack-git-submodule.git"
+      "url": "https://github.com/dmathieu/heroku-buildpack-submodules"
     }
   ],
   "addons": [
