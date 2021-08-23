@@ -13,10 +13,70 @@
     "NPM_CONFIG_PRODUCTION": {
       "description": "Use devDependencies.",
       "value": "false"
+    },
+    "MIGRATIONS_ID_TYPE_SQL": {
+      "description": "-.",
+      "value": "bigint"
+    },
+    "MIGRATIONS_ID_TYPE_GQL": {
+      "description": "-",
+      "value": "bigint"
+    },
+    "JWT_SECRET": {
+      "description": "hasura jwt",
+      "value": "3EK6FD+o0+c7tzBNVfjpMkNDi2yARAAKzQlk8O2IKoxQu4nF7EdAh8s3TwpHwrdWT6R"
+    },
+    "MIGRATIONS_HASURA_PATH": {
+      "description": "-",
+      "value": "localhost:8080"
+    },
+    "MIGRATIONS_HASURA_SSL": {
+      "description": "-",
+      "value": "0"
+    },
+    "MIGRATIONS_HASURA_SECRET": {
+      "description": "-",
+      "value": "myadminsecretkey"
+    },
+    "MIGRATIONS_EXAMPLE_URL": {
+      "description": "-",
+      "value": "localhost:3001"
+    },
+    "NEXT_PUBLIC_HASURA_PATH": {
+      "description": "-",
+      "value": "localhost:8080"
+    },
+    "NEXT_PUBLIC_HASURA_SSL": {
+      "description": "-",
+      "value": "0"
+    },
+    "HASURA_PATH": {
+      "description": "-",
+      "value": "localhost:8080"
+    },
+    "HASURA_SSL": {
+      "description": "-",
+      "value": "0"
+    },
+    "HASURA_PAMIGRATIONS_DEEPLINKS_APP_URLTH": {
+      "description": "-",
+      "value": "localhost:3007"
     }
   },
   "formation": [{
     "web": {
+      "quantity": 1,
+      "size": "free"
+    },
+    "hasura": {
+      "quantity": 1,
+      "size": "free"
+    },
+    "hasura-example": {
+      "quantity": 1,
+      "size": "free"
+    },
+    "deeplinks-app:": {
       "quantity": 1,
       "size": "free"
     }
