@@ -2,6 +2,10 @@ image:
   file: .gitpod.Dockerfile
 
 ports:
+  - port: 3007
+    onOpen: open-browser
+    visibility: public
+
   - port: 3000-8080
     onOpen: ignore
     visibility: public
@@ -16,4 +20,4 @@ vscode:
     - ms-azuretools.vscode-docker
 
 tasks:
-  - init: npm run gitpod-prepare && gp open readme.md
+  - init: npm run gitpod-prepare; gp open readme.md; npm ci; npm run packages; npm run clear; npm run git-shh-to-https && npm run gitpod;
