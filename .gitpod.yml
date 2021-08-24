@@ -11,10 +11,10 @@ ports:
 
 vscode:
   extensions:
-    - ms-azuretools.vscode-docker@1.9.1:QdS6HgHvji4YGIWRWKXrLA==
-    - graphql.vscode-graphql@0.3.8:jHk/gSNypa0bHc+cU2gp8w==
-    - yzhang.markdown-all-in-one@3.4.0:GR9Y7wA3m2/LsuZxLaCFtg==
-    - ms-vscode.vscode-typescript-tslint-plugin@1.2.2:0nQ3PEEA0NPEt3UcbCYiIQ==
+    - ms-azuretools.vscode-docker
+    - graphql.vscode-graphql
+    - yzhang.markdown-all-in-one
+    - ms-vscode.vscode-typescript-tslint-plugin
     - hediet.vscode-drawio
     - ms-azuretools.vscode-docker
 

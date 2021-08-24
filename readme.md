@@ -6,7 +6,7 @@
 
 Everything starts automatically. Just watch the terminal.
 
-When all tasks are done, you can open - http://localhost:3007/
+When all tasks are done, you can open - http://localhost:3007/ **(ctrl/cmd + click by link)**
 
 ## manual terminal methods
 
