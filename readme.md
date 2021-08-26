@@ -10,13 +10,21 @@ When all tasks are done, you can open - http://localhost:3007/ **(ctrl/cmd + cli
 
 ## manual terminal methods
 
+### gitpod
+
 - `npm ci && npm run packages` before all, only ONCE PER GITPOD CONTAINER!
 - `npm ci && npm run git-shh-to-https && npm run gitpod` in gitpod for fully start
-- `npm ci && npm run local` for locally fully start- uses: stefanzweifel/git-auto-commit-action@v4
 - `npm run rm-migrates` for delete all artifacts .migrate of npm migrate package
 - `npm ci && npm run clear` stop and clear all dockers composes/containers/volumes
 - `npm run materialized-path` after `gitpod` script, run mp tests
 
+### local
+
+- `npm ci && npm run packages` before all, only ONCE PER GITPOD CONTAINER!
+- `npm run local` for locally fully start- uses: stefanzweifel/git-auto-commit-action@v4
+- `npm run rm-migrates` for delete all artifacts .migrate of npm migrate package
+- `npm run clear` stop and clear all dockers composes/containers/volumes
+- `npm run materialized-path` after `gitpod` script, run mp tests
 ## unsafe gulp methods 
 
 - **attention! before work checkout to branch from detached commits in each needed submodule**
