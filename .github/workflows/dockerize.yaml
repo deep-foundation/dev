@@ -17,14 +17,8 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: '15.10'
-      - name: env
-        run: |
-          cp .docker.env .env
-          export $(grep -v '^#' .env | xargs);
       - name: Install
-        run: npm ci
-      - name: Build project
-        run: npm run build
+        run: npm run pwd-build
       - name: Log in to Docker Hub
         uses: docker/login-action@v1
         with:
