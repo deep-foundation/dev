@@ -1,4 +1,4 @@
-FROM node:15.10.0-alpine3.12
+FROM node:15.10.0
 RUN apt update 
 RUN apt install -y screen
 COPY package.json .
