@@ -15,7 +15,8 @@
   "scripts": {
     "gulp": "gulp", 
     "pwd-build": "npm ci; npm run packages; ",
-    "pwd-start": "(npm run materialized-path; sleep 25; npm run hasura-example; npm run deeplnks-app; npm run deeplinks; screen -r deeplnks-app)",
+    "pwd-start": "(npm run materialized-path; npm run pwd-hasura-example; npm run deeplinks;",
+    "pwd-hasura-example": "(cd packages/hasura-example; npm run unmigrate; npm run migrate;)",
     "gitpod-prepare": "npm run git-shh-to-https; (yes | sudo apt install screen); (yes | sudo apt install rsync); (yes | sudo apt install net-tools); screen -S docker -d -m sudo docker-up",
     "packages": "(npx gulp packages:get); (npm run packages-ci);",
     "packages-ci": "(cd packages; for d in */; do (echo $d && cd $d && npm ci); done; exit 0)",
