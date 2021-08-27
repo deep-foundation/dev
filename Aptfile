@@ -1,1 +1,0 @@
-screen jq libpq-dev docker-ce docker-ce-cli containerd.io
