@@ -37,12 +37,12 @@ services:
     environment:
       MIGRATIONS_ID_TYPE_SQL: bigint
       MIGRATIONS_ID_TYPE_GQL: bigint
-      MIGRATIONS_HASURA_PATH: localhost:8080
+      MIGRATIONS_HASURA_PATH: graphql-engine:8080
       MIGRATIONS_HASURA_SSL: 0
       MIGRATIONS_HASURA_SECRET: myadminsecretkey
-      NEXT_PUBLIC_HASURA_PATH: localhost:8080
+      NEXT_PUBLIC_HASURA_PATH: graphql-engine:8080
       NEXT_PUBLIC_HASURA_SSL: 0
-      HASURA_PATH: localhost:8080
+      HASURA_PATH: graphql-engine:8080
       HASURA_SSL: 0
       MIGRATIONS_DEEPLINKS_APP_URL: localhost:3007
 volumes:
