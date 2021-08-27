@@ -2,6 +2,8 @@ name: Deploy deeplinks app
 on:
   push:
     branches: [ docker-hub-menzorg-deepcase ]
+    paths-ignore:
+      - './pwd.docker-compose.yml'
   pull_request:
     branches: [ docker-hub-menzorg-deepcase ]
   workflow_dispatch:
