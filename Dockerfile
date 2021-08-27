@@ -2,7 +2,7 @@ FROM node:15.10.0
 RUN apt update 
 RUN apt install -y screen
 COPY package.json .
-COPY tsconfig.knex.json .
+COPY tsconfig.json .
 COPY packages ./packages
 COPY node_modules ./node_modules
 EXPOSE 3001 3007
