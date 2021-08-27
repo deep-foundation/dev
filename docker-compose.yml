@@ -41,7 +41,7 @@ services:
       NEXT_PUBLIC_HASURA_PATH: graphql-engine:8080
       NEXT_PUBLIC_HASURA_SSL: 0
   hasura-example:
-    image: menzorg/deeplinks-app:docker-hub-menzorg-deepcase
+    image: menzorg/hasura-example:docker-hub-menzorg-deepcase
     depends_on:
     - "deeplinks"
     ports:
