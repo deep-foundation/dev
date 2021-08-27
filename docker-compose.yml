@@ -27,7 +27,7 @@ services:
       HASURA_GRAPHQL_JWT_SECRET: "{\"type\":\"HS256\", \"key\": \"3EK6FD+o0+c7tzBNVfjpMkNDi2yARAAKzQlk8O2IKoxQu4nF7EdAh8s3TwpHwrdWT6R\"}"
       HASURA_GRAPHQL_ENABLE_CONSOLE: "true"
       HASURA_GRAPHQL_DEV_MODE: "true"
-  deeplinks:
+  deeplinks-app:
     image: menzorg/deeplinks-app:docker-hub-menzorg-deepcase
     depends_on:
     - "graphql-engine"
@@ -38,36 +38,6 @@ services:
       MIGRATIONS_HASURA_SSL: 0
       MIGRATIONS_EXAMPLE_URL: hasura-example:3001
       MIGRATIONS_HASURA_SECRET: myadminsecretkey
-      NEXT_PUBLIC_HASURA_PATH: graphql-engine:8080
-      NEXT_PUBLIC_HASURA_SSL: 0
-  hasura-example:
-    image: menzorg/hasura-example:docker-hub-menzorg-deepcase
-    depends_on:
-    - "deeplinks"
-    ports:
-    - "3001:3001"
-    environment:
-      MIGRATIONS_HASURA_PATH: graphql-engine:8080
-      MIGRATIONS_HASURA_SSL: 0
-      MIGRATIONS_EXAMPLE_URL: hasura-example:3001
-      MIGRATIONS_HASURA_SECRET: myadminsecretkey
-      NEXT_PUBLIC_HASURA_PATH: graphql-engine:8080
-      NEXT_PUBLIC_HASURA_SSL: 0
-  deepcase:
-    image: menzorg/deepcase:docker-hub-menzorg-deepcase
-    depends_on:
-    - "hasura-example"
-    environment:
-      MIGRATIONS_ID_TYPE_SQL: bigint
-      MIGRATIONS_ID_TYPE_GQL: bigint
-      MIGRATIONS_HASURA_PATH: graphql-engine:8080
-      MIGRATIONS_HASURA_SSL: 0
-      MIGRATIONS_HASURA_SECRET: myadminsecretkey
-      MIGRATIONS_EXAMPLE_URL: hasura-example:3001
-      NEXT_PUBLIC_HASURA_PATH: graphql-engine:8080
-      NEXT_PUBLIC_HASURA_SSL: 0
-      HASURA_PATH: graphql-engine:8080
-      HASURA_SSL: 0
-      MIGRATIONS_DEEPLINKS_APP_URL: deeplinks:3007
+      NEXT_PUBLIC_HASURA_PATH: gra
 volumes:
   db_data:
