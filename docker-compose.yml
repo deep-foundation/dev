@@ -39,5 +39,15 @@ services:
       MIGRATIONS_EXAMPLE_URL: hasura-example:3001
       MIGRATIONS_HASURA_SECRET: myadminsecretkey
       NEXT_PUBLIC_HASURA_PATH: gra
+  deeplinks-app:
+    image: menzorg/deeplinks-app:docker-hub-menzorg-deepcase
+    depends_on:
+    - "graphql-engine"
+    environment:
+      MIGRATIONS_HASURA_PATH: graphql-engine:8080
+      MIGRATIONS_HASURA_SSL: 0
+      MIGRATIONS_EXAMPLE_URL: hasura-example:3001
+      MIGRATIONS_HASURA_SECRET: myadminsecretkey
+      NEXT_PUBLIC_HASURA_PATH: gra
 volumes:
   db_data:
