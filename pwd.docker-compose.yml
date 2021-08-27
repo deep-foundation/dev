@@ -19,13 +19,6 @@ services:
       HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
       HASURA_GRAPHQL_ADMIN_SECRET: myadminsecretkey
       HASURA_GRAPHQL_JWT_SECRET: "3EK6FD+o0+c7tzBNVfjpMkNDi2yARAAKzQlk8O2IKoxQu4nF7EdAh8s3TwpHwrdWT6R"
-  deeplinks-app:
-    image: menzorg/deepcase:docker-hub-menzorg-deepcase
-    depends_on:
-    - "graphql-engine"
-    ports:
-    - "3007:3007"
-    - "3001:3001"
 volumes:
   db_data:
 
