@@ -12,8 +12,8 @@ When all tasks are done, you can open - http://localhost:3007/ **(ctrl/cmd + cli
 
 ### gitpod
 
-- `npm ci && npm run packages` before all, only ONCE PER GITPOD CONTAINER!
-- `npm ci && npm run git-shh-to-https && npm run gitpod` in gitpod for fully start
+- `npm ci; npm run git-shh-to-https; npm run packages` before all, only ONCE PER GITPOD CONTAINER!
+- `npm ci; npm run git-shh-to-https; npm run gitpod` in gitpod for fully start
 - `npm run rm-migrates` for delete all artifacts .migrate of npm migrate package
 - `npm ci && npm run clear` stop and clear all dockers composes/containers/volumes
 - `npm run materialized-path` after `gitpod` script, run mp tests
