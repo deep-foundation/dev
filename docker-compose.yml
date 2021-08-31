@@ -1,53 +1,5 @@
 version: '3.6'
 services:
-  postgres:
-    image: postgres:12
+  test:
+    image: menzorg/test-childs:latest
     restart: always
-    volumes:
-    - db_data:/var/lib/postgresql/data
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgrespassword
-      PGGSSENCMODE: disable
-      PGSSLMODE: disable
-      PGREQUIRESSL: 0
-    ports:
-      - "5432:5432"
-  graphql-engine:
-    image: hasura/graphql-engine:v1.3.2
-    ports:
-    - "8080:8080"
-    depends_on:
-    - "postgres"
-    restart: always
-    environment:
-      HASURA_GRAPHQL_DATABASE_URL: postgres://postgres:postgrespassword@postgres:5432/postgres
-      HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
-      HASURA_GRAPHQL_ADMIN_SECRET: myadminsecretkey
-      HASURA_GRAPHQL_JWT_SECRET: "{\"type\":\"HS256\", \"key\": \"3EK6FD+o0+c7tzBNVfjpMkNDi2yARAAKzQlk8O2IKoxQu4nF7EdAh8s3TwpHwrdWT6R\"}"
-      HASURA_GRAPHQL_ENABLE_CONSOLE: "true"
-      HASURA_GRAPHQL_DEV_MODE: "true"
-  deeplinks-app:
-    image: menzorg/deeplinks-app:docker-hub-menzorg-deepcase
-    depends_on:
-    - "graphql-engine"
-    ports:
-    - "3007:3007"
-    environment:
-      MIGRATIONS_HASURA_PATH: graphql-engine:8080
-      MIGRATIONS_HASURA_SSL: 0
-      MIGRATIONS_EXAMPLE_URL: hasura-example:3001
-      MIGRATIONS_HASURA_SECRET: myadminsecretkey
-      NEXT_PUBLIC_HASURA_PATH: gra
-  deeplinks-app:
-    image: menzorg/deeplinks-app:docker-hub-menzorg-deepcase
-    depends_on:
-    - "graphql-engine"
-    environment:
-      MIGRATIONS_HASURA_PATH: graphql-engine:8080
-      MIGRATIONS_HASURA_SSL: 0
-      MIGRATIONS_EXAMPLE_URL: hasura-example:3001
-      MIGRATIONS_HASURA_SECRET: myadminsecretkey
-      NEXT_PUBLIC_HASURA_PATH: gra
-volumes:
-  db_data:
