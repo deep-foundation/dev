@@ -4,9 +4,11 @@
 [submodule "packages/hasura-example"]
 	path = packages/hasura-example
 	url = https://github.com/deepcase/hasura
+	branch = example
 [submodule "packages/hasura-gh-pages"]
 	path = packages/hasura-gh-pages
 	url = https://github.com/deepcase/hasura
+	branch = gh-pages
 [submodule "packages/react-hasura"]
 	path = packages/react-hasura
 	url = https://github.com/deepcase/react-hasura.git
