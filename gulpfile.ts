@@ -34,9 +34,10 @@ gulp.task('package:delete', async () => {
 gulp.task('packages:get', async () => {
   await git.submoduleInit();
   await git.submoduleUpdate();
+  await gitBranches();
 });
 
-gulp.task('packages:branches', async () => {
+const gitBranches = async () => {
   const gitmodules = fs.readFileSync(`${__dirname}/.gitmodules`, { encoding: 'utf8' });
   const modulesArray: any = gitmodules.split('[').filter(m => !!m).map((m, i) => m.split(`
 	`).map((p, i) => !i ? p.split(' ')[1].slice(1, -2) : p.replace('\n', '').split(' = ')));
@@ -58,7 +59,9 @@ gulp.task('packages:branches', async () => {
     console.log(`(cd ${__dirname}/${key}; git checkout ${modules?.[key]?.branch || 'main'})`);
     await concurrently([`(cd ${__dirname}/${key}; git checkout ${modules?.[key]?.branch || 'main'})`]);
   }
-});
+};
+
+gulp.task('packages:branches', gitBranches);
 
 gulp.task('packages:set', async () => {
   await git.add('*');
