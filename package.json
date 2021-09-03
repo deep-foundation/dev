@@ -13,8 +13,7 @@
     "gitpod-prepare": "npm run git-shh-to-https; (yes | sudo apt install screen); (yes | sudo apt install rsync); (yes | sudo apt install net-tools); screen -S docker -d -m sudo docker-up",
     "packages": "(npx gulp packages:get); (npm run packages-ci);",
     "packages-ci": "(cd packages; for d in */; do (cd $d && npm ci); done)",
-    "hasura-example": "(cd packages/hasura-example; screen -S hasura-example -d -m bash -c 'PORT=3001 npm run dev'; sleep 20; npm run unmigrate; npm run migrate;)",
-    "deeplinks": "(cd packages/deeplinks; npm run unmigrate; npm run migrate;)",
+    "deeplinks": "(cd node_modules/@deepcase/deeplinks; npm run unmigrate; npm run migrate;)",
     "deeplinks-app": "(cd node_modules/@deepcase/deeplinks-app; screen -S deeplinks-app -d -m bash -c 'npm start -- -p 3007';)",
     "hasura": "(export JWT_SECRET='{\"type\":\"HS256\", \"key\": \"3EK6FD+o0+c7tzBNVfjpMkNDi2yARAAKzQlk8O2IKoxQu4nF7EdAh8s3TwpHwrdWT6R\"}'; cd node_modules/@deepcase/hasura; screen -S hasura -d -m npm run docker)",
     "materialized-path": "(cd node_modules/@deepcase/materialized-path; npm run unmigrate; npm run migrate && npm run test)",
@@ -43,7 +42,8 @@
     "typescript": "^4.1.5"
   },
   "dependencies": {
-    "@deepcase/deeplinks-app": "^0.0.7",
+    "@deepcase/deeplinks": "^0.0.4",
+    "@deepcase/deeplinks-app": "^0.0.10",
     "@deepcase/hasura": "^0.0.12",
     "@deepcase/materialized-path": "^0.0.12"
   }
