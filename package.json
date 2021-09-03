@@ -44,7 +44,7 @@
   "dependencies": {
     "@deepcase/deeplinks": "^0.0.7",
     "@deepcase/deeplinks-app": "^0.0.10",
-    "@deepcase/hasura": "^0.0.12",
-    "@deepcase/materialized-path": "^0.0.12"
+    "@deepcase/hasura": "^0.0.14",
+    "@deepcase/materialized-path": "^0.0.14"
   }
 }
