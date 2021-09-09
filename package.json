@@ -40,7 +40,7 @@
     "typescript": "^4.1.5"
   },
   "dependencies": {
-    "@deepcase/deeplinks": "^0.0.15",
+    "@deepcase/deeplinks": "^0.0.17",
     "@deepcase/deeplinks-app": "^0.0.15",
     "@deepcase/hasura": "^0.0.14"
   }
