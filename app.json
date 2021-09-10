@@ -22,7 +22,13 @@
     }
   }],
   "image": "menzorg/deepcase:docker-hub-menzorg-deepcase ",
-  "buildpacks": [],
+  "buildpacks": [
+    {
+      "url": "https://github.com/johnpryan/heroku-buildpack-submodules.git"
+    },
+    {
+      "url": "heroku/nodejs"
+    }],
   "addons": [
     {
       "plan": "heroku-postgresql",
