@@ -2,24 +2,29 @@
 
 [![Gitpod ready-to-code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/deepcase/deepcase)
 
-## safe methods
+## gitpod usage
 
-```sh
-# before all ONLY ONCE PER ONE GITPOD CONTAINER
-npm ci && npm run packages
-# just run in gitpod
-npm ci && npm run git-shh-to-https && npm run gitpod
-# stop and clear all dockers composes/containers/volumes
-(npm run rm-migrates; killall screen; cd packages/hasura/local/; docker-compose down; docker rm -f $(docker ps -a -q); docker volume rm $(docker volume ls -q))
-# or locally
-npm run local
-```
+Everything starts automatically. Just watch the terminal.
 
-- `npm run packages` before all
-- `npm run gitpod` in gitpod for fully start
-- `npm run local` for locally fully start
+When all tasks are done, you can open - http://localhost:3007/ **(ctrl/cmd + click by link)**
+
+## manual terminal methods
+
+### gitpod
+
+- `npm ci; npm run git-shh-to-https; npm run packages` before all, only ONCE PER GITPOD CONTAINER!
+- `npm ci; npm run git-shh-to-https; npm run gitpod` in gitpod for fully start
 - `npm run rm-migrates` for delete all artifacts .migrate of npm migrate package
+- `npm ci && npm run clear` stop and clear all dockers composes/containers/volumes
+- `npm run materialized-path` after `gitpod` script, run mp tests
 
+### local
+
+- `npm ci && npm run packages` before all, only ONCE PER GITPOD CONTAINER!
+- `npm run local` for locally fully start- uses: stefanzweifel/git-auto-commit-action@v4
+- `npm run rm-migrates` for delete all artifacts .migrate of npm migrate package
+- `npm run clear` stop and clear all dockers composes/containers/volumes
+- `npm run materialized-path` after `gitpod` script, run mp tests
 ## unsafe gulp methods 
 
 - **attention! before work checkout to branch from detached commits in each needed submodule**

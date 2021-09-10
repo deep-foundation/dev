@@ -1,7 +1,6 @@
 {
   "name": "@deepcase/deepcase",
-  "private": true,
-  "version": "0.0.0",
+  "version": "0.0.7",
   "author": "ivansglazunov",
   "license": "ISC",
   "engines": {
@@ -19,14 +18,13 @@
     "pwd-hasura-example": "(cd packages/hasura-example; npm run unmigrate; npm run migrate;)",
     "gitpod-prepare": "npm run git-shh-to-https; (yes | sudo apt install screen); (yes | sudo apt install rsync); (yes | sudo apt install net-tools); screen -S docker -d -m sudo docker-up",
     "packages": "(npx gulp packages:get); (npm run packages-ci);",
-    "packages-ci": "(cd packages; for d in */; do (echo $d && cd $d && npm ci); done; exit 0)",
-    "hasura-example": "(cd packages/hasura-example; screen -S hasura-example -d -m bash -c 'PORT=3001 npm run dev'; sleep 20; npm run unmigrate; npm run migrate;)",
-    "deeplinks": "(cd packages/deeplinks; npm run unmigrate; npm run migrate;)",
+    "packages-ci": "(cd packages; for d in */; do (cd $d && npm ci); done)",
+    "deeplinks": "(cd node_modules/@deepcase/deeplinks; npm run unmigrate; npm run migrate;)",
     "deeplinks-app": "(cd packages/deeplinks-app; screen -S deeplinks-app -d -m bash -c 'PORT=3007 npm run dev';)",
-    "hasura": "(export JWT_SECRET='{\"type\":\"HS256\", \"key\": \"3EK6FD+o0+c7tzBNVfjpMkNDi2yARAAKzQlk8O2IKoxQu4nF7EdAh8s3TwpHwrdWT6R\"}'; cd packages/hasura; screen -S hasura -d -m npm run docker)",
-    "materialized-path": "(cd packages/materialized-path; npm run unmigrate;npm run migrate && npm run test)",
-    "local": "export MIGRATIONS_ID_TYPE_SQL=bigint; export MIGRATIONS_ID_TYPE_GQL=bigint; npm ci; (npm run hasura; sleep 25; npm run materialized-path; sleep 25; export JWT_SECRET='3EK6D+o0+c7tzBNVfjpMkNDi2yARAAKzQlk8O2IKoxFQu4nF7EdAh8s3TwpHwrdWT6R'; export MIGRATIONS_HASURA_PATH=localhost:8080; export MIGRATIONS_HASURA_SSL=0; export MIGRATIONS_HASURA_SECRET=myadminsecretkey; export MIGRATIONS_EXAMPLE_URL=localhost:3001; export NEXT_PUBLIC_HASURA_PATH=localhost:8080; export NEXT_PUBLIC_HASURA_SSL=0; export HASURA_PATH=localhost:8080; export HASURA_SSL=0; export MIGRATIONS_DEEPLINKS_APP_URL=localhost:3007; npm run hasura-example; npm run deeplinks-app; npm run deeplinks;)",
-    "gitpod": "export MIGRATIONS_ID_TYPE_SQL=bigint; export MIGRATIONS_ID_TYPE_GQL=bigint; npm ci; npm run gitpod-prepare; (npm run hasura; sleep 10; npm run materialized-path; sleep 10; export JWT_SECRET='3EK6FD+o0+c7tzBNVfjpMkNDi2yARAAKzQlk8O2IKoxQu4nF7EdAh8s3TwpHwrdWT6R'; export MIGRATIONS_HASURA_PATH=$(echo $(gp url 8080) | awk -F[/:] '{print $4}'); export MIGRATIONS_HASURA_SSL=1; export MIGRATIONS_HASURA_SECRET=myadminsecretkey; export MIGRATIONS_HASURA_SECRET=myadminsecretkey; export MIGRATIONS_EXAMPLE_URL=$(gp url 3001); export NEXT_PUBLIC_HASURA_PATH=$(echo $(gp url 8080) | awk -F[/:] '{print $4}'); export NEXT_PUBLIC_HASURA_SSL=1; export HASURA_PATH=$(echo $(gp url 8080) | awk -F[/:] '{print $4}'); export HASURA_SSL=1; export MIGRATIONS_DEEPLINKS_APP_URL=$(gp url 3007); npm run hasura-example; npm run deeplinks-app; npm run deeplinks;)",
+    "hasura": "(export JWT_SECRET='{\"type\":\"HS256\", \"key\": \"3EK6FD+o0+c7tzBNVfjpMkNDi2yARAAKzQlk8O2IKoxQu4nF7EdAh8s3TwpHwrdWT6R\"}'; cd node_modules/@deepcase/hasura; screen -S hasura -d -m npm run docker)",
+    "local": "export npm_config_yes=true; export MIGRATIONS_ID_TYPE_SQL=bigint; export MIGRATIONS_ID_TYPE_GQL=bigint; export JWT_SECRET='3EK6FD+o0+c7tzBNVfjpMkNDi2yARAAKzQlk8O2IKoxQu4nF7EdAh8s3TwpHwrdWT6R'; export MIGRATIONS_HASURA_PATH=localhost:8080; export MIGRATIONS_HASURA_SSL=0; export MIGRATIONS_HASURA_SECRET=myadminsecretkey; export MIGRATIONS_HASURA_SECRET=myadminsecretkey; export MIGRATIONS_EXAMPLE_URL=localhost:3001; export NEXT_PUBLIC_HASURA_PATH=localhost:8080; export NEXT_PUBLIC_HASURA_SSL=0; export HASURA_PATH=localhost:8080; export HASURA_SSL=0; export MIGRATIONS_DEEPLINKS_APP_URL=localhost:3007; npm ci; (npm run hasura; sleep 10; npm run deeplinks-app; sleep 10; npm run deeplinks; sleep 10;)",
+    "clear": "(npm run rm-migrates; killall screen; cd node_modules/@deepcase/hasura/local/; docker-compose down; docker rm -f $(docker ps -a -q); docker volume rm $(docker volume ls -q))",
+    "gitpod": "export npm_config_yes=true; export MIGRATIONS_ID_TYPE_SQL=bigint; export MIGRATIONS_ID_TYPE_GQL=bigint; export JWT_SECRET='3EK6FD+o0+c7tzBNVfjpMkNDi2yARAAKzQlk8O2IKoxQu4nF7EdAh8s3TwpHwrdWT6R'; export MIGRATIONS_HASURA_SSL=1; export MIGRATIONS_HASURA_SECRET=myadminsecretkey; export MIGRATIONS_HASURA_SECRET=myadminsecretkey; export MIGRATIONS_EXAMPLE_URL=$(gp url 3001); export NEXT_PUBLIC_HASURA_PATH=$(echo $(gp url 8080) | awk -F[/:] '{print $4}'); export NEXT_PUBLIC_HASURA_SSL=1; export HASURA_PATH=$(echo $(gp url 8080) | awk -F[/:] '{print $4}'); export HASURA_SSL=1; export MIGRATIONS_DEEPLINKS_APP_URL=$(gp url 3007); npm run gitpod-prepare; (npm run hasura; sleep 10;  export MIGRATIONS_HASURA_PATH=$(echo $(gp url 8080) | awk -F[/:] '{print $4}'); npm run deeplinks-app; sleep 15; npm run deeplinks; sleep 15;)",
     "rm-migrates": "find . -type f -name '.migrate' -exec rm {} +",
     "git-shh-to-https": "git config --global url.\"https://\".insteadOf git://; git config --global url.\"https://github.com/\".insteadOf ssh://git@github.com/;"
   },
@@ -44,8 +42,13 @@
     "i": "^0.3.6",
     "minimist": "^1.2.5",
     "npm": "^7.5.4",
-    "simple-git": "^2.34.2",
+    "simple-git": "^2.45.0",
     "ts-node": "^9.1.1",
     "typescript": "^4.1.5"
+  },
+  "dependencies": {
+    "@deepcase/deeplinks": "^0.0.17",
+    "@deepcase/deeplinks-app": "^0.0.15",
+    "@deepcase/hasura": "^0.0.14"
   }
 }
