@@ -21,7 +21,7 @@
       "size": "free"
     }
   }],
-  "image": "menzorg/deeplinks-app",
+  "image": "menzorg/deepcase:docker-hub-menzorg-deepcase ",
   "buildpacks": [],
   "addons": [
     {
