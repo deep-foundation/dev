@@ -1,4 +1,4 @@
-{ 
+  { 
   "name": "Deeplinks app",
   "description": "Deeplinks app.",
   "keywords": [
@@ -13,14 +13,6 @@
     "NPM_CONFIG_PRODUCTION": {
       "description": "Use devDependencies.",
       "value": "false"
-    },
-    "GIT_REPO_URL": {
-      "description": "Submodules buildpack env",
-      "value": "git@github.com:deepcase/deepcase.git"
-    },
-    "GIT_SSH_KEY": {
-      "description": "Submodules buildpack env",
-      "value": "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"
     }
   },
   "formation": [{
@@ -29,12 +21,8 @@
       "size": "free"
     }
   }],
-  "image": "menzorg/test-childs:latest",
-  "buildpacks": [
-    {
-      "url": "heroku/nodejs"
-    }
-  ],
+  "image": "menzorg/deeplinks-app",
+  "buildpacks": [],
   "addons": [
     {
       "plan": "heroku-postgresql",
