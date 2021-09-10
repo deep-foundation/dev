@@ -20,8 +20,9 @@ COPY ./package.json .
 COPY ./package-lock.json .
 COPY ./tsconfig.json .
 COPY ./gulpfile.ts .
-COPY ./.gitmodules gitmodules
-COPY ./node_modules node_modules
+COPY .gitmodules .
+
+RUN . "$NVM_DIR/nvm.sh" && npm ci
 
 ENV MIGRATIONS_HASURA_PATH localhost:8080
 ENV MIGRATIONS_HASURA_SSL 0
