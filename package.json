@@ -13,7 +13,7 @@
     "gulp": "gulp",
     "gitpod-prepare": "npm run git-shh-to-https && (yes | sudo apt install screen) && (yes | sudo apt install rsync) && (yes | sudo apt install net-tools) && screen -S docker -d -m sudo docker-up",
     "packages": "(npx gulp packages:get) && (npm run packages-ci)",
-    "packages-ci": "(cd packages && for d in */ && do (cd $d && npm ci) && done)",
+    "packages-ci": "(cd packages && for d in */; do (cd $d && npm ci); done)",
     "deeplinks-app": "(cd packages/deeplinks-app && npm run dev -- -p 3007)",
     "deeplinks-app-build": "cross-env ASSET_PREFIX='.' npm run deeplinks-app-build-core",
     "deeplinks-app-build-core": "cd packages/deeplinks-app && npm run build && npm run export",
