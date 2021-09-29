@@ -8,25 +8,24 @@
   },
   "homepage": "https://github.com/deepcase/deepcase#readme",
   "scripts": {
+    "parentScript": "cross-env GREET=\"QWE\" cross-env-shell \"echo Hello $GREET\"",
+    "childScript": "cross-env-shell \"echo Hello $GREET\"",
     "gulp": "gulp",
     "gitpod-prepare": "npm run git-shh-to-https && (yes | sudo apt install screen) && (yes | sudo apt install rsync) && (yes | sudo apt install net-tools) && screen -S docker -d -m sudo docker-up",
     "packages": "(npx gulp packages:get) && (npm run packages-ci)",
     "packages-ci": "(cd packages && for d in */ && do (cd $d && npm ci) && done)",
-    "deeplinks": "(cd node_modules/@deepcase/deeplinks && wait-on tcp:8080 && wait-on tcp:3007 && (npm run unmigrate && npm run migrate))",
     "deeplinks-app": "(cd packages/deeplinks-app && npm run dev -- -p 3007)",
     "deeplinks-app-build": "cross-env ASSET_PREFIX='.' npm run deeplinks-app-build-core",
     "deeplinks-app-build-core": "cd packages/deeplinks-app && npm run build && npm run export",
-    "deeplinks-app-electron": "cd packages/deeplinks-app && npx cap copy electron && npx cap open electron",
-    "hasura": "(cd node_modules/@deepcase/hasura && npm run docker)",
+    "deeplinks-app-electron": "cd packages/deeplinks-app && npm run electron-dev",
     "local": "cross-env npm_config_yes=true MIGRATIONS_ID_TYPE_SQL=bigint MIGRATIONS_ID_TYPE_GQL=bigint MIGRATIONS_HASURA_PATH=localhost:8080 MIGRATIONS_HASURA_SSL=0 MIGRATIONS_HASURA_SECRET=myadminsecretkey NEXT_PUBLIC_DEEPLINKS_SERVER=http://localhost:3007 NEXT_PUBLIC_HASURA_PATH=localhost:8080 NEXT_PUBLIC_HASURA_PATH=localhost:8080 NEXT_PUBLIC_HASURA_SSL=0 HASURA_PATH=localhost:8080 HASURA_SSL=0 MIGRATIONS_DEEPLINKS_APP_URL=localhost:3007 npm run local-core",
-    "local-core": "concurrently \"npm run hasura\" \"npm run deeplinks-app\"",
+    "local-core": "npm run deeplinks-app",
     "electron-dev": "(cross-env npm_config_yes=true MIGRATIONS_ID_TYPE_SQL=bigint MIGRATIONS_ID_TYPE_GQL=bigint MIGRATIONS_HASURA_PATH=localhost:8080 MIGRATIONS_HASURA_SSL=0 MIGRATIONS_HASURA_SECRET=myadminsecretkey NEXT_PUBLIC_DEEPLINKS_SERVER=http://localhost:3007 NEXT_PUBLIC_HASURA_PATH=localhost:8080 NEXT_PUBLIC_HASURA_SSL=0 HASURA_PATH=localhost:8080 HASURA_SSL=0 MIGRATIONS_DEEPLINKS_APP_URL=localhost:3007 npm run electron-dev-core)",
     "electron-dev-core": "npm ci && npm run deeplinks-app-build && npm run deeplinks-app-electron",
     "electron-build": "(cross-env npm_config_yes=true MIGRATIONS_ID_TYPE_SQL=bigint MIGRATIONS_ID_TYPE_GQL=bigint MIGRATIONS_HASURA_PATH=localhost:8080 MIGRATIONS_HASURA_SSL=0 MIGRATIONS_HASURA_SECRET=myadminsecretkey NEXT_PUBLIC_DEEPLINKS_SERVER=http://localhost:3007 NEXT_PUBLIC_HASURA_PATH=localhost:8080 NEXT_PUBLIC_HASURA_SSL=0 HASURA_PATH=localhost:8080 HASURA_SSL=0 MIGRATIONS_DEEPLINKS_APP_URL=localhost:3007 npm run electron-build-core)",
-    "electron-build-core": "npm ci && (cd packages/deeplinks-app && npm run electron)",
-    "clear": "(npm run rm-migrates && cd node_modules/@deepcase/hasura/local/ && docker-compose down && docker rm -f $(docker ps -a -q) && docker volume rm $(docker volume ls -q))",
+    "electron-build-core": "npm ci && (cd packages/deeplinks-app && npm run electron-build)",
     "gitpod": "cross-env npm_config_yes=true MIGRATIONS_ID_TYPE_SQL=bigint MIGRATIONS_ID_TYPE_GQL=bigint MIGRATIONS_HASURA_PATH=$(echo $(gp url 8080) | awk -F[/:] '{print $4}') MIGRATIONS_HASURA_SSL=1 MIGRATIONS_HASURA_SECRET=myadminsecretkey NEXT_PUBLIC_DEEPLINKS_SERVER=https://$(echo $(gp url 3007) | awk -F[/:] '{print $4}') NEXT_PUBLIC_HASURA_PATH=$(echo $(gp url 8080) | awk -F[/:] '{print $4}') NEXT_PUBLIC_HASURA_SSL=1 HASURA_PATH=$(echo $(gp url 8080) | awk -F[/:] '{print $4}') HASURA_SSL=1 MIGRATIONS_DEEPLINKS_APP_URL=$(gp url 3007) npm run gitpod-core",
-    "gitpod-core": "npm run gitpod-prepare && npm ci && concurrently \"npm run hasura\" \"npm run deeplinks-app\"",
+    "gitpod-core": "npm run gitpod-prepare && npm ci && npm run deeplinks-app",
     "rm-migrates": "find . -type f -name '.migrate' -exec rm {} +",
     "git-shh-to-https": "git config --global url.\"https://\".insteadOf git:// && git config --global url.\"https://github.com/\".insteadOf ssh://git@github.com/"
   },
@@ -49,9 +48,5 @@
     "ts-node": "^9.1.1",
     "typescript": "^4.1.5"
   },
-  "dependencies": {
-    "@deepcase/deeplinks": "0.0.28",
-    "@deepcase/deeplinks-app": "^0.0.15",
-    "@deepcase/hasura": "0.0.22"
-  }
+  "dependencies": {}
 }
