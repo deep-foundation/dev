@@ -2,3 +2,9 @@
 	path = packages/deeplinks-app
 	url = https://github.com/deepcase/deeplinks.git
 	branch = app
+[submodule "packages/hasura"]
+	path = packages/hasura
+	url = https://github.com/deepcase/hasura.git
+[submodule "packages/deeplinks"]
+	path = packages/deeplinks
+	url = https://github.com/deepcase/deeplinks.git
