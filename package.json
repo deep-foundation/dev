@@ -18,7 +18,7 @@
     "deeplinks-app-build": "cross-env ASSET_PREFIX='.' npm run deeplinks-app-build-core",
     "deeplinks-app-build-core": "cd packages/deeplinks-app && npm run build && npm run export",
     "deeplinks-app-electron": "cd packages/deeplinks-app && npm run electron-dev",
-    "local": "cross-env npm_config_yes=true MIGRATIONS_ID_TYPE_SQL=bigint MIGRATIONS_ID_TYPE_GQL=bigint MIGRATIONS_HASURA_PATH=localhost:8080 MIGRATIONS_HASURA_SSL=0 MIGRATIONS_HASURA_SECRET=myadminsecretkey NEXT_PUBLIC_DEEPLINKS_SERVER=http://localhost:3007 NEXT_PUBLIC_HASURA_PATH=localhost:8080 NEXT_PUBLIC_HASURA_PATH=localhost:8080 NEXT_PUBLIC_HASURA_SSL=0 HASURA_PATH=localhost:8080 HASURA_SSL=0 MIGRATIONS_DEEPLINKS_APP_URL=localhost:3007 npm run local-core",
+    "local": "cross-env npm_config_yes=true MIGRATIONS_ID_TYPE_SQL=bigint MIGRATIONS_ID_TYPE_GQL=bigint MIGRATIONS_HASURA_PATH=localhost:8080 MIGRATIONS_HASURA_SSL=0 MIGRATIONS_HASURA_SECRET=myadminsecretkey NEXT_PUBLIC_DEEPLINKS_SERVER=http://localhost:3007 NEXT_PUBLIC_HASURA_PATH=localhost:8080 NEXT_PUBLIC_HASURA_SSL=0 HASURA_PATH=localhost:8080 HASURA_SSL=0 MIGRATIONS_DEEPLINKS_APP_URL=localhost:3007 npm run local-core",
     "local-core": "npm run deeplinks-app",
     "electron-dev": "(cross-env npm_config_yes=true MIGRATIONS_ID_TYPE_SQL=bigint MIGRATIONS_ID_TYPE_GQL=bigint MIGRATIONS_HASURA_PATH=localhost:8080 MIGRATIONS_HASURA_SSL=0 MIGRATIONS_HASURA_SECRET=myadminsecretkey NEXT_PUBLIC_DEEPLINKS_SERVER=http://localhost:3007 NEXT_PUBLIC_HASURA_PATH=localhost:8080 NEXT_PUBLIC_HASURA_SSL=0 HASURA_PATH=localhost:8080 HASURA_SSL=0 MIGRATIONS_DEEPLINKS_APP_URL=localhost:3007 npm run electron-dev-core)",
     "electron-dev-core": "npm ci && npm run deeplinks-app-build && npm run deeplinks-app-electron",
