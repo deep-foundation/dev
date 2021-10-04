@@ -8,3 +8,6 @@
 [submodule "packages/deeplinks"]
 	path = packages/deeplinks
 	url = https://github.com/deepcase/deeplinks.git
+[submodule "packages/materialized-path"]
+	path = packages/materialized-path
+	url = https://github.com/deepcase/materialized-path.git
