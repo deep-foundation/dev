@@ -21,7 +21,7 @@ When all tasks are done, you can open - http://localhost:3007/ **(ctrl/cmd + cli
 ### local
 
 - `npm ci && npm run packages` before all, only ONCE PER GITPOD CONTAINER!
-- `npm run local` for locally fully start- uses: stefanzweifel/git-auto-commit-action@v4
+- `npm run local` for locally fully start
 - `npm run rm-migrates` for delete all artifacts .migrate of npm migrate package
 - `npm run clear` stop and clear all dockers composes/containers/volumes
 - `npm run materialized-path` after `gitpod` script, run mp tests
