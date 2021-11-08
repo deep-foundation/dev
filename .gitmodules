@@ -1,7 +1,3 @@
-[submodule "packages/deeplinks-app"]
-	path = packages/deeplinks-app
-	url = https://github.com/deepcase/deeplinks.git
-	branch = app
 [submodule "packages/hasura"]
 	path = packages/hasura
 	url = https://github.com/deepcase/hasura.git
@@ -11,3 +7,12 @@
 [submodule "packages/materialized-path"]
 	path = packages/materialized-path
 	url = https://github.com/deepcase/materialized-path.git
+[submodule "packages/store"]
+	path = packages/store
+	url = https://github.com/deep-foundation/store.git
+[submodule "packages/react-hasura"]
+	path = packages/react-hasura
+	url = https://github.com/deep-foundation/react-hasura.git
+[submodule "packages/deepcase"]
+	path = packages/deepcase
+	url = https://github.com/deep-foundation/deepcase.git
