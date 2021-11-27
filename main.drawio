@@ -1,41 +1,9 @@
 <mxfile host="65bd71144e" pages="2">
     <diagram id="YDHPcrjkJ_hrPR7L1dNF" name="v0">
-        <mxGraphModel dx="1177" dy="582" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+        <mxGraphModel dx="909" dy="655" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
             <root>
                 <mxCell id="NjZC5WjNETesjFtiS9zZ-0"/>
                 <mxCell id="NjZC5WjNETesjFtiS9zZ-1" parent="NjZC5WjNETesjFtiS9zZ-0"/>
-                <mxCell id="19" value="Packages tree" style="whiteSpace=wrap;html=1;fontSize=10;strokeColor=none;fillColor=none;fontStyle=1;fontFamily=Comfortaa;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DComfortaa;align=center;" parent="NjZC5WjNETesjFtiS9zZ-1" vertex="1">
-                    <mxGeometry x="20" y="20" width="240" height="40" as="geometry"/>
-                </mxCell>
-                <mxCell id="66" value="deep-foundation/hasura" style="rounded=0;whiteSpace=wrap;html=1;fontSize=6;fontFamily=Comfortaa;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DComfortaa;" parent="NjZC5WjNETesjFtiS9zZ-1" vertex="1">
-                    <mxGeometry x="95" y="70" width="90" height="20" as="geometry"/>
-                </mxCell>
-                <mxCell id="71" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;startArrow=ERone;startFill=0;" parent="NjZC5WjNETesjFtiS9zZ-1" source="67" target="66" edge="1">
-                    <mxGeometry relative="1" as="geometry"/>
-                </mxCell>
-                <mxCell id="67" value="deep-foundation/materialized-path" style="rounded=0;whiteSpace=wrap;html=1;fontSize=6;fontFamily=Comfortaa;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DComfortaa;" parent="NjZC5WjNETesjFtiS9zZ-1" vertex="1">
-                    <mxGeometry x="80" y="120" width="120" height="20" as="geometry"/>
-                </mxCell>
-                <mxCell id="68" value="deep-foundation/deeplinks" style="rounded=0;whiteSpace=wrap;html=1;fontSize=6;fontFamily=Comfortaa;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DComfortaa;" parent="NjZC5WjNETesjFtiS9zZ-1" vertex="1">
-                    <mxGeometry x="210" y="170" width="100" height="20" as="geometry"/>
-                </mxCell>
-                <mxCell id="69" value="deep-foundation/deepcase" style="rounded=0;whiteSpace=wrap;html=1;fontSize=6;fontFamily=Comfortaa;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DComfortaa;" parent="NjZC5WjNETesjFtiS9zZ-1" vertex="1">
-                    <mxGeometry x="90" y="210" width="100" height="20" as="geometry"/>
-                </mxCell>
-                <mxCell id="73" value="deep-foundation/store" style="rounded=0;whiteSpace=wrap;html=1;fontSize=6;fontFamily=Comfortaa;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DComfortaa;" parent="NjZC5WjNETesjFtiS9zZ-1" vertex="1">
-                    <mxGeometry x="210" y="70" width="100" height="20" as="geometry"/>
-                </mxCell>
-                <mxCell id="75" style="edgeStyle=elbowEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=ERone;startFill=0;endArrow=open;endFill=0;elbow=vertical;" parent="NjZC5WjNETesjFtiS9zZ-1" source="74" target="66" edge="1">
-                    <mxGeometry relative="1" as="geometry">
-                        <Array as="points">
-                            <mxPoint x="120" y="105"/>
-                            <mxPoint x="110" y="105"/>
-                        </Array>
-                    </mxGeometry>
-                </mxCell>
-                <mxCell id="74" value="deep-foundation/react-hasura" style="rounded=0;whiteSpace=wrap;html=1;fontSize=6;fontFamily=Comfortaa;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DComfortaa;" parent="NjZC5WjNETesjFtiS9zZ-1" vertex="1">
-                    <mxGeometry x="-40" y="120" width="110" height="20" as="geometry"/>
-                </mxCell>
             </root>
         </mxGraphModel>
     </diagram>
