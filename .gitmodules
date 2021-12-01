@@ -17,6 +17,7 @@
 [submodule "packages/deepcase"]
 	path = packages/deepcase
 	url = https://github.com/deep-foundation/deepcase.git
+	branch = deeplinks-21-menzorg
 [submodule "packages/gh-pages"]
 	path = packages/gh-pages
 	url = https://github.com/deep-foundation/deepcase.github.io.git
