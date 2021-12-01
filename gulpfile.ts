@@ -57,11 +57,7 @@ const gitBranches = async () => {
   for (let i = 0; i < keys.length; i++) {
     const key = keys[i];
     console.log(`(cd ${__dirname}/${key}; git checkout ${modules?.[key]?.branch || 'main'})`);
-    if (key === 'deeplinks' || key === 'deepcase'){
-      await concurrently([`(cd ${__dirname}/${key}; git checkout ${modules?.[key]?.branch || 'deeplinks-21-menzorg'})`]);
-    } else {
-      await concurrently([`(cd ${__dirname}/${key}; git checkout ${modules?.[key]?.branch || 'main'})`]);
-    }
+    await concurrently([`(cd ${__dirname}/${key}; git checkout ${modules?.[key]?.branch || 'main'})`]);
   }
 };
 

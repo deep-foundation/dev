@@ -3,7 +3,8 @@
 	url = https://github.com/deepcase/hasura.git
 [submodule "packages/deeplinks"]
 	path = packages/deeplinks
-	url = https://github.com/deepcase/deeplinks.git
+	url = https://github.com/deep-foundation/dev.git
+	branch = deeplinks-21-menzorg
 [submodule "packages/materialized-path"]
 	path = packages/materialized-path
 	url = https://github.com/deepcase/materialized-path.git
