@@ -11,6 +11,7 @@
     "parentScript": "cross-env GREET=\"QWE\" cross-env-shell \"echo Hello $GREET\"",
     "childScript": "cross-env-shell \"echo Hello $GREET\"",
     "gulp": "gulp",
+    "test": "(cd packages/deepcase && npx fkill :3006)",
     "gitpod-prepare": "npm run git-shh-to-https && (yes | sudo apt install screen) && (yes | sudo apt install rsync) && (yes | sudo apt install net-tools) && screen -S docker -d -m sudo docker-up",
     "packages": "(npx gulp packages:get) && (npm run packages-ci)",
     "packages-ci": "(cd packages && for d in */; do (cd $d && npm ci); done)",
@@ -30,7 +31,7 @@
     "gitpod-engine": "cd packages/deeplinks && npm run hasura-docker && npx -q wait-on tcp:8080 && sleep 20 && npm run migrate",
     "rm-migrates": "find . -type f -name '.migrate' -exec rm {} +",
     "git-shh-to-https": "git config --global url.\"https://\".insteadOf git:// && git config --global url.\"https://github.com/\".insteadOf ssh://git@github.com/",
-    "apply-deeplinks": "(rm -rf ./packages/deepcase/app && cd packages/deeplinks && npm run package:build && rm -rf ../deepcase/node_modules/@deep-foundation/deeplinks/imports && rm -rf ../deepcase/node_modules/@deep-foundation/deeplinks/migrations && cp -r ./imports ../deepcase/node_modules/@deep-foundation/deeplinks/imports && cp -r ./migrations ../deepcase/node_modules/@deep-foundation/deeplinks/migrations && npm run package:unbuild)",
+    "apply-deeplinks": "(rm -rf ./packages/deepcase/app && cd packages/deeplinks && npm run package:build && rm -rf ../deepcase/node_modules/@deep-foundation/deeplinks/imports && rm -rf ../deepcase/node_modules/@deep-foundation/deeplinks/migrations && cp -r ./imports ../deepcase/node_modules/@deep-foundation/deeplinks/imports && cp -r ./migrations ../deepcase/node_modules/@deep-foundation/deeplinks/migrations &&  cp -r ./local ../deepcase/node_modules/@deep-foundation/deeplinks/local && npm run package:unbuild)",
     "rm-hasura": "rm -rf ./packages/deepcase/node_modules/@deep-foundation/hasura && rm -rf ./packages/deeplinks/node_modules/@deep-foundation/hasura && rm -rf ./packages/materialized-path/node_modules/@deep-foundation/hasura",
     "cp-hasura": "(cd ./packages/hasura && npm ci && npm run package:build) && cp -r ./packages/hasura/ ./packages/deepcase/node_modules/@deep-foundation/hasura && cp -r ./packages/hasura/ ./packages/deeplinks/node_modules/@deep-foundation/hasura && cp -r ./packages/hasura/ ./packages/materialized-path/node_modules/@deep-foundation/hasura && (cd ./packages/hasura && npm run package:unbuild)",
     "apply-hasura": "npm run rm-hasura && npm run cp-hasura"
