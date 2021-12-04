@@ -12,7 +12,6 @@
     "childScript": "cross-env-shell \"echo Hello $GREET\"",
     "gulp": "gulp",
     "test": "(cd packages/deepcase && npx fkill :3006)",
-    "gitpod-nvm": "(export NVM_DIR=$HOME/.nvm && [ -s \"$NVM_DIR/nvm.sh\" ] && \\. \"$NVM_DIR/nvm.sh\" && [ -s \"$NVM_DIR/bash_completion\" ] && \\. \"$NVM_DIR/bash_completion\" && nvm install 14.15 && nvm use 14.15 && nvm alias default 14.15 && nvm use default)",
     "gitpod-prepare": "npm run git-shh-to-https && (yes | sudo apt install screen) && (yes | sudo apt install rsync) && (yes | sudo apt install net-tools) && screen -S docker -d -m sudo docker-up",
     "packages": "(npx gulp packages:get) && (npm run packages-ci)",
     "packages-ci": "(cd packages && for d in */; do (cd $d && npm ci); done)",
