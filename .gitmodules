@@ -1,7 +1,6 @@
 [submodule "packages/hasura"]
 	path = packages/hasura
 	url = https://github.com/deep-foundation/hasura.git
-	branch = deeplinks-21-menzorg
 [submodule "packages/deeplinks"]
 	path = packages/deeplinks
 	url = https://github.com/deep-foundation/deeplinks.git
