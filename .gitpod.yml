@@ -22,6 +22,7 @@ vscode:
     - ms-azuretools.vscode-docker
 
 tasks:
-  - env:
-    NODE_VERSION: "14.15.0"
-  init: npm run gitpod-nvm && npm run gitpod-prepare; gp open readme.md; npm ci; npm run packages; npm run git-shh-to-https && npm run gitpod;
+  - name: Example of passing an environment variable to a command
+    env:
+      NODE_VERSION: "14.15.0"
+    init: npm run gitpod-nvm && npm run gitpod-prepare; gp open readme.md; npm ci; npm run packages; npm run git-shh-to-https && npm run gitpod;
