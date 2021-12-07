@@ -4,7 +4,6 @@
 [submodule "packages/deeplinks"]
 	path = packages/deeplinks
 	url = https://github.com/deep-foundation/deeplinks.git
-	branch = deeplinks-21-menzorg
 [submodule "packages/materialized-path"]
 	path = packages/materialized-path
 	url = https://github.com/deep-foundation/materialized-path.git
@@ -17,7 +16,6 @@
 [submodule "packages/deepcase"]
 	path = packages/deepcase
 	url = https://github.com/deep-foundation/deepcase.git
-	branch = deeplinks-21-menzorg
 [submodule "packages/gh-pages"]
 	path = packages/gh-pages
 	url = https://github.com/deep-foundation/deepcase.github.io.git
