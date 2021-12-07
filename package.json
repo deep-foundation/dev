@@ -56,7 +56,7 @@
     "typescript": "^4.1.5"
   },
   "dependencies": {
-    "@deep-foundation/deeplinks": "0.0.5",
+    "@deep-foundation/deeplinks": "0.0.15",
     "rimraf": "^3.0.2"
   }
 }
