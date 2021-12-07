@@ -5,6 +5,9 @@ ports:
   - port: 3007
     onOpen: open-browser
     visibility: public
+  - port: 3006
+    onOpen: ignore
+    visibility: public
   - port: 8080
     onOpen: ignore
     visibility: public
@@ -20,3 +23,4 @@ vscode:
 
 tasks:
   - init: npm run gitpod-prepare; gp open readme.md; npm ci; npm run packages; npm run git-shh-to-https && npm run gitpod;
+  
