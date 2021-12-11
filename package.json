@@ -62,6 +62,7 @@
   },
   "dependencies": {
     "@deep-foundation/deeplinks": "0.0.15",
+    "prompt": "^1.2.0",
     "rimraf": "^3.0.2"
   }
 }
