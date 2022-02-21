@@ -9,7 +9,8 @@
       "runtimeArgs": [
         "--inspect-brk",
         "${workspaceRoot}/packages/deeplinks/node_modules/.bin/jest",
-        "--runInBand"
+        "--runInBand",
+        "--testTimeout=9999999"
       ],
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
@@ -17,7 +18,7 @@
       "env": {
         "DEEPLINKS_HASURA_PATH": "localhost:8080",
         "DEEPLINKS_HASURA_SSL": 0,
-        "DEEPLINKS_HASURA_SECRET": "myadminsecretkey",
+        "DEEPLINKS_HASURA_SECRET": "myadminsecretkey"
       }
     }
   ]
