@@ -41,3 +41,4 @@ When all tasks are done, you can open - http://localhost:3007/ **(ctrl/cmd + cli
 - `npm run gulp -- package:delete --name NAMEINPACKAGESDIRECTORY` delete submodule
 - `npm run gulp -- assets:update` copy all assets from ./assets in to each package
 - `npm run gulp -- packages:sync` sync all dependenced packages in workspace
+
