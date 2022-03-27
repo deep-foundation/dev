@@ -22,3 +22,6 @@
 [submodule "packages/js-docker-isolation-provider"]
 	path = packages/js-docker-isolation-provider
 	url = https://github.com/deep-foundation/js-docker-isolation-provider
+[submodule "packages/nextjs"]
+	path = packages/nextjs
+	url = https://github.com/deep-foundation/nextjs.git
