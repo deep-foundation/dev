@@ -22,6 +22,6 @@ vscode:
     - ms-azuretools.vscode-docker
 
 tasks:
-  - init: npm ci && npm run gitpod-init && npm run packages && docker volume create deep_db_data && docker run -v $(pwd)/packages/deeplinks:/deeplinks -v deep_db_data:/data --rm --name links --entrypoint "sh" deepf/deeplinks:main -c "cd / && tar xf /backup/volume.tar --strip 1 && cp /backup/.migrate /deeplinks/.migrate";
+  - init: npm run gitpod-init; docker run -v $(pwd)/packages/deeplinks:/deeplinks -v deep_db_data:/data --rm --name links --entrypoint "sh" deepf/deeplinks:main -c "cd / && tar xf /backup/volume.tar --strip 1 && cp /backup/.migrate /deeplinks/.migrate";
   - command: npm run gitpod-start;
   
