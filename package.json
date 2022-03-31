@@ -61,7 +61,7 @@
     "gulp": "^4.0.2",
     "gulp-run-command": "^0.0.10",
     "i": "^0.3.6",
-    "minimist": "^1.2.5",
+    "minimist": "^1.2.6",
     "npm": "^7.5.4",
     "simple-git": "^2.45.0",
     "ts-node": "^9.1.1",
