@@ -11,6 +11,7 @@ process.setMaxListeners(0);
 
 const git = Git();
 const argv = require('minimist')(process.argv.slice(2));
+const delimetr = process.platform === 'win32' ? '\\' : '/';
 
 gulp.task('assets:update', () => {
   const packages = fs.readdirSync(`${__dirname}/packages`);
@@ -37,10 +38,24 @@ gulp.task('packages:get', async () => {
   await gitBranches();
 });
 
-const gitBranches = async () => {
+gulp.task('packages:ci', async () => {
+  const modules = getModules();
+  const parts = [];
+
+  const packages = Object.keys(modules);
+  for (let i = 0; i < packages.length; i++) {
+    const currentPackage = process.platform === 'win32' ? packages[i].replace('/', '\\') : packages[i];
+    parts.push(`echo "${currentPackage} npm ci" && cd ${__dirname}${delimetr}${currentPackage} && npm ci`);
+  }
+  const command = parts.join(` && cd ..${delimetr}.. && `);
+  console.log('command', command);
+  await concurrently([command]);
+});
+
+const getModules = () => {
   const gitmodules = fs.readFileSync(`${__dirname}/.gitmodules`, { encoding: 'utf8' });
   const modulesArray: any = gitmodules.split('[').filter(m => !!m).map((m, i) => m.split(`
-	`).map((p, i) => !i ? p.split(' ')[1].slice(1, -2) : p.replace('\n', '').split(' = ')));
+	`).map((p, i) => !i ? p.split(' ')[1].slice(1, -3) : p.replace('\n', '').split(' = ')));
   const modules = {};
   for (let m = 0; m < modulesArray.length; m++) {
     const ma = modulesArray[m];
@@ -51,14 +66,20 @@ const gitBranches = async () => {
       mod[field[0]] = field[1];
     }
   }
-  console.log('modules branches analized');
+  return modules;
+}
 
-  const keys = Object.keys(modules);
-  for (let i = 0; i < keys.length; i++) {
-    const key = keys[i];
-    console.log(`(cd ${__dirname}/${key}; git checkout ${modules?.[key]?.branch || 'main'})`);
-    await concurrently([`(cd ${__dirname}/${key}; git checkout ${modules?.[key]?.branch || 'main'})`]);
+const gitBranches = async () => {
+  const modules = getModules();
+  const commands = [];
+
+  const packages = Object.keys(modules);
+  for (let i = 0; i < packages.length; i++) {
+    const currentPackage = process.platform === 'win32' ? packages[i].replace('/', '\\') : packages[i];
+    const part = `cd ${__dirname}${delimetr}${currentPackage} && git checkout ${modules?.[currentPackage]?.branch || 'main'}`;
+    commands.push(part);
   }
+  await concurrently(commands);
 };
 
 gulp.task('packages:branches', gitBranches);
