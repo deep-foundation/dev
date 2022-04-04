@@ -55,7 +55,7 @@ gulp.task('packages:ci', async () => {
 const getModules = () => {
   const gitmodules = fs.readFileSync(`${__dirname}/.gitmodules`, { encoding: 'utf8' });
   const modulesArray: any = gitmodules.split('[').filter(m => !!m).map((m, i) => m.split(`
-	`).map((p, i) => !i ? p.split(' ')[1].slice(1, -3) : p.replace('\n', '').split(' = ')));
+	`).map((p, i) => !i ? p.split(' ')[1].slice(1, process.platform === 'win32' ? -3 : -2) : p.replace('\n', '').split(' = ')));
   const modules = {};
   for (let m = 0; m < modulesArray.length; m++) {
     const ma = modulesArray[m];
