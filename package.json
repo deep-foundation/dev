@@ -49,6 +49,14 @@
     "cp-hasura": "(cd ./packages/hasura && npm ci && npm run package:build && cd ../../) && rm -rf ./packages/hasura/node_modules && (cp -r ./packages/hasura/ ./packages/deepcase/electron/node_modules/@deep-foundation/hasura || true) && (cp -r ./packages/hasura/ ./packages/deepcase/node_modules/@deep-foundation/hasura || true) && (cp -r ./packages/hasura/ ./packages/deeplinks/node_modules/@deep-foundation/hasura || true) && (cp -r ./packages/hasura/ ./packages/materialized-path/node_modules/@deep-foundation/hasura || true) && (cd ./packages/hasura && npm ci && npm run package:unbuild && cd ../..)",
     "apply-hasura": "npm run rm-hasura && npm run cp-hasura",
     "apply-all": "npm run apply-hasura && npm run apply-deeplinks",
+    "aa": "npm run apply-all",
+    "ad": "npm run apply-deeplinks",
+    "ah": "npm run apply-hasura"
+    "ebw" "npm run electron-build-windows",
+    "ebu" "npm run electron-build-unix",
+    "ebm" "npm run electron-build-mac",
+    "enu": "npm run electron-next-build-unix",
+    "enw": "npm run electron-next-build-windows",
     "pull-ci-apply": "(cd packages/hasura; git pull; npm ci); (cd packages/deeplinks; git pull; npm ci); (cd packages/deepcase; git pull; npm ci); (cd packages/deepcase/electron; npm ci); git pull && npm run apply-hasura && npm run apply-deeplinks",
     "nextjs": "(cd packages/nextjs; npm ci; PORT=4000 npm run dev)"
   },
