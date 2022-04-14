@@ -51,7 +51,7 @@
     "apply-all": "npm run apply-hasura && npm run apply-deeplinks",
     "aa": "npm run apply-all",
     "ad": "npm run apply-deeplinks",
-    "ah": "npm run apply-hasura"
+    "ah": "npm run apply-hasura",
     "ebw" "npm run electron-build-windows",
     "ebu" "npm run electron-build-unix",
     "ebm" "npm run electron-build-mac",
