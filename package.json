@@ -59,7 +59,8 @@
     "enu": "npm run electron-next-build-unix",
     "enw": "npm run electron-next-build-windows",
     "pull-ci-apply": "(cd packages/hasura; git pull; npm ci); (cd packages/deeplinks; git pull; npm ci); (cd packages/deepcase; git pull; npm ci); (cd packages/deepcase/electron; npm ci); git pull && npm run apply-hasura && npm run apply-deeplinks",
-    "nextjs": "(cd packages/nextjs; PORT=4000 npm run dev)"
+    "nextjs": "(cd packages/nextjs; PORT=4000 npm run dev)",
+    "temp-messanger": "(export NEXT_PUBLIC_GQL_PATH=$(echo $(gp url 3006) | awk -F[/:] '{print $4}')/gql; node ./messanger.cjs)"
   },
   "repository": {
     "type": "git",

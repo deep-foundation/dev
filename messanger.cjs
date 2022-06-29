@@ -8,14 +8,22 @@ const { DeepClient } = require('@deep-foundation/deeplinks/imports/client');
 const { minilinks, Link } = require('@deep-foundation/deeplinks/imports/minilinks');
 
 const apolloClient = generateApolloClient({
-  path: '3006-deepfoundation-dev-hp7ied6ymka.ws-eu47.gitpod.io/gql', // <<= HERE PATH TO UPDATE
+  path: process.env.NEXT_PUBLIC_GQL_PATH || '', // <<= HERE PATH TO UPDATE
   ssl: true,
   // admin token in prealpha deep secret key
-  token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwczovL2hhc3VyYS5pby9qd3QvY2xhaW1zIjp7IngtaGFzdXJhLWFsbG93ZWQtcm9sZXMiOlsibGluayJdLCJ4LWhhc3VyYS1kZWZhdWx0LXJvbGUiOiJsaW5rIiwieC1oYXN1cmEtdXNlci1pZCI6IjI2MiJ9LCJpYXQiOjE2NTYxMzYyMTl9.dmyWwtQu9GLdS7ClSLxcXgQiKxmaG-JPDjQVxRXOpxs',
+  // token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwczovL2hhc3VyYS5pby9qd3QvY2xhaW1zIjp7IngtaGFzdXJhLWFsbG93ZWQtcm9sZXMiOlsibGluayJdLCJ4LWhhc3VyYS1kZWZhdWx0LXJvbGUiOiJsaW5rIiwieC1oYXN1cmEtdXNlci1pZCI6IjI2MiJ9LCJpYXQiOjE2NTYxMzYyMTl9.dmyWwtQu9GLdS7ClSLxcXgQiKxmaG-JPDjQVxRXOpxs',
 });
-const deep = new DeepClient({ apolloClient, linkId: 262 });
+
+const unloginedDeep = new DeepClient({ apolloClient });
+
+const delay = (time = 1000) => new Promise(res => setTimeout(res, time));
 
 const f = async () => {
+  const guest = await unloginedDeep.guest();
+  const guestDeep = new DeepClient({ deep: unloginedDeep, ...guest });
+  const admin = await guestDeep.login({ linkId: 262 });
+  const deep = new DeepClient({ deep: guestDeep, ...admin });
+
   const User = await deep.id('@deep-foundation/core', 'User');
   const Type = await deep.id('@deep-foundation/core', 'Type');
   const Any = await deep.id('@deep-foundation/core', 'Any');
