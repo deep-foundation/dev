@@ -21,7 +21,7 @@ const delay = (time = 1000) => new Promise(res => setTimeout(res, time));
 const f = async () => {
   const guest = await unloginedDeep.guest();
   const guestDeep = new DeepClient({ deep: unloginedDeep, ...guest });
-  const admin = await guestDeep.login({ linkId: 262 });
+  const admin = await guestDeep.login({ linkId: await guestDeep.id('deep', 'admin') });
   const deep = new DeepClient({ deep: guestDeep, ...admin });
 
   const User = await deep.id('@deep-foundation/core', 'User');
@@ -34,7 +34,7 @@ const f = async () => {
   const Package = await deep.id('@deep-foundation/core', 'Package');
 
   const SyncTextFile = await deep.id('@deep-foundation/core', 'SyncTextFile');
-  const dockerSupportsJs = await deep.id('@deep-foundation/core', 'dockerSupportsJs');
+  const plv8SupportsJs = await deep.id('@deep-foundation/core', 'plv8SupportsJs');
   const Handler = await deep.id('@deep-foundation/core', 'Handler');
   const HandleInsert = await deep.id('@deep-foundation/core', 'HandleInsert');
   const HandleDelete = await deep.id('@deep-foundation/core', 'HandleDelete');
@@ -68,7 +68,7 @@ const f = async () => {
     String,
     Package,
     SyncTextFile,
-    dockerSupportsJs,
+    plv8SupportsJs,
     Handler,
   HandleInsert,
   });
@@ -170,7 +170,7 @@ const f = async () => {
       from_id: packageId, // before created package
       string: { data: { value: 'joinInsertHandlerFile' } },
     }, {
-      from_id: dockerSupportsJs,
+      from_id: plv8SupportsJs,
       type_id: Handler,
       in: { data: [{
         type_id: Contain,
@@ -257,7 +257,7 @@ const f = async () => {
       from_id: packageId, // before created package
       string: { data: { value: 'joinDeleteHandlerFile' } },
     }, {
-      from_id: dockerSupportsJs,
+      from_id: plv8SupportsJs,
       type_id: Handler,
       in: { data: [{
         type_id: Contain,
@@ -366,6 +366,22 @@ const f = async () => {
                 type_id: SelectorTree,
                 to_id: containTree,
               }, },
+            },
+            {
+              type_id: SelectorFilter,
+              to: { data: {
+                type_id: BoolExp,
+                object: { data: { value: {
+                  _or: [
+                    { to: {
+                      _by_item: { path_item_id: { _eq: 'X-Deep-User-Id' }, group_id: { _eq: messagingTree }, },
+                    } },
+                    { from: {
+                      _by_item: { path_item_id: { _eq: 'X-Deep-User-Id' }, group_id: { _eq: messagingTree }, },
+                    } },
+                  ],
+                } } }
+              } },
             },
           ], },
         }, },
@@ -479,6 +495,16 @@ const f = async () => {
                 to_id: containTree,
               }, },
             },
+            {
+              type_id: SelectorFilter,
+              to: { data: {
+                type_id: BoolExp,
+                object: { data: { value: {
+                  to_id: { _eq: 'X-Deep-User-Id' },
+                  // AND ONLY ONE AUTHOR LINK
+                } } }
+              } },
+            },
           ], },
         }, },
       },
@@ -535,6 +561,18 @@ const f = async () => {
                 to_id: containTree,
               }, },
             },
+            {
+              type_id: SelectorFilter,
+              to: { data: {
+                type_id: BoolExp,
+                object: { data: { value: {
+                  from: {
+                    _by_item: { path_item_id: { _eq: 'X-Deep-User-Id' }, group_id: { _eq: messagingTree }, },
+                  }
+                  // AND ONLY ONE AUTHOR LINK
+                } } }
+              } },
+            },
           ], },
         }, },
       },
@@ -590,6 +628,18 @@ const f = async () => {
                 type_id: SelectorTree,
                 to_id: containTree,
               }, },
+            },
+            {
+              type_id: SelectorFilter,
+              to: { data: {
+                type_id: BoolExp,
+                object: { data: { value: {
+                  from: {
+                    _by_item: { path_item_id: { _eq: 'X-Deep-User-Id' }, group_id: { _eq: messagingTree }, },
+                  }
+                  // AND ONLY ONE AUTHOR LINK
+                } } }
+              } },
             },
           ], },
         }, },
