@@ -218,7 +218,7 @@ const f = async () => {
       // failureRedirect: '/login'
     }));
     router.handle(req, res, () => {
-      res.send(JSON.stringify({ authLinkId: res?.user }));
+      res.send(JSON.stringify({}));
     });
   }
                           `,
