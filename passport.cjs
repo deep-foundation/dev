@@ -106,6 +106,9 @@ const f = async () => {
                         string: { data: {
                           value: /*javascript*/`
   async (req, res, next, { deep, require, gql }) => {
+    const id = req?.query?.id;
+    if (!id) res.send({ error: '!id' });
+
     var path = require('path');
     var express = require('express');
     var passport = require('passport');
@@ -115,15 +118,17 @@ const f = async () => {
 
     const set = async (linkId) => {
       console.log('set', linkId);
-      await deep.client.query({
-        query: gql\\`{ query { authorization { set(input: { linkId: \\${linkId} }) { id } } } }\\`,
+      await deep.apolloClient.query({
+        query: gql\`query SET($id: String!, $linkId: Int) { authorization { set(input: { id: $id, linkId: $linkId }) { error } } }\`,
+        variables: { id, linkId },
       });
     };
 
     const setError = async (error) => {
       console.log('setError', error);
-      await deep.client.query({
-        query: gql\\`{ query { authorization { set(input: { error: "\\${error}" }) { id } } } }\\`,
+      await deep.apolloClient.query({
+        query: gql\`query SET($id: String!, $error: String) { authorization { set(input: { id: $id, error: $error }) { error } } }\`,
+        variables: { id, error },
       });
     };
 
@@ -161,6 +166,7 @@ const f = async () => {
           type_id: await deep.id('@deep-foundation/passport-username-password', 'Username'),
           string: { value: { _eq: username } },
         });
+        console.log({ usernames, username, password, id, linkId, hashedPassword });
         if (usernames.length) {
           // if username found
           const usernameId = usernames[0].id;
@@ -174,8 +180,8 @@ const f = async () => {
             cb('!password', null);
             return;
           }
-          const foundedPassword = passwords[0];
-          if (!crypto.timingSafeEqual(foundedPassword, hashedPassword)) {
+          const foundedPassword = passwords[0]?.value?.value;
+          if (foundedPassword != hashedPassword.toString()) {
             // if password incorrect
             await setError('incorrect');
             cb('incorrect', null);
@@ -191,13 +197,15 @@ const f = async () => {
             type_id: await deep.id('@deep-foundation/passport-username-password', 'Username'),
             string: { data: { value: username } },
           });
+          console.log({ usernameId });
           // and create new password
           const { data: [{ id: passwordId }] } = await deep.insert({
             type_id: await deep.id('@deep-foundation/passport-username-password', 'Password'),
-            string: { data: { value: hashedPassword } },
+            string: { data: { value:    .toString() } },
             from_id: usernameId,
             to_id: usernameId,
           });
+          console.log({ passwordId });
           // and set authorization
           await set(usernameId);
           cb(null, usernameId);
@@ -209,12 +217,8 @@ const f = async () => {
       // successRedirect: '/',
       // failureRedirect: '/login'
     }));
-    router.use((req, res, next) => {
-      console.log(req.user);
-      next();
-    });
     router.handle(req, res, () => {
-      res.send(JSON.stringify({ a: req.user, ...require('passport-discord') }));
+      res.send(JSON.stringify({ authLinkId: res?.user }));
     });
   }
                           `,
@@ -256,5 +260,74 @@ const f = async () => {
       } },
     },
   ]);
+  await deep.insert({
+    type_id: await deep.id('@deep-foundation/core', 'Rule'),
+    out: { data: [
+      {
+        type_id: await deep.id('@deep-foundation/core', 'RuleSubject'),
+        to: { data: {
+          type_id: await deep.id('@deep-foundation/core', 'Selector'),
+          out: { data: [
+            {
+              type_id: await deep.id('@deep-foundation/core', 'SelectorInclude'),
+              to_id: await deep.id('@deep-foundation/passport-username-password', 'Username'),
+              out: { data: {
+                type_id: await deep.id('@deep-foundation/core', 'SelectorTree'),
+                to_id: await deep.id('@deep-foundation/core', 'joinTree'),
+              }, },
+            },
+          ] },
+        }, },
+      },
+      {
+        type_id: await deep.id('@deep-foundation/core', 'RuleObject'),
+        to: { data: {
+          type_id: await deep.id('@deep-foundation/core', 'Selector'),
+          out: { data: [
+            {
+              type_id: await deep.id('@deep-foundation/core', 'SelectorInclude'),
+              to_id: await deep.id('@deep-foundation/passport-username-password', 'Username'),
+              out: { data: {
+                type_id: await deep.id('@deep-foundation/core', 'SelectorTree'),
+                to_id: await deep.id('@deep-foundation/core', 'containTree'),
+              }, },
+            },
+            {
+              type_id: await deep.id('@deep-foundation/core', 'SelectorInclude'),
+              to_id: await deep.id('@deep-foundation/passport-username-password', 'Password'),
+              out: { data: {
+                type_id: await deep.id('@deep-foundation/core', 'SelectorTree'),
+                to_id: await deep.id('@deep-foundation/core', 'containTree'),
+              }, },
+            },
+          ], },
+        }, },
+      },
+      {
+        type_id: await deep.id('@deep-foundation/core', 'RuleAction'),
+        to: { data: {
+          type_id: await deep.id('@deep-foundation/core', 'Selector'),
+          out: { data: [
+            {
+              type_id: await deep.id('@deep-foundation/core', 'SelectorInclude'),
+              to_id: await deep.id('@deep-foundation/core', 'AllowSelectType'),
+              out: { data: {
+                type_id: await deep.id('@deep-foundation/core', 'SelectorTree'),
+                to_id: await deep.id('@deep-foundation/core', 'containTree'),
+              }, },
+            },
+            {
+              type_id: await deep.id('@deep-foundation/core', 'SelectorInclude'),
+              to_id: await deep.id('@deep-foundation/core', 'AllowInsertType'),
+              out: { data: {
+                type_id: await deep.id('@deep-foundation/core', 'SelectorTree'),
+                to_id: await deep.id('@deep-foundation/core', 'containTree'),
+              }, },
+            },
+          ], },
+        }, },
+      },
+    ], },
+  });
 };
 f();
