@@ -22,8 +22,6 @@ const f = async () => {
   const admin = await guestDeep.login({ linkId: await guestDeep.id('deep', 'admin') });
   const deep = new DeepClient({ deep: guestDeep, ...admin });
 
-  console.log(admin, await guestDeep.id('deep', 'admin'));
-
   const { data: [{ id: packageId }] } = await deep.insert({
     type_id: await deep.id('@deep-foundation/core', 'Package'),
     string: { data: { value: '@deep-foundation/passport-username-password' } },
