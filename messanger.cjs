@@ -34,7 +34,7 @@ const f = async () => {
   const Package = await deep.id('@deep-foundation/core', 'Package');
 
   const SyncTextFile = await deep.id('@deep-foundation/core', 'SyncTextFile');
-  const plv8SupportsJs = await deep.id('@deep-foundation/core', 'plv8SupportsJs');
+  const dockerSupportsJs = await deep.id('@deep-foundation/core', 'dockerSupportsJs');
   const Handler = await deep.id('@deep-foundation/core', 'Handler');
   const HandleInsert = await deep.id('@deep-foundation/core', 'HandleInsert');
   const HandleDelete = await deep.id('@deep-foundation/core', 'HandleDelete');
@@ -68,7 +68,7 @@ const f = async () => {
     String,
     Package,
     SyncTextFile,
-    plv8SupportsJs,
+    dockerSupportsJs,
     Handler,
   HandleInsert,
   });
@@ -170,7 +170,7 @@ const f = async () => {
       from_id: packageId, // before created package
       string: { data: { value: 'joinInsertHandlerFile' } },
     }, {
-      from_id: plv8SupportsJs,
+      from_id: dockerSupportsJs,
       type_id: Handler,
       in: { data: [{
         type_id: Contain,
@@ -257,7 +257,7 @@ const f = async () => {
       from_id: packageId, // before created package
       string: { data: { value: 'joinDeleteHandlerFile' } },
     }, {
-      from_id: plv8SupportsJs,
+      from_id: dockerSupportsJs,
       type_id: Handler,
       in: { data: [{
         type_id: Contain,
