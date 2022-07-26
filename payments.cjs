@@ -59,6 +59,8 @@ const f = async () => {
   const BoolExp = await deep.id('@deep-foundation/core', 'BoolExp');
   const usersId = await deep.id('deep', 'users');
 
+  const Payment = await deep.id('@deep-foundation/payments', 'Payment');
+
   const { data: [{ id: packageId }] } = await deep.insert({
     type_id: Package,
     string: { data: { value: `@deep-foundation/payments` } },
