@@ -698,6 +698,7 @@ const testConfirm = async () => {
         Token: generateToken(newConfirmData),
     };
 
+    const confirm = require('./tinkoff/confirm')
     const result = await confirm(options);
 
     expect(result.error).to.equal(undefined);
