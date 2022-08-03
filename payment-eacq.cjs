@@ -12,21 +12,14 @@ const { generateApolloClient } = require("@deep-foundation/hasura/client");
 const { DeepClient } = require('@deep-foundation/deeplinks/imports/client');
 const { minilinks, Link } = require('@deep-foundation/deeplinks/imports/minilinks');
 
-const apolloClient = generateApolloClient({
-    path: process.env.NEXT_PUBLIC_GQL_PATH || '', // <<= HERE PATH TO UPDATE
-    ssl: !!~process.env.NEXT_PUBLIC_GQL_PATH.indexOf('localhost') ? false : true,
-    // admin token in prealpha deep secret key
-    // token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwczovL2hhc3VyYS5pby9qd3QvY2xhaW1zIjp7IngtaGFzdXJhLWFsbG93ZWQtcm9sZXMiOlsibGluayJdLCJ4LWhhc3VyYS1kZWZhdWx0LXJvbGUiOiJsaW5rIiwieC1oYXN1cmEtdXNlci1pZCI6IjI2MiJ9LCJpYXQiOjE2NTYxMzYyMTl9.dmyWwtQu9GLdS7ClSLxcXgQiKxmaG-JPDjQVxRXOpxs',
-});
 
-const unloginedDeep = new DeepClient({ apolloClient });
 
 // const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
-// export const getUrl = method => `${process.env.PAYMENT_EACQ_AND_TEST_URL}/${method}`;
-// export const getMarketUrl = method => `${process.env.PAYMENT_TINKOFF_MARKET_URL}/${method}`;
+// const getUrl = method => `${process.env.PAYMENT_EACQ_AND_TEST_URL}/${method}`;
+// const getMarketUrl = method => `${process.env.PAYMENT_TINKOFF_MARKET_URL}/${method}`;
 
-// export const errorsConverter = {
+// const errorsConverter = {
 //     7:	'Покупатель не найден',
 //     53:	'Обратитесь к продавцу',
 //     99:	'Платеж отклонен',
@@ -84,7 +77,7 @@ const unloginedDeep = new DeepClient({ apolloClient });
 // };
 
 
-// export const getError = errorCode => errorCode === '0' ? undefined : (errorsConverter[errorCode] || 'broken');
+// const getError = errorCode => errorCode === '0' ? undefined : (errorsConverter[errorCode] || 'broken');
 //
 // const _generateToken = (dataWithPassword) => {
 //     const dataString = Object.keys(dataWithPassword)
@@ -99,26 +92,26 @@ const unloginedDeep = new DeepClient({ apolloClient });
 // };
 //
 //
-// export const generateToken = (data) => {
+// const generateToken = (data) => {
 //     const { Receipt, DATA, Shops, ...restData } = data;
 //     const dataWithPassword = { ...restData, Password: process.env.PAYMENT_EACQ_TERMINAL_PASSWORD };
 //     return _generateToken(dataWithPassword);
 // };
 //
-// export const generateTestToken = (data) => {
+// const generateTestToken = (data) => {
 //     const { Receipt, DATA, Shops, ...restData } = data;
 //     const dataWithPassword = { ...restData, Password: process.env.PAYMENT_TEST_TERMINAL_PASSWORD };
 //     return _generateToken(dataWithPassword);
 // };
 //
-// export const tokenize = (options) => {
+// const tokenize = (options) => {
 //     return {
 //         ...options,
 //         Token: generateToken(options),
 //     };
 // };
 //
-// export function createShops({ splitToken, amount, needFee = true }) {
+// function createShops({ splitToken, amount, needFee = true }) {
 //     const shops = [{
 //         ShopCode: splitToken?.json?.shopCode,
 //         Amount: Math.abs(amount) * 100,
@@ -128,7 +121,7 @@ const unloginedDeep = new DeepClient({ apolloClient });
 // }
 //
 
-// export const init = async (options) => {
+// const init = async (options) => {
 //     try {
 //         const response = await axios({
 //             method: 'post',
@@ -163,107 +156,55 @@ const unloginedDeep = new DeepClient({ apolloClient });
 //     }
 // };
 
-export const payInBrowser = async ({ page, browser, url }) => {
-    await page.goto(url, { waitUntil: 'networkidle2' });
-    await sleep(3000);
-    const oldForm = await page.evaluate(() => {
-        return !!document.querySelector('input[automation-id="tui-input-card-grouped__card"]');
-    });
-    if (oldForm) {
-        console.log('OLD FORM!!!!!!!');
-        // Старая форма используется на тестовом сервере
-        const cvc1 = await page.evaluate(() => {
-            return !!document.querySelector('button[automation-id="pay-card__submit"]');
-        });
-        if (cvc1) {
-            await page.waitFor('input[automation-id="tui-input-card-grouped__card"]');
-            await sleep(300);
-            await page.type('input[automation-id="tui-input-card-grouped__card"]', process.env.PAYMENT_TEST_CARD_NUMBER_SUCCESS); // card number
-            await sleep(300);
-            await page.keyboard.press('Tab');
-            await sleep(300);
-            await page.type('input[automation-id="tui-input-card-grouped__expire"]', process.env.PAYMENT_TEST_CARD_EXPDATE); // expired date
-            await sleep(300);
-            await page.keyboard.press('Tab');
-            await sleep(300);
-            await page.type('input[automation-id="tui-input-card-grouped__cvc"]', process.env.PAYMENT_TEST_CARD_CVC); // CVC code
-            await sleep(300);
-            await page.click('button[automation-id="pay-card__submit"]'); // submit button
-        } else {
-            await page.waitFor('input[automation-id="tui-input-card-grouped__card"]');
-            await sleep(300);
-            await page.type('input[automation-id="tui-input-card-grouped__card"]', process.env.PAYMENT_E2C_CARD_NUMBER_SUCCESS); // card number
-            await sleep(300);
-            await page.keyboard.press('Tab');
-            await sleep(300);
-            await page.type('input[automation-id="tui-input-card-grouped__expire"]', process.env.PAYMENT_E2C_CARD_EXPDATE); // expired date
-            await sleep(300);
-            await page.keyboard.press('Tab');
-            await sleep(300);
-            await page.type('input[automation-id="tui-input-card-grouped__cvc"]', process.env.PAYMENT_E2C_CARD_CVC); // CVC code
-            await sleep(300);
-            await page.click('button[automation-id="pay-wallet__submit"]'); // submit button
-            await sleep(300);
-            await page.waitFor('input[name="password"]');
-            const code = prompt('enter code ');
-            console.log('code', code);
-            await page.type('input[name="password"]', code);
-            await sleep(1000);
-        }
-        // TODO: пока старая форма вызывалась только на тестовой карте, где ввод смс кода не нужен
-        await sleep(1000);
-    } else {
-        console.log('NEW FORM!!!!!!!');
-        await page.type('#pan', process.env.PAYMENT_E2C_CARD_NUMBER_SUCCESS); // card number
-        await page.type('#expDate', process.env.PAYMENT_E2C_CARD_EXPDATE); // expired date
-        await page.type('#card_cvc', process.env.PAYMENT_E2C_CARD_CVC); // CVC code
-        await page.click('button[type=submit]'); // submit button
-        await page.waitFor('input[name="password"]');
-        const code = prompt('enter code ');
-        console.log('code', code);
-        await page.type('input[name="password"]', code);
-        await sleep(3000);
-    }
-    await browser.close();
-};
 
-// const _generateToken = (dataWithPassword) => {
-//     const dataString = Object.keys(dataWithPassword)
-//         .sort((a, b) => a.localeCompare(b))
-//         .map(key => dataWithPassword[key])
-//         .reduce((acc, item) => `${acc}${item}`, '');
-//     const hash = crypto
-//         .createHash('sha256')
-//         .update(dataString)
-//         .digest('hex');
-//     return hash;
-// };
-
-
-// export const generateTestToken = (data) => {
-//     const { Receipt, DATA, Shops, ...restData } = data;
-//     const dataWithPassword = { ...restData, Password: process.env.PAYMENT_TEST_TERMINAL_PASSWORD };
-//     return _generateToken(dataWithPassword);
-// };
-
-
-
-
-export const sendInit = async (noTokenData) => {
-    const options = {
-        ...noTokenData,
-        Token: generateToken(noTokenData),
-    };
-
-    return init(options);
-};
-
-const guest = await unloginedDeep.guest();
-const guestDeep = new DeepClient({ deep: unloginedDeep, ...guest });
-const admin = await guestDeep.login({ linkId: await guestDeep.id('deep', 'admin') });
-const deep = new DeepClient({ deep: guestDeep, ...admin });
 
 const f = async () => {
+    const apolloClient = generateApolloClient({
+        path: process.env.NEXT_PUBLIC_GQL_PATH || '', // <<= HERE PATH TO UPDATE
+        ssl: !!~process.env.NEXT_PUBLIC_GQL_PATH.indexOf('localhost') ? false : true,
+        // admin token in prealpha deep secret key
+        // token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwczovL2hhc3VyYS5pby9qd3QvY2xhaW1zIjp7IngtaGFzdXJhLWFsbG93ZWQtcm9sZXMiOlsibGluayJdLCJ4LWhhc3VyYS1kZWZhdWx0LXJvbGUiOiJsaW5rIiwieC1oYXN1cmEtdXNlci1pZCI6IjI2MiJ9LCJpYXQiOjE2NTYxMzYyMTl9.dmyWwtQu9GLdS7ClSLxcXgQiKxmaG-JPDjQVxRXOpxs',
+    });
+    
+    const unloginedDeep = new DeepClient({ apolloClient });
+
+    
+    
+    // const _generateToken = (dataWithPassword) => {
+    //     const dataString = Object.keys(dataWithPassword)
+    //         .sort((a, b) => a.localeCompare(b))
+    //         .map(key => dataWithPassword[key])
+    //         .reduce((acc, item) => `${acc}${item}`, '');
+    //     const hash = crypto
+    //         .createHash('sha256')
+    //         .update(dataString)
+    //         .digest('hex');
+    //     return hash;
+    // };
+    
+    
+    // const generateTestToken = (data) => {
+    //     const { Receipt, DATA, Shops, ...restData } = data;
+    //     const dataWithPassword = { ...restData, Password: process.env.PAYMENT_TEST_TERMINAL_PASSWORD };
+    //     return _generateToken(dataWithPassword);
+    // };
+    
+    
+    
+    
+    const sendInit = async (noTokenData) => {
+        const options = {
+            ...noTokenData,
+            Token: generateToken(noTokenData),
+        };
+    
+        return init(options);
+    };
+    
+    const guest = await unloginedDeep.guest();
+    const guestDeep = new DeepClient({ deep: unloginedDeep, ...guest });
+    const admin = await guestDeep.login({ linkId: await guestDeep.id('deep', 'admin') });
+    const deep = new DeepClient({ deep: guestDeep, ...admin });
 
 
     const User = await deep.id('@deep-foundation/core', 'User');
@@ -594,116 +535,3 @@ await f();
 
 await sleep(4000);
 
-// Tests
-
-// Setup
-
-const { data: [{ id: Product }] } = await deep.insert({
-    type_id: Type,
-    from_id: Any,
-    to_id: Any
-});
-
-console.log({ Product });
-
-// Types
-
-const PPayment = await deep.id('@deep-foundation/payment-individual-entity', 'Payment');
-const PObject = await deep.id('@deep-foundation/payment-individual-entity', 'Object');
-const PSum = await deep.id('@deep-foundation/payment-individual-entity', 'Sum');
-const PPay = await deep.id('@deep-foundation/payment-individual-entity', 'Pay');
-const PUrl = await deep.id('@deep-foundation/payment-individual-entity', 'Url');
-const PPayed = await deep.id('@deep-foundation/payment-individual-entity', 'Payed');
-const PError = await deep.id('@deep-foundation/payment-individual-entity', 'Error');
-
-// Init
-
-const testInit = async () => {
-    const { data: [{ id: payment }] } = await deep.insert({
-        type_id: PPayment,
-    });
-
-    const { data: [{ id: sum }] } = await deep.insert({
-        type_id: PSum,
-        from_id: deep.linkId,
-        to_id: payment
-    });
-
-    console.log({ sum });
-
-    const { data: [{ id: product }] } = await deep.insert({
-        type_id: Product,
-    });
-
-    console.log({product});
-
-    const { data: [{ id: object }] } = await deep.insert({
-        type_id: PObject,
-        from_id: payment,
-        to_id: product
-    });
-
-    console.log({ object });
-
-    sleep(5000);
-
-    expect(result.error).to.equal(undefined);
-};
-
-await testInit();
-
-// Confirm
-
-const testConfirm = async () => {
-    const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
-    const page = await browser.newPage();
-
-    const customerKey = uniqid();
-    const orderId = uniqid();
-
-    const noTokenConfirmData = {
-        TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
-        Amount: 5500,
-        Receipt: {
-            Items: [{
-                Name: 'Test item',
-                Price: 5500,
-                Quantity: 1,
-                Amount: 5500,
-                PaymentMethod: 'prepayment',
-                PaymentObject: 'service',
-                Tax: 'none',
-            }],
-            Email: process.env.PAYMENT_TEST_EMAIL,
-            Phone: process.env.PAYMENT_TEST_PHONE,
-            Taxation: 'usn_income',
-        },
-    };
-
-    
-
-    await payInBrowser({
-        browser,
-        page,
-        url: initResult.response.PaymentURL,
-    });
-
-    const newConfirmData = {
-        TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
-        PaymentId: initResult.response.PaymentId,
-    };
-
-    const options = {
-        ...newConfirmData,
-        Token: generateToken(newConfirmData),
-    };
-
-    const confirm = require('./tinkoff/confirm')
-    const result = await confirm(options);
-
-    expect(result.error).to.equal(undefined);
-    expect(result.response.Status).to.equal('CONFIRMED');
-
-}
-
-await testConfirm();
