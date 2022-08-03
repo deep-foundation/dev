@@ -56,7 +56,7 @@ const f = async () => {
   const AllowInsertType = await deep.id('@deep-foundation/core', 'AllowInsertType');
   const AllowDeleteType = await deep.id('@deep-foundation/core', 'AllowDeleteType');
   const SelectorFilter = await deep.id('@deep-foundation/core', 'SelectorFilter');
-  const BoolExp = await deep.id('@deep-foundation/core', 'BoolExp');
+  const Query = await deep.id('@deep-foundation/core', 'Query');
   const usersId = await deep.id('deep', 'users');
 
   const { data: [{ id: packageId }] } = await deep.insert({

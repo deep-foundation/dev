@@ -56,7 +56,7 @@ const f = async () => {
   const AllowInsertType = await deep.id('@deep-foundation/core', 'AllowInsertType');
   const AllowDeleteType = await deep.id('@deep-foundation/core', 'AllowDeleteType');
   const SelectorFilter = await deep.id('@deep-foundation/core', 'SelectorFilter');
-  const BoolExp = await deep.id('@deep-foundation/core', 'BoolExp');
+  const Query = await deep.id('@deep-foundation/core', 'Query');
   const usersId = await deep.id('deep', 'users');
 
   console.log({
@@ -370,7 +370,7 @@ const f = async () => {
             {
               type_id: SelectorFilter,
               to: { data: {
-                type_id: BoolExp,
+                type_id: Query,
                 object: { data: { value: {
                   _or: [
                     { to: {
@@ -498,7 +498,7 @@ const f = async () => {
             {
               type_id: SelectorFilter,
               to: { data: {
-                type_id: BoolExp,
+                type_id: Query,
                 object: { data: { value: {
                   to_id: { _eq: 'X-Deep-User-Id' },
                   // AND ONLY ONE AUTHOR LINK
@@ -564,7 +564,7 @@ const f = async () => {
             {
               type_id: SelectorFilter,
               to: { data: {
-                type_id: BoolExp,
+                type_id: Query,
                 object: { data: { value: {
                   from: {
                     _by_item: { path_item_id: { _eq: 'X-Deep-User-Id' }, group_id: { _eq: messagingTree }, },
@@ -632,7 +632,7 @@ const f = async () => {
             {
               type_id: SelectorFilter,
               to: { data: {
-                type_id: BoolExp,
+                type_id: Query,
                 object: { data: { value: {
                   from: {
                     _by_item: { path_item_id: { _eq: 'X-Deep-User-Id' }, group_id: { _eq: messagingTree }, },
