@@ -607,6 +607,14 @@ const f = async () => {
 				type_id: PError,
 				to_id: payLink.id,
 				string: { data: { value: initResult.error } },
+				in: {
+					data: [
+						{
+							type_id: Contain,
+							from_id: deep.linkId,
+						},
+					],
+				}
 			});
 
 			console.log({ error });
@@ -618,6 +626,14 @@ const f = async () => {
 				type_id: PUrl,
 				to_id: payLink.id,
 				string: { data: { value: initResult.response.PaymentURL } },
+				in: {
+					data: [
+						{
+							type_id: Contain,
+							from_id: deep.linkId,
+						},
+					],
+				}
 			});
 			console.log({ url });
 		}
@@ -705,6 +721,14 @@ const f = async () => {
 			type_id: Type,
 			from_id: Any,
 			to_id: Any,
+			in: {
+				data: [
+					{
+						type_id: Contain,
+						from_id: deep.linkId,
+					},
+				],
+			}
 		});
 
 		console.log({ Product });
@@ -751,6 +775,14 @@ const f = async () => {
 				data: [{ id: paymentId }],
 			} = await deep.insert({
 				type_id: PPayment,
+				in: {
+					data: [
+						{
+							type_id: Contain,
+							from_id: deep.linkId,
+						},
+					],
+				}
 			});
 
 			const {
@@ -759,6 +791,14 @@ const f = async () => {
 				type_id: PSum,
 				from_id: deep.linkId,
 				to_id: paymentId,
+				in: {
+					data: [
+						{
+							type_id: Contain,
+							from_id: deep.linkId,
+						},
+					],
+				}
 			});
 
 			console.log({ sum: sumId });
@@ -767,6 +807,14 @@ const f = async () => {
 				data: [{ id: productId }],
 			} = await deep.insert({
 				type_id: Product,
+				in: {
+					data: [
+						{
+							type_id: Contain,
+							from_id: deep.linkId,
+						},
+					],
+				}
 			});
 
 			console.log({ product: productId });
@@ -777,6 +825,14 @@ const f = async () => {
 				type_id: PObject,
 				from_id: paymentId,
 				to_id: productId,
+				in: {
+					data: [
+						{
+							type_id: Contain,
+							from_id: deep.linkId,
+						},
+					],
+				}
 			});
 
 			console.log({ object: objectId });
@@ -787,6 +843,15 @@ const f = async () => {
 				type_id: PPay,
 				from_id: deep.linkId,
 				to_id: sumId,
+				in: {
+					data: [
+						{
+							type_id: Contain,
+							from_id: deep.linkId,
+						},
+					],
+				}
+				
 			});
 
 			console.log({ pay: payId });
