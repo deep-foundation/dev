@@ -299,7 +299,7 @@ const f = async () => {
 		'@deep-foundation/core',
 		'SelectorFilter'
 	);
-	const BoolExp = await deep.id('@deep-foundation/core', 'BoolExp');
+	const Query = await deep.id('@deep-foundation/core', 'Query');
 	const usersId = await deep.id('deep', 'users');
 
 	const BasePayment = await deep.id('@deep-foundation/payments', 'Payment');
@@ -540,18 +540,22 @@ const f = async () => {
 	// Handlers
 
 	const insertHandlerDependencies = `
-        const crypto = require('crypto');
-        const axios = require('axios');
-        const errorsConverter = ${errorsConverter};
-        const getError = ${getError};
-        const getUrl = ${getUrl};
-        const _generateToken = ${_generateToken};
-        const generateToken = ${generateToken}; 
-        const init = ${init};
-        const sendInit = ${sendInit};
+	const errorsConverter = ${JSON.stringify(errorsConverter)};
+	const getError = ${getError};
+	const getUrl = ${getUrl};
+	const _generateToken = ${_generateToken};
+	const generateToken = ${generateToken}; 
+	const init = ${init};
+	const sendInit = ${sendInit};
         `;
 
-	const payInsertHandler = async ({ _, data: { newLink: payLink } }) => {
+		const payInsertHandler = async ({ _, data: { newLink: payLink } }) => {
+			console.log("Before deps");
+			return {data: `newLink is ${newLink}`};
+			'DEPENDENCIES'
+			const crypto = require('crypto');
+			const axios = require('axios');
+			console.log("payInsertHandler is called")
 		const {
 			data: [
 				{ id: paymentId },
@@ -663,9 +667,12 @@ const f = async () => {
 		string: {
 			data: {
 				value:
-					insertHandlerDependencies +
 					payInsertHandler
 						.toString()
+						.replace(
+							"'DEPENDENCIES'",
+							insertHandlerDependencies
+						)
 						.replace(
 							'process.env.PAYMENT_TEST_TERMINAL_KEY',
 							process.env.PAYMENT_TEST_TERMINAL_KEY
@@ -735,6 +742,8 @@ const f = async () => {
 
 		const paymentTreeId = await deep.id(packageName, 'paymentTree');
 
+		console.log({paymentTreeId})
+
 		// Init
 
 		const testInit = async () => {
@@ -784,18 +793,19 @@ const f = async () => {
 
 			sleep(5000);
 
-			const payIdChildrenMp = await deep.select({
-				_by_path_item: {
-					item_id: { _eq: payId },
-					group_id: { _eq: paymentTreeId },
+			const payDownMp = await deep.select({
+				down: {
+					 link_id: { _eq: payId },
+					 tree_id: { _eq: paymentTreeId },
 				},
-			});
+		 });
 
-			if (payIdChildrenMp.error) {
-				console.log('payIdChildrenMp.error:', payIdChildrenMp.error);
+			if (payDownMp.error) {
+				console.log('payDownMp.error:', payDownMp.error);
 			} else {
-				console.log('payIdChildrenMp.data', payIdChildrenMp.data);
+				console.log('payDownMp.data', payDownMp.data);
 			}
+
 		};
 
 		await testInit();
