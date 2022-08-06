@@ -550,22 +550,23 @@ const f = async () => {
         `;
 
 		const payInsertHandler = async ({ deep, data: { newLink } }) => {
+			// const crypto = require('crypto');
+			// const axios = require('axios');
 			'DEPENDENCIES'
 			const payLink = newLink;
+			console.log("payInsertHandler is called");
 			const paymentTreeId = await deep.id(packageName, 'paymentTree');
 		const {
 			data: [
 				{ id: paymentId },
-				{
-					value: { value: sum },
-				},
+				{ value: sum }
 			],
-		} = await deep.select({
-			_by_path_item: {
-				item_id: { _eq: payLink.id },
-				group_id: { _eq: paymentTreeId },
+		} = await await deep.select({
+			down: {
+				 link_id: { _eq: payLink.id },
+				 tree_id: { _eq: paymentTreeId },
 			},
-		});
+	 });
 		console.log('paymentId', paymentId);
 		console.log('sum', sum);
 		const options = {
@@ -858,7 +859,6 @@ const f = async () => {
 						},
 					],
 				}
-				
 			});
 
 			console.log({ pay: payId });
