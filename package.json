@@ -70,7 +70,7 @@
   "type": "module",
   "devDependencies": {},
   "dependencies": {
-    "@deep-foundation/deeplinks": "0.0.91",
+    "@deep-foundation/deeplinks": "0.0.92",
     "@types/gulp": "^4.0.8",
     "concurrently": "^5.3.0",
     "cross-env": "^7.0.3",
