@@ -549,13 +549,10 @@ const f = async () => {
 	const sendInit = ${sendInit};
         `;
 
-		const payInsertHandler = async ({ _, data: { newLink: payLink } }) => {
-			console.log("Before deps");
-			return {data: `newLink is ${newLink}`};
+		const payInsertHandler = async ({ deep, data: { newLink } }) => {
 			'DEPENDENCIES'
-			const crypto = require('crypto');
-			const axios = require('axios');
-			console.log("payInsertHandler is called")
+			const payLink = newLink;
+			const paymentTreeId = await deep.id(packageName, 'paymentTree');
 		const {
 			data: [
 				{ id: paymentId },
