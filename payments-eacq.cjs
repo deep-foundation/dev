@@ -691,15 +691,15 @@ const f = async () => {
 						)
 						.replace(
 							'process.env.PAYMENT_TEST_TERMINAL_KEY',
-							process.env.PAYMENT_TEST_TERMINAL_KEY
+							`'${process.env.PAYMENT_TEST_TERMINAL_KEY}'`
 						)
 						.replace(
 							'process.env.PAYMENT_TEST_EMAIL',
-							process.env.PAYMENT_TEST_EMAIL
+							`'${process.env.PAYMENT_TEST_EMAIL}'`
 						)
 						.replace(
 							'process.env.PAYMENT_TEST_PHONE',
-							process.env.PAYMENT_TEST_PHONE
+							`'${process.env.PAYMENT_TEST_PHONE}'` 
 						),
 			},
 		},
