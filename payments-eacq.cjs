@@ -690,6 +690,10 @@ const f = async () => {
 							insertHandlerDependencies
 						)
 						.replace(
+							"packageName",
+							`'${packageName}'`
+						)
+						.replace(
 							'process.env.PAYMENT_TEST_TERMINAL_KEY',
 							`'${process.env.PAYMENT_TEST_TERMINAL_KEY}'`
 						)
@@ -700,7 +704,13 @@ const f = async () => {
 						.replace(
 							'process.env.PAYMENT_TEST_PHONE',
 							`'${process.env.PAYMENT_TEST_PHONE}'` 
-						),
+						)
+						.replace(
+							'process.env.PAYMENT_EACQ_AND_TEST_URL',
+							`'${process.env.PAYMENT_EACQ_AND_TEST_URL}'`
+						)
+						.replace('process.env.PAYMENT_EACQ_TERMINAL_PASSWORD',
+							`'${process.env.PAYMENT_EACQ_TERMINAL_PASSWORD}'`),
 			},
 		},
 	});
