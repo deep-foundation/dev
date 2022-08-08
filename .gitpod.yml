@@ -1,6 +1,6 @@
 image:
   file: .gitpod.Dockerfile
-  
+
 ports:
   - port: 3007
     onOpen: open-browser
@@ -25,6 +25,6 @@ vscode:
     - ms-azuretools.vscode-docker
 
 tasks:
-  - init: npm run gitpod-init;  docker pull deepf/deeplinks:main; npm install -g concurrently; npx concurrently --kill-others "npm run gitpod-start" "sleep 60; npm run gitpod-migrate";
+  - init: npm run gitpod-init;
   - command: npm run gitpod-start;
   
