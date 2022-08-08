@@ -187,72 +187,72 @@ const f = async () => {
       }] },
     }] },
     string: { data: { value: /*javascript*/`({ deep, data: { newLink } }) => {
-      throw new Error('abcd');
-      // const { data: [{ id: ruleId }] } = deep.insert({
-      //   type_id: deep.id('@deep-foundation/core', 'Rule'),
-      // });
-      // deep.insert({
-      //   type_id: deep.id('@deep-foundation/core', 'JoinRule'),
-      //   from_id: newLink.id,
-      //   to_id: ruleId,
-      // });
-      // // subject
-      // const { data: [{ id: subjectSelectorId }] } = deep.insert({
-      //   type_id: deep.id('@deep-foundation/core', 'Selector'),
-      // });
-      // const { data: [{ id: ruleSubjectId }] } = deep.insert({
-      //   type_id: deep.id('@deep-foundation/core', 'RuleSubject'),
-      //   from_id: ruleId,
-      //   to_id: subjectSelectorId,
-      // });
-      // const { data: [{ id: ruleSubjectIncludeId }] } = deep.insert({
-      //   type_id: deep.id('@deep-foundation/core', 'SelectorInclude'),
-      //   from_id: subjectSelectorId,
-      //   to_id: newLink.to_id,
-      // });
-      // deep.insert({
-      //   type_id: deep.id('@deep-foundation/core', 'SelectorTree'),
-      //   from_id: ruleSubjectIncludeId,
-      //   to_id: deep.id('@deep-foundation/core', 'joinTree'),
-      // });
-      // // object
-      // const { data: [{ id: objectSelectorId }] } = deep.insert({
-      //   type_id: deep.id('@deep-foundation/core', 'Selector'),
-      // });
-      // const { data: [{ id: ruleObjectId }] } = deep.insert({
-      //   type_id: deep.id('@deep-foundation/core', 'RuleObject'),
-      //   from_id: ruleId,
-      //   to_id: objectSelectorId,
-      // });
-      // const { data: [{ id: ruleObjectIncludeId }] } = deep.insert({
-      //   type_id: deep.id('@deep-foundation/core', 'SelectorInclude'),
-      //   from_id: objectSelectorId,
-      //   to_id: newLink.from_id,
-      // });
-      // deep.insert({
-      //   type_id: deep.id('@deep-foundation/core', 'SelectorTree'),
-      //   from_id: ruleObjectIncludeId,
-      //   to_id: deep.id('@deep-foundation/core', 'messagingTree'),
-      // });
-      // // action
-      // const { data: [{ id: actionSelectorId }] } = deep.insert({
-      //   type_id: deep.id('@deep-foundation/core', 'Selector'),
-      // });
-      // const { data: [{ id: ruleActionId }] } = deep.insert({
-      //   type_id: deep.id('@deep-foundation/core', 'RuleAction'),
-      //   from_id: ruleId,
-      //   to_id: actionSelectorId,
-      // });
-      // const { data: [{ id: ruleActionIncludeId }] } = deep.insert({
-      //   type_id: deep.id('@deep-foundation/core', 'SelectorInclude'),
-      //   from_id: actionSelectorId,
-      //   to_id: AllowSelect,
-      // });
-      // deep.insert({
-      //   type_id: deep.id('@deep-foundation/core', 'SelectorTree'),
-      //   from_id: ruleActionIncludeId,
-      //   to_id: deep.id('@deep-foundation/core', 'containTree'),
-      // });
+      // throw new Error('abcd');
+      const { data: [{ id: ruleId }] } = deep.insert({
+        type_id: deep.id('@deep-foundation/core', 'Rule'),
+      });
+      deep.insert({
+        type_id: deep.id('@deep-foundation/messaging', 'JoinRule'),
+        from_id: newLink.id,
+        to_id: ruleId,
+      });
+      // subject
+      const { data: [{ id: subjectSelectorId }] } = deep.insert({
+        type_id: deep.id('@deep-foundation/core', 'Selector'),
+      });
+      const { data: [{ id: ruleSubjectId }] } = deep.insert({
+        type_id: deep.id('@deep-foundation/core', 'RuleSubject'),
+        from_id: ruleId,
+        to_id: subjectSelectorId,
+      });
+      const { data: [{ id: ruleSubjectIncludeId }] } = deep.insert({
+        type_id: deep.id('@deep-foundation/core', 'SelectorInclude'),
+        from_id: subjectSelectorId,
+        to_id: newLink.to_id,
+      });
+      deep.insert({
+        type_id: deep.id('@deep-foundation/core', 'SelectorTree'),
+        from_id: ruleSubjectIncludeId,
+        to_id: deep.id('@deep-foundation/core', 'joinTree'),
+      });
+      // object
+      const { data: [{ id: objectSelectorId }] } = deep.insert({
+        type_id: deep.id('@deep-foundation/core', 'Selector'),
+      });
+      const { data: [{ id: ruleObjectId }] } = deep.insert({
+        type_id: deep.id('@deep-foundation/core', 'RuleObject'),
+        from_id: ruleId,
+        to_id: objectSelectorId,
+      });
+      const { data: [{ id: ruleObjectIncludeId }] } = deep.insert({
+        type_id: deep.id('@deep-foundation/core', 'SelectorInclude'),
+        from_id: objectSelectorId,
+        to_id: newLink.from_id,
+      });
+      deep.insert({
+        type_id: deep.id('@deep-foundation/core', 'SelectorTree'),
+        from_id: ruleObjectIncludeId,
+        to_id: deep.id('@deep-foundation/core', 'messagingTree'),
+      });
+      // action
+      const { data: [{ id: actionSelectorId }] } = deep.insert({
+        type_id: deep.id('@deep-foundation/core', 'Selector'),
+      });
+      const { data: [{ id: ruleActionId }] } = deep.insert({
+        type_id: deep.id('@deep-foundation/core', 'RuleAction'),
+        from_id: ruleId,
+        to_id: actionSelectorId,
+      });
+      const { data: [{ id: ruleActionIncludeId }] } = deep.insert({
+        type_id: deep.id('@deep-foundation/core', 'SelectorInclude'),
+        from_id: actionSelectorId,
+        to_id: AllowSelect,
+      });
+      deep.insert({
+        type_id: deep.id('@deep-foundation/core', 'SelectorTree'),
+        from_id: ruleActionIncludeId,
+        to_id: deep.id('@deep-foundation/core', 'containTree'),
+      });
     }` } },
   });
 
@@ -325,20 +325,20 @@ const f = async () => {
 
   console.log({ messagingTree });
 
-  const { data: [{ id: messageId1 }] } = await deep.insert({
-    type_id: MMessage,
-    string: { data: { value: 'first message' } },
-    out: { data: {
-      type_id: MReply,
-      to_id: deep.linkId,
-      out: { data: {
-        type_id: MJoin,
-        to_id: deep.linkId,
-      } }
-    } },
-  });
+  // const { data: [{ id: messageId1 }] } = await deep.insert({
+  //   type_id: MMessage,
+  //   string: { data: { value: 'first message' } },
+  //   out: { data: {
+  //     type_id: MReply,
+  //     to_id: deep.linkId,
+  //     out: { data: {
+  //       type_id: MJoin,
+  //       to_id: deep.linkId,
+  //     } }
+  //   } },
+  // });
 
-  console.log({ messageId1 });
+  // console.log({ messageId1 });
 
   const replyInsertPermission = await deep.insert({
     type_id: Rule,
