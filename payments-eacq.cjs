@@ -549,12 +549,11 @@ const f = async () => {
 	const sendInit = ${sendInit};
         `;
 
-		const payInsertHandler = async ({ deep, data: { newLink } }) => {
-			// const crypto = require('crypto');
-			// const axios = require('axios');
+		const payInsertHandler = async ({ deep, require, data: { newLink } }) => {
 			'DEPENDENCIES'
+			const crypto = require('crypto');
+			const axios = require('axios');
 			const payLink = newLink;
-			console.log("payInsertHandler is called");
 			const paymentTreeId = await deep.id(packageName, 'paymentTree');
 		const {
 			data: [
