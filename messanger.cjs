@@ -34,7 +34,7 @@ const f = async () => {
   const Package = await deep.id('@deep-foundation/core', 'Package');
 
   const SyncTextFile = await deep.id('@deep-foundation/core', 'SyncTextFile');
-  const dockerSupportsJs = await deep.id('@deep-foundation/core', 'dockerSupportsJs');
+  const plv8SupportsJs = await deep.id('@deep-foundation/core', 'plv8SupportsJs');
   const Handler = await deep.id('@deep-foundation/core', 'Handler');
   const HandleInsert = await deep.id('@deep-foundation/core', 'HandleInsert');
   const HandleDelete = await deep.id('@deep-foundation/core', 'HandleDelete');
@@ -68,7 +68,7 @@ const f = async () => {
     String,
     Package,
     SyncTextFile,
-    dockerSupportsJs,
+    plv8SupportsJs,
     Handler,
   HandleInsert,
   });
@@ -170,7 +170,7 @@ const f = async () => {
       from_id: packageId, // before created package
       string: { data: { value: 'joinInsertHandlerFile' } },
     }, {
-      from_id: dockerSupportsJs,
+      from_id: plv8SupportsJs,
       type_id: Handler,
       in: { data: [{
         type_id: Contain,
@@ -186,65 +186,73 @@ const f = async () => {
         }] },
       }] },
     }] },
-    string: { data: { value: `async ({ deep, data: { newLink } }) => {
-      const permission = await deep.insert({
-        type_id: await deep.id('@deep-foundation/core', 'Rule'),
-        in: { data: [{
-          type_id: await deep.id('@deep-foundation/messaging', 'JoinRule'),
-          from_id: newLink.id,
-        }] },
-        out: { data: [
-          {
-            type_id: await deep.id('@deep-foundation/core', 'RuleSubject'),
-            to: { data: {
-              type_id: await deep.id('@deep-foundation/core', 'Selector'),
-              out: { data: [
-                {
-                  type_id: await deep.id('@deep-foundation/core', 'SelectorInclude'),
-                  to_id: newLink.to_id,
-                  out: { data: {
-                    type_id: await deep.id('@deep-foundation/core', 'SelectorTree'),
-                    to_id: await deep.id('@deep-foundation/core', 'joinTree'),
-                  }, },
-                },
-              ] },
-            }, },
-          },
-          {
-            type_id: await deep.id('@deep-foundation/core', 'RuleObject'),
-            to: { data: {
-              type_id: await deep.id('@deep-foundation/core', 'Selector'),
-              out: { data: [
-                {
-                  type_id: await deep.id('@deep-foundation/core', 'SelectorInclude'),
-                  to_id: newLink.from_id,
-                  out: { data: {
-                    type_id: await deep.id('@deep-foundation/core', 'SelectorTree'),
-                    to_id: await deep.id('@deep-foundation/messaging', 'messagingTree'),
-                  }, },
-                },
-              ], },
-            }, },
-          },
-          {
-            type_id: await deep.id('@deep-foundation/core', 'RuleAction'),
-            to: { data: {
-              type_id: await deep.id('@deep-foundation/core', 'Selector'),
-              out: { data: [
-                {
-                  type_id: await deep.id('@deep-foundation/core', 'SelectorInclude'),
-                  to_id: await deep.id('@deep-foundation/core', 'AllowSelect'),
-                  out: { data: {
-                    type_id: await deep.id('@deep-foundation/core', 'SelectorTree'),
-                    to_id: await deep.id('@deep-foundation/core', 'containTree'),
-                  }, },
-                },
-              ], },
-            }, },
-          },
-        ], },
-      });
-      return permission;
+    string: { data: { value: /*javascript*/`({ deep, data: { newLink } }) => {
+      throw new Error('abcd');
+      // const { data: [{ id: ruleId }] } = deep.insert({
+      //   type_id: deep.id('@deep-foundation/core', 'Rule'),
+      // });
+      // deep.insert({
+      //   type_id: deep.id('@deep-foundation/core', 'JoinRule'),
+      //   from_id: newLink.id,
+      //   to_id: ruleId,
+      // });
+      // // subject
+      // const { data: [{ id: subjectSelectorId }] } = deep.insert({
+      //   type_id: deep.id('@deep-foundation/core', 'Selector'),
+      // });
+      // const { data: [{ id: ruleSubjectId }] } = deep.insert({
+      //   type_id: deep.id('@deep-foundation/core', 'RuleSubject'),
+      //   from_id: ruleId,
+      //   to_id: subjectSelectorId,
+      // });
+      // const { data: [{ id: ruleSubjectIncludeId }] } = deep.insert({
+      //   type_id: deep.id('@deep-foundation/core', 'SelectorInclude'),
+      //   from_id: subjectSelectorId,
+      //   to_id: newLink.to_id,
+      // });
+      // deep.insert({
+      //   type_id: deep.id('@deep-foundation/core', 'SelectorTree'),
+      //   from_id: ruleSubjectIncludeId,
+      //   to_id: deep.id('@deep-foundation/core', 'joinTree'),
+      // });
+      // // object
+      // const { data: [{ id: objectSelectorId }] } = deep.insert({
+      //   type_id: deep.id('@deep-foundation/core', 'Selector'),
+      // });
+      // const { data: [{ id: ruleObjectId }] } = deep.insert({
+      //   type_id: deep.id('@deep-foundation/core', 'RuleObject'),
+      //   from_id: ruleId,
+      //   to_id: objectSelectorId,
+      // });
+      // const { data: [{ id: ruleObjectIncludeId }] } = deep.insert({
+      //   type_id: deep.id('@deep-foundation/core', 'SelectorInclude'),
+      //   from_id: objectSelectorId,
+      //   to_id: newLink.from_id,
+      // });
+      // deep.insert({
+      //   type_id: deep.id('@deep-foundation/core', 'SelectorTree'),
+      //   from_id: ruleObjectIncludeId,
+      //   to_id: deep.id('@deep-foundation/core', 'messagingTree'),
+      // });
+      // // action
+      // const { data: [{ id: actionSelectorId }] } = deep.insert({
+      //   type_id: deep.id('@deep-foundation/core', 'Selector'),
+      // });
+      // const { data: [{ id: ruleActionId }] } = deep.insert({
+      //   type_id: deep.id('@deep-foundation/core', 'RuleAction'),
+      //   from_id: ruleId,
+      //   to_id: actionSelectorId,
+      // });
+      // const { data: [{ id: ruleActionIncludeId }] } = deep.insert({
+      //   type_id: deep.id('@deep-foundation/core', 'SelectorInclude'),
+      //   from_id: actionSelectorId,
+      //   to_id: AllowSelect,
+      // });
+      // deep.insert({
+      //   type_id: deep.id('@deep-foundation/core', 'SelectorTree'),
+      //   from_id: ruleActionIncludeId,
+      //   to_id: deep.id('@deep-foundation/core', 'containTree'),
+      // });
     }` } },
   });
 
@@ -257,7 +265,7 @@ const f = async () => {
       from_id: packageId, // before created package
       string: { data: { value: 'joinDeleteHandlerFile' } },
     }, {
-      from_id: dockerSupportsJs,
+      from_id: plv8SupportsJs,
       type_id: Handler,
       in: { data: [{
         type_id: Contain,
@@ -273,15 +281,12 @@ const f = async () => {
         }] },
       }] },
     }] },
-    string: { data: { value: `async ({ deep, data: { oldLink } }) => {
-      const permission = await deep.delete({
-        type_id: await deep.id('@deep-foundation/core', 'Rule'),
-        in: {
-          type_id: await deep.id('@deep-foundation/messaging', 'JoinRule'),
-          from_id: oldLink.id,
-        },
+    string: { data: { value: /*javascript*/`async ({ deep, data: { oldLink } }) => {
+      const { data: [{ to_id: ruleId }] } = deep.select({
+        type_id: deep.id('@deep-foundation/core', 'JoinRule'),
+        from_id: oldLink.id,
       });
-      return permission;
+      deep.delete(ruleId);
     }` } },
   });
 
