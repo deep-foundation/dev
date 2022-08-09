@@ -626,6 +626,7 @@ const f = async () => {
 			...options,
 			OrderId: paymentId,
 			CustomerKey: deep.linkId,
+			NotificationURL: process.env.PAYMENT_EACQ_AND_TEST_URL,
 			PayType: 'T',
 		});
 
