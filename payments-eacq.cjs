@@ -1007,17 +1007,22 @@ const f = async () => {
 
 		// Confirm
 
-		// const testConfirm = async () => {
-		// 	const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
-		// 	const page = await browser.newPage();
+		const testConfirm = async () => {
+			await testInit();
+			const {data: [{value: url}]} = await deep.select({
+				type_id: PUrl
+			});
 
-		// 	await payInBrowser({
-		// 		browser,
-		// 		page,
-		// 		url: initResult.response.PaymentURL,
-		// 	});
+			const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
+			const page = await browser.newPage();
 
-		// await testConfirm();
+			await payInBrowser({
+				browser,
+				page,
+				url,
+			});
+
+		await testConfirm();
 	}
 };
 
