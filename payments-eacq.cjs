@@ -1047,6 +1047,18 @@ const f = async () => {
 				page,
 				url,
 			});
+
+			sleep(5000);
+
+			const {
+				data,
+			} = await deep.select({
+				type_id: PPayed,
+			});
+
+			if(data.length === 0){
+				throw new Error('Payment is not confirmed');
+			}
 		};
 
 		await testConfirm();
