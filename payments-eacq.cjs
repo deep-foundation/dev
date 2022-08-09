@@ -596,27 +596,34 @@ const f = async () => {
 				tree_id: { _eq: paymentTreeId },
 			},
 		});
-		console.log('paymentId', paymentId);
-		console.log('sum', sum);
+		console.log({paymentId});
+		console.log({sum});
 		const options = {
 			TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
+			OrderId: payLink.id,
 			Amount: 5500,
+			Description: 'Test shopping',
+			CustomerKey: deep.linkId,
+			Language: 'ru',
+			Recurrent: 'Y',
+			DATA: {
+				Email: process.env.PAYMENT_TEST_EMAIL,
+				Phone: process.env.PAYMENT_TEST_PHONE,
+			},
 			Receipt: {
-				Items: [
-					{
-						Name: 'Test item',
-						Price: sum,
-						Quantity: 1,
-						Amount: 5500,
-						PaymentMethod: 'prepayment',
-						PaymentObject: 'service',
-						Tax: 'none',
-					},
-				],
+				Items: [{
+					Name: 'Test item',
+					Price: sum,
+					Quantity: 1,
+					Amount: 5500,
+					PaymentMethod: 'prepayment',
+					PaymentObject: 'service',
+					Tax: 'none',
+				}],
 				Email: process.env.PAYMENT_TEST_EMAIL,
 				Phone: process.env.PAYMENT_TEST_PHONE,
 				Taxation: 'usn_income',
-			},
+			}
 		};
 
 		const initResult = await sendInit({
