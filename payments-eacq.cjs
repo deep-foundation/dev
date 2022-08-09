@@ -748,6 +748,96 @@ const f = async () => {
 
 	console.log({ payInsertHandlerId });
 
+	const port = 443;
+	const route = '/tinkoff/payment-eacq';
+
+	const tinkoffNotificationhandlerDependencies = `
+	const errorsConverter = ${JSON.stringify(errorsConverter)};
+	const getError = ${getError};
+	const confirm = ${confirm};
+        `;
+
+	const tinkoffNotificationHandler = async (req, res, next, {deep, require,gql}) => { 
+		/* Dependencies placeholder */
+			if(req.Status == "AUTORIZED") {
+				await confirm({
+					TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
+					PaymentId: req.PaymentId,
+					Amount: req.Amount,
+					Token: req.Token,
+					Receipt: req.Receipt,
+				})
+			} else if(req.Status == "CONFIRMED") {
+			await deep.insert({
+				type_id: PPayed,
+				to_id: req.OrderId,
+				in: {
+					data: [
+						{
+							type_id: Contain,
+							from_id: deep.linkId,
+						},
+					],
+				}
+			});
+		} else if (req.Status == "CANCELED") {
+			await deep.insert({
+				type_id: PError,
+				to_id: req.OrderId,
+				in: {
+					data: [
+						{
+							type_id: Contain,
+							from_id: deep.linkId,
+							string: { data: { value: getError(req.ErrorCode) } },
+						},
+					],
+				}
+			});
+		}
+		res.send('ok');
+	 };
+
+	await deep.insert({
+		type_id: await deep.id('@deep-foundation/core', 'Port'),
+		number: { data: { value: port } },
+		in: { data: {
+			type_id: await deep.id('@deep-foundation/core', 'RouterListening'),
+			from: { data: {
+				type_id: await deep.id('@deep-foundation/core', 'Router'),
+				in: { data: {
+					type_id: await deep.id('@deep-foundation/core', 'RouterStringUse'),
+					string: { data: { value: route } },
+					from: { data: {
+						type_id: await deep.id('@deep-foundation/core', 'Route'),
+						out: { data: {
+							type_id: await deep.id('@deep-foundation/core', 'HandleRoute'),
+							to: { data: {
+								type_id: await deep.id('@deep-foundation/core', 'Handler'),
+								from_id: await deep.id('@deep-foundation/core', 'dockerSupportsJs'),
+								in: { data: {
+									type_id: await deep.id('@deep-foundation/core', 'Contain'),
+									// from_id: deep.linkId,
+									from_id: await deep.id('deep', 'admin'),
+									string: { data: { value: 'tinkoffNotificationHandler' } },
+								} },
+								to: { data: {
+									type_id: await deep.id('@deep-foundation/core', 'SyncTextFile'),
+									string: { data: {
+										value: tinkoffNotificationHandler.toString()
+										.replace("/* Dependencies placeholder */", tinkoffNotificationhandlerDependencies),
+									} },
+								} },
+							} },
+						} },
+					} },
+				} },
+			} },
+		} },
+	}, {  
+		name: 'INSERT_HANDLE_ROUTE_HIERARCHICAL',
+	})
+
 	{
 		// Tests
 
