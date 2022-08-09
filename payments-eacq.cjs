@@ -585,12 +585,12 @@ const f = async () => {
 	const Contain = ${Contain};
 	const paymentTreeId = ${paymentTreeId};
 	const PError = ${PError};
+	const crypto = require('crypto');
+	const axios = require('axios');
         `;
 
 	const payInsertHandler = async ({ deep, require, data: { newLink } }) => {
 		'DEPENDENCIES';
-		const crypto = require('crypto');
-		const axios = require('axios');
 		const payLink = newLink;
 		const {
 			data: [{ id: paymentId }, { value: sum }],
