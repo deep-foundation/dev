@@ -840,7 +840,7 @@ const f = async () => {
 					};
 					const payLink = newLink;
 					const {
-						data: [{ id: paymentId }, { value: sum }],
+						data: [{ id: paymentId }, { value: {value: sum} }],
 					} = await await deep.select({
 						down: {
 							link_id: { _eq: payLink.id },
