@@ -890,6 +890,20 @@ const f = async () => {
 
 		// Setup
 
+		// Types
+
+		const PPayment = await deep.id(packageName, 'Payment');
+		const PObject = await deep.id(packageName, 'Object');
+		const PSum = await deep.id(packageName, 'Sum');
+		const PPay = await deep.id(packageName, 'Pay');
+		const PUrl = await deep.id(packageName, 'Url');
+		const PPayed = await deep.id(packageName, 'Payed');
+		const PError = await deep.id(packageName, 'Error');
+
+		const paymentTreeId = await deep.id(packageName, 'paymentTree');
+
+		console.log({ paymentTreeId });
+
 		const Type = await deep.id('@deep-foundation/core', 'Type');
 		const Any = await deep.id('@deep-foundation/core', 'Any');
 
