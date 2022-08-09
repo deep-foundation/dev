@@ -798,92 +798,92 @@ const f = async () => {
 		res.send('ok');
 	};
 
-	await deep.insert(
-		{
-			type_id: await deep.id('@deep-foundation/core', 'Port'),
-			number: { data: { value: port } },
-			in: {
-				data: {
-					type_id: await deep.id('@deep-foundation/core', 'RouterListening'),
-					from: {
-						data: {
-							type_id: await deep.id('@deep-foundation/core', 'Router'),
-							in: {
-								data: {
-									type_id: await deep.id(
-										'@deep-foundation/core',
-										'RouterStringUse'
-									),
-									string: { data: { value: route } },
-									from: {
-										data: {
-											type_id: await deep.id('@deep-foundation/core', 'Route'),
-											out: {
-												data: {
-													type_id: await deep.id(
-														'@deep-foundation/core',
-														'HandleRoute'
-													),
-													to: {
-														data: {
-															type_id: await deep.id(
-																'@deep-foundation/core',
-																'Handler'
-															),
-															from_id: await deep.id(
-																'@deep-foundation/core',
-																'dockerSupportsJs'
-															),
-															in: {
-																data: {
-																	type_id: await deep.id(
-																		'@deep-foundation/core',
-																		'Contain'
-																	),
-																	// from_id: deep.linkId,
-																	from_id: await deep.id('deep', 'admin'),
-																	string: {
-																		data: {
-																			value: 'tinkoffNotificationHandler',
-																		},
-																	},
-																},
-															},
-															to: {
-																data: {
-																	type_id: await deep.id(
-																		'@deep-foundation/core',
-																		'SyncTextFile'
-																	),
-																	string: {
-																		data: {
-																			value: tinkoffNotificationHandler
-																				.toString()
-																				.replace(
-																					'/* Dependencies placeholder */',
-																					tinkoffNotificationhandlerDependencies
-																				),
-																		},
-																	},
-																},
-															},
-														},
-													},
-												},
-											},
-										},
-									},
-								},
-							},
-						},
-					},
-				},
-			},
-		},
-		{
-			name: 'INSERT_HANDLE_ROUTE_HIERARCHICAL',
-		}
-	);
+	// await deep.insert(
+	// 	{
+	// 		type_id: await deep.id('@deep-foundation/core', 'Port'),
+	// 		number: { data: { value: port } },
+	// 		in: {
+	// 			data: {
+	// 				type_id: await deep.id('@deep-foundation/core', 'RouterListening'),
+	// 				from: {
+	// 					data: {
+	// 						type_id: await deep.id('@deep-foundation/core', 'Router'),
+	// 						in: {
+	// 							data: {
+	// 								type_id: await deep.id(
+	// 									'@deep-foundation/core',
+	// 									'RouterStringUse'
+	// 								),
+	// 								string: { data: { value: route } },
+	// 								from: {
+	// 									data: {
+	// 										type_id: await deep.id('@deep-foundation/core', 'Route'),
+	// 										out: {
+	// 											data: {
+	// 												type_id: await deep.id(
+	// 													'@deep-foundation/core',
+	// 													'HandleRoute'
+	// 												),
+	// 												to: {
+	// 													data: {
+	// 														type_id: await deep.id(
+	// 															'@deep-foundation/core',
+	// 															'Handler'
+	// 														),
+	// 														from_id: await deep.id(
+	// 															'@deep-foundation/core',
+	// 															'dockerSupportsJs'
+	// 														),
+	// 														in: {
+	// 															data: {
+	// 																type_id: await deep.id(
+	// 																	'@deep-foundation/core',
+	// 																	'Contain'
+	// 																),
+	// 																// from_id: deep.linkId,
+	// 																from_id: await deep.id('deep', 'admin'),
+	// 																string: {
+	// 																	data: {
+	// 																		value: 'tinkoffNotificationHandler',
+	// 																	},
+	// 																},
+	// 															},
+	// 														},
+	// 														to: {
+	// 															data: {
+	// 																type_id: await deep.id(
+	// 																	'@deep-foundation/core',
+	// 																	'SyncTextFile'
+	// 																),
+	// 																string: {
+	// 																	data: {
+	// 																		value: tinkoffNotificationHandler
+	// 																			.toString()
+	// 																			.replace(
+	// 																				'/* Dependencies placeholder */',
+	// 																				tinkoffNotificationhandlerDependencies
+	// 																			),
+	// 																	},
+	// 																},
+	// 															},
+	// 														},
+	// 													},
+	// 												},
+	// 											},
+	// 										},
+	// 									},
+	// 								},
+	// 							},
+	// 						},
+	// 					},
+	// 				},
+	// 			},
+	// 		},
+	// 	},
+	// 	{
+	// 		name: 'INSERT_HANDLE_ROUTE_HIERARCHICAL',
+	// 	}
+	// );
 
 	{
 		// Tests
