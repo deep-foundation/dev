@@ -26,5 +26,5 @@ vscode:
 
 tasks:
   - init: npm run gitpod-init; npm i -g concurrently;
-  - command: npx concurrently "npm run gitpod-start" "npm run gitpod-migrate";
+  - command: npx concurrently "npm run gitpod-start" "npx wait-on http-get://localhost:8080/console && npm run gitpod-migrate";
   
