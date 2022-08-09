@@ -996,7 +996,7 @@ const f = async () => {
 		 });
 
 			if (payDownMp.error) {
-				console.log('payDownMp.error:', payDownMp.error);
+				throw payDownMp.error;
 			} else {
 				console.log('payDownMp.data', payDownMp.data);
 			}
