@@ -236,7 +236,39 @@ const f = async () => {
 		return init(options);
 	};
 
+	const confirm = async (options) => {
+		try {
+			const response = await axios({
+				method: 'post',
+				url: getUrl('Confirm'),
+				data: options,
 			});
+	
+			const error = getError(response.data.ErrorCode);
+	
+			const d = {
+				error,
+				request: options,
+				response: response.data,
+			};
+			debug(d);
+			options?.log && options.log(d);
+	
+			return {
+				error,
+				request: options,
+				response: response.data,
+			};
+		} catch (error) {
+			return {
+				error,
+				request: options,
+				response: null,
+			};
+		}
+	};
+	
+
 	const guest = await unloginedDeep.guest();
 	const guestDeep = new DeepClient({ deep: unloginedDeep, ...guest });
 	const admin = await guestDeep.login({
