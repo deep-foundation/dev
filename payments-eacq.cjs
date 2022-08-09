@@ -719,7 +719,7 @@ const f = async () => {
 		},
 		string: {
 			data: {
-				value: /*javascript*/ `
+				value: `
 				async ({ deep, require, data: { newLink } }) => {
 					const crypto = require('crypto');
 					const axios = require('axios');
