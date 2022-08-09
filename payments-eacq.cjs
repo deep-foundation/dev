@@ -963,6 +963,7 @@ const f = async () => {
 				type_id: PSum,
 				from_id: deep.linkId,
 				to_id: paymentId,
+				number: {data: {value: 150}},
 				in: {
 					data: [
 						{
