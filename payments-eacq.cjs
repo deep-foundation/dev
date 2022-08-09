@@ -979,22 +979,6 @@ const f = async () => {
 			console.log({ sum: sumId });
 
 			const {
-				data: [{ id: productId }],
-			} = await deep.insert({
-				type_id: Product,
-				in: {
-					data: [
-						{
-							type_id: Contain,
-							from_id: deep.linkId,
-						},
-					],
-				},
-			});
-
-			console.log({ product: productId });
-
-			const {
 				data: [{ id: objectId }],
 			} = await deep.insert({
 				type_id: PObject,
