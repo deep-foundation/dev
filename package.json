@@ -11,7 +11,7 @@
     "parentScript": "cross-env GREET=\"QWE\" cross-env-shell \"echo Hello $GREET\"",
     "childScript": "cross-env-shell \"echo Hello $GREET\"",
     "gulp": "gulp",
-    "test": "(cd packages/deepcase && npx fkill :3006)",
+    "test": "(cd packages/deeplinks; npm run test)",
     "gitpod-prepare": "npm run git-shh-to-https && (yes | sudo apt install screen) && (yes | sudo apt install rsync) && (yes | sudo apt install net-tools) && screen -S docker -d -m sudo docker-up",
     "packages": "(npx gulp packages:get) && (npx gulp packages:ci)",
     "packages-ci": "(cd packages && for d in */; do (cd $d && npm ci); done)",
@@ -70,9 +70,7 @@
   "type": "module",
   "devDependencies": {},
   "dependencies": {
-    "@deep-foundation/deeplinks": "^0.0.70",
-    "prompt": "^1.2.0",
-    "rimraf": "^3.0.2",
+    "@deep-foundation/deeplinks": "0.0.92",
     "@types/gulp": "^4.0.8",
     "concurrently": "^5.3.0",
     "cross-env": "^7.0.3",
@@ -82,6 +80,8 @@
     "i": "^0.3.6",
     "minimist": "^1.2.5",
     "npm": "^7.5.4",
+    "prompt": "^1.2.0",
+    "rimraf": "^3.0.2",
     "simple-git": "^2.45.0",
     "ts-node": "^9.1.1",
     "typescript": "^4.1.5"
