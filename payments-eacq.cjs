@@ -189,9 +189,9 @@ const f = async () => {
 	};
 
 	const getUrl = (method) =>
-		`${process.env.PAYMENT_EACQ_AND_TEST_URL}/${method}`;
+		`"${process.env.PAYMENT_EACQ_AND_TEST_URL}/${method}"`;
 	const getMarketUrl = (method) =>
-		`${process.env.PAYMENT_TINKOFF_MARKET_URL}/${method}`;
+		`"${process.env.PAYMENT_TINKOFF_MARKET_URL}/${method}"`;
 
 	const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -719,30 +719,246 @@ const f = async () => {
 		},
 		string: {
 			data: {
-				value: payInsertHandler
-					.toString()
-					.replace("/* Dependencies placeholder */", insertHandlerDependencies)
-					.replace('packageName', `'${packageName}'`)
-					.replace(
-						'process.env.PAYMENT_TEST_TERMINAL_KEY',
-						`'${process.env.PAYMENT_TEST_TERMINAL_KEY}'`
-					)
-					.replace(
-						'process.env.PAYMENT_TEST_EMAIL',
-						`'${process.env.PAYMENT_TEST_EMAIL}'`
-					)
-					.replace(
-						'process.env.PAYMENT_TEST_PHONE',
-						`'${process.env.PAYMENT_TEST_PHONE}'`
-					)
-					.replace(
-						'process.env.PAYMENT_EACQ_AND_TEST_URL',
-						`'${process.env.PAYMENT_EACQ_AND_TEST_URL}'`
-					)
-					.replace(
-						'process.env.PAYMENT_EACQ_TERMINAL_PASSWORD',
-						`'${process.env.PAYMENT_EACQ_TERMINAL_PASSWORD}'`
-					),
+				value: /*javascript*/ `
+				async ({ deep, require, data: { newLink } }) => {
+					const crypto = require('crypto');
+					const axios = require('axios');
+					
+					const errorsConverter = {
+						7: 'Покупатель не найден',
+						53: 'Обратитесь к продавцу',
+						99: 'Платеж отклонен',
+						100: 'Повторите попытку позже',
+						101: 'Не пройдена идентификация 3DS',
+						102: 'Операция отклонена, пожалуйста обратитесь в интернет-магазин или воспользуйтесь другой картой',
+						103: 'Повторите попытку позже',
+						119: 'Превышено кол-во запросов на авторизацию',
+						191: 'Некорректный статус договора, обратитесь к вашему менеджеру',
+						1001: 'Свяжитесь с банком, выпустившим карту, чтобы провести платеж',
+						1003: 'Неверный merchant ID',
+						1004: 'Карта украдена. Свяжитесь с банком, выпустившим карту',
+						1005: 'Платеж отклонен банком, выпустившим карту',
+						1006: 'Свяжитесь с банком, выпустившим карту, чтобы провести платеж',
+						1007: 'Карта украдена. Свяжитесь с банком, выпустившим карту',
+						1008: 'Платеж отклонен, необходима идентификация',
+						1012: 'Такие операции запрещены для этой карты',
+						1013: 'Повторите попытку позже',
+						1014: 'Карта недействительна. Свяжитесь с банком, выпустившим карту',
+						1015: 'Попробуйте снова или свяжитесь с банком, выпустившим карту',
+						1019: 'Платеж отклонен — попробуйте снова',
+						1030: 'Повторите попытку позже',
+						1033: 'Истек срок действия карты. Свяжитесь с банком, выпустившим карту',
+						1034: 'Попробуйте повторить попытку позже',
+						1038: 'Превышено количество попыток ввода ПИН-кода',
+						1039: 'Платеж отклонен — счет не найден',
+						1041: 'Карта утеряна. Свяжитесь с банком, выпустившим карту',
+						1043: 'Карта украдена. Свяжитесь с банком, выпустившим карту',
+						1051: 'Недостаточно средств на карте',
+						1053: 'Платеж отклонен — счет не найден',
+						1054: 'Истек срок действия карты',
+						1055: 'Неверный ПИН',
+						1057: 'Такие операции запрещены для этой карты',
+						1058: 'Такие операции запрещены для этой карты',
+						1059: 'Подозрение в мошенничестве. Свяжитесь с банком, выпустившим карту',
+						1061: 'Превышен дневной лимит платежей по карте',
+						1062: 'Платежи по карте ограничены',
+						1063: 'Операции по карте ограничены',
+						1064: 'Проверьте сумму',
+						1065: 'Превышен дневной лимит транзакций',
+						1075: 'Превышено число попыток ввода ПИН-кода',
+						1076: 'Платеж отклонен — попробуйте снова',
+						1077: 'Коды не совпадают — попробуйте снова',
+						1080: 'Неверный срок действия',
+						1082: 'Неверный CVV',
+						1086: 'Платеж отклонен — не получилось подтвердить ПИН-код',
+						1088: 'Ошибка шифрования. Попробуйте снова',
+						1089: 'Попробуйте повторить попытку позже',
+						1091: 'Банк, выпустивший карту недоступен для проведения авторизации',
+						1092: 'Платеж отклонен — попробуйте снова',
+						1093: 'Подозрение в мошенничестве. Свяжитесь с банком, выпустившим карту',
+						1094: 'Системная ошибка',
+						1096: 'Повторите попытку позже',
+						9999: 'Внутренняя ошибка системы',
+					};
+					const getError = (errorCode) =>
+					errorCode === '0' ? undefined : errorsConverter[errorCode] || 'broken';
+					const getUrl = (method) =>
+					"${process.env.PAYMENT_EACQ_AND_TEST_URL}" + "/" + method;
+					const _generateToken = (dataWithPassword) => {
+						const dataString = Object.keys(dataWithPassword)
+							.sort((a, b) => a.localeCompare(b))
+							.map((key) => dataWithPassword[key])
+							.reduce((acc, item) => acc.toString() + item.toString(), '');
+						const hash = crypto.createHash('sha256').update(dataString).digest('hex');
+						return hash;
+					};
+					const generateToken = (data) => {
+						const { Receipt, DATA, Shops, ...restData } = data;
+						const dataWithPassword = {
+							...restData,
+							Password: "${process.env.PAYMENT_EACQ_TERMINAL_PASSWORD}",
+						};
+						return _generateToken(dataWithPassword);
+					}; 
+					const init = async (options) => {
+						try {
+							const response = await axios({
+								method: 'post',
+								url: getUrl('Init'),
+								headers: {
+									'Content-Type': 'application/json',
+								},
+								data: options,
+							});
+				
+							const error = getError(response.data.ErrorCode);
+				
+							const d = {
+								error,
+								request: options,
+								response: response.data,
+							};
+				
+							options?.log && options.log(d);
+				
+							return d;
+						} catch (error) {
+							return {
+								error,
+								request: options,
+								response: null,
+							};
+						}
+					};
+					const sendInit = async (noTokenData) => {
+						const options = {
+							...noTokenData,
+							Token: generateToken(noTokenData),
+						};
+				
+						return init(options);
+					};
+					const payLink = newLink;
+					const {
+						data: [{ id: paymentId }, { value: sum }],
+					} = await await deep.select({
+						down: {
+							link_id: { _eq: payLink.id },
+							tree_id: { _eq: ${paymentTreeId} },
+						},
+					});
+					console.log({paymentId});
+					console.log({sum});
+					const options = {
+						TerminalKey: "${process.env.PAYMENT_TEST_TERMINAL_KEY}",
+						OrderId: payLink.id,
+						Amount: 5500,
+						Description: 'Test shopping',
+						CustomerKey: deep.linkId,
+						Language: 'ru',
+						Recurrent: 'Y',
+						DATA: {
+							Email: "${process.env.PAYMENT_TEST_EMAIL}",
+							Phone: "${process.env.PAYMENT_TEST_PHONE}",
+						},
+						Receipt: {
+							Items: [{
+								Name: 'Test item',
+								Price: sum,
+								Quantity: 1,
+								Amount: 5500,
+								PaymentMethod: 'prepayment',
+								PaymentObject: 'service',
+								Tax: 'none',
+							}],
+							Email: "${process.env.PAYMENT_TEST_EMAIL}",
+							Phone: "${process.env.PAYMENT_TEST_PHONE}",
+							Taxation: 'usn_income',
+						}
+					};
+			
+					const initResult = await sendInit({
+						...options,
+						OrderId: paymentId,
+						CustomerKey: deep.linkId,
+						NotificationURL: "${process.env.PAYMENT_EACQ_AND_TEST_URL}",
+						PayType: 'T',
+					});
+			
+					console.log({initResult})
+			
+					// if (initResult.error != undefined) {
+					// 	console.log('initResult.error:', initResult.error);
+					// 	const {
+					// 		data: [{ id: error }],
+					// 	} = await deep.insert({
+					// 		type_id: PError,
+					// 		to_id: payLink.id,
+					// 		string: { data: { value: initResult.error } },
+					// 		in: {
+					// 			data: [
+					// 				{
+					// 					type_id: Contain,
+					// 					from_id: deep.linkId,
+					// 				},
+					// 			],
+					// 		},
+					// 	});
+					// 	console.log({ error });
+					// } else {
+					// 	console.log('Payment URL:', initResult.response.PaymentURL);
+					// 	const {
+					// 		data: [{ id: url }],
+					// 	} = await deep.insert({
+					// 		type_id: PUrl,
+					// 		to_id: payLink.id,
+					// 		string: { data: { value: initResult.response.PaymentURL } },
+					// 		in: {
+					// 			data: [
+					// 				{
+					// 					type_id: Contain,
+					// 					from_id: deep.linkId,
+					// 				},
+					// 			],
+					// 		},
+					// 	});
+					// 	console.log({ url });
+					// }
+			
+					// return initResult;
+					return {data: "dataString"};
+				};
+				`
+
+				// payInsertHandler
+				// 	.toString()
+				// 	.replace("/* Dependencies placeholder */", insertHandlerDependencies)
+				// 	.replace('packageName', `'${packageName}'`)
+				// 	.replace(
+				// 		'process.env.PAYMENT_TEST_TERMINAL_KEY',
+				// 		`'"${process.env.PAYMENT_TEST_TERMINAL_KEY}"'`
+				// 	)
+				// 	.replace(
+				// 		'process.env.PAYMENT_TEST_EMAIL',
+				// 		`'"${process.env.PAYMENT_TEST_EMAIL}"'`
+				// 	)
+				// 	.replace(
+				// 		'process.env.PAYMENT_TEST_PHONE',
+				// 		`'"${process.env.PAYMENT_TEST_PHONE}"'`
+				// 	)
+				// 	.replace(
+				// 		'process.env.PAYMENT_EACQ_AND_TEST_URL',
+				// 		`'"${process.env.PAYMENT_EACQ_AND_TEST_URL}"'`
+				// 	)
+				// 	.replace(
+				// 		'process.env.PAYMENT_EACQ_TERMINAL_PASSWORD',
+				// 		`'"${process.env.PAYMENT_EACQ_TERMINAL_PASSWORD}"'`
+				// 	)
+				// 	.replace(
+				// 		'process.env.PAYMENT_EACQ_TERMINAL_PASSWORD'
+				// 		`'"${process.env.PAYMENT_EACQ_TERMINAL_PASSWORD}"'`
+				// 	)
+				// 	, 
 			},
 		},
 	});
