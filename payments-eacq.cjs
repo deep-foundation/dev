@@ -586,7 +586,7 @@ const f = async () => {
         `;
 
 	const payInsertHandler = async ({ deep, require, data: { newLink } }) => {
-		'DEPENDENCIES';
+		/* Dependencies placeholder */
 		const payLink = newLink;
 		const {
 			data: [{ id: paymentId }, { value: sum }],
@@ -712,7 +712,7 @@ const f = async () => {
 			data: {
 				value: payInsertHandler
 					.toString()
-					.replace("'DEPENDENCIES'", insertHandlerDependencies)
+					.replace("/* Dependencies placeholder */", insertHandlerDependencies)
 					.replace('packageName', `'${packageName}'`)
 					.replace(
 						'process.env.PAYMENT_TEST_TERMINAL_KEY',
