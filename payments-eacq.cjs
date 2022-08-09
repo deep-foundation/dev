@@ -213,14 +213,10 @@ const f = async () => {
 				request: options,
 				response: response.data,
 			};
-			debug(d);
+
 			options?.log && options.log(d);
 
-			return {
-				error,
-				request: options,
-				response: response.data,
-			};
+			return d;
 		} catch (error) {
 			return {
 				error,
