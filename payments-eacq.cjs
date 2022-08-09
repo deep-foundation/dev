@@ -627,46 +627,48 @@ const f = async () => {
 			PayType: 'T',
 		});
 
-		if (initResult.error != undefined) {
-			console.log('initResult.error:', initResult.error);
-			const {
-				data: [{ id: error }],
-			} = await deep.insert({
-				type_id: PError,
-				to_id: payLink.id,
-				string: { data: { value: initResult.error } },
-				in: {
-					data: [
-						{
-							type_id: Contain,
-							from_id: deep.linkId,
-						},
-					],
-				},
-			});
+		console.log({initResult})
 
-			console.log({ error });
-		} else {
-			console.log('Payment URL:', initResult.response.PaymentURL);
-			const {
-				data: [{ id: url }],
-			} = await deep.insert({
-				type_id: PUrl,
-				to_id: payLink.id,
-				string: { data: { value: initResult.response.PaymentURL } },
-				in: {
-					data: [
-						{
-							type_id: Contain,
-							from_id: deep.linkId,
-						},
-					],
-				},
-			});
-			console.log({ url });
-		}
+		// if (initResult.error != undefined) {
+		// 	console.log('initResult.error:', initResult.error);
+		// 	const {
+		// 		data: [{ id: error }],
+		// 	} = await deep.insert({
+		// 		type_id: PError,
+		// 		to_id: payLink.id,
+		// 		string: { data: { value: initResult.error } },
+		// 		in: {
+		// 			data: [
+		// 				{
+		// 					type_id: Contain,
+		// 					from_id: deep.linkId,
+		// 				},
+		// 			],
+		// 		},
+		// 	});
+		// 	console.log({ error });
+		// } else {
+		// 	console.log('Payment URL:', initResult.response.PaymentURL);
+		// 	const {
+		// 		data: [{ id: url }],
+		// 	} = await deep.insert({
+		// 		type_id: PUrl,
+		// 		to_id: payLink.id,
+		// 		string: { data: { value: initResult.response.PaymentURL } },
+		// 		in: {
+		// 			data: [
+		// 				{
+		// 					type_id: Contain,
+		// 					from_id: deep.linkId,
+		// 				},
+		// 			],
+		// 		},
+		// 	});
+		// 	console.log({ url });
+		// }
 
-		return initResult;
+		// return initResult;
+		return {data: "dataString"};
 	};
 
 	const {
