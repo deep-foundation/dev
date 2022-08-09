@@ -582,6 +582,7 @@ const f = async () => {
 	const generateToken = ${generateToken}; 
 	const init = ${init};
 	const sendInit = ${sendInit};
+	const Contain = ${Contain};
 	const paymentTreeId = ${paymentTreeId};
 	const PError = ${PError};
         `;
