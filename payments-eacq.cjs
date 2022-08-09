@@ -582,6 +582,8 @@ const f = async () => {
 	const generateToken = ${generateToken}; 
 	const init = ${init};
 	const sendInit = ${sendInit};
+	const paymentTreeId = ${paymentTreeId};
+	const PError = ${PError};
         `;
 
 	const payInsertHandler = async ({ deep, require, data: { newLink } }) => {
@@ -589,7 +591,6 @@ const f = async () => {
 		const crypto = require('crypto');
 		const axios = require('axios');
 		const payLink = newLink;
-		const paymentTreeId = await deep.id(packageName, 'paymentTree');
 		const {
 			data: [{ id: paymentId }, { value: sum }],
 		} = await await deep.select({
