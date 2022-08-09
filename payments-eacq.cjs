@@ -925,19 +925,23 @@ const f = async () => {
 
 		console.log({ Product });
 
-		// Types
+		// Instances
 
-		const PPayment = await deep.id(packageName, 'Payment');
-		const PObject = await deep.id(packageName, 'Object');
-		const PSum = await deep.id(packageName, 'Sum');
-		const PPay = await deep.id(packageName, 'Pay');
-		const PUrl = await deep.id(packageName, 'Url');
-		const PPayed = await deep.id(packageName, 'Payed');
-		const PError = await deep.id(packageName, 'Error');
+		const {
+			data: [{ id: productId }],
+		} = await deep.insert({
+			type_id: Product,
+			in: {
+				data: [
+					{
+						type_id: Contain,
+						from_id: deep.linkId,
+					},
+				],
+			},
+		});
 
-		const paymentTreeId = await deep.id(packageName, 'paymentTree');
-
-		console.log({ paymentTreeId });
+		console.log({ product: productId });
 
 		// Init
 
