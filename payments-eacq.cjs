@@ -622,7 +622,7 @@ const f = async () => {
 			},
 		};
 
-		const initResult = await await sendInit({
+		const initResult = await sendInit({
 			...options,
 			OrderId: paymentId,
 			CustomerKey: deep.linkId,
