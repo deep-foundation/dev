@@ -585,99 +585,6 @@ const f = async () => {
 	const axios = require('axios');
         `;
 
-	const payInsertHandler = async ({ deep, require, data: { newLink } }) => {
-		/* Dependencies placeholder */
-		const payLink = newLink;
-		const {
-			data: [{ id: paymentId }, { value: sum }],
-		} = await await deep.select({
-			down: {
-				link_id: { _eq: payLink.id },
-				tree_id: { _eq: paymentTreeId },
-			},
-		});
-		console.log({paymentId});
-		console.log({sum});
-		const options = {
-			TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
-			OrderId: payLink.id,
-			Amount: 5500,
-			Description: 'Test shopping',
-			CustomerKey: deep.linkId,
-			Language: 'ru',
-			Recurrent: 'Y',
-			DATA: {
-				Email: process.env.PAYMENT_TEST_EMAIL,
-				Phone: process.env.PAYMENT_TEST_PHONE,
-			},
-			Receipt: {
-				Items: [{
-					Name: 'Test item',
-					Price: sum,
-					Quantity: 1,
-					Amount: 5500,
-					PaymentMethod: 'prepayment',
-					PaymentObject: 'service',
-					Tax: 'none',
-				}],
-				Email: process.env.PAYMENT_TEST_EMAIL,
-				Phone: process.env.PAYMENT_TEST_PHONE,
-				Taxation: 'usn_income',
-			}
-		};
-
-		const initResult = await sendInit({
-			...options,
-			OrderId: paymentId,
-			CustomerKey: deep.linkId,
-			NotificationURL: process.env.PAYMENT_EACQ_AND_TEST_URL,
-			PayType: 'T',
-		});
-
-		console.log({initResult})
-
-		// if (initResult.error != undefined) {
-		// 	console.log('initResult.error:', initResult.error);
-		// 	const {
-		// 		data: [{ id: error }],
-		// 	} = await deep.insert({
-		// 		type_id: PError,
-		// 		to_id: payLink.id,
-		// 		string: { data: { value: initResult.error } },
-		// 		in: {
-		// 			data: [
-		// 				{
-		// 					type_id: Contain,
-		// 					from_id: deep.linkId,
-		// 				},
-		// 			],
-		// 		},
-		// 	});
-		// 	console.log({ error });
-		// } else {
-		// 	console.log('Payment URL:', initResult.response.PaymentURL);
-		// 	const {
-		// 		data: [{ id: url }],
-		// 	} = await deep.insert({
-		// 		type_id: PUrl,
-		// 		to_id: payLink.id,
-		// 		string: { data: { value: initResult.response.PaymentURL } },
-		// 		in: {
-		// 			data: [
-		// 				{
-		// 					type_id: Contain,
-		// 					from_id: deep.linkId,
-		// 				},
-		// 			],
-		// 		},
-		// 	});
-		// 	console.log({ url });
-		// }
-
-		// return initResult;
-		return {data: "dataString"};
-	};
-
 	const {
 		data: [{ id: payInsertHandlerId }],
 	} = await deep.insert({
@@ -841,12 +748,16 @@ const f = async () => {
 					const payLink = newLink;
 					const {
 						data: [{ id: paymentId }, { value: {value: sum} }],
-					} = await await deep.select({
+					} mpDownPay = await await deep.select({
 						down: {
 							link_id: { _eq: payLink.id },
 							tree_id: { _eq: ${paymentTreeId} },
 						},
 					});
+
+					const paymentId = mpDownPay.find(link => link.type_id == ${PPayment}).id;
+					const sum = mpDownPay.find(link => link.type_id == ${PSum}).value.value; 
+
 					console.log({paymentId});
 					console.log({sum});
 					const options = {
@@ -1315,18 +1226,17 @@ const f = async () => {
 
 			sleep(5000);
 
-			const payDownMp = await deep.select({
+			const mpDownPay = await deep.select({
 				down: {
 					link_id: { _eq: payId },
 					tree_id: { _eq: paymentTreeId },
 				},
 			});
 
-			if (payDownMp.error) {
-				throw payDownMp.error;
-			} else {
-				console.log('payDownMp.data', payDownMp.data);
-			}
+			const hasUrl = mpDownPay.find(link => link.type_id == PUrl);
+			if(!hasUrl) {
+				throw new Error("Url not found.");
+			} 
 		};
 
 		await testInit();
