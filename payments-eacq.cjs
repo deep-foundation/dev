@@ -746,17 +746,15 @@ const f = async () => {
 						return init(options);
 					};
 					const payLink = newLink;
-					const {
-						data: [{ id: paymentId }, { value: {value: sum} }],
-					} mpDownPay = await await deep.select({
+					const mpDownPay = await await deep.select({
 						down: {
 							link_id: { _eq: payLink.id },
 							tree_id: { _eq: ${paymentTreeId} },
 						},
 					});
 
-					const paymentId = mpDownPay.find(link => link.type_id == ${PPayment}).id;
-					const sum = mpDownPay.find(link => link.type_id == ${PSum}).value.value; 
+					const paymentId = mpDownPay.data.find(link => link.type_id == ${PPayment}).id;
+					const sum = mpDownPay.data.find(link => link.type_id == ${PSum}).value.value; 
 
 					console.log({paymentId});
 					console.log({sum});
