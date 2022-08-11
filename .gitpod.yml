@@ -25,6 +25,6 @@ vscode:
     - ms-azuretools.vscode-docker
 
 tasks:
-  - init: npm run gitpod-init;
-  - command: npm run gitpod-start;
+  - init: npm run gitpod-init; npm i -g concurrently;
+  - command: npx concurrently "npm run gitpod-start" "npx wait-on http-get://localhost:8080/console && npm run gitpod-migrate";
   
