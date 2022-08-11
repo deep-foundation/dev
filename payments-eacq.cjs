@@ -1231,7 +1231,7 @@ const f = async () => {
 				},
 			});
 
-			const hasUrl = mpDownPay.find(link => link.type_id == PUrl);
+			const hasUrl = mpDownPay.data.find(link => link.type_id == PUrl);
 			if(!hasUrl) {
 				throw new Error("Url not found.");
 			} 
