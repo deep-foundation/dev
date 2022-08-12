@@ -790,7 +790,7 @@ const f = async () => {
 						...options,
 						OrderId: paymentId,
 						CustomerKey: deep.linkId,
-						NotificationURL: "${process.env.PAYMENT_EACQ_AND_TEST_URL}",
+						NotificationURL: "${process.env.PAYMENT_EACQ_AND_TEST_NOTIFICATION_URL}",
 						PayType: 'T',
 					});
 			
@@ -877,7 +877,7 @@ const f = async () => {
 	await deep.insert(
 		{
 			type_id: await deep.id('@deep-foundation/core', 'Port'),
-			number: { data: { value: process.env.PAYMENT_EACQ_AND_TEST_PORT } },
+			number: { data: { value: process.env.PAYMENT_EACQ_AND_TEST_NOTIFICATION_PORT } },
 			in: {
 				data: {
 					type_id: await deep.id('@deep-foundation/core', 'RouterListening'),
@@ -890,7 +890,7 @@ const f = async () => {
 										'@deep-foundation/core',
 										'RouterStringUse'
 									),
-									string: { data: { value: process.env.PAYMENT_EACQ_AND_TEST_ROUTE } },
+									string: { data: { value: process.env.PAYMENT_EACQ_AND_TEST_NOTIFICATION_ROUTE } },
 									from: {
 										data: {
 											type_id: await deep.id('@deep-foundation/core', 'Route'),
@@ -1015,8 +1015,6 @@ const f = async () => {
 																							request: options,
 																							response: response.data,
 																						};
-																						debug(d);
-																						options?.log && options.log(d);
 																			
 																						return {
 																							error,
