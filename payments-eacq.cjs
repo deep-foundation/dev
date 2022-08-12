@@ -920,7 +920,7 @@ const f = async () => {
 								data: [
 									{
 										type_id: ${Contain},
-										from_id: deep.linkId,
+										from_id: ${deep.linkId},
 									},
 								],
 							},
