@@ -12,6 +12,8 @@ const {
 
 const packageName = '@deep-foundation/payments-eacq';
 
+const PRICE = 5500;
+
 const payInBrowser = async ({ page, browser, url }) => {
 	await page.goto(url, { waitUntil: 'networkidle2' });
 	await sleep(3000);
@@ -1165,6 +1167,7 @@ const f = async () => {
 	);
 
 	const callTests = async () => {
+
 		const PPayment = await deep.id(packageName, 'Payment');
 		const PObject = await deep.id(packageName, 'Object');
 		const PSum = await deep.id(packageName, 'Sum');
@@ -1214,7 +1217,7 @@ const f = async () => {
 
 		console.log({ product: productId });
 
-		const PRICE = 5500;
+		
 
 		const testInit = async () => {
 			const {
