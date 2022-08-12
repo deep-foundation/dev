@@ -761,7 +761,7 @@ const f = async () => {
 					const options = {
 						TerminalKey: "${process.env.PAYMENT_TEST_TERMINAL_KEY}",
 						OrderId: payLink.id,
-						Amount: 5500,
+						Amount: ${PRICE},
 						Description: 'Test shopping',
 						CustomerKey: deep.linkId,
 						Language: 'ru',
@@ -775,7 +775,7 @@ const f = async () => {
 								Name: 'Test item',
 								Price: sum,
 								Quantity: 1,
-								Amount: 5500,
+								Amount: ${PRICE},
 								PaymentMethod: 'prepayment',
 								PaymentObject: 'service',
 								Tax: 'none',
@@ -1130,7 +1130,7 @@ const f = async () => {
 
 		console.log({ Product });
 
-		// Instances
+		// Deep link instances
 
 		const {
 			data: [{ id: productId }],
@@ -1147,6 +1147,10 @@ const f = async () => {
 		});
 
 		console.log({ product: productId });
+
+		// Constants
+
+		const PRICE = 5500;
 
 		// Init
 
@@ -1269,7 +1273,12 @@ const f = async () => {
 			}
 		};
 
-		// await testConfirm();
+		await testConfirm();
+	}
+
+
+	const testCancelAfterPayBeforeConfirmFullPrice = async () => {
+		
 	}
 };
 
