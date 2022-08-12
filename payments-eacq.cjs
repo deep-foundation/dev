@@ -1159,13 +1159,7 @@ const f = async () => {
 		}
 	);
 
-	{
-		// Tests
-
-		// Setup
-
-		// Types
-
+	const callTests = async () => {
 		const PPayment = await deep.id(packageName, 'Payment');
 		const PObject = await deep.id(packageName, 'Object');
 		const PSum = await deep.id(packageName, 'Sum');
@@ -1199,8 +1193,6 @@ const f = async () => {
 
 		console.log({ Product });
 
-		// Deep link instances
-
 		const {
 			data: [{ id: productId }],
 		} = await deep.insert({
@@ -1217,11 +1209,7 @@ const f = async () => {
 
 		console.log({ product: productId });
 
-		// Constants
-
 		const PRICE = 5500;
-
-		// Init
 
 		const testInit = async () => {
 			const {
@@ -1346,76 +1334,78 @@ const f = async () => {
 		};
 
 		await testConfirm();
-	}
 
-	// Cancel
+		const testCancel = async () => {
+			const testCancelAfterPay = async () => {
+				const testCancelBeforeConfirmFullPrice = async () => {
 	
-	const testCancel = async () => {
-		const testCancelAfterPay = async () => {
-			const testCancelBeforeConfirmFullPrice = async () => {
-
+				}
+				const testCancelBeforeConfirmCustomPriceX2 = async () => {
+	
+				}
+				const testCancelAfterConfirmFullPrice = async () => {
+	
+				}
+				const testCancelAfterConfirmCustomPriceX2 = async () => {
+	
+				}
 			}
-			const testCancelBeforeConfirmCustomPriceX2 = async () => {
-
-			}
-			const testCancelAfterConfirmFullPrice = async () => {
-
-			}
-			const testCancelAfterConfirmCustomPriceX2 = async () => {
-
+			const testCancelBeforePay = async () => {
+				 
 			}
 		}
-		const testCancelBeforePay = async () => {
-			 
-		}
-	}
-
-	const testGetState = async () => {
-		await testFinishAuthorize();
-
-		const paymentId = await deep.select({type_id: PPayment});
-
-		const noTokenGetStateData = {
-			TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
-		};
-
-		const newGetStateData = {
-			...noTokenGetStateData,
-			PaymentId: paymentId,
-		};
-
-
-		const options = {
-			...newGetStateData,
-			Token: generateToken(newGetStateData),
-		};
-
-
-		const result = await getState(options);
-
-		expect(result.error).to.equal(undefined);
-	}
-
-	await testGetState();
-
-	const testGetCardList = async () => {
-		await testFinishAuthorize();
-
-		const noTokenGetCardListData = {
-			TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
-			CustomerKey: customerKey,
-		};
-
-		const options = {
-			...noTokenGetStateData,
-			Token: generateToken(noTokenGetStateData),
-		};
-
-		const result = await getCardList(options);
-
-		expect(result.error).to.equal(undefined);
-	}
 	
+		const testGetState = async () => {
+			await testFinishAuthorize();
+	
+			const paymentId = await deep.select({type_id: PPayment});
+	
+			const noTokenGetStateData = {
+				TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
+			};
+	
+			const newGetStateData = {
+				...noTokenGetStateData,
+				PaymentId: paymentId,
+			};
+	
+	
+			const options = {
+				...newGetStateData,
+				Token: generateToken(newGetStateData),
+			};
+	
+	
+			const result = await getState(options);
+	
+			expect(result.error).to.equal(undefined);
+		}
+	
+		await testGetState();
+	
+		const testGetCardList = async () => {
+			await testFinishAuthorize();
+	
+			const noTokenGetCardListData = {
+				TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
+				CustomerKey: customerKey,
+			};
+	
+			const options = {
+				...noTokenGetStateData,
+				Token: generateToken(noTokenGetStateData),
+			};
+	
+			const result = await getCardList(options);
+	
+			expect(result.error).to.equal(undefined);
+		}
+	
+		await testGetCardList();
+	}
+
+	await callTests();
+
 };
 
 f();
