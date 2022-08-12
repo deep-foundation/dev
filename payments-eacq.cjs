@@ -602,6 +602,7 @@ const f = async () => {
 			],
 		},
 	});
+	
 
 	const {
 		data: [{ id: PSumProvider }],
@@ -1121,7 +1122,7 @@ const f = async () => {
 																							data: [
 																								{
 																									type_id: ${Contain},
-																									from_id: deep.linkId,
+																									from_id: ${tinkoffProviderId},
 																								},
 																							],
 																						},
@@ -1134,7 +1135,7 @@ const f = async () => {
 																							data: [
 																								{
 																									type_id: ${Contain},
-																									from_id: deep.linkId,
+																									from_id: ${tinkoffProviderId},
 																									string: { data: { value: getError(req.ErrorCode) } },
 																								},
 																							],
@@ -1182,6 +1183,14 @@ const f = async () => {
 
 		const Type = await deep.id('@deep-foundation/core', 'Type');
 		const Any = await deep.id('@deep-foundation/core', 'Any');
+
+		const {data: [{id: tinkoffProviderId}]} = await deep.insert({
+			type_id: PTinkoffProvider,
+		});
+
+		const {data: [{id: sumProviderId}]} = await deep.insert({
+			type_id: PTinkoffProvider,
+		});
 
 		const {
 			data: [{ id: Product }],
@@ -1238,7 +1247,7 @@ const f = async () => {
 				data: [{ id: sumId }],
 			} = await deep.insert({
 				type_id: PSum,
-				from_id: deep.linkId,
+				from_id: sumProviderId,
 				to_id: paymentId,
 				number: { data: { value: 150 } },
 				in: {
