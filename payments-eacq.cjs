@@ -870,7 +870,7 @@ const f = async () => {
 					// 	const {
 					// 		data: [{ id: error }],
 					// 	} = await deep.insert({
-					// 		type_id: PError,
+					// 		type_id: ${PError},
 					// 		to_id: payLink.id,
 					// 		string: { data: { value: initResult.error } },
 					// 		in: {
@@ -888,13 +888,13 @@ const f = async () => {
 					// 	const {
 					// 		data: [{ id: url }],
 					// 	} = await deep.insert({
-					// 		type_id: PUrl,
+					// 		type_id: ${PUrl},
 					// 		to_id: payLink.id,
 					// 		string: { data: { value: initResult.response.PaymentURL } },
 					// 		in: {
 					// 			data: [
 					// 				{
-					// 					type_id: Contain,
+					// 					type_id: ${Contain},
 					// 					from_id: deep.linkId,
 					// 				},
 					// 			],
