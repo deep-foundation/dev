@@ -1229,6 +1229,7 @@ const f = async () => {
 		
 
 		const testInit = async () => {
+			console.log("testInit");
 			const {
 				data: [{ id: paymentId }],
 			} = await deep.insert({
@@ -1307,6 +1308,8 @@ const f = async () => {
 				},
 			});
 
+			console.log({ mpDownPay });
+
 			const hasUrl = mpDownPay.data.find((link) => link.type_id == PUrl);
 			if (!hasUrl) {
 				throw new Error('Url not found.');
@@ -1316,6 +1319,7 @@ const f = async () => {
 		await testInit();
 
 		const testFinishAuthorize = async () => {
+			console.log("testFinishAuthorize");
 			await testInit();
 			const {
 				data: [{ value: url }],
@@ -1334,6 +1338,7 @@ const f = async () => {
 		};
 
 		const testConfirm = async () => {
+			console.log("testConfirm");
 			testFinishAuthorize();
 
 			sleep(5000);
@@ -1360,6 +1365,7 @@ const f = async () => {
 		};
 
 		const testGetState = async () => {
+			console.log("testGetState");
 			await testFinishAuthorize();
 
 			const paymentId = await deep.select({ type_id: PPayment });
@@ -1386,6 +1392,7 @@ const f = async () => {
 		await testGetState();
 
 		const testGetCardList = async () => {
+			console.log("testGetCardList");
 			await testFinishAuthorize();
 
 			const noTokenGetCardListData = {
