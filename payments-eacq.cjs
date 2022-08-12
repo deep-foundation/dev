@@ -1276,10 +1276,35 @@ const f = async () => {
 		await testConfirm();
 	}
 
+	// Cancel
+	
+	const testCancel = async () => {
+		const testCancelAfterPay = async () => {
+			const testCancelBeforeConfirmFullPrice = async () => {
+
+			}
+			const testCancelBeforeConfirmCustomPriceX2 = async () => {
+
+			}
+			const testCancelAfterConfirmFullPrice = async () => {
+
+			}
+			const testCancelAfterConfirmCustomPriceX2 = async () => {
+
+			}
+		}
+		const testCancelBeforePay = async () => {
+			 
+		}
+	}
+
 
 	const testCancelAfterPayBeforeConfirmFullPrice = async () => {
-		
+		await testConfirm();
+
 	}
+
+	const testCancelAfterPayAfterConfirmCustom
 };
 
 f();
