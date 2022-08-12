@@ -193,6 +193,38 @@ const f = async () => {
 	const getMarketUrl = (method) =>
 		`"${process.env.PAYMENT_TINKOFF_MARKET_URL}/${method}"`;
 
+		const getState = async (options) => {
+			try {
+				const response = await axios({
+					method: 'post',
+					url: getUrl('GetState'),
+					data: options,
+				});
+		
+				const error = getError(response.data.ErrorCode);
+		
+				const d = {
+					error,
+					request: options,
+					response: response.data,
+				};
+				debug(d);
+				options?.log && options.log(d);
+		
+				return {
+					error,
+					request: options,
+					response: response.data,
+				};
+			} catch (error) {
+				return {
+					error,
+					request: options,
+					response: null,
+				};
+			}
+		};
+
 		const getCardList = async (options) => {
 			try {
 				const response = await axios({
