@@ -910,7 +910,7 @@ const f = async () => {
 					} else {
 						console.log('Payment URL:', initResult.response.PaymentURL);
 						const {
-							data: [{ id: url }],
+							data: [{ id: urlId }],
 						} = await deep.insert({
 							type_id: ${PUrl},
 							from_id: ${tinkoffProviderId},
@@ -925,7 +925,7 @@ const f = async () => {
 								],
 							},
 						});
-						console.log({ url });
+						console.log({ urlId });
 					}
 			
 					// return initResult;
