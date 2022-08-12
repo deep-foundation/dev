@@ -193,74 +193,72 @@ const f = async () => {
 	const getMarketUrl = (method) =>
 		`"${process.env.PAYMENT_TINKOFF_MARKET_URL}/${method}"`;
 
-		const getState = async (options) => {
-			try {
-				const response = await axios({
-					method: 'post',
-					url: getUrl('GetState'),
-					data: options,
-				});
-		
-				const error = getError(response.data.ErrorCode);
-		
-				const d = {
-					error,
-					request: options,
-					response: response.data,
-				};
-				debug(d);
-				options?.log && options.log(d);
-		
-				return {
-					error,
-					request: options,
-					response: response.data,
-				};
-			} catch (error) {
-				return {
-					error,
-					request: options,
-					response: null,
-				};
-			}
-		};
+	const getState = async (options) => {
+		try {
+			const response = await axios({
+				method: 'post',
+				url: getUrl('GetState'),
+				data: options,
+			});
 
-		const getCardList = async (options) => {
-			try {
-				const response = await axios({
-					method: 'post',
-					url: getUrl('GetCardList'),
-					headers: {
-						'Content-Type': 'application/json',
-					},
-					data: options,
-				});
-		
-				const error = getError(response.data.ErrorCode || '0');
-		
-				const d = {
-					error,
-					request: options,
-					response: response.data,
-				};
-				debug(d);
-				options?.log && options.log(d);
-		
-				return {
-					error,
-					request: options,
-					response: response.data,
-				};
-			} catch (error) {
-				return {
-					error,
-					request: options,
-					response: null,
-				};
-			}
-		};
-		
-		
+			const error = getError(response.data.ErrorCode);
+
+			const d = {
+				error,
+				request: options,
+				response: response.data,
+			};
+			debug(d);
+			options?.log && options.log(d);
+
+			return {
+				error,
+				request: options,
+				response: response.data,
+			};
+		} catch (error) {
+			return {
+				error,
+				request: options,
+				response: null,
+			};
+		}
+	};
+
+	const getCardList = async (options) => {
+		try {
+			const response = await axios({
+				method: 'post',
+				url: getUrl('GetCardList'),
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				data: options,
+			});
+
+			const error = getError(response.data.ErrorCode || '0');
+
+			const d = {
+				error,
+				request: options,
+				response: response.data,
+			};
+			debug(d);
+			options?.log && options.log(d);
+
+			return {
+				error,
+				request: options,
+				response: response.data,
+			};
+		} catch (error) {
+			return {
+				error,
+				request: options,
+				response: null,
+			};
+		}
+	};
 
 	const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -906,7 +904,7 @@ const f = async () => {
 					// return initResult;
 					return {data: "dataString"};
 				};
-				`
+				`,
 
 				// payInsertHandler
 				// 	.toString()
@@ -936,7 +934,7 @@ const f = async () => {
 				// 		'process.env.PAYMENT_EACQ_TERMINAL_PASSWORD'
 				// 		`'"${process.env.PAYMENT_EACQ_TERMINAL_PASSWORD}"'`
 				// 	)
-				// 	, 
+				// 	,
 			},
 		},
 	});
@@ -946,7 +944,9 @@ const f = async () => {
 	await deep.insert(
 		{
 			type_id: await deep.id('@deep-foundation/core', 'Port'),
-			number: { data: { value: process.env.PAYMENT_EACQ_AND_TEST_NOTIFICATION_PORT } },
+			number: {
+				data: { value: process.env.PAYMENT_EACQ_AND_TEST_NOTIFICATION_PORT },
+			},
 			in: {
 				data: {
 					type_id: await deep.id('@deep-foundation/core', 'RouterListening'),
@@ -959,7 +959,12 @@ const f = async () => {
 										'@deep-foundation/core',
 										'RouterStringUse'
 									),
-									string: { data: { value: process.env.PAYMENT_EACQ_AND_TEST_NOTIFICATION_ROUTE } },
+									string: {
+										data: {
+											value:
+												process.env.PAYMENT_EACQ_AND_TEST_NOTIFICATION_ROUTE,
+										},
+									},
 									from: {
 										data: {
 											type_id: await deep.id('@deep-foundation/core', 'Route'),
@@ -1136,7 +1141,7 @@ const f = async () => {
 																				}
 																				res.send('ok');
 																			};
-																			`
+																			`,
 																		},
 																	},
 																},
@@ -1232,7 +1237,7 @@ const f = async () => {
 				type_id: PSum,
 				from_id: deep.linkId,
 				to_id: paymentId,
-				number: {data: {value: 150}},
+				number: { data: { value: 150 } },
 				in: {
 					data: [
 						{
@@ -1290,10 +1295,10 @@ const f = async () => {
 				},
 			});
 
-			const hasUrl = mpDownPay.data.find(link => link.type_id == PUrl);
-			if(!hasUrl) {
-				throw new Error("Url not found.");
-			} 
+			const hasUrl = mpDownPay.data.find((link) => link.type_id == PUrl);
+			if (!hasUrl) {
+				throw new Error('Url not found.');
+			}
 		};
 
 		await testInit();
@@ -1314,21 +1319,18 @@ const f = async () => {
 				page,
 				url,
 			});
-		}
+		};
 
 		const testConfirm = async () => {
-			
 			testFinishAuthorize();
 
 			sleep(5000);
 
-			const {
-				data,
-			} = await deep.select({
+			const { data } = await deep.select({
 				type_id: PPayed,
 			});
 
-			if(data.length === 0){
+			if (data.length === 0) {
 				throw new Error('Payment is not confirmed');
 			}
 		};
@@ -1337,75 +1339,62 @@ const f = async () => {
 
 		const testCancel = async () => {
 			const testCancelAfterPay = async () => {
-				const testCancelBeforeConfirmFullPrice = async () => {
-	
-				}
-				const testCancelBeforeConfirmCustomPriceX2 = async () => {
-	
-				}
-				const testCancelAfterConfirmFullPrice = async () => {
-	
-				}
-				const testCancelAfterConfirmCustomPriceX2 = async () => {
-	
-				}
-			}
-			const testCancelBeforePay = async () => {
-				 
-			}
-		}
-	
+				const testCancelBeforeConfirmFullPrice = async () => {};
+				const testCancelBeforeConfirmCustomPriceX2 = async () => {};
+				const testCancelAfterConfirmFullPrice = async () => {};
+				const testCancelAfterConfirmCustomPriceX2 = async () => {};
+			};
+			const testCancelBeforePay = async () => {};
+		};
+
 		const testGetState = async () => {
 			await testFinishAuthorize();
-	
-			const paymentId = await deep.select({type_id: PPayment});
-	
+
+			const paymentId = await deep.select({ type_id: PPayment });
+
 			const noTokenGetStateData = {
 				TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
 			};
-	
+
 			const newGetStateData = {
 				...noTokenGetStateData,
 				PaymentId: paymentId,
 			};
-	
-	
+
 			const options = {
 				...newGetStateData,
 				Token: generateToken(newGetStateData),
 			};
-	
-	
+
 			const result = await getState(options);
-	
+
 			expect(result.error).to.equal(undefined);
-		}
-	
+		};
+
 		await testGetState();
-	
+
 		const testGetCardList = async () => {
 			await testFinishAuthorize();
-	
+
 			const noTokenGetCardListData = {
 				TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
 				CustomerKey: customerKey,
 			};
-	
+
 			const options = {
 				...noTokenGetStateData,
 				Token: generateToken(noTokenGetStateData),
 			};
-	
+
 			const result = await getCardList(options);
-	
+
 			expect(result.error).to.equal(undefined);
-		}
-	
+		};
+
 		await testGetCardList();
-	}
+	};
 
 	await callTests();
-
 };
 
 f();
