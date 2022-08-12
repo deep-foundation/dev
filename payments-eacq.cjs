@@ -1310,9 +1310,7 @@ const f = async () => {
 
 		await testInit();
 
-		// Confirm
-
-		const testConfirm = async () => {
+		const testFinishAuthorize = async () => {
 			await testInit();
 			const {
 				data: [{ value: url }],
@@ -1328,6 +1326,11 @@ const f = async () => {
 				page,
 				url,
 			});
+		}
+
+		const testConfirm = async () => {
+			
+			testFinishAuthorize();
 
 			sleep(5000);
 
