@@ -641,10 +641,26 @@ const f = async () => {
 
 	const {data: [{id: tinkoffProviderId}]} = await deep.insert({
 		type_id: PTinkoffProvider,
+		in: {
+			data: [
+				{
+					type_id: Contain,
+					from_id: deep.linkId,
+				},
+			],
+		},
 	});
 
 	const {data: [{id: sumProviderId}]} = await deep.insert({
 		type_id: PTinkoffProvider,
+		in: {
+			data: [
+				{
+					type_id: Contain,
+					from_id: deep.linkId,
+				},
+			],
+		},
 	});
 
 	const insertHandlerDependencies = `
