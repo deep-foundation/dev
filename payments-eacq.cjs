@@ -1370,13 +1370,52 @@ const f = async () => {
 		}
 	}
 
+	const testGetState = async () => {
+		await testFinishAuthorize();
 
-	const testCancelAfterPayBeforeConfirmFullPrice = async () => {
-		await testConfirm();
+		const paymentId = await deep.select({type_id: PPayment});
 
+		const noTokenGetStateData = {
+			TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
+		};
+
+		const newGetStateData = {
+			...noTokenGetStateData,
+			PaymentId: paymentId,
+		};
+
+
+		const options = {
+			...newGetStateData,
+			Token: generateToken(newGetStateData),
+		};
+
+
+		const result = await getState(options);
+
+		expect(result.error).to.equal(undefined);
 	}
 
-	const testCancelAfterPayAfterConfirmCustom
+	await testGetState();
+
+	const testGetCardList = async () => {
+		await testFinishAuthorize();
+
+		const noTokenGetCardListData = {
+			TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
+			CustomerKey: customerKey,
+		};
+
+		const options = {
+			...noTokenGetStateData,
+			Token: generateToken(noTokenGetStateData),
+		};
+
+		const result = await getCardList(options);
+
+		expect(result.error).to.equal(undefined);
+	}
+	
 };
 
 f();
