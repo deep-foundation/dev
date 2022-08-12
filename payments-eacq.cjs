@@ -638,7 +638,14 @@ const f = async () => {
 
 	console.log({ PTinkoffProvider: PTinkoffProvider });
 
-	// Handlers
+
+	const {data: [{id: tinkoffProviderId}]} = await deep.insert({
+		type_id: PTinkoffProvider,
+	});
+
+	const {data: [{id: sumProviderId}]} = await deep.insert({
+		type_id: PTinkoffProvider,
+	});
 
 	const insertHandlerDependencies = `
 	const errorsConverter = ${JSON.stringify(errorsConverter)};
@@ -1183,14 +1190,6 @@ const f = async () => {
 
 		const Type = await deep.id('@deep-foundation/core', 'Type');
 		const Any = await deep.id('@deep-foundation/core', 'Any');
-
-		const {data: [{id: tinkoffProviderId}]} = await deep.insert({
-			type_id: PTinkoffProvider,
-		});
-
-		const {data: [{id: sumProviderId}]} = await deep.insert({
-			type_id: PTinkoffProvider,
-		});
 
 		const {
 			data: [{ id: Product }],
