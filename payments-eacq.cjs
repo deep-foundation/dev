@@ -1382,7 +1382,7 @@ const f = async () => {
 			};
 
 			const options = {
-				...noTokenGetStateData,
+				...noTokenGetCardListData,
 				Token: generateToken(noTokenGetStateData),
 			};
 
