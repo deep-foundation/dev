@@ -897,6 +897,7 @@ const f = async () => {
 							data: [{ id: url }],
 						} = await deep.insert({
 							type_id: ${PUrl},
+							from_id: ${tinkoffProviderId},
 							to_id: payLink.id,
 							string: { data: { value: initResult.response.PaymentURL } },
 							in: {
