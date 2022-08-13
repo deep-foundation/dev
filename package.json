@@ -81,6 +81,7 @@
     "minimist": "^1.2.5",
     "npm": "^7.5.4",
     "prompt": "^1.2.0",
+    "puppeteer": "^16.1.0",
     "rimraf": "^3.0.2",
     "simple-git": "^2.45.0",
     "ts-node": "^9.1.1",
