@@ -1324,7 +1324,7 @@ const f = async () => {
 
 		const testConfirm = async () => {
 			console.log("testConfirm");
-			testFinishAuthorize();
+			await testFinishAuthorize();
 
 			await sleep(2000);
 
