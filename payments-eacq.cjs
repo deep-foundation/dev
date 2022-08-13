@@ -1332,8 +1332,6 @@ const f = async () => {
 			}
 		};
 
-		await testInit();
-
 		const testFinishAuthorize = async () => {
 			console.log("testFinishAuthorize");
 			await testInit();
@@ -1367,8 +1365,6 @@ const f = async () => {
 				throw new Error('Payment is not confirmed');
 			}
 		};
-
-		await testConfirm();
 
 		const testCancel = async () => {
 			const testCancelAfterPay = async () => {
@@ -1404,8 +1400,6 @@ const f = async () => {
 
 			expect(result.error).to.equal(undefined);
 		};
-
-		await testGetState();
 
 		const testGetCardList = async () => {
 			console.log("testGetCardList");
