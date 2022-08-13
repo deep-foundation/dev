@@ -1288,7 +1288,7 @@ const f = async () => {
 
 			console.log({ pay: payId });
 
-			await sleep(5000);
+			await sleep(9000);
 
 			const urlQuery = await deep.select({
 				type_id: PUrl,
