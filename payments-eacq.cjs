@@ -856,7 +856,7 @@ const f = async () => {
 						OrderId: payId,
 						Amount: ${PRICE},
 						Description: 'Test shopping',
-						CustomerKey: deep.linkId,
+						CustomerKey: ${deep.linkId},
 						Language: 'ru',
 						Recurrent: 'Y',
 						DATA: {
@@ -901,7 +901,7 @@ const f = async () => {
 								data: [
 									{
 										type_id: Contain,
-										from_id: deep.linkId,
+										from_id: ${deep.linkId},
 									},
 								],
 							},
