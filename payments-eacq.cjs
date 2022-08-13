@@ -901,7 +901,7 @@ const f = async () => {
 							in: {
 								data: [
 									{
-										type_id: Contain,
+										type_id: ${Contain},
 										from_id: ${deep.linkId},
 									},
 								],
