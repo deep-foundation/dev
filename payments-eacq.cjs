@@ -879,13 +879,41 @@ const f = async () => {
 						}
 					};
 			
-					const initResult = await sendInit({
-						...options,
-						OrderId: paymentId,
-						CustomerKey: deep.linkId,
-						NotificationURL: "${process.env.PAYMENT_EACQ_AND_TEST_NOTIFICATION_URL}",
-						PayType: 'T',
-					});
+					// const initResult = await sendInit({
+					// 	...options,
+					// 	OrderId: paymentId,
+					// 	CustomerKey: ${deep.linkId},
+					// 	NotificationURL: "${process.env.PAYMENT_EACQ_AND_TEST_NOTIFICATION_URL}",
+					// 	PayType: 'T',
+					// });
+
+					const initResult = {
+						error: undefined,
+						request: {
+							TerminalKey: '1543322610200DEMO',
+							OrderId: 668,
+							Amount: 5500,
+							Description: 'Test shopping',
+							CustomerKey: 616,
+							Language: 'ru',
+							Recurrent: 'Y',
+							DATA: [Object],
+							Receipt: [Object],
+							NotificationURL: 'https://3006-freephoenix-deepfoundat-3nlkp9ah0s6.ws-eu60.gitpod.io/gql',
+							PayType: 'T',
+							Token: '279b80d32a51420599e3eadbabaab285d48ec91e7e09a9db7d04a22a5cff46b7'
+						},
+						response: {
+							Success: true,
+							ErrorCode: '0',
+							TerminalKey: '1543322610200DEMO',
+							Status: 'NEW',
+							PaymentId: '1639057947',
+							OrderId: '668',
+							Amount: 5500,
+							PaymentURL: 'https://securepayments.tinkoff.ru/z2GYUoF9'
+						}
+					};
 			
 					console.log({initResult})
 			
