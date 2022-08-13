@@ -232,7 +232,7 @@ const f = async () => {
       deep.insert({
         type_id: deep.id('@deep-foundation/core', 'SelectorTree'),
         from_id: ruleObjectIncludeId,
-        to_id: deep.id('@deep-foundation/core', 'messagingTree'),
+        to_id: deep.id('@deep-foundation/messaging', 'messagingTree'),
       });
       // action
       const { data: [{ id: actionSelectorId }] } = deep.insert({
@@ -246,7 +246,7 @@ const f = async () => {
       const { data: [{ id: ruleActionIncludeId }] } = deep.insert({
         type_id: deep.id('@deep-foundation/core', 'SelectorInclude'),
         from_id: actionSelectorId,
-        to_id: AllowSelect,
+        to_id: deep.id('@deep-foundation/core', 'AllowSelect'),
       });
       deep.insert({
         type_id: deep.id('@deep-foundation/core', 'SelectorTree'),
