@@ -9,6 +9,7 @@ const {
 	minilinks,
 	Link,
 } = require('@deep-foundation/deeplinks/imports/minilinks');
+const puppeteer = require('puppeteer');
 
 const packageName = '@deep-foundation/payments-eacq';
 
@@ -1012,6 +1013,7 @@ const f = async () => {
 																				next,
 																				{ deep, require, gql }
 																			) => {
+																				console.log({req});
 																				const errorsConverter = {
 																					7: 'Покупатель не найден',
 																					53: 'Обратитесь к продавцу',
