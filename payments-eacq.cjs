@@ -1286,7 +1286,7 @@ const f = async () => {
 
 			console.log({ pay: payId });
 
-			sleep(20000);
+			await sleep(5000);
 
 			const urlQuery = await deep.select({
 				type_id: PUrl,
@@ -1324,7 +1324,7 @@ const f = async () => {
 			console.log("testConfirm");
 			testFinishAuthorize();
 
-			sleep(5000);
+			await sleep(2000);
 
 			const { data } = await deep.select({
 				type_id: PPayed,
