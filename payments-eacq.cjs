@@ -1305,7 +1305,7 @@ const f = async () => {
 			console.log("testFinishAuthorize");
 			await testInit();
 			const {
-				data: [{ value: url }],
+				data: [{ value: {value: url} }],
 			} = await deep.select({
 				type_id: PUrl,
 			});
