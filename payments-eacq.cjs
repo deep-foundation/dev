@@ -1349,7 +1349,13 @@ const f = async () => {
 			console.log("testGetState");
 			await testFinishAuthorize();
 
-			const paymentId = await deep.select({ type_id: PPayment });
+			const payId = await deep.select({ type_id: PPay });
+			const {data: [{id: paymentId}]} = await deep.select({ 
+				up: {
+					tree_id: paymentTreeId,
+					link_id: payId
+				}
+			 });
 
 			const noTokenGetStateData = {
 				TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
