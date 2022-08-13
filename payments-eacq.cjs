@@ -1426,7 +1426,10 @@ const f = async () => {
 			expect(result.error).to.equal(undefined);
 		};
 
-		await testGetCardList();
+		await testInit();
+		// await testConfirm();
+		// await testGetState();
+		// await testGetCardList();
 	};
 
 	await callTests();
