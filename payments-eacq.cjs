@@ -652,7 +652,7 @@ const f = async () => {
 	});
 
 	const {data: [{id: sumProviderId}]} = await deep.insert({
-		type_id: PTinkoffProvider,
+		type_id: PSumProvider,
 		in: {
 			data: [
 				{
