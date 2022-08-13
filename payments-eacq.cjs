@@ -1396,9 +1396,9 @@ const f = async () => {
 		};
 
 		await testInit();
-		// await testConfirm();
-		// await testGetState();
-		// await testGetCardList();
+		await testConfirm();
+		await testGetState();
+		await testGetCardList();
 	};
 
 	await callTests();
