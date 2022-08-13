@@ -15,6 +15,8 @@ const packageName = '@deep-foundation/payments-eacq';
 
 const PRICE = 5500;
 
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
 const payInBrowser = async ({ page, browser, url }) => {
 	await page.goto(url, { waitUntil: 'networkidle2' });
 	await sleep(3000);
@@ -262,8 +264,6 @@ const f = async () => {
 			};
 		}
 	};
-
-	const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 	const init = async (options) => {
 		try {
