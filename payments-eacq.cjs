@@ -15,7 +15,7 @@ const packageName = '@deep-foundation/payments-eacq';
 
 const PRICE = 5500;
 
-const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
 
 const payInBrowser = async ({ page, browser, url }) => {
 	await page.goto(url, { waitUntil: 'networkidle2' });
@@ -34,7 +34,7 @@ const payInBrowser = async ({ page, browser, url }) => {
 			);
 		});
 		if (cvc1) {
-			await page.waitFor('input[automation-id="tui-input-card-grouped__card"]');
+			await page.waitForSelector('input[automation-id="tui-input-card-grouped__card"]');
 			await sleep(300);
 			await page.type(
 				'input[automation-id="tui-input-card-grouped__card"]',
@@ -57,7 +57,7 @@ const payInBrowser = async ({ page, browser, url }) => {
 			await sleep(300);
 			await page.click('button[automation-id="pay-card__submit"]'); // submit button
 		} else {
-			await page.waitFor('input[automation-id="tui-input-card-grouped__card"]');
+			await page.waitForSelector('input[automation-id="tui-input-card-grouped__card"]');
 			await sleep(300);
 			await page.type(
 				'input[automation-id="tui-input-card-grouped__card"]',
@@ -80,7 +80,7 @@ const payInBrowser = async ({ page, browser, url }) => {
 			await sleep(300);
 			await page.click('button[automation-id="pay-wallet__submit"]'); // submit button
 			await sleep(300);
-			await page.waitFor('input[name="password"]');
+			await page.waitForSelector('input[name="password"]');
 			const code = prompt('enter code ');
 			console.log('code', code);
 			await page.type('input[name="password"]', code);
@@ -94,7 +94,7 @@ const payInBrowser = async ({ page, browser, url }) => {
 		await page.type('#expDate', process.env.PAYMENT_E2C_CARD_EXPDATE); // expired date
 		await page.type('#card_cvc', process.env.PAYMENT_E2C_CARD_CVC); // CVC code
 		await page.click('button[type=submit]'); // submit button
-		await page.waitFor('input[name="password"]');
+		await page.waitForSelector('input[name="password"]');
 		const code = prompt('enter code ');
 		console.log('code', code);
 		await page.type('input[name="password"]', code);
