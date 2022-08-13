@@ -1315,18 +1315,16 @@ const f = async () => {
 
 			console.log({ pay: payId });
 
-			sleep(15000);
+			sleep(20000);
 
-			const mpDownPay = await deep.select({
-				down: {
-					link_id: { _eq: payId },
-					tree_id: { _eq: paymentTreeId },
-				},
+			const urlQuery = await deep.select({
+				type_id: PUrl,
+    		to_id: payId
 			});
 
-			console.log({ mpDownPay });
+			console.log({ urlQuery });
 
-			const hasUrl = mpDownPay.data.find((link) => link.type_id == PUrl);
+			const hasUrl = urlQuery.data.length > 0;
 			if (!hasUrl) {
 				throw new Error('Url not found.');
 			}
