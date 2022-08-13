@@ -720,7 +720,7 @@ const f = async () => {
 		string: {
 			data: {
 				value: `
-				async ({ deep, require, data: { newLink } }) => {
+				async ({ deep, require, data: { newLink: {id: payId} } }) => {
 					const crypto = require('crypto');
 					const axios = require('axios');
 					
@@ -838,10 +838,10 @@ const f = async () => {
 				
 						return init(options);
 					};
-					const payLink = newLink;
+
 					const mpDownPay = await await deep.select({
 						down: {
-							link_id: { _eq: payLink.id },
+							link_id: { _eq: payId },
 							tree_id: { _eq: ${paymentTreeId} },
 						},
 					});
@@ -853,7 +853,7 @@ const f = async () => {
 					console.log({sum});
 					const options = {
 						TerminalKey: "${process.env.PAYMENT_TEST_TERMINAL_KEY}",
-						OrderId: payLink.id,
+						OrderId: payId,
 						Amount: ${PRICE},
 						Description: 'Test shopping',
 						CustomerKey: deep.linkId,
@@ -895,7 +895,7 @@ const f = async () => {
 							data: [{ id: error }],
 						} = await deep.insert({
 							type_id: ${PError},
-							to_id: payLink.id,
+							to_id: payId,
 							string: { data: { value: initResult.error } },
 							in: {
 								data: [
@@ -914,7 +914,7 @@ const f = async () => {
 						} = await deep.insert({
 							type_id: ${PUrl},
 							from_id: ${tinkoffProviderId},
-							to_id: payLink.id,
+							to_id: payId,
 							string: { data: { value: initResult.response.PaymentURL } },
 							in: {
 								data: [
