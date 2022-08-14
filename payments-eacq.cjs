@@ -1210,6 +1210,10 @@ const f = async () => {
 	});
 
 	console.log({removeCustomerResponse});
+
+	if(!removeCustomerResponse.response) {
+		throw new Error("Cannot remove customer");
+	}
 	
 
 	const callTests = async () => {
