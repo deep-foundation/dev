@@ -833,6 +833,7 @@ const f = async () => {
 							};
 						}
 					};
+
 					const sendInit = async (noTokenData) => {
 						const options = {
 							...noTokenData,
@@ -887,6 +888,57 @@ const f = async () => {
 					const initResult = await sendInit({
 						...options
 					});
+
+					// TODO Remove later
+					if(initResult.response.ErrorCode == '8'){
+						const cancel = async (options) => {
+							try {
+								const response = await axios({
+									method: 'post',
+									url: getUrl('Cancel'),
+									data: options,
+								});
+						
+								const error = getError(response.data.ErrorCode);
+						
+								const d = {
+									error,
+									request: options,
+									response: response.data,
+								};
+								debug(d);
+								options?.log && options.log(d);
+						
+								return {
+									error,
+									request: options,
+									response: response.data,
+								};
+							} catch (error) {
+								return {
+									error,
+									request: options,
+									response: null,
+								};
+							}
+						};
+						const newCancelData = {
+							TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
+							PaymentId: paymentId,
+						};
+					
+						const options = {
+							...newCancelData,
+							Token: generateToken(newCancelData),
+						};
+			
+						const cancelResponse = await cancel(options);
+					
+						console.log({cancelResponse});
+					const initResult = await sendInit({
+						...options
+					});
+					}
 			
 					console.log({initResult})
 			
@@ -1164,24 +1216,23 @@ const f = async () => {
 		}
 	);
 
-	const removeCustomer = async (options) => {
+	const cancel = async (options) => {
 		try {
 			const response = await axios({
 				method: 'post',
-				url: getUrl('RemoveCustomer'),
-				headers: {
-					'Content-Type': 'application/json',
-				},
+				url: getUrl('Cancel'),
 				data: options,
 			});
 	
 			const error = getError(response.data.ErrorCode);
 	
-			debug({
+			const d = {
 				error,
 				request: options,
 				response: response.data,
-			});
+			};
+			debug(d);
+			options?.log && options.log(d);
 	
 			return {
 				error,
@@ -1196,22 +1247,31 @@ const f = async () => {
 			};
 		}
 	};
+	
 
-	const removeCustomerNoTokenData = {
-		TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
-		CustomerKey: deep.linkId,
-	};
+	const cancelAllPayments = async () => {
+		const {data: paymentLinks} = await deep.select({
+			type_id: PPayment,
+		});
 
-	const removeCustomerResponse = await removeCustomer({
-		...removeCustomerNoTokenData,
-		Token: generateToken(removeCustomerNoTokenData),
-	});
+		for(const {id: paymentId} of paymentLinks) {
+			const newCancelData = {
+				TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
+				PaymentId: paymentId,
+			};
+		
+			const options = {
+				...newCancelData,
+				Token: generateToken(newCancelData),
+			};
 
-	console.log({removeCustomerResponse});
-
-	if(!removeCustomerResponse.response) {
-		throw new Error("Cannot remove customer");
+			const cancelResponse = await cancel(options);
+		
+			console.log({cancelResponse});
+		}
 	}
+	
+	
 	
 
 	const callTests = async () => {
