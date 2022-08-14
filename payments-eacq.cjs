@@ -1164,6 +1164,52 @@ const f = async () => {
 		}
 	);
 
+	const removeCustomer = async (options) => {
+		try {
+			const response = await axios({
+				method: 'post',
+				url: getUrl('RemoveCustomer'),
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				data: options,
+			});
+	
+			const error = getError(response.data.ErrorCode);
+	
+			debug({
+				error,
+				request: options,
+				response: response.data,
+			});
+	
+			return {
+				error,
+				request: options,
+				response: response.data,
+			};
+		} catch (error) {
+			return {
+				error,
+				request: options,
+				response: null,
+			};
+		}
+	};
+
+	const removeCustomerNoTokenData = {
+		TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
+		CustomerKey: deep.linkId,
+	};
+
+	const removeCustomerResponse = await removeCustomer({
+		...removeCustomerNoTokenData,
+		Token: generateToken(noTokenData),
+	});
+
+	console.log({removeCustomerResponse});
+	
+
 	const callTests = async () => {
 
 		const PPayment = await deep.id(packageName, 'Payment');
