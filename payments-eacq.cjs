@@ -856,10 +856,12 @@ const f = async () => {
 					console.log({sum});
 					const options = {
 						TerminalKey: "${process.env.PAYMENT_TEST_TERMINAL_KEY}",
-						OrderId: payId,
+						OrderId: paymentId,
+						CustomerKey: ${deep.linkId},
+						NotificationURL: "${process.env.PAYMENT_EACQ_AND_TEST_NOTIFICATION_URL}",
+						PayType: 'T',
 						Amount: ${PRICE},
 						Description: 'Test shopping',
-						CustomerKey: ${deep.linkId},
 						Language: 'ru',
 						Recurrent: 'Y',
 						DATA: {
@@ -883,11 +885,7 @@ const f = async () => {
 					};
 			
 					const initResult = await sendInit({
-						...options,
-						OrderId: paymentId,
-						CustomerKey: ${deep.linkId},
-						NotificationURL: "${process.env.PAYMENT_EACQ_AND_TEST_NOTIFICATION_URL}",
-						PayType: 'T',
+						...options
 					});
 			
 					console.log({initResult})
