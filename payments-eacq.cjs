@@ -1204,7 +1204,7 @@ const f = async () => {
 
 	const removeCustomerResponse = await removeCustomer({
 		...removeCustomerNoTokenData,
-		Token: generateToken(noTokenData),
+		Token: generateToken(removeCustomerNoTokenData),
 	});
 
 	console.log({removeCustomerResponse});
