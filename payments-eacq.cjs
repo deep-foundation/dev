@@ -840,7 +840,7 @@ const f = async () => {
 						return init(options);
 					};
 
-					const mpDownPay = await await deep.select({
+					const mpDownPay = await deep.select({
 						down: {
 							link_id: { _eq: payId },
 							tree_id: { _eq: ${paymentTreeId} },
