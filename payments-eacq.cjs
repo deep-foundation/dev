@@ -1490,7 +1490,7 @@ const f = async () => {
 	try {
 		await callTests();
 	} catch (error) {
-		throw
+		throw error;
 	} finally {
 		const cancelAllPayments = async () => {
 			const {data: paymentLinks} = await deep.select({
