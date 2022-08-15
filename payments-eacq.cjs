@@ -925,16 +925,16 @@ const f = async () => {
 							}
 						};
 					
-						const options = {
+						const cancelOptions = {
 							...newCancelData,
 							Token: generateToken(newCancelData),
 						};
 			
-						const cancelResponse = await cancel(options);
+						const cancelResponse = await cancel(cancelOptions);
 					
 						console.log({cancelResponse});
 					const initResult = await sendInit({
-						...options
+						...cancelOptions
 					});
 					}
 			
