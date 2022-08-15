@@ -36,7 +36,9 @@ const payInBrowser = async ({ page, browser, url }) => {
 			);
 		});
 		if (cvc1) {
-			await page.waitForSelector('input[automation-id="tui-input-card-grouped__card"]');
+			await page.waitForSelector(
+				'input[automation-id="tui-input-card-grouped__card"]'
+			);
 			await sleep(300);
 			await page.type(
 				'input[automation-id="tui-input-card-grouped__card"]',
@@ -59,7 +61,9 @@ const payInBrowser = async ({ page, browser, url }) => {
 			await sleep(300);
 			await page.click('button[automation-id="pay-card__submit"]'); // submit button
 		} else {
-			await page.waitForSelector('input[automation-id="tui-input-card-grouped__card"]');
+			await page.waitForSelector(
+				'input[automation-id="tui-input-card-grouped__card"]'
+			);
 			await sleep(300);
 			await page.type(
 				'input[automation-id="tui-input-card-grouped__card"]',
@@ -602,7 +606,6 @@ const f = async () => {
 			],
 		},
 	});
-	
 
 	const {
 		data: [{ id: PSumProvider }],
@@ -638,8 +641,9 @@ const f = async () => {
 
 	console.log({ PTinkoffProvider: PTinkoffProvider });
 
-
-	const {data: [{id: tinkoffProviderId}]} = await deep.insert({
+	const {
+		data: [{ id: tinkoffProviderId }],
+	} = await deep.insert({
 		type_id: PTinkoffProvider,
 		in: {
 			data: [
@@ -651,7 +655,9 @@ const f = async () => {
 		},
 	});
 
-	const {data: [{id: sumProviderId}]} = await deep.insert({
+	const {
+		data: [{ id: sumProviderId }],
+	} = await deep.insert({
 		type_id: PSumProvider,
 		in: {
 			data: [
@@ -719,11 +725,10 @@ const f = async () => {
 		},
 		string: {
 			data: {
-				value: `
+				value: /*javascript*/ `
 				async ({ deep, require, data: { newLink: {id: payId} } }) => {
 					const crypto = require('crypto');
 					const axios = require('axios');
-					
 					const errorsConverter = {
 						7: 'Покупатель не найден',
 						53: 'Обратитесь к продавцу',
@@ -984,7 +989,6 @@ const f = async () => {
 					return {data: "dataString"};
 				};
 				`,
-
 			},
 		},
 	});
@@ -1223,16 +1227,16 @@ const f = async () => {
 				url: getUrl('Cancel'),
 				data: options,
 			});
-	
+
 			const error = getError(response.data.ErrorCode);
-	
+
 			const d = {
 				error,
 				request: options,
 				response: response.data,
 			};
 			options?.log && options.log(d);
-	
+
 			return {
 				error,
 				request: options,
@@ -1245,10 +1249,9 @@ const f = async () => {
 				response: null,
 			};
 		}
-	};	
+	};
 
 	const callTests = async () => {
-
 		const PPayment = await deep.id(packageName, 'Payment');
 		const PObject = await deep.id(packageName, 'Object');
 		const PSum = await deep.id(packageName, 'Sum');
@@ -1298,10 +1301,8 @@ const f = async () => {
 
 		console.log({ product: productId });
 
-		
-
 		const testInit = async () => {
-			console.log("testInit");
+			console.log('testInit');
 			const {
 				data: [{ id: paymentId }],
 			} = await deep.insert({
@@ -1375,7 +1376,7 @@ const f = async () => {
 
 			const urlQuery = await deep.select({
 				type_id: PUrl,
-    		to_id: payId
+				to_id: payId,
 			});
 
 			console.log({ urlQuery });
@@ -1387,10 +1388,14 @@ const f = async () => {
 		};
 
 		const testFinishAuthorize = async () => {
-			console.log("testFinishAuthorize");
+			console.log('testFinishAuthorize');
 			await testInit();
 			const {
-				data: [{ value: {value: url} }],
+				data: [
+					{
+						value: { value: url },
+					},
+				],
 			} = await deep.select({
 				type_id: PUrl,
 			});
@@ -1406,7 +1411,7 @@ const f = async () => {
 		};
 
 		const testConfirm = async () => {
-			console.log("testConfirm");
+			console.log('testConfirm');
 			await testFinishAuthorize();
 
 			await sleep(2000);
@@ -1431,16 +1436,18 @@ const f = async () => {
 		};
 
 		const testGetState = async () => {
-			console.log("testGetState");
+			console.log('testGetState');
 			await testFinishAuthorize();
 
 			const payId = await deep.select({ type_id: PPay });
-			const {data: [{id: paymentId}]} = await deep.select({ 
+			const {
+				data: [{ id: paymentId }],
+			} = await deep.select({
 				up: {
 					tree_id: paymentTreeId,
-					link_id: payId
-				}
-			 });
+					link_id: payId,
+				},
+			});
 
 			const noTokenGetStateData = {
 				TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
@@ -1462,7 +1469,7 @@ const f = async () => {
 		};
 
 		const testGetCardList = async () => {
-			console.log("testGetCardList");
+			console.log('testGetCardList');
 			await testFinishAuthorize();
 
 			const noTokenGetCardListData = {
@@ -1492,28 +1499,27 @@ const f = async () => {
 		throw error;
 	} finally {
 		const cancelAllPayments = async () => {
-			const {data: paymentLinks} = await deep.select({
+			const { data: paymentLinks } = await deep.select({
 				type_id: PPayment,
 			});
-	
-			for(const {id: paymentId} of paymentLinks) {
+
+			for (const { id: paymentId } of paymentLinks) {
 				const newCancelData = {
 					TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
 					PaymentId: paymentId,
-					}
-				
-			
+				};
+
 				const options = {
 					...newCancelData,
 					Token: generateToken(newCancelData),
 				};
-	
+
 				const cancelResponse = await cancel(options);
-			
-				console.log({cancelResponse});
+
+				console.log({ cancelResponse });
 			}
 		};
-	
+
 		await cancelAllPayments();
 	}
 };
