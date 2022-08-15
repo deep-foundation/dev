@@ -933,7 +933,7 @@ const f = async () => {
 						const cancelResponse = await cancel(cancelOptions);
 					
 						console.log({cancelResponse});
-					const initResult = await sendInit({
+					initResult = await sendInit({
 						...cancelOptions
 					});
 					}
