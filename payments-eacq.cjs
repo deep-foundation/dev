@@ -960,6 +960,7 @@ const f = async () => {
 							data: [{ id: error }],
 						} = await deep.insert({
 							type_id: ${PError},
+							from_id: ${tinkoffProviderId},
 							to_id: payId,
 							string: { data: { value: initResult.error } },
 							in: {
@@ -1191,6 +1192,7 @@ const f = async () => {
 																				} else if (req.Status == 'CANCELED') {
 																					await deep.insert({
 																						type_id: ${PError},
+																						from_id: ${tinkoffProviderId},
 																						to_id: req.OrderId,
 																						in: {
 																							data: [
