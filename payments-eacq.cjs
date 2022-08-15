@@ -1246,33 +1246,7 @@ const f = async () => {
 				response: null,
 			};
 		}
-	};
-	
-
-	const cancelAllPayments = async () => {
-		const {data: paymentLinks} = await deep.select({
-			type_id: PPayment,
-		});
-
-		for(const {id: paymentId} of paymentLinks) {
-			const newCancelData = {
-				TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
-				PaymentId: paymentId,
-			};
-		
-			const options = {
-				...newCancelData,
-				Token: generateToken(newCancelData),
-			};
-
-			const cancelResponse = await cancel(options);
-		
-			console.log({cancelResponse});
-		}
-	}
-	
-	
-	
+	};	
 
 	const callTests = async () => {
 
@@ -1514,6 +1488,30 @@ const f = async () => {
 	};
 
 	await callTests();
+
+	const cancelAllPayments = async () => {
+		const {data: paymentLinks} = await deep.select({
+			type_id: PPayment,
+		});
+
+		for(const {id: paymentId} of paymentLinks) {
+			const newCancelData = {
+				TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
+				PaymentId: paymentId,
+			};
+		
+			const options = {
+				...newCancelData,
+				Token: generateToken(newCancelData),
+			};
+
+			const cancelResponse = await cancel(options);
+		
+			console.log({cancelResponse});
+		}
+	};
+
+	await cancelAllPayments();
 };
 
 f();
