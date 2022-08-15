@@ -1521,7 +1521,7 @@ const f = async () => {
 					Receipt: {
 						Items: [{
 							Name: 'Test item',
-							Price: sum,
+							Price: PRICE,
 							Quantity: 1,
 							Amount: PRICE,
 							PaymentMethod: 'prepayment',
