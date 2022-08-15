@@ -215,7 +215,6 @@ const f = async () => {
 				request: options,
 				response: response.data,
 			};
-			debug(d);
 			options?.log && options.log(d);
 
 			return {
@@ -250,7 +249,6 @@ const f = async () => {
 				request: options,
 				response: response.data,
 			};
-			debug(d);
 			options?.log && options.log(d);
 
 			return {
@@ -322,7 +320,6 @@ const f = async () => {
 				request: options,
 				response: response.data,
 			};
-			debug(d);
 			options?.log && options.log(d);
 
 			return {
@@ -906,7 +903,6 @@ const f = async () => {
 									request: options,
 									response: response.data,
 								};
-								debug(d);
 								options?.log && options.log(d);
 						
 								return {
@@ -1247,7 +1243,6 @@ const f = async () => {
 				request: options,
 				response: response.data,
 			};
-			debug(d);
 			options?.log && options.log(d);
 	
 			return {
