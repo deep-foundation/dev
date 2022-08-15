@@ -1501,6 +1501,7 @@ const f = async () => {
 				const newCancelData = {
 					TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
 					PaymentId: paymentId,
+					Amount: 5500,
 				};
 			
 				const options = {
