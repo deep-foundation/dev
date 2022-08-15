@@ -922,9 +922,25 @@ const f = async () => {
 								};
 							}
 						};
+
 						const newCancelData = {
-							TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
+							TerminalKey: "${process.env.PAYMENT_TEST_TERMINAL_KEY}",
 							PaymentId: paymentId,
+							Amount: 5500,
+							Receipt: {
+								Items: [{
+									Name: 'Test item',
+									Price: sum,
+									Quantity: 1,
+									Amount: PRICE,
+									PaymentMethod: 'prepayment',
+									PaymentObject: 'service',
+									Tax: 'none',
+								}],
+								Email: "${process.env.PAYMENT_TEST_EMAIL}",
+								Phone: "${process.env.PAYMENT_TEST_PHONE}",
+								Taxation: 'usn_income',
+							}
 						};
 					
 						const options = {
@@ -1502,6 +1518,20 @@ const f = async () => {
 					TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
 					PaymentId: paymentId,
 					Amount: 5500,
+					Receipt: {
+						Items: [{
+							Name: 'Test item',
+							Price: sum,
+							Quantity: 1,
+							Amount: PRICE,
+							PaymentMethod: 'prepayment',
+							PaymentObject: 'service',
+							Tax: 'none',
+						}],
+						Email: process.env.PAYMENT_TEST_EMAIL,
+						Phone: process.env.PAYMENT_TEST_PHONE,
+						Taxation: 'usn_income',
+					}
 				};
 			
 				const options = {
