@@ -856,8 +856,13 @@ const f = async () => {
 						},
 					});
 
+					console.log({mpDownPay});
+
 					const paymentId = mpDownPay.data.find(link => link.type_id == ${PPayment}).id;
 					const sum = mpDownPay.data.find(link => link.type_id == ${PSum}).value.value; 
+
+					console.log({paymentId});
+					console.log({sum});
 
 					console.log({paymentId});
 					console.log({sum});
@@ -890,6 +895,8 @@ const f = async () => {
 							Taxation: 'usn_income',
 						}
 					};
+
+					console.log({options});
 			
 					const initResult = await sendInit({
 						...options
@@ -938,13 +945,15 @@ const f = async () => {
 							...newCancelData,
 							Token: generateToken(newCancelData),
 						};
+
+						console.log({cancelOptions});
 			
 						const cancelResponse = await cancel(cancelOptions);
 					
 						console.log({cancelResponse});
-					initResult = await sendInit({
-						...cancelOptions
-					});
+						initResult = await sendInit({
+							...cancelOptions
+						});
 					}
 			
 					console.log({initResult})
