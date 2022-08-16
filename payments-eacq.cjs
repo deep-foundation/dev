@@ -858,7 +858,7 @@ const f = async () => {
 					const mpDownPay = await deep.select({
 						down: {
 							link_id: { _eq: payId },
-							tree_id: { _eq: paymentTreeId },
+							tree_id: { _eq: ${paymentTreeId} },
 						},
 					});
 				
