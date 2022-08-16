@@ -200,9 +200,9 @@ const f = async () => {
 	};
 
 	const getUrl = (method) =>
-		`"${process.env.PAYMENT_EACQ_AND_TEST_URL}/${method}"`;
+		`${process.env.PAYMENT_EACQ_AND_TEST_URL}/${method}`;
 	const getMarketUrl = (method) =>
-		`"${process.env.PAYMENT_TINKOFF_MARKET_URL}/${method}"`;
+		`${process.env.PAYMENT_TINKOFF_MARKET_URL}/${method}`;
 
 	const getState = async (options) => {
 		try {
