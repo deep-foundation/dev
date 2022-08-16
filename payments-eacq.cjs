@@ -1498,6 +1498,7 @@ const f = async () => {
 		throw error;
 	} finally {
 		const cancelAllPayments = async () => {
+			console.log("cancelAllPayments");
 			const { data: paymentLinks } = await deep.select({
 				type_id: PPayment,
 			});
