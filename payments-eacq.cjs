@@ -1513,6 +1513,8 @@ const f = async () => {
 					Token: generateToken(newCancelData),
 				};
 
+				console.log({options});
+
 				const cancelResponse = await cancel(options);
 
 				console.log({ cancelResponse });
