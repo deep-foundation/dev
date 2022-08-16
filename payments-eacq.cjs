@@ -639,7 +639,7 @@ const f = async () => {
 		},
 	});
 
-	console.log({ PTinkoffProvider: PTinkoffProvider });
+	console.log({ PTinkoffProvider });
 
 	const {
 		data: [{ id: tinkoffProviderId }],
@@ -655,6 +655,8 @@ const f = async () => {
 		},
 	});
 
+	console.log({ tinkoffProviderId });
+
 	const {
 		data: [{ id: sumProviderId }],
 	} = await deep.insert({
@@ -668,6 +670,8 @@ const f = async () => {
 			],
 		},
 	});
+
+	console.log({ sumProviderId });
 
 	const insertHandlerDependencies = `
 	const errorsConverter = ${JSON.stringify(errorsConverter)};
@@ -725,7 +729,7 @@ const f = async () => {
 		},
 		string: {
 			data: {
-				value: /*javascript*/ `
+				value: `
 				async ({ deep, require, data: { newLink: {id: payId} } }) => {
 					const crypto = require('crypto');
 					const axios = require('axios');
@@ -1040,10 +1044,7 @@ const f = async () => {
 															),
 															in: {
 																data: {
-																	type_id: await deep.id(
-																		'@deep-foundation/core',
-																		'Contain'
-																	),
+																	type_id: Contain,
 																	// from_id: deep.linkId,
 																	from_id: await deep.id('deep', 'admin'),
 																	string: {
@@ -1055,10 +1056,7 @@ const f = async () => {
 															},
 															to: {
 																data: {
-																	type_id: await deep.id(
-																		'@deep-foundation/core',
-																		'SyncTextFile'
-																	),
+																	type_id: SyncTextFile,
 																	string: {
 																		data: {
 																			value: `
@@ -1316,6 +1314,7 @@ const f = async () => {
 					],
 				},
 			});
+			console.log({ paymentId });
 
 			const {
 				data: [{ id: sumId }],
