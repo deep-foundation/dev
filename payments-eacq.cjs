@@ -729,7 +729,7 @@ const f = async () => {
 		},
 		string: {
 			data: {
-				value: `
+				value: /*javascript*/ `
 				async ({
 					deep,
 					require,
