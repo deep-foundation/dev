@@ -12,6 +12,8 @@ const {
 const puppeteer = require('puppeteer');
 const crypto = require('crypto');
 const axios = require('axios');
+const uniqid = require('uniqid');
+
 
 const packageName = '@deep-foundation/payments-eacq';
 
@@ -858,17 +860,15 @@ const f = async () => {
 
           console.log({mpDownPay});
 
-          const paymentId = mpDownPay.data.find(link => link.type_id == ${PPayment}).id;
+          const paymentLink = mpDownPay.data.find(link => link.type_id == ${PPayment});
           const sum = mpDownPay.data.find(link => link.type_id == ${PSum}).value.value; 
 
-          console.log({paymentId});
+          console.log({paymentLink});
           console.log({sum});
 
-          console.log({paymentId});
-          console.log({sum});
           const options = {
             TerminalKey: "${process.env.PAYMENT_TEST_TERMINAL_KEY}",
-            OrderId: paymentId,
+            OrderId: paymentLink.value.value ?? paymentLink.id,
             CustomerKey: ${deep.linkId},
             NotificationURL: "${process.env.PAYMENT_EACQ_AND_TEST_NOTIFICATION_URL}",
             PayType: 'T',
@@ -903,118 +903,7 @@ const f = async () => {
           });
 
           console.log({initResult});
-
-          // TODO Remove later
-          if(initResult.response.ErrorCode == '8'){
-            const checkOrder = async (options) => {
-              try {
-                const response = await axios({
-                  method: 'post',
-                  url: getUrl('CheckOrder'),
-                  data: options,
-                });
-            
-                const error = getError(response.data.ErrorCode);
-            
-                const d = {
-                  error,
-                  request: options,
-                  response: response.data,
-                };
-            
-                return {
-                  error,
-                  request: options,
-                  response: response.data,
-                };
-              } catch (error) {
-                return {
-                  error,
-                  request: options,
-                  response: null,
-                };
-              }
-            };
-
-            const newCheckOrderData = {
-              TerminalKey: "${process.env.PAYMENT_TEST_TERMINAL_KEY}",
-              OrderId: paymentId,
-              };
-            
-          
-            const checkOrderOptions = {
-              ...newCheckOrderData,
-              Token: generateToken(newCheckOrderData),
-            };
-
-            console.log({checkOrderOptions});
-
-            const checkOrderResponse = await checkOrder(checkOrderOptions);
-
-            console.log({checkOrderResponse});
-
-            if(checkOrderResponse.error != undefined) {
-              throw new Error(checkOrderResponse.error);
-            } 
-
-            
-
-            const cancel = async (options) => {
-              try {
-                const response = await axios({
-                  method: 'post',
-                  url: getUrl('Cancel'),
-                  data: options,
-                });
-            
-                const error = getError(response.data.ErrorCode);
-            
-                const d = {
-                  error,
-                  request: options,
-                  response: response.data,
-                };
-                options?.log && options.log(d);
-            
-                return {
-                  error,
-                  request: options,
-                  response: response.data,
-                };
-              } catch (error) {
-                return {
-                  error,
-                  request: options,
-                  response: null,
-                };
-              }
-            };
-
-            const newCancelData = {
-              TerminalKey: "${process.env.PAYMENT_TEST_TERMINAL_KEY}",
-              PaymentId: bankPaymentId,
-              };
-            
-          
-            const cancelOptions = {
-              ...newCancelData,
-              Token: generateToken(newCancelData),
-            };
-
-            console.log({cancelOptions});
-      
-            const cancelResponse = await cancel(cancelOptions);
-
-            console.log({cancelResponse});
-          
-            console.log({cancelResponse});
-            initResult = await sendInit({
-              ...cancelOptions
-            });
-          }
-      
-          console.log({initResult})
-      
+     
           if (initResult.error != undefined) {
             console.log('initResult.error:', initResult.error);
             const {
@@ -1371,6 +1260,7 @@ const f = async () => {
         data: [{ id: paymentId }],
       } = await deep.insert({
         type_id: PPayment,
+        number: {data: {value: uniqid()}},
         in: {
           data: [
             {
@@ -1588,7 +1478,7 @@ const f = async () => {
       }
     };
 
-    await cancelAllPayments();
+    // await cancelAllPayments();
   }
 };
 
