@@ -949,7 +949,7 @@ const f = async () => {
               Token: generateToken(newCheckOrderData),
             };
 
-            const bankPaymentId = checkOrder(checkOrderOptions);
+            const bankPaymentId = await checkOrder(checkOrderOptions);
 
             const cancel = async (options) => {
               try {
