@@ -1114,7 +1114,8 @@ const f = async () => {
                                             };
                                           }
                                         };
-                                        console.log({req.Status});
+                                        const status = req.Status;
+                                        console.log({status});
                                         if (req.Status == 'AUTORIZED') {
                                           await confirm({
                                             TerminalKey: "${process.env.PAYMENT_TEST_TERMINAL_KEY}",
