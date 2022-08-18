@@ -1018,14 +1018,13 @@ const f = async () => {
                                   type_id: SyncTextFile,
                                   string: {
                                     data: {
-                                      value: `
+                                      value: /*javascript*/`
                                       async (
                                         req,
                                         res,
                                         next,
                                         { deep, require, gql }
                                       ) => {
-                                        console.log({req});
                                         const errorsConverter = {
                                           7: 'Покупатель не найден',
                                           53: 'Обратитесь к продавцу',
@@ -1115,6 +1114,7 @@ const f = async () => {
                                             };
                                           }
                                         };
+                                        console.log({req.Status});
                                         if (req.Status == 'AUTORIZED') {
                                           await confirm({
                                             TerminalKey: "${process.env.PAYMENT_TEST_TERMINAL_KEY}",
