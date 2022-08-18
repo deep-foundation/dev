@@ -957,7 +957,7 @@ const f = async () => {
               throw new Exception(checkOrderResponse.error);
             } 
 
-            const bankPaymentId = checkOrderResponse.response.
+            
 
             const cancel = async (options) => {
               try {
