@@ -1014,6 +1014,22 @@ async (
   errorCode === '0' ? undefined : errorsConverter[errorCode] || 'broken';
   const getUrl = (method) =>
   "${process.env.PAYMENT_EACQ_AND_TEST_URL}" + "/" + method;
+  const _generateToken = (dataWithPassword) => {
+    const dataString = Object.keys(dataWithPassword)
+      .sort((a, b) => a.localeCompare(b))
+      .map((key) => dataWithPassword[key])
+      .reduce((acc, item) => acc.toString() + item.toString(), '');
+    const hash = crypto.createHash('sha256').update(dataString).digest('hex');
+    return hash;
+  };
+  const generateToken = (data) => {
+    const { Receipt, DATA, Shops, ...restData } = data;
+    const dataWithPassword = {
+      ...restData,
+      Password: "${process.env.PAYMENT_EACQ_TERMINAL_PASSWORD}",
+    };
+    return _generateToken(dataWithPassword);
+  }; 
   const confirm = async (options) => {
     try {
       const response = await axios({
