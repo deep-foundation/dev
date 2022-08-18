@@ -1115,9 +1115,9 @@ const f = async () => {
                                             };
                                           }
                                         };
-                                        const status = req.Status;
+                                        const status = req.body.Status;
                                         console.log({status});
-                                        if (req.Status == 'AUTORIZED') {
+                                        if (status == 'AUTORIZED') {
                                           await confirm({
                                             TerminalKey: "${process.env.PAYMENT_TEST_TERMINAL_KEY}",
                                             PaymentId: req.PaymentId,
@@ -1125,7 +1125,7 @@ const f = async () => {
                                             Token: req.Token,
                                             Receipt: req.Receipt,
                                           });
-                                        } else if (req.Status == 'CONFIRMED') {
+                                        } else if (status == 'CONFIRMED') {
                                           await deep.insert({
                                             type_id: ${PPayed},
                                             to_id: req.OrderId,
@@ -1138,7 +1138,7 @@ const f = async () => {
                                               ],
                                             },
                                           });
-                                        } else if (req.Status == 'CANCELED') {
+                                        } else if (status == 'CANCELED') {
                                           await deep.insert({
                                             type_id: ${PError},
                                             from_id: ${tinkoffProviderId},
