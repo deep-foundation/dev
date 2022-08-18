@@ -1044,15 +1044,16 @@ async (
   const status = req.body.Status;
   console.log({status});
   if (status == 'AUTORIZED') {
-    await confirm({
+    const confirmResponse = await confirm({
       TerminalKey: "${process.env.PAYMENT_TEST_TERMINAL_KEY}",
       PaymentId: req.PaymentId,
       Amount: req.Amount,
       Token: req.Token,
       Receipt: req.Receipt,
     });
+    console.log({confirmResponse});
   } else if (status == 'CONFIRMED') {
-    await deep.insert({
+    const payedInsertData = await deep.insert({
       type_id: ${PPayed},
       to_id: req.OrderId,
       in: {
@@ -1064,8 +1065,9 @@ async (
         ],
       },
     });
+    console.log({payedInsertData})
   } else if (status == 'CANCELED') {
-    await deep.insert({
+    const errorInsertData = await deep.insert({
       type_id: ${PError},
       from_id: ${tinkoffProviderId},
       to_id: req.OrderId,
@@ -1079,6 +1081,10 @@ async (
         ],
       },
     });
+
+    console.log({errorInsertData});
+    const errorMessage = getError(req.ErrorCode);
+    console.log({errorMessage});
   }
   res.send('ok');
 };
