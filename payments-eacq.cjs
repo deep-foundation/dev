@@ -954,7 +954,7 @@ const f = async () => {
             console.log({checkOrderResponse});
 
             if(checkOrderResponse.error != undefined) {
-              throw new Exception(checkOrderResponse.error);
+              throw new Error(checkOrderResponse.error);
             } 
 
             
