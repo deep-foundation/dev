@@ -1262,7 +1262,7 @@ const f = async () => {
     console.log({ product: productId });
 
     const testInit = async () => {
-      console.log('testInit');
+      console.log('testInit-start');
       const {
         data: [{ id: paymentId }],
       } = await deep.insert({
@@ -1347,6 +1347,7 @@ const f = async () => {
       if (!hasUrl) {
         throw new Error('Url not found.');
       }
+      console.log('testInit-end');
     };
 
     const testFinishAuthorize = async () => {
