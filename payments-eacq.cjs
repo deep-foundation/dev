@@ -1046,13 +1046,19 @@ async (
   const status = req.body.Status;
   console.log({status});
   if (status == 'AUTHORIZED') {
-    const confirmResponse = await confirm({
+    const noTokenConfirmOptions = {
       TerminalKey: "${process.env.PAYMENT_TEST_TERMINAL_KEY}",
       PaymentId: req.body.PaymentId,
       Amount: req.body.Amount,
       Token: req.body.Token,
       Receipt: req.body.Receipt,
-    });
+    };
+
+    const confirmOptions = {
+      ...noTokenConfirmOptions,
+      Token: generateToken(noTokenConfirmOptions)
+    }
+    const confirmResponse = await confirm(confirmOptions);
     console.log({confirmResponse});
   } else if (status == 'CONFIRMED') {
     const payedInsertData = await deep.insert({
