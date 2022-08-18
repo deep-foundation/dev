@@ -1025,6 +1025,7 @@ const f = async () => {
                                         next,
                                         { deep, require, gql }
                                       ) => {
+                                        console.log('helloSomeText');
                                         const errorsConverter = {
                                           7: 'Покупатель не найден',
                                           53: 'Обратитесь к продавцу',
