@@ -945,8 +945,8 @@ const f = async () => {
             
           
             const checkOrderOptions = {
-              ...newCancelData,
-              Token: generateToken(newCancelData),
+              ...newCheckOrderData,
+              Token: generateToken(newCheckOrderData),
             };
 
             const bankPaymentId = checkOrder(checkOrderOptions);
