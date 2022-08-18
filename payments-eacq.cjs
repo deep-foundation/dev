@@ -2,7 +2,8 @@ require('react');
 require('graphql');
 require('lodash');
 require('subscriptions-transport-ws');
-require('dotenv').config();
+var dotenv = require('dotenv');
+var dotenvExpand = require('dotenv-expand');
 const { generateApolloClient } = require('@deep-foundation/hasura/client');
 const { DeepClient } = require('@deep-foundation/deeplinks/imports/client');
 const {
@@ -13,6 +14,9 @@ const puppeteer = require('puppeteer');
 const crypto = require('crypto');
 const axios = require('axios');
 const uniqid = require('uniqid');
+
+var myEnv = dotenv.config();
+dotenvExpand(myEnv);
 
 
 const packageName = '@deep-foundation/payments-eacq';
