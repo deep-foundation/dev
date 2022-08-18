@@ -906,6 +906,51 @@ const f = async () => {
 
           // TODO Remove later
           if(initResult.response.ErrorCode == '8'){
+            const checkOrder = async (options) => {
+              try {
+                const response = await axios({
+                  method: 'post',
+                  url: getUrl('CheckOrder'),
+                  data: options,
+                });
+            
+                const error = getError(response.data.ErrorCode);
+            
+                const d = {
+                  error,
+                  request: options,
+                  response: response.data,
+                };
+                debug(d);
+                options?.log && options.log(d);
+            
+                return {
+                  error,
+                  request: options,
+                  response: response.data,
+                };
+              } catch (error) {
+                return {
+                  error,
+                  request: options,
+                  response: null,
+                };
+              }
+            };
+
+            const newCheckOrderData = {
+              TerminalKey: "${process.env.PAYMENT_TEST_TERMINAL_KEY}",
+              OrderId: paymentId,
+              };
+            
+          
+            const checkOrderOptions = {
+              ...newCancelData,
+              Token: generateToken(newCancelData),
+            };
+
+            const paymentId = checkOrder(checkOrderOptions);
+
             const cancel = async (options) => {
               try {
                 const response = await axios({
