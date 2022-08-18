@@ -1210,6 +1210,7 @@ const f = async () => {
   };
 
   const callTests = async () => {
+    console.log('callTests-start');
     const PPayment = await deep.id(packageName, 'Payment');
     const PObject = await deep.id(packageName, 'Object');
     const PSum = await deep.id(packageName, 'Sum');
@@ -1348,7 +1349,7 @@ const f = async () => {
     };
 
     const testFinishAuthorize = async () => {
-      console.log('testFinishAuthorize');
+      console.log('testFinishAuthorize-start');
       await testInit();
       const {
         data: [
@@ -1368,13 +1369,12 @@ const f = async () => {
         page,
         url,
       });
+      console.log('testFinishAuthorize-end');
     };
 
     const testConfirm = async () => {
-      console.log('testConfirm');
+      console.log('testConfirm-start');
       await testFinishAuthorize();
-
-      await sleep(2000);
 
       const { data } = await deep.select({
         type_id: PPayed,
@@ -1383,9 +1383,11 @@ const f = async () => {
       if (data.length === 0) {
         throw new Error('Payment is not confirmed');
       }
+      console.log('testConfirm-end')
     };
 
     const testCancel = async () => {
+      console.log('testCancel-end');
       const testCancelAfterPay = async () => {
         const testCancelBeforeConfirmFullPrice = async () => {};
         const testCancelBeforeConfirmCustomPriceX2 = async () => {};
@@ -1393,10 +1395,11 @@ const f = async () => {
         const testCancelAfterConfirmCustomPriceX2 = async () => {};
       };
       const testCancelBeforePay = async () => {};
+      console.log('testCancel-end');
     };
 
     const testGetState = async () => {
-      console.log('testGetState');
+      console.log('testGetState-end');
       await testFinishAuthorize();
 
       const payId = await deep.select({ type_id: PPay });
@@ -1426,10 +1429,11 @@ const f = async () => {
       const result = await getState(options);
 
       expect(result.error).to.equal(undefined);
+      console.log('testGetState-end');
     };
 
     const testGetCardList = async () => {
-      console.log('testGetCardList');
+      console.log('testGetCardList-end');
       await testFinishAuthorize();
 
       const noTokenGetCardListData = {
@@ -1445,6 +1449,7 @@ const f = async () => {
       const result = await getCardList(options);
 
       expect(result.error).to.equal(undefined);
+      console.log('testGetCardList-end');
     };
 
     await testInit();
