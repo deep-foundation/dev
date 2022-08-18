@@ -1260,7 +1260,7 @@ const f = async () => {
         data: [{ id: paymentId }],
       } = await deep.insert({
         type_id: PPayment,
-        number: {data: {value: uniqid()}},
+        string: {data: {value: uniqid()}},
         in: {
           data: [
             {
