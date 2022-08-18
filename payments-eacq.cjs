@@ -1066,8 +1066,7 @@ async (
       TerminalKey: "${process.env.PAYMENT_TEST_TERMINAL_KEY}",
       PaymentId: req.body.PaymentId,
       Amount: req.body.Amount,
-      Token: req.body.Token,
-      Receipt: req.body.Receipt,
+      // Receipt: req.body.Receipt,
     };
 
     const confirmOptions = {
