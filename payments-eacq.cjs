@@ -951,6 +951,8 @@ async (
   next,
   { deep, require, gql }
 ) => {
+  const crypto = require('crypto');
+  const axios = require('axios');
   console.log('helloSomeText');
   const errorsConverter = {
     7: 'Покупатель не найден',
