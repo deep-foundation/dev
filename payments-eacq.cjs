@@ -1019,15 +1019,21 @@ async (
       .sort((a, b) => a.localeCompare(b))
       .map((key) => dataWithPassword[key])
       .reduce((acc, item) => acc.toString() + item.toString(), '');
+		console.log({dataWithPassword});
+		console.log({dataString});
     const hash = crypto.createHash('sha256').update(dataString).digest('hex');
+		console.log({hash});
     return hash;
   };
   const generateToken = (data) => {
+		console.log({data});
     const { Receipt, DATA, Shops, ...restData } = data;
+		console.log({restData});
     const dataWithPassword = {
       ...restData,
       Password: "${process.env.PAYMENT_EACQ_TERMINAL_PASSWORD}",
     };
+		console.log({dataWithPassword});
     return _generateToken(dataWithPassword);
   }; 
   const confirm = async (options) => {
