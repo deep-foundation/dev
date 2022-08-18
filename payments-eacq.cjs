@@ -1380,6 +1380,13 @@ const f = async () => {
         type_id: PPayed,
       });
 
+      for (let i = 0; i < 4; i++) {
+        if(data.length > 0) {
+          break;
+        }
+        await sleep(5000);
+      }
+
       if (data.length === 0) {
         throw new Error('Payment is not confirmed');
       }
