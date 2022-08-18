@@ -69,7 +69,6 @@
     "url": "git+https://github.com/deep-foundation/dev.git"
   },
   "type": "module",
-  "devDependencies": {},
   "dependencies": {
     "@deep-foundation/deeplinks": "0.0.93",
     "@types/gulp": "^4.0.8",
@@ -86,6 +85,7 @@
     "rimraf": "^3.0.2",
     "simple-git": "^2.45.0",
     "ts-node": "^9.1.1",
-    "typescript": "^4.1.5"
+    "typescript": "^4.1.5",
+    "uniqid": "^5.4.0"
   }
 }
