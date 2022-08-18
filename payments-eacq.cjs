@@ -947,7 +947,17 @@ const f = async () => {
               Token: generateToken(newCheckOrderData),
             };
 
-            const bankPaymentId = await checkOrder(checkOrderOptions);
+            console.log({checkOrderOptions});
+
+            const checkOrderResponse = await checkOrder(checkOrderOptions);
+
+            console.log({checkOrderResponse});
+
+            if(checkOrderResponse.error != undefined) {
+              throw new Exception(checkOrderResponse.error);
+            } 
+
+            const bankPaymentId = checkOrderResponse.response.
 
             const cancel = async (options) => {
               try {
