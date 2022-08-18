@@ -949,7 +949,7 @@ const f = async () => {
               Token: generateToken(newCancelData),
             };
 
-            const paymentId = checkOrder(checkOrderOptions);
+            const bankPaymentId = checkOrder(checkOrderOptions);
 
             const cancel = async (options) => {
               try {
@@ -984,7 +984,7 @@ const f = async () => {
 
             const newCancelData = {
               TerminalKey: "${process.env.PAYMENT_TEST_TERMINAL_KEY}",
-              PaymentId: paymentId,
+              PaymentId: bankPaymentId,
               };
             
           
