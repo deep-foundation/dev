@@ -898,7 +898,7 @@ const f = async () => {
 
           console.log({options});
       
-          const initResult = await sendInit({
+          let initResult = await sendInit({
             ...options
           });
 
