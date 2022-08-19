@@ -816,7 +816,7 @@ async ({ deep, require, data: { newLink: {id: payId} } }) => {
   const options = {
     TerminalKey: "${process.env.PAYMENT_TEST_TERMINAL_KEY}",
     OrderId: paymentLink?.value?.value ?? paymentLink.id,
-    CustomerKey: /*${deep.linkId}*/ "${uniqid()}",
+    CustomerKey: ${deep.linkId},
     NotificationURL: "${process.env.PAYMENT_EACQ_AND_TEST_NOTIFICATION_URL}",
     PayType: 'T',
     Amount: ${PRICE},
@@ -1082,6 +1082,8 @@ async (
     const confirmResponse = await confirm(confirmOptions);
     console.log({confirmResponse});
   } else if (status == 'CONFIRMED') {
+		const {data: [{id: paymentId}]} = await deep.select({value:  "rys33uluvl701w4xx"});
+
     const payedInsertData = await deep.insert({
       type_id: ${PPayed},
 			from_id: ${tinkoffProviderId},
