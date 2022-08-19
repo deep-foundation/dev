@@ -14,7 +14,6 @@ const puppeteer = require('puppeteer');
 const crypto = require('crypto');
 const axios = require('axios');
 const uniqid = require('uniqid');
-const { default: process } = require('process');
 
 var myEnv = dotenv.config();
 dotenvExpand.expand(myEnv);
