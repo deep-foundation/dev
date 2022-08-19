@@ -679,7 +679,7 @@ const f = async () => {
 	console.log({ sumProviderId });
 
   const payInsertHandler = /*javascript*/`
-async ({ deep, require, data: { newLink: {id: payId} } }) => {
+async ({ deep, require, data: { newLink: payLink } }) => {
   const crypto = require('crypto');
   const axios = require('axios');
   const errorsConverter = {
@@ -807,15 +807,15 @@ async ({ deep, require, data: { newLink: {id: payId} } }) => {
 
   console.log({mpDownPay});
 
-  const paymentLink = mpDownPay.data.find(link => link.type_id == ${PPayment});
+  // const paymentLink = mpDownPay.data.find(link => link.type_id == ${PPayment});
   const sum = mpDownPay.data.find(link => link.type_id == ${PSum}).value.value; 
 
-  console.log({paymentLink});
+  // console.log({paymentLink});
   console.log({sum});
 
   const options = {
     TerminalKey: "${process.env.PAYMENT_TEST_TERMINAL_KEY}",
-    OrderId: paymentLink?.value?.value ?? paymentLink.id,
+    OrderId: payLink?.value?.value ?? payLink.id,
     CustomerKey: ${deep.linkId},
     NotificationURL: "${process.env.PAYMENT_EACQ_AND_TEST_NOTIFICATION_URL}",
     PayType: 'T',
@@ -1082,12 +1082,11 @@ async (
     const confirmResponse = await confirm(confirmOptions);
     console.log({confirmResponse});
   } else if (status == 'CONFIRMED') {
-		const {data: [{id: paymentId}]} = await deep.select({value:  "rys33uluvl701w4xx"});
-
+		const {data: [{id: payId}]} = await deep.select({value: req.body.OrderId, type_id: ${PPay}, from_id: req.body.CustomerKey});
     const payedInsertData = await deep.insert({
       type_id: ${PPayed},
 			from_id: ${tinkoffProviderId},
-      to_id: req.body.OrderId,
+      to_id: payId,
       in: {
         data: [
           {
@@ -1102,7 +1101,7 @@ async (
     const errorInsertData = await deep.insert({
       type_id: ${PError},
       from_id: ${tinkoffProviderId},
-      to_id: req.body.OrderId,
+      to_id: payId,
       in: {
         data: [
           {
@@ -1293,7 +1292,6 @@ async (
 				data: [{ id: paymentId }],
 			} = await deep.insert({
 				type_id: PPayment,
-				string: { data: { value: uniqid() } },
 				in: {
 					data: [
 						{
@@ -1348,6 +1346,7 @@ async (
 				type_id: PPay,
 				from_id: deep.linkId,
 				to_id: sumId,
+				string: { data: { value: uniqid() } },
 				in: {
 					data: [
 						{
