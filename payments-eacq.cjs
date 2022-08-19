@@ -1539,7 +1539,7 @@ async (
 					const noTokenCancelData = {
 						TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
 						PaymentId: bankPaymentId,
-						Amount: PRICE / 3
+						Amount: Math.floor(PRICE / 3)
 					};
 	
 					const cancelOptions = {
@@ -1601,7 +1601,7 @@ async (
 					const noTokenCancelData = {
 						TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
 						PaymentId: bankPaymentId,
-						Amount: PRICE / 3
+						Amount: Math.floor(PRICE / 3)
 					};
 	
 					const cancelOptions = {
@@ -1667,7 +1667,7 @@ async (
 					const noTokenCancelData = {
 						TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
 						PaymentId: bankPaymentId,
-						Amount: PRICE / 3
+						Amount: Math.floor(PRICE / 3)
 					};
 	
 					const options = {
