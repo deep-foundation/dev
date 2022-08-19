@@ -1434,7 +1434,7 @@ async (
 		const testConfirm = async () => {
 			console.log('testConfirm-start');
 			await testFinishAuthorize();
-			sleep(6000);
+			sleep(12000);
 			let { data } = await deep.select({
 				type_id: PPayed,
 			});
