@@ -26,7 +26,7 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const payInBrowser = async ({ page, browser, url }) => {
 	await page.goto(url, { waitUntil: 'networkidle2' });
-	await sleep(3000);
+	await sleep(5000);
 	const oldForm = await page.evaluate(() => {
 		return !!document.querySelector(
 			'input[automation-id="tui-input-card-grouped__card"]'
@@ -1366,7 +1366,6 @@ async (
 				to_id: payId,
 			});
 
-			console.log({ urlQuery });
 
 			const hasUrl = urlQuery.data.length > 0;
 			if (!hasUrl) {
