@@ -1403,16 +1403,12 @@ async (
 			console.log('testConfirm-start');
 			await testFinishAuthorize();
 
-			let { data } = await deep.select({
-				type_id: PPayed,
-			});
-
 			for (let i = 0; i < 4; i++) {
 				let { data } = await deep.select({
 					type_id: PPayed,
 				});
 				if (data.length > 0) {
-					break;
+					return;
 				}
 				await sleep(30000);
 			}
