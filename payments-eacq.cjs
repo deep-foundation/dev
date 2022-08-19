@@ -1669,7 +1669,7 @@ async (
 			const {data: [payLink]} = await deep.select({ type_id: PPay });
 			
 
-			const bankPaymentId = await getBankPaymentId(payLink.id);
+			const bankPaymentId = await getBankPaymentId(payLink?.value?.value ?? payLink.id);
 
 			const noTokenGetStateData = {
 				TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
