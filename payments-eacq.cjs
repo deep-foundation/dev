@@ -1545,6 +1545,8 @@ async (
 	
 					console.log({ options: cancelOptions });
 
+					const cancelResponse = await cancel(cancelOptions);
+
 					expect(cancelResponse.error).to.equal(undefined);
 					expect(cancelResponse.response.Status).to.equal('REVERSED');
 				};
@@ -1602,6 +1604,8 @@ async (
 					};
 	
 					console.log({ options: cancelOptions });
+
+					const cancelResponse = await cancel(cancelOptions);
 	
 					{
 						const cancelResponse = await cancel(cancelOptions);
