@@ -800,7 +800,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
 
   const mpDownPay = await deep.select({
     down: {
-      link_id: { _eq: payId },
+      link_id: { _eq: payLink.id },
       tree_id: { _eq: ${paymentTreeId} },
     },
   });
@@ -858,7 +858,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
     } = await deep.insert({
       type_id: ${PError},
       from_id: ${tinkoffProviderId},
-      to_id: payId,
+      to_id: payLink.id,
       string: { data: { value: initResult.error } },
       in: {
         data: [
@@ -877,7 +877,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
     } = await deep.insert({
       type_id: ${PUrl},
       from_id: ${tinkoffProviderId},
-      to_id: payId,
+      to_id: payLink.id,
       string: { data: { value: initResult.response.PaymentURL } },
       in: {
         data: [
