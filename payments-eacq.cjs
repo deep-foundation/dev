@@ -1493,7 +1493,7 @@ async (
 			console.log('testCancel-start');
 			const testCancelAfterPay = async () => {
 				const testCancelBeforeConfirmFullPrice = async () => {
-					await testFinishAuthorize();
+					
 
 					const {data: [payLink]} = await deep.select({
 						type_id: PPay
@@ -1520,13 +1520,46 @@ async (
 					expect(cancelResponse.response.Status).to.equal('REVERSED');
 				};
 				const testCancelBeforeConfirmCustomPriceX2 = async () => {
-					await testFinishAuthorize();
-
-					const {data: [payLink]} = await deep.select({
-						type_id: PPay
+					const initOptions = {
+						TerminalKey: "${process.env.PAYMENT_TEST_TERMINAL_KEY}",
+						OrderId: payLink?.value?.value ?? payLink.id,
+						CustomerKey: deep.linkId,
+						PayType: 'T',
+						Amount: PRICE,
+						Description: 'Test shopping',
+						Language: 'ru',
+						Recurrent: 'Y',
+						DATA: {
+							Email: process.env.PAYMENT_TEST_EMAIL,
+							Phone: process.env.PAYMENT_TEST_PHONE,
+						},
+						Receipt: {
+							Items: [{
+								Name: 'Test item',
+								Price: sum,
+								Quantity: 1,
+								Amount: PRICE,
+								PaymentMethod: 'prepayment',
+								PaymentObject: 'service',
+								Tax: 'none',
+							}],
+							Email: process.env.PAYMENT_TEST_EMAIL,
+							Phone: process.env.PAYMENT_TEST_PHONE,
+							Taxation: 'usn_income',
+						}
+					};
+				
+					console.log({options: initOptions});
+				
+					let initResult = await sendInit({
+						...initOptions
 					});
 
-					const bankPaymentId = await getBankPaymentId(payLink?.value?.value ?? payLink.id);	
+					console.log({initResult});
+
+					expect(initResult.error).to.equal(undefined);
+
+					const bankPaymentId = initResult.response.PaymentId;
 
 					const noTokenCancelData = {
 						TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
@@ -1534,24 +1567,28 @@ async (
 						Amount: PRICE / 3
 					};
 	
-					const options = {
+					const cancelOptions = {
 						...noTokenCancelData,
 						Token: generateToken(noTokenCancelData),
 					};
 	
-					console.log({ options });
+					console.log({ options: cancelOptions });
 	
 					{
-						const cancelResponse = await cancel(options);
+						const cancelResponse = await cancel(cancelOptions);
+
+						console.log({cancelResponse});
 
 						expect(cancelResponse.error).to.equal(undefined);
-						expect(cancelResponse.response.Status).to.equal('REVERSED');
+						expect(cancelResponse.response.Status).to.equal('PARTIAL_REVERSED');
 					}
 					{
-						const cancelResponse = await cancel(options);
+						const cancelResponse = await cancel(cancelOptions);
+
+						console.log({cancelResponse});
 
 						expect(cancelResponse.error).to.equal(undefined);
-						expect(cancelResponse.response.Status).to.equal('REVERSED');
+						expect(cancelResponse.response.Status).to.equal('PARTIAL_REVERSED');
 					}
 				};
 				const testCancelAfterConfirmFullPrice = async () => {
@@ -1579,7 +1616,7 @@ async (
 					const cancelResponse = await cancel(options);
 
 					expect(cancelResponse.error).to.equal(undefined);
-					expect(cancelResponse.response.Status).to.equal('REVERSED');
+					expect(cancelResponse.response.Status).to.equal('REFUNDED');
 				};
 				const testCancelAfterConfirmCustomPriceX2 = async () => {
 					await testConfirm();
@@ -1607,13 +1644,13 @@ async (
 						const cancelResponse = await cancel(options);
 
 						expect(cancelResponse.error).to.equal(undefined);
-						expect(cancelResponse.response.Status).to.equal('REVERSED');
+						expect(cancelResponse.response.Status).to.equal('PARTIAL_REFUNDED');
 					}
 					{
 						const cancelResponse = await cancel(options);
 
 						expect(cancelResponse.error).to.equal(undefined);
-						expect(cancelResponse.response.Status).to.equal('REVERSED');
+						expect(cancelResponse.response.Status).to.equal('PARTIAL_REFUNDED');
 					}
 				};
 
@@ -1652,7 +1689,7 @@ async (
 				const cancelResponse = await cancel(options);
 
 				expect(cancelResponse.error).to.equal(undefined);
-				expect(cancelResponse.response.Status).to.equal('REVERSED');
+				expect(cancelResponse.response.Status).to.equal('CANCELED');
 			};
 			await testCancelAfterPay();
 			await deleteTestLinks();
