@@ -1316,6 +1316,7 @@ async (
 				const {id} = allLinks[i];
 				await deep.delete({id: id});
 			}
+			console.log("Deleted test links");
 		}
 
 		const testInit = async () => {
