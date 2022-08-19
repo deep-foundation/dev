@@ -1499,7 +1499,7 @@ async (
 						type_id: PPay
 					});
 
-					const bankPaymentId = getBankPaymentId(payLink?.value?.value ?? payLink.id);				
+					const bankPaymentId = await getBankPaymentId(payLink?.value?.value ?? payLink.id);				
 					
 					const noTokenCancelData = {
 						TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
@@ -1526,7 +1526,7 @@ async (
 						type_id: PPay
 					});
 
-					const bankPaymentId = getBankPaymentId(payLink?.value?.value ?? payLink.id);	
+					const bankPaymentId = await getBankPaymentId(payLink?.value?.value ?? payLink.id);	
 
 					const noTokenCancelData = {
 						TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
@@ -1561,7 +1561,7 @@ async (
 						type_id: PPay
 					});
 
-					const bankPaymentId = getBankPaymentId(payLink?.value?.value ?? payLink.id);	
+					const bankPaymentId = await getBankPaymentId(payLink?.value?.value ?? payLink.id);	
 
 					const noTokenCancelData = {
 						TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
@@ -1588,7 +1588,7 @@ async (
 						type_id: PPay
 					});
 
-					const bankPaymentId = getBankPaymentId(payLink?.value?.value ?? payLink.id);	
+					const bankPaymentId = await getBankPaymentId(payLink?.value?.value ?? payLink.id);	
 
 					const noTokenCancelData = {
 						TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
@@ -1634,7 +1634,7 @@ async (
 					type_id: PPay
 				});
 
-				const bankPaymentId = getBankPaymentId(payLink?.value?.value ?? payLink.id);	
+				const bankPaymentId = await getBankPaymentId(payLink?.value?.value ?? payLink.id);	
 
 				const noTokenCancelData = {
 					TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
