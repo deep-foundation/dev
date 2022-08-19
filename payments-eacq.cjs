@@ -1676,6 +1676,8 @@ async (
 		await deleteTestLinks();
 		await testConfirm();
 		await deleteTestLinks();
+		await testCancel();
+		await deleteTestLinks();
 		await testGetState();
 		await deleteTestLinks();
 		await testGetCardList();
