@@ -1543,9 +1543,11 @@ async (
 						Token: generateToken(noTokenCancelData),
 					};
 	
-					console.log({ options: cancelOptions });
+					console.log({cancelOptions});
 
 					const cancelResponse = await cancel(cancelOptions);
+
+					console.log({cancelResponse});
 
 					expect(cancelResponse.error).to.equal(undefined);
 					expect(cancelResponse.response.Status).to.equal('REVERSED');
@@ -1603,10 +1605,8 @@ async (
 						Token: generateToken(noTokenCancelData),
 					};
 	
-					console.log({ options: cancelOptions });
-
-					const cancelResponse = await cancel(cancelOptions);
-	
+					console.log({cancelOptions});
+					
 					{
 						const cancelResponse = await cancel(cancelOptions);
 
