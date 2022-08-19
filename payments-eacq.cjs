@@ -1414,7 +1414,7 @@ async (
 				if (data.length > 0) {
 					break;
 				}
-				await sleep(10000);
+				await sleep(30000);
 			}
 
 			if (data.length === 0) {
