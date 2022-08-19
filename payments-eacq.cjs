@@ -1517,7 +1517,7 @@ async (
 					const cancelResponse = await cancel(options);
 
 					expect(cancelResponse.error).to.equal(undefined);
-					expect(result.response.Status).to.equal('REVERSED');
+					expect(cancelResponse.response.Status).to.equal('REVERSED');
 				};
 				const testCancelBeforeConfirmCustomPriceX2 = async () => {
 					await testFinishAuthorize();
@@ -1545,13 +1545,13 @@ async (
 						const cancelResponse = await cancel(options);
 
 						expect(cancelResponse.error).to.equal(undefined);
-						expect(result.response.Status).to.equal('REVERSED');
+						expect(cancelResponse.response.Status).to.equal('REVERSED');
 					}
 					{
 						const cancelResponse = await cancel(options);
 
 						expect(cancelResponse.error).to.equal(undefined);
-						expect(result.response.Status).to.equal('REVERSED');
+						expect(cancelResponse.response.Status).to.equal('REVERSED');
 					}
 				};
 				const testCancelAfterConfirmFullPrice = async () => {
@@ -1579,7 +1579,7 @@ async (
 					const cancelResponse = await cancel(options);
 
 					expect(cancelResponse.error).to.equal(undefined);
-					expect(result.response.Status).to.equal('REVERSED');
+					expect(cancelResponse.response.Status).to.equal('REVERSED');
 				};
 				const testCancelAfterConfirmCustomPriceX2 = async () => {
 					await testConfirm();
@@ -1607,13 +1607,13 @@ async (
 						const cancelResponse = await cancel(options);
 
 						expect(cancelResponse.error).to.equal(undefined);
-						expect(result.response.Status).to.equal('REVERSED');
+						expect(cancelResponse.response.Status).to.equal('REVERSED');
 					}
 					{
 						const cancelResponse = await cancel(options);
 
 						expect(cancelResponse.error).to.equal(undefined);
-						expect(result.response.Status).to.equal('REVERSED');
+						expect(cancelResponse.response.Status).to.equal('REVERSED');
 					}
 				};
 
@@ -1652,7 +1652,7 @@ async (
 				const cancelResponse = await cancel(options);
 
 				expect(cancelResponse.error).to.equal(undefined);
-				expect(result.response.Status).to.equal('REVERSED');
+				expect(cancelResponse.response.Status).to.equal('REVERSED');
 			};
 			await testCancelAfterPay();
 			await deleteTestLinks();
@@ -1686,9 +1686,9 @@ async (
 				Token: generateToken(newGetStateData),
 			};
 
-			const result = await getState(options);
+			const getStateResponse = await getState(options);
 
-			expect(result.error).to.equal(undefined);
+			expect(getStateResponse.error).to.equal(undefined);
 			console.log('testGetState-end');
 		};
 
@@ -1706,9 +1706,9 @@ async (
 				Token: generateToken(noTokenGetStateData),
 			};
 
-			const result = await getCardList(options);
+			const getCardListResponse = await getCardList(options);
 
-			expect(result.error).to.equal(undefined);
+			expect(getCardListResponse.error).to.equal(undefined);
 			console.log('testGetCardList-end');
 		};
 
