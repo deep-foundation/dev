@@ -1512,7 +1512,7 @@ async (
 			} = await deep.select({
 				up: {
 					tree_id: paymentTreeId,
-					link_id: payId,
+					link_id: payLink.id,
 				},
 			});
 
