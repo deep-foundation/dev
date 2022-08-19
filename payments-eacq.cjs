@@ -1493,7 +1493,7 @@ async (
 			console.log('testCancel-start');
 			const testCancelAfterPay = async () => {
 				const testCancelBeforeConfirmFullPrice = async () => {
-					
+					await testFinishAuthorize();
 
 					const {data: [payLink]} = await deep.select({
 						type_id: PPay
