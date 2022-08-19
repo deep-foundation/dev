@@ -449,6 +449,54 @@ const f = async () => {
 	console.log({ packageId });
 
 	const {
+		data: [{ id: PSumProvider }],
+	} = await deep.insert({
+		type_id: Type,
+		from_id: Any,
+		to_id: Any,
+		in: {
+			data: {
+				type_id: Contain,
+				from_id: packageId,
+				string: { data: { value: 'SumProvider' } },
+			},
+		},
+	});
+
+	console.log({ PSumProvider: PSumProvider });
+
+	const {
+		data: [{ id: PTinkoffProvider }],
+	} = await deep.insert({
+		type_id: Type,
+		from_id: Any,
+		to_id: Any,
+		in: {
+			data: {
+				type_id: Contain,
+				from_id: packageId,
+				string: { data: { value: 'TinkoffProvider' } },
+			},
+		},
+	});
+
+	console.log({ PTinkoffProvider });
+
+	const {
+		data: [{ id: tinkoffProviderId }],
+	} = await deep.insert({
+		type_id: PTinkoffProvider,
+		in: {
+			data: [
+				{
+					type_id: Contain,
+					from_id: deep.linkId,
+				},
+			],
+		},
+	});
+
+	const {
 		data: [{ id: PPayment }],
 	} = await deep.insert({
 		type_id: BasePayment,
@@ -607,54 +655,6 @@ const f = async () => {
 				{
 					type_id: TreeIncludeUp,
 					to_id: PUrl,
-				},
-			],
-		},
-	});
-
-	const {
-		data: [{ id: PSumProvider }],
-	} = await deep.insert({
-		type_id: Type,
-		from_id: Any,
-		to_id: Any,
-		in: {
-			data: {
-				type_id: Contain,
-				from_id: packageId,
-				string: { data: { value: 'SumProvider' } },
-			},
-		},
-	});
-
-	console.log({ PSumProvider: PSumProvider });
-
-	const {
-		data: [{ id: PTinkoffProvider }],
-	} = await deep.insert({
-		type_id: Type,
-		from_id: Any,
-		to_id: Any,
-		in: {
-			data: {
-				type_id: Contain,
-				from_id: packageId,
-				string: { data: { value: 'TinkoffProvider' } },
-			},
-		},
-	});
-
-	console.log({ PTinkoffProvider });
-
-	const {
-		data: [{ id: tinkoffProviderId }],
-	} = await deep.insert({
-		type_id: PTinkoffProvider,
-		in: {
-			data: [
-				{
-					type_id: Contain,
-					from_id: deep.linkId,
 				},
 			],
 		},
