@@ -1084,12 +1084,13 @@ async (
   } else if (status == 'CONFIRMED') {
     const payedInsertData = await deep.insert({
       type_id: ${PPayed},
+			from_id: ${tinkoffProviderId},
       to_id: req.body.OrderId,
       in: {
         data: [
           {
             type_id: ${Contain},
-            from_id: ${tinkoffProviderId},
+            from_id: ${deep.linkId},
           },
         ],
       },
@@ -1104,7 +1105,7 @@ async (
         data: [
           {
             type_id: ${Contain},
-            from_id: ${tinkoffProviderId},
+            from_id: ${deep.linkId},
             string: { data: { value: getError(req.body.ErrorCode) } },
           },
         ],
