@@ -14,6 +14,7 @@ const puppeteer = require('puppeteer');
 const crypto = require('crypto');
 const axios = require('axios');
 const uniqid = require('uniqid');
+const { default: process } = require('process');
 
 var myEnv = dotenv.config();
 dotenvExpand.expand(myEnv);
@@ -1457,10 +1458,56 @@ async (
 		};
 
 		const testGetState = async () => {
-			console.log('testGetState-end');
+			console.log('testGetState-start');
 			await testFinishAuthorize();
 
-			const payId = await deep.select({ type_id: PPay });
+			const {data: [payLink]} = await deep.select({ type_id: PPay });
+			const checkOrder = async (options) => {
+				try {
+					const response = await axios({
+						method: 'post',
+						url: getUrl('CheckOrder'),
+						headers: {
+							'Content-Type': 'application/json',
+						},
+						data: options,
+					});
+			
+					const error = getError(response.data.ErrorCode);
+			
+					return {
+						error,
+						request: options,
+						response: response.data,
+					};
+				} catch (error) {
+					return {
+						error,
+						request: options,
+						response: null,
+					};
+				}
+			};
+
+			const noTokenCheckOrderOptions = {
+				TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
+				OrderId: payLink?.value?.value ?? payLink.id
+			}
+
+			const checkOrderOptions = {
+				...noTokenCheckOrderOptions,
+				Token: generateToken(noTokenCheckOrderOptions)
+			}
+
+			const checkOrderResponse = await checkOrder(checkOrderOptions);
+			if(checkOrderResponse.error) {
+				throw checkOrderResponse.error;
+			}
+
+			console.log({checkOrderResponse});
+			console.log(checkOrderResponse.response.Payments);
+			
+
 			const {
 				data: [{ id: paymentId }],
 			} = await deep.select({
