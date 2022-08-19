@@ -816,7 +816,7 @@ async ({ deep, require, data: { newLink: {id: payId} } }) => {
   const options = {
     TerminalKey: "${process.env.PAYMENT_TEST_TERMINAL_KEY}",
     OrderId: paymentLink.value.value ?? paymentLink.id,
-    CustomerKey: ${deep.linkId},
+    CustomerKey: /*${deep.linkId}*/ ${uniqid()},
     NotificationURL: "${process.env.PAYMENT_EACQ_AND_TEST_NOTIFICATION_URL}",
     PayType: 'T',
     Amount: ${PRICE},
@@ -1290,7 +1290,7 @@ async (
 				data: [{ id: paymentId }],
 			} = await deep.insert({
 				type_id: PPayment,
-				string: { data: { value: uniqid() } },
+				// string: { data: { value: uniqid() } },
 				in: {
 					data: [
 						{
