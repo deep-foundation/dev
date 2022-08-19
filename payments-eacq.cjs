@@ -199,7 +199,7 @@ const f = async () => {
 		const { Receipt, DATA, Shops, ...restData } = data;
 		const dataWithPassword = {
 			...restData,
-			Password: process.env.PAYMENT_EACQ_TERMINAL_PASSWORD,
+			Password: process.env.PAYMENT_TEST_TERMINAL_PASSWORD,
 		};
 		return _generateToken(dataWithPassword);
 	};
@@ -754,7 +754,7 @@ async ({ deep, require, data: { newLink: {id: payId} } }) => {
     const { Receipt, DATA, Shops, ...restData } = data;
     const dataWithPassword = {
       ...restData,
-      Password: "${process.env.PAYMENT_EACQ_TERMINAL_PASSWORD}",
+      Password: "${process.env.PAYMENT_TEST_TERMINAL_PASSWORD}",
     };
     return _generateToken(dataWithPassword);
   }; 
@@ -1031,7 +1031,7 @@ async (
 		console.log({restData});
     const dataWithPassword = {
       ...restData,
-      Password: "${process.env.PAYMENT_EACQ_TERMINAL_PASSWORD}",
+      Password: "${process.env.PAYMENT_TEST_TERMINAL_PASSWORD}",
     };
 		console.log({dataWithPassword});
     return _generateToken(dataWithPassword);
