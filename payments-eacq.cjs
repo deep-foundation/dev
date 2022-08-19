@@ -503,7 +503,7 @@ const f = async () => {
 		data: [{ id: PPay }],
 	} = await deep.insert({
 		type_id: BasePay,
-		from_id: Any,
+		from_id: User,
 		to_id: PSum,
 		in: {
 			data: {
@@ -520,7 +520,7 @@ const f = async () => {
 		data: [{ id: PUrl }],
 	} = await deep.insert({
 		type_id: BaseUrl,
-		from_id: Any,
+		from_id: PTinkoffProvider,
 		to_id: PPay,
 		in: {
 			data: {
@@ -537,8 +537,8 @@ const f = async () => {
 		data: [{ id: PPayed }],
 	} = await deep.insert({
 		type_id: BasePayed,
-		from_id: Any,
-		to_id: PUrl,
+		from_id: PTinkoffProvider,
+		to_id: PPay,
 		in: {
 			data: {
 				type_id: Contain,
@@ -554,7 +554,7 @@ const f = async () => {
 		data: [{ id: PError }],
 	} = await deep.insert({
 		type_id: BaseError,
-		from_id: Any,
+		from_id: PTinkoffProvider,
 		to_id: PPay,
 		in: {
 			data: {
