@@ -1464,12 +1464,121 @@ async (
 					expect(cancelResponse.error).to.equal(undefined);
 					expect(result.response.Status).to.equal('REVERSED');
 				};
-				const testCancelBeforeConfirmCustomPriceX2 = async () => {};
-				const testCancelAfterConfirmFullPrice = async () => {};
-				const testCancelAfterConfirmCustomPriceX2 = async () => {};
+				const testCancelBeforeConfirmCustomPriceX2 = async () => {
+					await testFinishAuthorize();
+
+					const noTokenCancelData = {
+						TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
+						PaymentId: paymentId,
+						Amount: PRICE / 3
+					};
+	
+					const options = {
+						...noTokenCancelData,
+						Token: generateToken(noTokenCancelData),
+					};
+	
+					console.log({ options });
+	
+					{
+						const cancelResponse = await cancel(options);
+
+						expect(cancelResponse.error).to.equal(undefined);
+						expect(result.response.Status).to.equal('REVERSED');
+					}
+					{
+						const cancelResponse = await cancel(options);
+
+						expect(cancelResponse.error).to.equal(undefined);
+						expect(result.response.Status).to.equal('REVERSED');
+					}
+				};
+				const testCancelAfterConfirmFullPrice = async () => {
+					await testConfirm();
+					const noTokenCancelData = {
+						TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
+						PaymentId: paymentId,
+						Amount: PRICE
+					};
+	
+					const options = {
+						...noTokenCancelData,
+						Token: generateToken(noTokenCancelData),
+					};
+	
+					console.log({ options });
+	
+					const cancelResponse = await cancel(options);
+
+					expect(cancelResponse.error).to.equal(undefined);
+					expect(result.response.Status).to.equal('REVERSED');
+				};
+				const testCancelAfterConfirmCustomPriceX2 = async () => {
+					await testConfirm();
+
+					const noTokenCancelData = {
+						TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
+						PaymentId: paymentId,
+						Amount: PRICE / 3
+					};
+	
+					const options = {
+						...noTokenCancelData,
+						Token: generateToken(noTokenCancelData),
+					};
+	
+					console.log({ options });
+	
+					{
+						const cancelResponse = await cancel(options);
+
+						expect(cancelResponse.error).to.equal(undefined);
+						expect(result.response.Status).to.equal('REVERSED');
+					}
+					{
+						const cancelResponse = await cancel(options);
+
+						expect(cancelResponse.error).to.equal(undefined);
+						expect(result.response.Status).to.equal('REVERSED');
+					}
+				};
+
+				await testCancelBeforeConfirmFullPrice();
+				await deleteTestLinks();
+				await testCancelBeforeConfirmCustomPriceX2();
+				await deleteTestLinks();
+				await testCancelAfterConfirmFullPrice();
+				await deleteTestLinks();
+				await testCancelAfterConfirmCustomPriceX2();
+				await deleteTestLinks();
 			};
-			const testCancelBeforePay = async () => {};
+
+			const testCancelBeforePay = async () => {
+				await testInit();
+				const noTokenCancelData = {
+					TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
+					PaymentId: paymentId,
+					Amount: PRICE
+				};
+
+				const options = {
+					...noTokenCancelData,
+					Token: generateToken(noTokenCancelData),
+				};
+
+				console.log({ options });
+
+				const cancelResponse = await cancel(options);
+
+				expect(cancelResponse.error).to.equal(undefined);
+				expect(result.response.Status).to.equal('REVERSED');
+			};
 			console.log('testCancel-end');
+
+			await testCancelAfterPay();
+			await deleteTestLinks();
+			await testCancelBeforePay();
+			await deleteTestLinks();
 		};
 
 		const testGetState = async () => {
