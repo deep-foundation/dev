@@ -1494,7 +1494,7 @@ async (
 			const testCancelAfterPay = async () => {
 				const testCancelBeforeConfirmFullPrice = async () => {
 					const initOptions = {
-						TerminalKey: "${process.env.PAYMENT_TEST_TERMINAL_KEY}",
+						TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
 						OrderId: uniqid(),
 						CustomerKey: deep.linkId,
 						PayType: 'T',
@@ -1550,7 +1550,7 @@ async (
 				};
 				const testCancelBeforeConfirmCustomPriceX2 = async () => {
 					const initOptions = {
-						TerminalKey: "${process.env.PAYMENT_TEST_TERMINAL_KEY}",
+						TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
 						OrderId: uniqid(),
 						CustomerKey: deep.linkId,
 						PayType: 'T',
