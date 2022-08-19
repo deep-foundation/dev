@@ -1286,6 +1286,38 @@ async (
 
 		console.log({ product: productId });
 
+		const deleteTestLinks = async () => {
+			const {data: objectLinks} = await deep.select({
+				type_id: PObject
+			});
+
+			const {data: sumLinks} = await deep.select({
+				type_id: PSum
+			});
+
+			const {data: payLinks} = await deep.select({
+				type_id: PPay
+			});
+
+			const {data: urlLinks} = await deep.select({
+				type_id: PUrl
+			});
+
+			const {data: payedLinks} = await deep.select({
+				type_id: PPayed
+			});
+
+			const {data: errorLinks} = await deep.select({
+				type_id: PError
+			});
+
+			const allLinks = [...objectLinks, ...sumLinks, ...payLinks, ...urlLinks, ...payedLinks, ...errorLinks];
+			for (let i = 0; i < allLinks.length; i++) {
+				const {id} = allLinks[i];
+				await deep.delete({id: id});
+			}
+		}
+
 		const testInit = async () => {
 			console.log('testInit-start');
 			const {
@@ -1485,9 +1517,13 @@ async (
 		};
 
 		await testInit();
+		await deleteTestLinks();
 		await testConfirm();
+		await deleteTestLinks();
 		await testGetState();
+		await deleteTestLinks();
 		await testGetCardList();
+		await deleteTestLinks();
 	};
 
 	try {
