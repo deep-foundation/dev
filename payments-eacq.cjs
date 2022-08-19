@@ -877,20 +877,20 @@ async ({ deep, require, data: { newLink: payLink } }) => {
       Email: "${process.env.PAYMENT_TEST_EMAIL}",
       Phone: "${process.env.PAYMENT_TEST_PHONE}",
     },
-    Receipt: {
-      Items: [{
-        Name: 'Test item',
-        Price: sum,
-        Quantity: 1,
-        Amount: ${PRICE},
-        PaymentMethod: 'prepayment',
-        PaymentObject: 'service',
-        Tax: 'none',
-      }],
-      Email: "${process.env.PAYMENT_TEST_EMAIL}",
-      Phone: "${process.env.PAYMENT_TEST_PHONE}",
-      Taxation: 'usn_income',
-    }
+    // Receipt: {
+    //   Items: [{
+    //     Name: 'Test item',
+    //     Price: sum,
+    //     Quantity: 1,
+    //     Amount: ${PRICE},
+    //     PaymentMethod: 'prepayment',
+    //     PaymentObject: 'service',
+    //     Tax: 'none',
+    //   }],
+    //   Email: "${process.env.PAYMENT_TEST_EMAIL}",
+    //   Phone: "${process.env.PAYMENT_TEST_PHONE}",
+    //   Taxation: 'usn_income',
+    // }
   };
 
   console.log({options});
@@ -1493,28 +1493,57 @@ async (
 			console.log('testCancel-start');
 			const testCancelAfterPay = async () => {
 				const testCancelBeforeConfirmFullPrice = async () => {
-					await testFinishAuthorize();
+					const initOptions = {
+						TerminalKey: "${process.env.PAYMENT_TEST_TERMINAL_KEY}",
+						OrderId: payLink?.value?.value ?? payLink.id,
+						CustomerKey: deep.linkId,
+						PayType: 'T',
+						Amount: PRICE,
+						Description: 'Test shopping',
+						Language: 'ru',
+						Recurrent: 'Y',
+						DATA: {
+							Email: process.env.PAYMENT_TEST_EMAIL,
+							Phone: process.env.PAYMENT_TEST_PHONE,
+						},
+						// Receipt: {
+						// 	Items: [{
+						// 		Name: 'Test item',
+						// 		Price: sum,
+						// 		Quantity: 1,
+						// 		Amount: PRICE,
+						// 		PaymentMethod: 'prepayment',
+						// 		PaymentObject: 'service',
+						// 		Tax: 'none',
+						// 	}],
+						// 	Email: process.env.PAYMENT_TEST_EMAIL,
+						// 	Phone: process.env.PAYMENT_TEST_PHONE,
+						// 	Taxation: 'usn_income',
+						// }
+					};
+				
+					console.log({options: initOptions});
+				
+					let initResult = await sendInit(initOptions);
 
-					const {data: [payLink]} = await deep.select({
-						type_id: PPay
-					});
+					console.log({initResult});
 
-					const bankPaymentId = await getBankPaymentId(payLink?.value?.value ?? payLink.id);				
-					
+					expect(initResult.error).to.equal(undefined);
+
+					const bankPaymentId = initResult.response.PaymentId;
+
 					const noTokenCancelData = {
 						TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
 						PaymentId: bankPaymentId,
-						Amount: PRICE
+						Amount: PRICE / 3
 					};
 	
-					const options = {
+					const cancelOptions = {
 						...noTokenCancelData,
 						Token: generateToken(noTokenCancelData),
 					};
 	
-					console.log({ options });
-	
-					const cancelResponse = await cancel(options);
+					console.log({ options: cancelOptions });
 
 					expect(cancelResponse.error).to.equal(undefined);
 					expect(cancelResponse.response.Status).to.equal('REVERSED');
@@ -1533,20 +1562,20 @@ async (
 							Email: process.env.PAYMENT_TEST_EMAIL,
 							Phone: process.env.PAYMENT_TEST_PHONE,
 						},
-						Receipt: {
-							Items: [{
-								Name: 'Test item',
-								Price: sum,
-								Quantity: 1,
-								Amount: PRICE,
-								PaymentMethod: 'prepayment',
-								PaymentObject: 'service',
-								Tax: 'none',
-							}],
-							Email: process.env.PAYMENT_TEST_EMAIL,
-							Phone: process.env.PAYMENT_TEST_PHONE,
-							Taxation: 'usn_income',
-						}
+						// Receipt: {
+						// 	Items: [{
+						// 		Name: 'Test item',
+						// 		Price: sum,
+						// 		Quantity: 1,
+						// 		Amount: PRICE,
+						// 		PaymentMethod: 'prepayment',
+						// 		PaymentObject: 'service',
+						// 		Tax: 'none',
+						// 	}],
+						// 	Email: process.env.PAYMENT_TEST_EMAIL,
+						// 	Phone: process.env.PAYMENT_TEST_PHONE,
+						// 	Taxation: 'usn_income',
+						// }
 					};
 				
 					console.log({options: initOptions});
