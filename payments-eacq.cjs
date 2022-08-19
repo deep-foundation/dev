@@ -1654,12 +1654,13 @@ async (
 				expect(cancelResponse.error).to.equal(undefined);
 				expect(result.response.Status).to.equal('REVERSED');
 			};
-			console.log('testCancel-end');
-
 			await testCancelAfterPay();
 			await deleteTestLinks();
 			await testCancelBeforePay();
 			await deleteTestLinks();
+
+
+			console.log('testCancel-end');
 		};
 
 		const testGetState = async () => {
