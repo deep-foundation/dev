@@ -241,6 +241,33 @@ const f = async () => {
 		}
 	};
 
+	const checkOrder = async (options) => {
+		try {
+			const response = await axios({
+				method: 'post',
+				url: getUrl('CheckOrder'),
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				data: options,
+			});
+	
+			const error = getError(response.data.ErrorCode);
+	
+			return {
+				error,
+				request: options,
+				response: response.data,
+			};
+		} catch (error) {
+			return {
+				error,
+				request: options,
+				response: null,
+			};
+		}
+	};
+
 	const getCardList = async (options) => {
 		try {
 			const response = await axios({
@@ -345,6 +372,28 @@ const f = async () => {
 			};
 		}
 	};
+
+	const getBankPaymentId = async (orderId) => {
+		const noTokenCheckOrderOptions = {
+			TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
+			OrderId: payLink?.value?.value ?? payLink.id
+		}
+
+		const checkOrderOptions = {
+			...noTokenCheckOrderOptions,
+			Token: generateToken(noTokenCheckOrderOptions)
+		}
+
+		const checkOrderResponse = await checkOrder(checkOrderOptions);
+		expect(checkOrderResponse.error).to.equal(undefined);
+
+		console.log({checkOrderResponse});
+		
+		const {PaymentId: bankPaymentId} = checkOrderResponse.response.Payments[0];
+
+		console.log({paymentId: bankPaymentId});
+		return bankPaymentId;
+	}
 
 	const guest = await unloginedDeep.guest();
 	const guestDeep = new DeepClient({ deep: unloginedDeep, ...guest });
@@ -1445,10 +1494,16 @@ async (
 			const testCancelAfterPay = async () => {
 				const testCancelBeforeConfirmFullPrice = async () => {
 					await testFinishAuthorize();
+
+					const {data: [payLink]} = await deep.select({
+						type_id: PPay
+					});
+
+					const bankPaymentId = getBankPaymentId(payLink?.value?.value ?? payLink.id);				
 					
 					const noTokenCancelData = {
 						TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
-						PaymentId: paymentId,
+						PaymentId: bankPaymentId,
 						Amount: PRICE
 					};
 	
@@ -1467,9 +1522,15 @@ async (
 				const testCancelBeforeConfirmCustomPriceX2 = async () => {
 					await testFinishAuthorize();
 
+					const {data: [payLink]} = await deep.select({
+						type_id: PPay
+					});
+
+					const bankPaymentId = getBankPaymentId(payLink?.value?.value ?? payLink.id);	
+
 					const noTokenCancelData = {
 						TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
-						PaymentId: paymentId,
+						PaymentId: bankPaymentId,
 						Amount: PRICE / 3
 					};
 	
@@ -1495,9 +1556,16 @@ async (
 				};
 				const testCancelAfterConfirmFullPrice = async () => {
 					await testConfirm();
+
+					const {data: [payLink]} = await deep.select({
+						type_id: PPay
+					});
+
+					const bankPaymentId = getBankPaymentId(payLink?.value?.value ?? payLink.id);	
+
 					const noTokenCancelData = {
 						TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
-						PaymentId: paymentId,
+						PaymentId: bankPaymentId,
 						Amount: PRICE
 					};
 	
@@ -1516,9 +1584,15 @@ async (
 				const testCancelAfterConfirmCustomPriceX2 = async () => {
 					await testConfirm();
 
+					const {data: [payLink]} = await deep.select({
+						type_id: PPay
+					});
+
+					const bankPaymentId = getBankPaymentId(payLink?.value?.value ?? payLink.id);	
+
 					const noTokenCancelData = {
 						TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
-						PaymentId: paymentId,
+						PaymentId: bankPaymentId,
 						Amount: PRICE / 3
 					};
 	
@@ -1555,9 +1629,16 @@ async (
 
 			const testCancelBeforePay = async () => {
 				await testInit();
+
+				const {data: [payLink]} = await deep.select({
+					type_id: PPay
+				});
+
+				const bankPaymentId = getBankPaymentId(payLink?.value?.value ?? payLink.id);	
+
 				const noTokenCancelData = {
 					TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
-					PaymentId: paymentId,
+					PaymentId: bankPaymentId,
 					Amount: PRICE
 				};
 
@@ -1586,51 +1667,9 @@ async (
 			await testFinishAuthorize();
 
 			const {data: [payLink]} = await deep.select({ type_id: PPay });
-			const checkOrder = async (options) => {
-				try {
-					const response = await axios({
-						method: 'post',
-						url: getUrl('CheckOrder'),
-						headers: {
-							'Content-Type': 'application/json',
-						},
-						data: options,
-					});
 			
-					const error = getError(response.data.ErrorCode);
-			
-					return {
-						error,
-						request: options,
-						response: response.data,
-					};
-				} catch (error) {
-					return {
-						error,
-						request: options,
-						response: null,
-					};
-				}
-			};
 
-			const noTokenCheckOrderOptions = {
-				TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
-				OrderId: payLink?.value?.value ?? payLink.id
-			}
-
-			const checkOrderOptions = {
-				...noTokenCheckOrderOptions,
-				Token: generateToken(noTokenCheckOrderOptions)
-			}
-
-			const checkOrderResponse = await checkOrder(checkOrderOptions);
-			expect(checkOrderResponse.error).to.equal(undefined);
-
-			console.log({checkOrderResponse});
-			
-			const {PaymentId: bankPaymentId} = checkOrderResponse.response.Payments[0];
-
-			console.log({paymentId: bankPaymentId});
+			const bankPaymentId = await getBankPaymentId(payLink.id);
 
 			const noTokenGetStateData = {
 				TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
