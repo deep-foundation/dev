@@ -1434,17 +1434,10 @@ async (
 		const testConfirm = async () => {
 			console.log('testConfirm-start');
 			await testFinishAuthorize();
-
-			for (let i = 0; i < 4; i++) {
-				let { data } = await deep.select({
-					type_id: PPayed,
-				});
-				if (data.length > 0) {
-					return;
-				}
-				await sleep(30000);
-			}
-
+			sleep(6000);
+			let { data } = await deep.select({
+				type_id: PPayed,
+			});
 			if (data.length === 0) {
 				throw new Error('Payment is not confirmed');
 			}
