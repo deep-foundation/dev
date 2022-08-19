@@ -14,6 +14,7 @@ const puppeteer = require('puppeteer');
 const crypto = require('crypto');
 const axios = require('axios');
 const uniqid = require('uniqid');
+const {expect}  = require('chai');
 
 var myEnv = dotenv.config();
 dotenvExpand.expand(myEnv);
@@ -1394,16 +1395,13 @@ async (
 
 			await sleep(9000);
 
-			const urlQuery = await deep.select({
+			const {data: {length}} = await deep.select({
 				type_id: PUrl,
 				to_id: payId,
 			});
 
 
-			const hasUrl = urlQuery.data.length > 0;
-			if (!hasUrl) {
-				throw new Error('Url not found.');
-			}
+			expect(length).to.greaterThan(0);
 			console.log('testInit-end');
 		};
 
@@ -1438,16 +1436,34 @@ async (
 			let { data } = await deep.select({
 				type_id: PPayed,
 			});
-			if (data.length === 0) {
-				throw new Error('Payment is not confirmed');
-			}
+			expect(data.length).to.greaterThan(0);
 			console.log('testConfirm-end');
 		};
 
 		const testCancel = async () => {
-			console.log('testCancel-end');
+			console.log('testCancel-start');
 			const testCancelAfterPay = async () => {
-				const testCancelBeforeConfirmFullPrice = async () => {};
+				const testCancelBeforeConfirmFullPrice = async () => {
+					await testFinishAuthorize();
+					
+					const noTokenCancelData = {
+						TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
+						PaymentId: paymentId,
+						Amount: PRICE
+					};
+	
+					const options = {
+						...noTokenCancelData,
+						Token: generateToken(noTokenCancelData),
+					};
+	
+					console.log({ options });
+	
+					const cancelResponse = await cancel(options);
+
+					expect(cancelResponse.error).to.equal(undefined);
+					expect(result.response.Status).to.equal('REVERSED');
+				};
 				const testCancelBeforeConfirmCustomPriceX2 = async () => {};
 				const testCancelAfterConfirmFullPrice = async () => {};
 				const testCancelAfterConfirmCustomPriceX2 = async () => {};
@@ -1499,22 +1515,13 @@ async (
 			}
 
 			const checkOrderResponse = await checkOrder(checkOrderOptions);
-			if(checkOrderResponse.error) {
-				throw checkOrderResponse.error;
-			}
+			expect(checkOrderResponse.error).to.equal(undefined);
 
 			console.log({checkOrderResponse});
-			console.log(checkOrderResponse.response.Payments);
 			
+			const {PaymentId: bankPaymentId} = checkOrderResponse.response.Payments[0];
 
-			const {
-				data: [{ id: paymentId }],
-			} = await deep.select({
-				up: {
-					tree_id: paymentTreeId,
-					link_id: payLink.id,
-				},
-			});
+			console.log({paymentId: bankPaymentId});
 
 			const noTokenGetStateData = {
 				TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
@@ -1522,7 +1529,7 @@ async (
 
 			const newGetStateData = {
 				...noTokenGetStateData,
-				PaymentId: paymentId,
+				PaymentId: bankPaymentId,
 			};
 
 			const options = {
