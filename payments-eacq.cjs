@@ -376,7 +376,7 @@ const f = async () => {
 	const getBankPaymentId = async (orderId) => {
 		const noTokenCheckOrderOptions = {
 			TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
-			OrderId: payLink?.value?.value ?? payLink.id
+			OrderId: orderId
 		}
 
 		const checkOrderOptions = {
