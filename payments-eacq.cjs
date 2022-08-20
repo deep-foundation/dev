@@ -1549,7 +1549,7 @@ async (
 					const noTokenCancelData = {
 						TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
 						PaymentId: bankPaymentId,
-						Amount: Math.floor(PRICE / 3)
+						Amount: PRICE
 					};
 	
 					const cancelOptions = {
