@@ -1874,6 +1874,77 @@ async (
 			console.log("testResend-end");
 		}
 
+		const testCharge = async () => {
+			console.log("testCharge-start");
+			const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
+      const page = await browser.newPage();
+
+      const initResult = await sendInit({
+        TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
+        Amount: 5500,
+        OrderId: uniqid(),
+        CustomerKey: deep.linkId,
+        Recurrent: 'Y',
+      });
+
+      await payInBrowser({
+        browser,
+        page,
+        url: initResult.response.PaymentURL,
+      });
+
+      const noTokenGetCardListOptions = {
+        TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
+        CustomerKey: deep.linkId,
+      };
+
+      const getCardListOptions = {
+        ...noTokenGetCardListOptions,
+        Token: generateToken(noTokenGetCardListOptions),
+      };
+
+      const getCardListResult = await getCardList(getCardListOptions);
+
+      expect(getCardListResult.response[0].RebillId).to.have.length.above(0);
+
+      const noTokenGetStateOptions = {
+        TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
+        PaymentId: initResult.response.PaymentId,
+      };
+
+      const getStateOptions = {
+        ...noTokenGetStateOptions,
+        Token: generateToken(noTokenGetStateOptions),
+      };
+
+      const getStateResult = await getState(getStateOptions);
+
+      expect(getStateResult.response.Status).to.equal('AUTHORIZED');
+
+      const newInitResult = await sendInit({
+        TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
+        Amount: 5500,
+        OrderId: uniqid(),
+        CustomerKey: deep.linkId,
+      });
+
+      const newChargeData = {
+        TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
+        PaymentId: newInitResult.response.PaymentId,
+        RebillId: Number(getCardListResult.response[0].RebillId),
+      };
+
+      const options = {
+        ...newChargeData,
+        Token: generateToken(newChargeData),
+      };
+
+      const chargeResult = await charge(options);
+
+      expect(chargeResult.error).to.equal(undefined);
+			console.log("testCharge-end");
+		}
+
 		await testInit();
 		await deleteTestLinks();
 		await testConfirm();
@@ -1885,6 +1956,8 @@ async (
 		await testGetCardList();
 		await deleteTestLinks();
 		await testResend();
+		await deleteTestLinks();
+		await testCharge();
 		await deleteTestLinks();
 	};
 
