@@ -440,12 +440,12 @@ const f = async () => {
 			Token: generateToken(noTokenCheckOrderOptions)
 		}
 
-		const checkOrderResponse = await checkOrder(checkOrderOptions);
-		expect(checkOrderResponse.error).to.equal(undefined);
+		const checkOrderResult = await checkOrder(checkOrderOptions);
+		expect(checkOrderResult.error).to.equal(undefined);
 
-		console.log({checkOrderResponse});
+		console.log({checkOrderResponse: checkOrderResult});
 		
-		const {PaymentId: bankPaymentId} = checkOrderResponse.response.Payments[0];
+		const {PaymentId: bankPaymentId} = checkOrderResult.response.Payments[0];
 
 		console.log({paymentId: bankPaymentId});
 		return bankPaymentId;
@@ -1185,8 +1185,8 @@ async (
       ...noTokenConfirmOptions,
       Token: generateToken(noTokenConfirmOptions)
     }
-    const confirmResponse = await confirm(confirmOptions);
-    console.log({confirmResponse});
+    const confirmResult = await confirm(confirmOptions);
+    console.log({confirmResult});
   } else if (status == 'CONFIRMED') {
 		const {data: [{id: payId}]} = await deep.select({value: req.body.OrderId, type_id: ${PPay}, from_id: req.body.CustomerKey});
     const payedInsertData = await deep.insert({
@@ -1627,12 +1627,12 @@ async (
 
 				console.log({cancelOptions});
 
-				const cancelResponse = await cancel(cancelOptions);
+				const cancelResult = await cancel(cancelOptions);
 
-				console.log({cancelResponse});
+				console.log({cancelResponse: cancelResult});
 
-				expect(cancelResponse.error).to.equal(undefined);
-				expect(cancelResponse.response.Status).to.equal('REVERSED');
+				expect(cancelResult.error).to.equal(undefined);
+				expect(cancelResult.response.Status).to.equal('REVERSED');
 				console.log("testCanselAfterPayBeforeConfirmFullPrice-end");
 			};
 
@@ -1703,20 +1703,20 @@ async (
 				console.log({cancelOptions});
 				
 				{
-					const cancelResponse = await cancel(cancelOptions);
+					const cancelResult = await cancel(cancelOptions);
 
-					console.log({cancelResponse});
+					console.log({cancelResponse: cancelResult});
 
-					expect(cancelResponse.error).to.equal(undefined);
-					expect(cancelResponse.response.Status).to.equal('PARTIAL_REVERSED');
+					expect(cancelResult.error).to.equal(undefined);
+					expect(cancelResult.response.Status).to.equal('PARTIAL_REVERSED');
 				}
 				{
-					const cancelResponse = await cancel(cancelOptions);
+					const cancelResult = await cancel(cancelOptions);
 
-					console.log({cancelResponse});
+					console.log({cancelResponse: cancelResult});
 
-					expect(cancelResponse.error).to.equal(undefined);
-					expect(cancelResponse.response.Status).to.equal('PARTIAL_REVERSED');
+					expect(cancelResult.error).to.equal(undefined);
+					expect(cancelResult.response.Status).to.equal('PARTIAL_REVERSED');
 				}
 				console.log("testCanselAfterPayBeforeConfirmCustomPriceX2-end");
 			};
@@ -1744,10 +1744,10 @@ async (
 
 				console.log({ options });
 
-				const cancelResponse = await cancel(options);
+				const cancelResult = await cancel(options);
 
-				expect(cancelResponse.error).to.equal(undefined);
-				expect(cancelResponse.response.Status).to.equal('REFUNDED');
+				expect(cancelResult.error).to.equal(undefined);
+				expect(cancelResult.response.Status).to.equal('REFUNDED');
 				console.log("testCancelAfterPayAfterConfirmFullPrice-end");
 			};
 
@@ -1775,16 +1775,16 @@ async (
 				console.log({ options });
 
 				{
-					const cancelResponse = await cancel(options);
+					const cancelResult = await cancel(options);
 
-					expect(cancelResponse.error).to.equal(undefined);
-					expect(cancelResponse.response.Status).to.equal('PARTIAL_REFUNDED');
+					expect(cancelResult.error).to.equal(undefined);
+					expect(cancelResult.response.Status).to.equal('PARTIAL_REFUNDED');
 				}
 				{
-					const cancelResponse = await cancel(options);
+					const cancelResult = await cancel(options);
 
-					expect(cancelResponse.error).to.equal(undefined);
-					expect(cancelResponse.response.Status).to.equal('PARTIAL_REFUNDED');
+					expect(cancelResult.error).to.equal(undefined);
+					expect(cancelResult.response.Status).to.equal('PARTIAL_REFUNDED');
 				}
 				console.log("testCancelAfterPayAfterConfirmCustomPriceX2-end");
 			};
@@ -1812,10 +1812,10 @@ async (
 
 				console.log({ options });
 
-				const cancelResponse = await cancel(options);
+				const cancelResult = await cancel(options);
 
-				expect(cancelResponse.error).to.equal(undefined);
-				expect(cancelResponse.response.Status).to.equal('CANCELED');
+				expect(cancelResult.error).to.equal(undefined);
+				expect(cancelResult.response.Status).to.equal('CANCELED');
 				console.log("testCancelBeforePay-end");
 			};
 			await testCancelAfterPayBeforeConfirmFullPrice();
@@ -1856,9 +1856,9 @@ async (
 				Token: generateToken(newGetStateData),
 			};
 
-			const getStateResponse = await getState(options);
+			const getStateResult = await getState(options);
 
-			expect(getStateResponse.error).to.equal(undefined);
+			expect(getStateResult.error).to.equal(undefined);
 			console.log('testGetState-end');
 		};
 
@@ -1876,9 +1876,9 @@ async (
 				Token: generateToken(noTokenGetStateData),
 			};
 
-			const getCardListResponse = await getCardList(options);
+			const getCardListResult = await getCardList(options);
 
-			expect(getCardListResponse.error).to.equal(undefined);
+			expect(getCardListResult.error).to.equal(undefined);
 			console.log('testGetCardList-end');
 		};
 
