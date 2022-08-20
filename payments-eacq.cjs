@@ -1250,6 +1250,8 @@ async (
       };
     }
   };
+	const reqBody = req.body;
+	console.log({reqBody});
   const status = req.body.Status;
   console.log({status});
   if (status == 'AUTHORIZED') {
@@ -2132,7 +2134,7 @@ async (
 		};
 
 		const testRemoveCustomer = async () => {
-			console.log('removeCustomer-start');
+			console.log('testRemoveCustomer-start');
 
 			const customerKey = uniqid();
 
@@ -2164,29 +2166,29 @@ async (
 
 			expect(removeResult.error).to.equal(undefined);
 
-			console.log('removeCustomer-end');
+			console.log('testRemoveCustomer-end');
 		};
 
-		await testInit();
-		await deleteTestLinks();
+		// await testInit();
+		// await deleteTestLinks();
 		await testConfirm();
 		await deleteTestLinks();
-		await testCancel();
-		await deleteTestLinks();
-		await testGetState();
-		await deleteTestLinks();
-		await testGetCardList();
-		await deleteTestLinks();
-		await testResend();
-		await deleteTestLinks();
-		await testCharge();
-		await deleteTestLinks();
-		await testAddCustomer();
-		await deleteTestLinks();
-		await testGetCustomer();
-		await deleteTestLinks();
-		await testRemoveCustomer();
-		await deleteTestLinks();
+		// await testCancel();
+		// await deleteTestLinks();
+		// await testGetState();
+		// await deleteTestLinks();
+		// await testGetCardList();
+		// await deleteTestLinks();
+		// await testResend();
+		// await deleteTestLinks();
+		// await testCharge();
+		// await deleteTestLinks();
+		// await testAddCustomer();
+		// await deleteTestLinks();
+		// await testGetCustomer();
+		// await deleteTestLinks();
+		// await testRemoveCustomer();
+		// await deleteTestLinks();
 	};
 
 	await callTests();
