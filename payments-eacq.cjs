@@ -1534,6 +1534,16 @@ async (
 
 					expect(initResult.error).to.equal(undefined);
 
+					const url = initResult.response.PaymentURL;
+
+					const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
+					const page = await browser.newPage();
+					await payInBrowser({
+						browser,
+						page,
+						url,
+					});
+
 					const bankPaymentId = initResult.response.PaymentId;
 
 					const noTokenCancelData = {
