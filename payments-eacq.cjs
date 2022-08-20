@@ -2089,7 +2089,7 @@ async (
 			console.log("testGetCustomer-end");
 		};
 
-		const removeCustomer = async () => {
+		const testRemoveCustomer = async () => {
 			console.log("removeCustomer-start");
 
 			const customerKey = uniqid();
