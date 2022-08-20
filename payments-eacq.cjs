@@ -1990,7 +1990,45 @@ async (
 
       expect(addCustomerResult.error).to.equal(undefined);
 			console.log("testAddCustomer-end");
-		}
+		};
+
+		const testGetCustomer = async () => {
+			console.log("testGetCustomer-start");
+			
+			const customerKey = uniqid();
+
+      const noTokenAddCustomerData = {
+        TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
+        CustomerKey: customerKey,
+      };
+
+      const newAddCustomerData = {
+        ...noTokenAddCustomerData,
+        Phone: process.env.PAYMENT_TEST_PHONE,
+      };
+
+      const addCustomerDataOptions = {
+        ...newAddCustomerData,
+        Token: generateToken(newAddCustomerData),
+      };
+
+      const addResult = await addCustomer(addCustomerDataOptions);
+
+      expect(addResult.error).to.equal(undefined);
+
+      const getCustomerDataOptions = {
+        ...noTokenAddCustomerData,
+        Token: generateToken(noTokenAddCustomerData),
+      };
+
+      const getResult = await getCustomer(getCustomerDataOptions);
+
+      expect(getResult.error).to.equal(undefined);
+      expect(getResult.response.Phone).to.equal(process.env.PAYMENT_TEST_PHONE);
+
+
+			console.log("testGetCustomer-end");
+		};
 
 		await testInit();
 		await deleteTestLinks();
@@ -2007,6 +2045,8 @@ async (
 		await testCharge();
 		await deleteTestLinks();
 		await testAddCustomer();
+		await deleteTestLinks();
+		await testGetCustomer();
 		await deleteTestLinks();
 	};
 
