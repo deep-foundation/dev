@@ -399,6 +399,34 @@ const f = async () => {
 			};
 		}
 	};
+
+	const addCustomer = async (options) => {
+		try {
+			const response = await axios({
+				method: 'post',
+				url: getUrl('AddCustomer'),
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				data: options,
+			});
+	
+			const error = getError(response.data.ErrorCode);
+				
+			return {
+				error,
+				request: options,
+				response: response.data,
+			};
+		} catch (error) {
+			return {
+				error,
+				request: options,
+				response: null,
+			};
+		}
+	};
+	
 	
 
 	const getBankPaymentId = async (orderId) => {
@@ -1945,6 +1973,25 @@ async (
 			console.log("testCharge-end");
 		}
 
+		const testAddCustomer = async () => {
+			console.log("testAddCustomer-start");
+
+      const noTokenAddCustomerOptions = {
+        TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
+        CustomerKey: customerKey,
+      };
+
+      const addCustomerOptions = {
+        ...noTokenAddCustomerOptions,
+        Token: generateToken(noTokenAddCustomerOptions),
+      };
+
+      const addCustomerResult = await addCustomer(addCustomerOptions);
+
+      expect(addCustomerResult.error).to.equal(undefined);
+			console.log("testAddCustomer-end");
+		}
+
 		await testInit();
 		await deleteTestLinks();
 		await testConfirm();
@@ -1958,6 +2005,8 @@ async (
 		await testResend();
 		await deleteTestLinks();
 		await testCharge();
+		await deleteTestLinks();
+		await testAddCustomer();
 		await deleteTestLinks();
 	};
 
