@@ -1873,7 +1873,7 @@ async (
 
 			const options = {
 				...noTokenGetCardListData,
-				Token: generateToken(noTokenGetStateData),
+				Token: generateToken(noTokenGetCardListData),
 			};
 
 			const getCardListResult = await getCardList(options);
