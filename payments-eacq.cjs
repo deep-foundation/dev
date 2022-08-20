@@ -376,6 +376,31 @@ const f = async () => {
 		}
 	};
 
+	const resend = async (options) => {
+		try {
+			const response = await axios({
+				method: 'post',
+				url: getUrl('Resend'),
+				data: options,
+			});
+	
+			const error = getError(response.data.ErrorCode);
+	
+			return {
+				error,
+				request: options,
+				response: response.data,
+			};
+		} catch (error) {
+			return {
+				error,
+				request: options,
+				response: null,
+			};
+		}
+	};
+	
+
 	const getBankPaymentId = async (orderId) => {
 		const noTokenCheckOrderOptions = {
 			TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
@@ -1815,7 +1840,7 @@ async (
 
 			const noTokenGetCardListData = {
 				TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
-				CustomerKey: customerKey,
+				CustomerKey: deep.linkId,
 			};
 
 			const options = {
@@ -1829,6 +1854,26 @@ async (
 			console.log('testGetCardList-end');
 		};
 
+		const testResend = async () => {
+			console.log("testResend-start");
+			const noTokenResendOptions = {
+        TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
+      };
+
+      const resendOptions = {
+        ...noTokenResendOptions,
+        Token: generateToken(noTokenResendOptions),
+      };
+
+			console.log({resendOptions});
+
+      const resendResult = await resend(resendOptions);
+			console.log({resendResult});
+
+      expect(resendResult.error).to.equal(undefined);
+			console.log("testResend-end");
+		}
+
 		await testInit();
 		await deleteTestLinks();
 		await testConfirm();
@@ -1838,6 +1883,8 @@ async (
 		await testGetState();
 		await deleteTestLinks();
 		await testGetCardList();
+		await deleteTestLinks();
+		await testResend();
 		await deleteTestLinks();
 	};
 
