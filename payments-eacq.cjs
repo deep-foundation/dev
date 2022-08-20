@@ -1473,6 +1473,7 @@ async (
 				type_id: PUrl,
 			});
 
+			const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
 			const page = await browser.newPage();
 			await payInBrowser({
 				browser,
@@ -1540,6 +1541,7 @@ async (
 				console.log("after url");
 
 				console.log("before page");
+				const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
 				const page = await browser.newPage();
 				console.log("after page");
 				console.log("before payInBrowser");
@@ -1624,6 +1626,7 @@ async (
 
 				const url = initResult.response.PaymentURL;
 
+				const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
 				const page = await browser.newPage();
 				await payInBrowser({
 					browser,
