@@ -2030,6 +2030,43 @@ async (
 			console.log("testGetCustomer-end");
 		};
 
+		const removeCustomer = async () => {
+			console.log("removeCustomer-start");
+
+			const customerKey = uniqid();
+
+      const noTokenRemoveCustomerData = {
+        TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
+        CustomerKey: customerKey,
+      };
+
+      const newAddCustomerData = {
+        ...noTokenRemoveCustomerData,
+        Phone: process.env.PAYMENT_TEST_PHONE,
+      };
+
+      const addCustomerDataOptions = {
+        ...newAddCustomerData,
+        Token: generateToken(newAddCustomerData),
+      };
+
+      const addResult = await addCustomer(addCustomerDataOptions);
+
+      expect(addResult.error).to.equal(undefined);
+
+      const removeCustomerDataOptions = {
+        ...noTokenRemoveCustomerData,
+        Token: generateToken(noTokenRemoveCustomerData),
+      };
+
+      const removeResult = await removeCustomer(removeCustomerDataOptions);
+
+      expect(removeResult.error).to.equal(undefined);
+
+
+			console.log("removeCustomer-end");
+		}
+
 		await testInit();
 		await deleteTestLinks();
 		await testConfirm();
@@ -2047,6 +2084,8 @@ async (
 		await testAddCustomer();
 		await deleteTestLinks();
 		await testGetCustomer();
+		await deleteTestLinks();
+		await testRemoveCustomer();
 		await deleteTestLinks();
 	};
 
