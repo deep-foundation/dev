@@ -2004,6 +2004,8 @@ async (
 		const testAddCustomer = async () => {
 			console.log("testAddCustomer-start");
 
+			const customerKey = uniqid();
+
       const noTokenAddCustomerOptions = {
         TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
         CustomerKey: customerKey,
