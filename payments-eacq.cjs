@@ -454,6 +454,35 @@ const f = async () => {
 			};
 		}
 	};
+
+
+const getCustomer = async (options) => {
+  try {
+    const response = await axios({
+      method: 'post',
+      url: getUrl('GetCustomer'),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      data: options,
+    });
+
+    const error = getError(response.data.ErrorCode);
+
+    return {
+      error,
+      request: options,
+      response: response.data,
+    };
+  } catch (error) {
+    return {
+      error,
+      request: options,
+      response: null,
+    };
+  }
+};
+
 	
 	
 
