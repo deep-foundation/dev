@@ -1496,231 +1496,232 @@ async (
 
 		const testCancel = async () => {
 			console.log('testCancel-start');
-			const testCancelAfterPay = async () => {
-				const testCancelBeforeConfirmFullPrice = async () => {
-					const initOptions = {
-						TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
-						OrderId: uniqid(),
-						CustomerKey: deep.linkId,
-						PayType: 'T',
-						Amount: PRICE,
-						Description: 'Test shopping',
-						Language: 'ru',
-						Recurrent: 'Y',
-						DATA: {
-							Email: process.env.PAYMENT_TEST_EMAIL,
-							Phone: process.env.PAYMENT_TEST_PHONE,
-						},
-						// Receipt: {
-						// 	Items: [{
-						// 		Name: 'Test item',
-						// 		Price: sum,
-						// 		Quantity: 1,
-						// 		Amount: PRICE,
-						// 		PaymentMethod: 'prepayment',
-						// 		PaymentObject: 'service',
-						// 		Tax: 'none',
-						// 	}],
-						// 	Email: process.env.PAYMENT_TEST_EMAIL,
-						// 	Phone: process.env.PAYMENT_TEST_PHONE,
-						// 	Taxation: 'usn_income',
-						// }
-					};
+			const testCancelAfterPayBeforeConfirmFullPrice = async () => {
+				console.log("testCanselAfterPayBeforeConfirmFullPrice-start");
+				const initOptions = {
+					TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
+					OrderId: uniqid(),
+					CustomerKey: deep.linkId,
+					PayType: 'T',
+					Amount: PRICE,
+					Description: 'Test shopping',
+					Language: 'ru',
+					Recurrent: 'Y',
+					DATA: {
+						Email: process.env.PAYMENT_TEST_EMAIL,
+						Phone: process.env.PAYMENT_TEST_PHONE,
+					},
+					// Receipt: {
+					// 	Items: [{
+					// 		Name: 'Test item',
+					// 		Price: sum,
+					// 		Quantity: 1,
+					// 		Amount: PRICE,
+					// 		PaymentMethod: 'prepayment',
+					// 		PaymentObject: 'service',
+					// 		Tax: 'none',
+					// 	}],
+					// 	Email: process.env.PAYMENT_TEST_EMAIL,
+					// 	Phone: process.env.PAYMENT_TEST_PHONE,
+					// 	Taxation: 'usn_income',
+					// }
+				};
+			
+				console.log({options: initOptions});
+			
+				let initResult = await sendInit(initOptions);
+
+				console.log({initResult});
+
+				expect(initResult.error).to.equal(undefined);
+
+				const url = initResult.response.PaymentURL;
+
+				const page = await browser.newPage();
+				await payInBrowser({
+					browser,
+					page,
+					url,
+				});
+
+				const bankPaymentId = initResult.response.PaymentId;
+
+				const noTokenCancelData = {
+					TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
+					PaymentId: bankPaymentId,
+					Amount: PRICE
+				};
+
+				const cancelOptions = {
+					...noTokenCancelData,
+					Token: generateToken(noTokenCancelData),
+				};
+
+				console.log({cancelOptions});
+
+				const cancelResponse = await cancel(cancelOptions);
+
+				console.log({cancelResponse});
+
+				expect(cancelResponse.error).to.equal(undefined);
+				expect(cancelResponse.response.Status).to.equal('REVERSED');
+				console.log("testCanselAfterPayBeforeConfirmFullPrice-end");
+			};
+
+			const testCancelAfterPayBeforeConfirmCustomPriceX2 = async () => {
+				console.log("testCanselAfterPayBeforeConfirmCustomPriceX2-start");
+				const initOptions = {
+					TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
+					OrderId: uniqid(),
+					CustomerKey: deep.linkId,
+					PayType: 'T',
+					Amount: PRICE,
+					Description: 'Test shopping',
+					Language: 'ru',
+					Recurrent: 'Y',
+					DATA: {
+						Email: process.env.PAYMENT_TEST_EMAIL,
+						Phone: process.env.PAYMENT_TEST_PHONE,
+					},
+					// Receipt: {
+					// 	Items: [{
+					// 		Name: 'Test item',
+					// 		Price: sum,
+					// 		Quantity: 1,
+					// 		Amount: PRICE,
+					// 		PaymentMethod: 'prepayment',
+					// 		PaymentObject: 'service',
+					// 		Tax: 'none',
+					// 	}],
+					// 	Email: process.env.PAYMENT_TEST_EMAIL,
+					// 	Phone: process.env.PAYMENT_TEST_PHONE,
+					// 	Taxation: 'usn_income',
+					// }
+				};
+			
+				console.log({options: initOptions});
+			
+				let initResult = await sendInit({
+					...initOptions
+				});
+
+				console.log({initResult});
+
+				expect(initResult.error).to.equal(undefined);
+
+				const url = initResult.response.PaymentURL;
+
+				const page = await browser.newPage();
+				await payInBrowser({
+					browser,
+					page,
+					url,
+				});
+
+				const bankPaymentId = initResult.response.PaymentId;
+
+				const noTokenCancelData = {
+					TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
+					PaymentId: bankPaymentId,
+					Amount: Math.floor(PRICE / 3)
+				};
+
+				const cancelOptions = {
+					...noTokenCancelData,
+					Token: generateToken(noTokenCancelData),
+				};
+
+				console.log({cancelOptions});
 				
-					console.log({options: initOptions});
-				
-					let initResult = await sendInit(initOptions);
-
-					console.log({initResult});
-
-					expect(initResult.error).to.equal(undefined);
-
-					const url = initResult.response.PaymentURL;
-
-					const page = await browser.newPage();
-					await payInBrowser({
-						browser,
-						page,
-						url,
-					});
-
-					const bankPaymentId = initResult.response.PaymentId;
-
-					const noTokenCancelData = {
-						TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
-						PaymentId: bankPaymentId,
-						Amount: PRICE
-					};
-	
-					const cancelOptions = {
-						...noTokenCancelData,
-						Token: generateToken(noTokenCancelData),
-					};
-	
-					console.log({cancelOptions});
-
+				{
 					const cancelResponse = await cancel(cancelOptions);
 
 					console.log({cancelResponse});
 
 					expect(cancelResponse.error).to.equal(undefined);
-					expect(cancelResponse.response.Status).to.equal('REVERSED');
+					expect(cancelResponse.response.Status).to.equal('PARTIAL_REVERSED');
+				}
+				{
+					const cancelResponse = await cancel(cancelOptions);
+
+					console.log({cancelResponse});
+
+					expect(cancelResponse.error).to.equal(undefined);
+					expect(cancelResponse.response.Status).to.equal('PARTIAL_REVERSED');
+				}
+				console.log("testCanselAfterPayBeforeConfirmCustomPriceX2-end");
+			};
+
+			const testCancelAfterPayAfterConfirmFullPrice = async () => {
+				console.log("testCancelAfterPayAfterConfirmFullPrice-start");
+				await testConfirm();
+
+				const {data: [payLink]} = await deep.select({
+					type_id: PPay
+				});
+
+				const bankPaymentId = await getBankPaymentId(payLink?.value?.value ?? payLink.id);	
+
+				const noTokenCancelData = {
+					TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
+					PaymentId: bankPaymentId,
+					Amount: PRICE
 				};
-				const testCancelBeforeConfirmCustomPriceX2 = async () => {
-					const initOptions = {
-						TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
-						OrderId: uniqid(),
-						CustomerKey: deep.linkId,
-						PayType: 'T',
-						Amount: PRICE,
-						Description: 'Test shopping',
-						Language: 'ru',
-						Recurrent: 'Y',
-						DATA: {
-							Email: process.env.PAYMENT_TEST_EMAIL,
-							Phone: process.env.PAYMENT_TEST_PHONE,
-						},
-						// Receipt: {
-						// 	Items: [{
-						// 		Name: 'Test item',
-						// 		Price: sum,
-						// 		Quantity: 1,
-						// 		Amount: PRICE,
-						// 		PaymentMethod: 'prepayment',
-						// 		PaymentObject: 'service',
-						// 		Tax: 'none',
-						// 	}],
-						// 	Email: process.env.PAYMENT_TEST_EMAIL,
-						// 	Phone: process.env.PAYMENT_TEST_PHONE,
-						// 	Taxation: 'usn_income',
-						// }
-					};
-				
-					console.log({options: initOptions});
-				
-					let initResult = await sendInit({
-						...initOptions
-					});
 
-					console.log({initResult});
-
-					expect(initResult.error).to.equal(undefined);
-
-					const url = initResult.response.PaymentURL;
-
-					const page = await browser.newPage();
-					await payInBrowser({
-						browser,
-						page,
-						url,
-					});
-
-					const bankPaymentId = initResult.response.PaymentId;
-
-					const noTokenCancelData = {
-						TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
-						PaymentId: bankPaymentId,
-						Amount: Math.floor(PRICE / 3)
-					};
-	
-					const cancelOptions = {
-						...noTokenCancelData,
-						Token: generateToken(noTokenCancelData),
-					};
-	
-					console.log({cancelOptions});
-					
-					{
-						const cancelResponse = await cancel(cancelOptions);
-
-						console.log({cancelResponse});
-
-						expect(cancelResponse.error).to.equal(undefined);
-						expect(cancelResponse.response.Status).to.equal('PARTIAL_REVERSED');
-					}
-					{
-						const cancelResponse = await cancel(cancelOptions);
-
-						console.log({cancelResponse});
-
-						expect(cancelResponse.error).to.equal(undefined);
-						expect(cancelResponse.response.Status).to.equal('PARTIAL_REVERSED');
-					}
+				const options = {
+					...noTokenCancelData,
+					Token: generateToken(noTokenCancelData),
 				};
-				const testCancelAfterConfirmFullPrice = async () => {
-					await testConfirm();
 
-					const {data: [payLink]} = await deep.select({
-						type_id: PPay
-					});
+				console.log({ options });
 
-					const bankPaymentId = await getBankPaymentId(payLink?.value?.value ?? payLink.id);	
+				const cancelResponse = await cancel(options);
 
-					const noTokenCancelData = {
-						TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
-						PaymentId: bankPaymentId,
-						Amount: PRICE
-					};
-	
-					const options = {
-						...noTokenCancelData,
-						Token: generateToken(noTokenCancelData),
-					};
-	
-					console.log({ options });
-	
+				expect(cancelResponse.error).to.equal(undefined);
+				expect(cancelResponse.response.Status).to.equal('REFUNDED');
+				console.log("testCancelAfterPayAfterConfirmFullPrice-end");
+			};
+
+			const testCancelAfterPayAfterConfirmCustomPriceX2 = async () => {
+				console.log("testCancelAfterPayAfterConfirmCustomPriceX2-start");
+				await testConfirm();
+
+				const {data: [payLink]} = await deep.select({
+					type_id: PPay
+				});
+
+				const bankPaymentId = await getBankPaymentId(payLink?.value?.value ?? payLink.id);	
+
+				const noTokenCancelData = {
+					TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
+					PaymentId: bankPaymentId,
+					Amount: Math.floor(PRICE / 3)
+				};
+
+				const options = {
+					...noTokenCancelData,
+					Token: generateToken(noTokenCancelData),
+				};
+
+				console.log({ options });
+
+				{
 					const cancelResponse = await cancel(options);
 
 					expect(cancelResponse.error).to.equal(undefined);
-					expect(cancelResponse.response.Status).to.equal('REFUNDED');
-				};
-				const testCancelAfterConfirmCustomPriceX2 = async () => {
-					await testConfirm();
+					expect(cancelResponse.response.Status).to.equal('PARTIAL_REFUNDED');
+				}
+				{
+					const cancelResponse = await cancel(options);
 
-					const {data: [payLink]} = await deep.select({
-						type_id: PPay
-					});
-
-					const bankPaymentId = await getBankPaymentId(payLink?.value?.value ?? payLink.id);	
-
-					const noTokenCancelData = {
-						TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
-						PaymentId: bankPaymentId,
-						Amount: Math.floor(PRICE / 3)
-					};
-	
-					const options = {
-						...noTokenCancelData,
-						Token: generateToken(noTokenCancelData),
-					};
-	
-					console.log({ options });
-	
-					{
-						const cancelResponse = await cancel(options);
-
-						expect(cancelResponse.error).to.equal(undefined);
-						expect(cancelResponse.response.Status).to.equal('PARTIAL_REFUNDED');
-					}
-					{
-						const cancelResponse = await cancel(options);
-
-						expect(cancelResponse.error).to.equal(undefined);
-						expect(cancelResponse.response.Status).to.equal('PARTIAL_REFUNDED');
-					}
-				};
-
-				await testCancelBeforeConfirmFullPrice();
-				await deleteTestLinks();
-				await testCancelBeforeConfirmCustomPriceX2();
-				await deleteTestLinks();
-				await testCancelAfterConfirmFullPrice();
-				await deleteTestLinks();
-				await testCancelAfterConfirmCustomPriceX2();
-				await deleteTestLinks();
+					expect(cancelResponse.error).to.equal(undefined);
+					expect(cancelResponse.response.Status).to.equal('PARTIAL_REFUNDED');
+				}
+				console.log("testCancelAfterPayAfterConfirmCustomPriceX2-end");
 			};
 
 			const testCancelBeforePay = async () => {
+				console.log("testCancelBeforePay-start");
 				await testInit();
 
 				const {data: [payLink]} = await deep.select({
@@ -1746,9 +1747,16 @@ async (
 
 				expect(cancelResponse.error).to.equal(undefined);
 				expect(cancelResponse.response.Status).to.equal('CANCELED');
+				console.log("testCancelBeforePay-end");
 			};
-			await testCancelAfterPay();
-			await deleteTestLinks();
+			await testCancelAfterPayBeforeConfirmFullPrice();
+				await deleteTestLinks();
+				await testCancelAfterPayBeforeConfirmCustomPriceX2();
+				await deleteTestLinks();
+				await testCancelAfterPayAfterConfirmFullPrice();
+				await deleteTestLinks();
+				await testCancelAfterPayAfterConfirmCustomPriceX2();
+				await deleteTestLinks();
 			await testCancelBeforePay();
 			await deleteTestLinks();
 
