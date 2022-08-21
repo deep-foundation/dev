@@ -2183,7 +2183,7 @@ async (
 						type_id: PCancelled,
 						from_id: tinkoffProviderId,
 						to_id: payedLink.id,
-						number: {data: {value: PRICE / 3}}
+						number: {data: {value: Math.floor(PRICE / 3)}}
 					});
 	
 					await sleep(5000);
