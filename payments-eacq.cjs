@@ -2211,27 +2211,21 @@ async (
 					type_id: PPay,
 				});
 
-				const bankPaymentId = await getBankPaymentId(
-					payLink?.value?.value ?? payLink.id
-				);
+				const {data: [cancelledLink]} = await deep.insert({
+					type_id: PCancelled,
+					from_id: tinkoffProviderId,
+					to_id: payLink.id,
+					number: {data: {value: PRICE}}
+				});
 
-				const noTokenCancelData = {
-					TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
-					PaymentId: bankPaymentId,
-					Amount: PRICE,
-				};
+				await sleep(5000);
 
-				const options = {
-					...noTokenCancelData,
-					Token: generateToken(noTokenCancelData),
-				};
+				const {data: cancelledErrors} = await deep.select({
+					type_id: PError,
+					to_id: cancelledLink.id
+				});
 
-				console.log({ options });
-
-				const cancelResult = await cancel(options);
-
-				expect(cancelResult.error).to.equal(undefined);
-				expect(cancelResult.response.Status).to.equal('CANCELED');
+				expect(cancelledErrors.length).to.equal(0);
 				console.log('testCancelBeforePay-end');
 			};
 			await testCancelAfterPayBeforeConfirmFullPrice();
