@@ -1108,7 +1108,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
 				{
 					type_id: Contain,
 					from_id: packageId, // before created package
-					string: { data: { value: 'joinInsertHandlerFile' } },
+					string: { data: { value: 'payInsertHandlerFile' } },
 				},
 				{
 					from_id: dockerSupportsJs,
@@ -1118,7 +1118,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
 							{
 								type_id: Contain,
 								from_id: packageId, // before created package
-								string: { data: { value: 'joinInsertHandler' } },
+								string: { data: { value: 'payInsertHandler' } },
 							},
 							{
 								type_id: HandleInsert,
@@ -1128,7 +1128,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
 										{
 											type_id: Contain,
 											from_id: packageId, // before created package
-											string: { data: { value: 'joinInsertHandle' } },
+											string: { data: { value: 'payInsertHandle' } },
 										},
 									],
 								},
