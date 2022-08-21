@@ -2658,6 +2658,8 @@ async (
 		await deleteTestLinks();
 		await testCancelRealization();
 		await deleteTestLinks();
+		await testCancelIntegration();
+		await deleteTestLinks();
 		await testGetState();
 		await deleteTestLinks();
 		await testGetCardList();
