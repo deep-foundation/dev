@@ -1844,7 +1844,7 @@ async (
 			console.log('testConfirm-end');
 		};
 
-		const testCancel = async () => {
+		const testCancelRealization = async () => {
 			console.log('testCancel-start');
 			const testCancelAfterPayBeforeConfirmFullPrice = async () => {
 				console.log('testCanselAfterPayBeforeConfirmFullPrice-start');
@@ -2127,6 +2127,291 @@ async (
 
 			console.log('testCancel-end');
 		};
+		const testCancelIntegration = async () => {
+			console.log('testCancelIntegration-start');
+			const testCancelAfterPayBeforeConfirmFullPrice = async () => {
+				console.log('testCanselAfterPayBeforeConfirmFullPrice-start');
+				const initOptions = {
+					TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
+					OrderId: uniqid(),
+					CustomerKey: deep.linkId,
+					PayType: 'T',
+					Amount: PRICE,
+					Description: 'Test shopping',
+					Language: 'ru',
+					Recurrent: 'Y',
+					DATA: {
+						Email: process.env.PAYMENT_TEST_EMAIL,
+						Phone: process.env.PAYMENT_TEST_PHONE,
+					},
+					// Receipt: {
+					// 	Items: [{
+					// 		Name: 'Test item',
+					// 		Price: sum,
+					// 		Quantity: 1,
+					// 		Amount: PRICE,
+					// 		PaymentMethod: 'prepayment',
+					// 		PaymentObject: 'service',
+					// 		Tax: 'none',
+					// 	}],
+					// 	Email: process.env.PAYMENT_TEST_EMAIL,
+					// 	Phone: process.env.PAYMENT_TEST_PHONE,
+					// 	Taxation: 'usn_income',
+					// }
+				};
+
+				console.log({ options: initOptions });
+
+				let initResult = await sendInit(initOptions);
+
+				console.log({ initResult });
+
+				expect(initResult.error).to.equal(undefined);
+
+				const {data: [{value: {value: url}}]} = await deep.select({
+					type_id: PUrl,
+				});
+
+				const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
+				const page = await browser.newPage();
+
+				await payInBrowser({
+					browser,
+					page,
+					url,
+				});
+
+				const bankPaymentId = initResult.response.PaymentId;
+
+				const noTokenCancelData = {
+					TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
+					PaymentId: bankPaymentId,
+					Amount: PRICE,
+				};
+
+				const cancelOptions = {
+					...noTokenCancelData,
+					Token: generateToken(noTokenCancelData),
+				};
+
+				console.log({ cancelOptions });
+
+				const cancelResult = await cancel(cancelOptions);
+
+				console.log({ cancelResponse: cancelResult });
+
+				expect(cancelResult.error).to.equal(undefined);
+				expect(cancelResult.response.Status).to.equal('REVERSED');
+				console.log('testCanselAfterPayBeforeConfirmFullPrice-end');
+			};
+
+			const testCancelAfterPayBeforeConfirmCustomPriceX2 = async () => {
+				console.log('testCanselAfterPayBeforeConfirmCustomPriceX2-start');
+				const initOptions = {
+					TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
+					OrderId: uniqid(),
+					CustomerKey: deep.linkId,
+					PayType: 'T',
+					Amount: PRICE,
+					Description: 'Test shopping',
+					Language: 'ru',
+					Recurrent: 'Y',
+					DATA: {
+						Email: process.env.PAYMENT_TEST_EMAIL,
+						Phone: process.env.PAYMENT_TEST_PHONE,
+					},
+					// Receipt: {
+					// 	Items: [{
+					// 		Name: 'Test item',
+					// 		Price: sum,
+					// 		Quantity: 1,
+					// 		Amount: PRICE,
+					// 		PaymentMethod: 'prepayment',
+					// 		PaymentObject: 'service',
+					// 		Tax: 'none',
+					// 	}],
+					// 	Email: process.env.PAYMENT_TEST_EMAIL,
+					// 	Phone: process.env.PAYMENT_TEST_PHONE,
+					// 	Taxation: 'usn_income',
+					// }
+				};
+
+				console.log({ options: initOptions });
+
+				let initResult = await sendInit({
+					...initOptions,
+				});
+
+				console.log({ initResult });
+
+				expect(initResult.error).to.equal(undefined);
+
+				const url = initResult.response.PaymentURL;
+
+				const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
+				const page = await browser.newPage();
+				await payInBrowser({
+					browser,
+					page,
+					url,
+				});
+
+				const bankPaymentId = initResult.response.PaymentId;
+
+				const noTokenCancelData = {
+					TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
+					PaymentId: bankPaymentId,
+					Amount: Math.floor(PRICE / 3),
+				};
+
+				const cancelOptions = {
+					...noTokenCancelData,
+					Token: generateToken(noTokenCancelData),
+				};
+
+				console.log({ cancelOptions });
+
+				{
+					const cancelResult = await cancel(cancelOptions);
+
+					console.log({ cancelResponse: cancelResult });
+
+					expect(cancelResult.error).to.equal(undefined);
+					expect(cancelResult.response.Status).to.equal('PARTIAL_REVERSED');
+				}
+				{
+					const cancelResult = await cancel(cancelOptions);
+
+					console.log({ cancelResponse: cancelResult });
+
+					expect(cancelResult.error).to.equal(undefined);
+					expect(cancelResult.response.Status).to.equal('PARTIAL_REVERSED');
+				}
+				console.log('testCanselAfterPayBeforeConfirmCustomPriceX2-end');
+			};
+
+			const testCancelAfterPayAfterConfirmFullPrice = async () => {
+				console.log('testCancelAfterPayAfterConfirmFullPrice-start');
+				await testConfirm();
+
+				const {
+					data: [payLink],
+				} = await deep.select({
+					type_id: PPay,
+				});
+
+				const bankPaymentId = await getBankPaymentId(
+					payLink?.value?.value ?? payLink.id
+				);
+
+				const noTokenCancelData = {
+					TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
+					PaymentId: bankPaymentId,
+					Amount: PRICE,
+				};
+
+				const options = {
+					...noTokenCancelData,
+					Token: generateToken(noTokenCancelData),
+				};
+
+				console.log({ options });
+
+				const cancelResult = await cancel(options);
+
+				expect(cancelResult.error).to.equal(undefined);
+				expect(cancelResult.response.Status).to.equal('REFUNDED');
+				console.log('testCancelAfterPayAfterConfirmFullPrice-end');
+			};
+
+			const testCancelAfterPayAfterConfirmCustomPriceX2 = async () => {
+				console.log('testCancelAfterPayAfterConfirmCustomPriceX2-start');
+				await testConfirm();
+
+				const {
+					data: [payLink],
+				} = await deep.select({
+					type_id: PPay,
+				});
+
+				const bankPaymentId = await getBankPaymentId(
+					payLink?.value?.value ?? payLink.id
+				);
+
+				const noTokenCancelData = {
+					TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
+					PaymentId: bankPaymentId,
+					Amount: Math.floor(PRICE / 3),
+				};
+
+				const options = {
+					...noTokenCancelData,
+					Token: generateToken(noTokenCancelData),
+				};
+
+				console.log({ options });
+
+				{
+					const cancelResult = await cancel(options);
+
+					expect(cancelResult.error).to.equal(undefined);
+					expect(cancelResult.response.Status).to.equal('PARTIAL_REFUNDED');
+				}
+				{
+					const cancelResult = await cancel(options);
+
+					expect(cancelResult.error).to.equal(undefined);
+					expect(cancelResult.response.Status).to.equal('PARTIAL_REFUNDED');
+				}
+				console.log('testCancelAfterPayAfterConfirmCustomPriceX2-end');
+			};
+
+			const testCancelBeforePay = async () => {
+				console.log('testCancelBeforePay-start');
+				await testInit();
+
+				const {
+					data: [payLink],
+				} = await deep.select({
+					type_id: PPay,
+				});
+
+				const bankPaymentId = await getBankPaymentId(
+					payLink?.value?.value ?? payLink.id
+				);
+
+				const noTokenCancelData = {
+					TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
+					PaymentId: bankPaymentId,
+					Amount: PRICE,
+				};
+
+				const options = {
+					...noTokenCancelData,
+					Token: generateToken(noTokenCancelData),
+				};
+
+				console.log({ options });
+
+				const cancelResult = await cancel(options);
+
+				expect(cancelResult.error).to.equal(undefined);
+				expect(cancelResult.response.Status).to.equal('CANCELED');
+				console.log('testCancelBeforePay-end');
+			};
+			await testCancelAfterPayBeforeConfirmFullPrice();
+			await deleteTestLinks();
+			await testCancelAfterPayBeforeConfirmCustomPriceX2();
+			await deleteTestLinks();
+			await testCancelAfterPayAfterConfirmFullPrice();
+			await deleteTestLinks();
+			await testCancelAfterPayAfterConfirmCustomPriceX2();
+			await deleteTestLinks();
+			await testCancelBeforePay();
+			await deleteTestLinks();
+
+			console.log('testCancelIntegration-end');
+		};
 
 		const testGetState = async () => {
 			console.log('testGetState-start');
@@ -2369,7 +2654,7 @@ async (
 		await deleteTestLinks();
 		await testConfirm();
 		await deleteTestLinks();
-		await testCancel();
+		await testCancelRealization();
 		await deleteTestLinks();
 		await testGetState();
 		await deleteTestLinks();
