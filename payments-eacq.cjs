@@ -1256,7 +1256,7 @@ async ({ deep, require, data: { newLink: cancelledLink } }) => {
 		const toLink = await deep.select({
 			id: cancelledLink.to_id
 		});
-		if(toLink.type_id === ${PPAy}) {
+		if(toLink.type_id === ${PPay}) {
 			return toLink;
 		} 
 		if (toLink.type_id === ${PPayed}) {
