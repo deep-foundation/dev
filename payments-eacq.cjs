@@ -1883,43 +1883,31 @@ async (
 
 				console.log({ initResult });
 
-				console.log('before expect');
 				expect(initResult.error).to.equal(undefined);
-				console.log('after expect');
-				console.log('before url');
-				const url = initResult.response.PaymentURL;
-				console.log('after url');
 
-				console.log('before page');
+				const url = initResult.response.PaymentURL;
+
 				const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
 				const page = await browser.newPage();
-				console.log('after page');
-				console.log('before payInBrowser');
+
 				await payInBrowser({
 					browser,
 					page,
 					url,
 				});
-				console.log('after payInBrowser');
 
-				console.log('before bankPaymentId');
 				const bankPaymentId = initResult.response.PaymentId;
-				console.log('after bankPaymentId');
 
-				console.log('before noTokenCancelData');
 				const noTokenCancelData = {
 					TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
 					PaymentId: bankPaymentId,
 					Amount: PRICE,
 				};
-				console.log('after noTokenCancelData');
 
-				console.log('before noTokenCancelData');
 				const cancelOptions = {
 					...noTokenCancelData,
 					Token: generateToken(noTokenCancelData),
 				};
-				console.log('after noTokenCancelData');
 
 				console.log({ cancelOptions });
 
