@@ -1886,9 +1886,7 @@ async (
 
 				expect(initResult.error).to.equal(undefined);
 
-				const {data: [{value: {value: url}}]} = await deep.select({
-					type_id: PUrl,
-				});
+				const url = initResult.response.PaymentURL;
 
 				const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
 				const page = await browser.newPage();
