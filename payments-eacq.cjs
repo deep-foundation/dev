@@ -2228,10 +2228,6 @@ async (
 				expect(cancelledErrors.length).to.equal(0);
 				console.log('testCancelBeforePay-end');
 			};
-			await testCancelAfterPayBeforeConfirmFullPrice();
-			await deleteTestLinks();
-			await testCancelAfterPayBeforeConfirmCustomPriceX2();
-			await deleteTestLinks();
 			await testCancelAfterPayAfterConfirmFullPrice();
 			await deleteTestLinks();
 			await testCancelAfterPayAfterConfirmCustomPriceX2();
