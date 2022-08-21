@@ -1073,7 +1073,8 @@ async ({ deep, require, data: { newLink: payLink } }) => {
       },
     });
     console.log({ error });
-  } else {
+  } 
+
     console.log('Payment URL:', initResult.response.PaymentURL);
     const {
       data: [{ id: urlId }],
@@ -1092,10 +1093,10 @@ async ({ deep, require, data: { newLink: payLink } }) => {
       },
     });
     console.log({ urlId });
-  }
 
-  // return initResult;
-  return {data: "dataString"};
+	await deep.update(payLink.id, {value: {...payLink.value.value, bankPaymentId: initResult.response.PaymentId}})
+  
+	return initResult;
 };
 `;
 
