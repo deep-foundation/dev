@@ -800,6 +800,24 @@ const f = async () => {
 
 	console.log({ PError: PError });
 
+	// TODO: Use BaseCancelled
+	const {
+		data: [{ id: PCancelled }],
+	} = await deep.insert({
+		type_id: Type,
+		from_id: PTinkoffProvider,
+		to_id: PPay,
+		in: {
+			data: {
+				type_id: Contain,
+				from_id: packageId, // before created package
+				string: { data: { value: 'Cancelled' } },
+			},
+		},
+	});
+
+	console.log({ PCancelled });
+
 	const {
 		data: [{ id: paymentTreeId }],
 	} = await deep.insert({
@@ -1129,6 +1147,204 @@ async ({ deep, require, data: { newLink: payLink } }) => {
 
 	console.log({ payInsertHandlerId });
 
+	const cancelledInsertHandler = /*javascript*/ `
+async ({ deep, require, data: { newLink: cancelledLink } }) => {
+  const crypto = require('crypto');
+  const axios = require('axios');
+  const errorsConverter = {
+    7: 'Покупатель не найден',
+    53: 'Обратитесь к продавцу',
+    99: 'Платеж отклонен',
+    100: 'Повторите попытку позже',
+    101: 'Не пройдена идентификация 3DS',
+    102: 'Операция отклонена, пожалуйста обратитесь в интернет-магазин или воспользуйтесь другой картой',
+    103: 'Повторите попытку позже',
+    119: 'Превышено кол-во запросов на авторизацию',
+    191: 'Некорректный статус договора, обратитесь к вашему менеджеру',
+    1001: 'Свяжитесь с банком, выпустившим карту, чтобы провести платеж',
+    1003: 'Неверный merchant ID',
+    1004: 'Карта украдена. Свяжитесь с банком, выпустившим карту',
+    1005: 'Платеж отклонен банком, выпустившим карту',
+    1006: 'Свяжитесь с банком, выпустившим карту, чтобы провести платеж',
+    1007: 'Карта украдена. Свяжитесь с банком, выпустившим карту',
+    1008: 'Платеж отклонен, необходима идентификация',
+    1012: 'Такие операции запрещены для этой карты',
+    1013: 'Повторите попытку позже',
+    1014: 'Карта недействительна. Свяжитесь с банком, выпустившим карту',
+    1015: 'Попробуйте снова или свяжитесь с банком, выпустившим карту',
+    1019: 'Платеж отклонен — попробуйте снова',
+    1030: 'Повторите попытку позже',
+    1033: 'Истек срок действия карты. Свяжитесь с банком, выпустившим карту',
+    1034: 'Попробуйте повторить попытку позже',
+    1038: 'Превышено количество попыток ввода ПИН-кода',
+    1039: 'Платеж отклонен — счет не найден',
+    1041: 'Карта утеряна. Свяжитесь с банком, выпустившим карту',
+    1043: 'Карта украдена. Свяжитесь с банком, выпустившим карту',
+    1051: 'Недостаточно средств на карте',
+    1053: 'Платеж отклонен — счет не найден',
+    1054: 'Истек срок действия карты',
+    1055: 'Неверный ПИН',
+    1057: 'Такие операции запрещены для этой карты',
+    1058: 'Такие операции запрещены для этой карты',
+    1059: 'Подозрение в мошенничестве. Свяжитесь с банком, выпустившим карту',
+    1061: 'Превышен дневной лимит платежей по карте',
+    1062: 'Платежи по карте ограничены',
+    1063: 'Операции по карте ограничены',
+    1064: 'Проверьте сумму',
+    1065: 'Превышен дневной лимит транзакций',
+    1075: 'Превышено число попыток ввода ПИН-кода',
+    1076: 'Платеж отклонен — попробуйте снова',
+    1077: 'Коды не совпадают — попробуйте снова',
+    1080: 'Неверный срок действия',
+    1082: 'Неверный CVV',
+    1086: 'Платеж отклонен — не получилось подтвердить ПИН-код',
+    1088: 'Ошибка шифрования. Попробуйте снова',
+    1089: 'Попробуйте повторить попытку позже',
+    1091: 'Банк, выпустивший карту недоступен для проведения авторизации',
+    1092: 'Платеж отклонен — попробуйте снова',
+    1093: 'Подозрение в мошенничестве. Свяжитесь с банком, выпустившим карту',
+    1094: 'Системная ошибка',
+    1096: 'Повторите попытку позже',
+    9999: 'Внутренняя ошибка системы',
+  };
+  const getError = (errorCode) =>
+  errorCode === '0' ? undefined : errorsConverter[errorCode] || 'broken';
+  const getUrl = (method) =>
+  "${process.env.PAYMENT_EACQ_AND_TEST_URL}" + "/" + method;
+  const _generateToken = (dataWithPassword) => {
+    const dataString = Object.keys(dataWithPassword)
+      .sort((a, b) => a.localeCompare(b))
+      .map((key) => dataWithPassword[key])
+      .reduce((acc, item) => acc.toString() + item.toString(), '');
+    const hash = crypto.createHash('sha256').update(dataString).digest('hex');
+    return hash;
+  };
+  const generateToken = (data) => {
+    const { Receipt, DATA, Shops, ...restData } = data;
+    const dataWithPassword = {
+      ...restData,
+      Password: "${process.env.PAYMENT_TEST_TERMINAL_PASSWORD}",
+    };
+    return _generateToken(dataWithPassword);
+  }; 
+	const cancel = async (options) => {
+		try {
+			const response = await axios({
+				method: 'post',
+				url: getUrl('Cancel'),
+				data: options,
+			});
+
+			const error = getError(response.data.ErrorCode);
+
+			return {
+				error,
+				request: options,
+				response: response.data,
+			};
+		} catch (error) {
+			return {
+				error,
+				request: options,
+				response: null,
+			};
+		}
+	};
+
+	const getPayLink = async (cancelledLink) => {
+		const toLink = await deep.select({
+			id: cancelledLink.to_id
+		});
+		if(toLink.type_id === ${PPAy}) {
+			return toLink;
+		} 
+		if (toLink.type_id === ${PPayed}) {
+			return await deep.select({
+				id: toLink.to_id
+			});
+		} 
+	}
+
+	const toLink = await deep.select({
+		id: cancelledLink.to_id
+	});
+
+	const bankPaymentId = (await getPayLink(cancelledLink)).value.value.bankPaymentId;
+
+	const noTokenCancelOptions = {
+		TerminalKey: "${process.env.PAYMENT_TEST_TERMINAL_KEY}",
+		PaymentId: bankPaymentId,
+		Amount: cancelledLink.value.value
+	}
+
+	const cancelOptions = {
+		...noTokenCancelOptions,
+		Token: generateToken(noTokenCancelOptions)
+	}
+
+	const cancelResult = await cancel(cancelOptions);
+
+	if(cancelResult.error) {
+		await deep.insert({
+			type_id: ${PError},
+			from_id: ${tinkoffProviderId},
+			to_id: cancelledLink.id,
+			string: { data: {value: cancelResult.error } }
+		});
+	}
+
+	return cancelResult;
+};
+`;
+
+	const {
+		data: [{ id: cancelledInsertHandlerId }],
+	} = await deep.insert({
+		type_id: SyncTextFile,
+		in: {
+			data: [
+				{
+					type_id: Contain,
+					from_id: packageId, // before created package
+					string: { data: { value: 'cancelledInsertHandlerFile' } },
+				},
+				{
+					from_id: dockerSupportsJs,
+					type_id: Handler,
+					in: {
+						data: [
+							{
+								type_id: Contain,
+								from_id: packageId, // before created package
+								string: { data: { value: 'cancelledInsertHandler' } },
+							},
+							{
+								type_id: HandleInsert,
+								from_id: PPay,
+								in: {
+									data: [
+										{
+											type_id: Contain,
+											from_id: packageId, // before created package
+											string: { data: { value: 'cancelledInsertHandle' } },
+										},
+									],
+								},
+							},
+						],
+					},
+				},
+			],
+		},
+		string: {
+			data: {
+				value: cancelledInsertHandler,
+			},
+		},
+	});
+
+	console.log({ cancelledInsertHandlerId });
+
 	const tinkoffNotificationHandler = /*javascript*/ `
 async (
   req,
@@ -1287,27 +1503,8 @@ async (
         ],
       },
     });
-    console.log({payedInsertData})
-  } else if (status == 'CANCELED') {
-    const errorInsertData = await deep.insert({
-      type_id: ${PError},
-      from_id: ${tinkoffProviderId},
-      to_id: payId,
-      in: {
-        data: [
-          {
-            type_id: ${Contain},
-            from_id: ${deep.linkId},
-            string: { data: { value: getError(req.body.ErrorCode) } },
-          },
-        ],
-      },
-    });
-
-    console.log({errorInsertData});
-    const errorMessage = getError(req.body.ErrorCode);
-    console.log({errorMessage});
-  }
+    console.log({payedInsertData});
+  } 
   res.send('ok');
 };
 `;
@@ -1438,6 +1635,7 @@ async (
 		const PUrl = await deep.id(packageName, 'Url');
 		const PPayed = await deep.id(packageName, 'Payed');
 		const PError = await deep.id(packageName, 'Error');
+		const PCancelled = await deep.id(packageName, 'Cancelled');
 
 		const paymentTreeId = await deep.id(packageName, 'paymentTree');
 
@@ -1505,6 +1703,11 @@ async (
 				type_id: PError,
 			});
 
+			
+			const { data: cancelledLinks } = await deep.select({
+				type_id: PCancelled,
+			});
+
 			const allLinks = [
 				...objectLinks,
 				...sumLinks,
@@ -1512,6 +1715,7 @@ async (
 				...urlLinks,
 				...payedLinks,
 				...errorLinks,
+				...cancelledLinks
 			];
 			for (let i = 0; i < allLinks.length; i++) {
 				const { id } = allLinks[i];
