@@ -1075,24 +1075,24 @@ async ({ deep, require, data: { newLink: payLink } }) => {
     console.log({ error });
   } 
 
-    console.log('Payment URL:', initResult.response.PaymentURL);
-    const {
-      data: [{ id: urlId }],
-    } = await deep.insert({
-      type_id: ${PUrl},
-      from_id: ${tinkoffProviderId},
-      to_id: payLink.id,
-      string: { data: { value: initResult.response.PaymentURL } },
-      in: {
-        data: [
-          {
-            type_id: ${Contain},
-            from_id: ${deep.linkId},
-          },
-        ],
-      },
-    });
-    console.log({ urlId });
+	console.log('Payment URL:', initResult.response.PaymentURL);
+	const {
+		data: [{ id: urlId }],
+	} = await deep.insert({
+		type_id: ${PUrl},
+		from_id: ${tinkoffProviderId},
+		to_id: payLink.id,
+		string: { data: { value: initResult.response.PaymentURL } },
+		in: {
+			data: [
+				{
+					type_id: ${Contain},
+					from_id: ${deep.linkId},
+				},
+			],
+		},
+	});
+	console.log({ urlId });
 
 	await deep.update(payLink.id, {value: {...payLink.value.value, bankPaymentId: initResult.response.PaymentId}})
   
@@ -2142,27 +2142,26 @@ async (
 					type_id: PPay,
 				});
 
-				const bankPaymentId = await getBankPaymentId(
-					payLink?.value?.value ?? payLink.id
-				);
+				const {data: [payedLink]} = await deep.select({
+					type_id: PPayed,
+					to_id: payLink.id
+				});
 
-				const noTokenCancelData = {
-					TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
-					PaymentId: bankPaymentId,
-					Amount: PRICE,
-				};
+				const {data: [cancelledLink]} = await deep.insert({
+					type_id: PCancelled,
+					from_id: tinkoffProviderId,
+					to_id: payedLink.id,
+					number: {data: {value: PRICE}}
+				});
 
-				const options = {
-					...noTokenCancelData,
-					Token: generateToken(noTokenCancelData),
-				};
+				await sleep(5000);
 
-				console.log({ options });
+				const {data: cancelledErrors} = await deep.select({
+					type_id: PError,
+					to_id: cancelledLink.id
+				});
 
-				const cancelResult = await cancel(options);
-
-				expect(cancelResult.error).to.equal(undefined);
-				expect(cancelResult.response.Status).to.equal('REFUNDED');
+				expect(cancelledErrors.length).to.equal(0);
 				console.log('testCancelAfterPayAfterConfirmFullPrice-end');
 			};
 
@@ -2176,35 +2175,29 @@ async (
 					type_id: PPay,
 				});
 
-				const bankPaymentId = await getBankPaymentId(
-					payLink?.value?.value ?? payLink.id
-				);
+				const {data: [payedLink]} = await deep.select({
+					type_id: PPayed,
+					to_id: payLink.id
+				});
 
-				const noTokenCancelData = {
-					TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
-					PaymentId: bankPaymentId,
-					Amount: Math.floor(PRICE / 3),
-				};
+				for (let i = 0; i < 2; i++) {
+					const {data: [cancelledLink]} = await deep.insert({
+						type_id: PCancelled,
+						from_id: tinkoffProviderId,
+						to_id: payedLink.id,
+						number: {data: {value: PRICE / 3}}
+					});
+	
+					await sleep(5000);
+	
+					const {data: cancelledErrors} = await deep.select({
+						type_id: PError,
+						to_id: cancelledLink.id
+					});
 
-				const options = {
-					...noTokenCancelData,
-					Token: generateToken(noTokenCancelData),
-				};
-
-				console.log({ options });
-
-				{
-					const cancelResult = await cancel(options);
-
-					expect(cancelResult.error).to.equal(undefined);
-					expect(cancelResult.response.Status).to.equal('PARTIAL_REFUNDED');
+					expect(cancelledErrors.length).to.equal(0);
 				}
-				{
-					const cancelResult = await cancel(options);
-
-					expect(cancelResult.error).to.equal(undefined);
-					expect(cancelResult.response.Status).to.equal('PARTIAL_REFUNDED');
-				}
+				
 				console.log('testCancelAfterPayAfterConfirmCustomPriceX2-end');
 			};
 
