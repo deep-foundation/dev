@@ -2185,7 +2185,7 @@ async (
 			await testConfirm();
 			await testCancel();
 			await testGetState();
-			await getGetCardList();
+			await testGetCardList();
 			await testResend();
 			await testCharge();
 			await testAddCustomer();
