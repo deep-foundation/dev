@@ -1991,6 +1991,34 @@ async (
 				console.log('testCancel-end');
 			};
 
+			const testGetState = async () => {
+				const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
+				const page = await browser.newPage();
+	
+				const initResult = await init({
+					TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
+					OrderId: uniqid(),
+					CustomerKey: uniqid(),
+					Amount: PRICE,
+				});
+	
+				await payInBrowser({
+					browser,
+					page,
+					url: initResult.response.PaymentURL,
+				});
+	
+				const getStateOptions = {
+					TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
+					PaymentId: initResult.response.PaymentId,
+				};
+	
+				const getStateResult = await getState(getStateOptions);
+	
+				expect(getStateResult.error).to.equal(undefined);
+	
+			}
+
 			const testResend = async () => {
 				console.log('testResend-start');
 				const resendOptions = {
