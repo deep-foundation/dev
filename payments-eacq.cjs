@@ -218,7 +218,7 @@ const f = async () => {
 			const response = await axios({
 				method: 'post',
 				url: getUrl('GetState'),
-				data: options,
+				data: {...options, Token: generateToken(options)},
 			});
 
 			const error = getError(response.data.ErrorCode);
@@ -252,7 +252,7 @@ const f = async () => {
 				headers: {
 					'Content-Type': 'application/json',
 				},
-				data: options,
+				data: {...options, Token: generateToken(options)},
 			});
 
 			const error = getError(response.data.ErrorCode);
@@ -279,7 +279,7 @@ const f = async () => {
 				headers: {
 					'Content-Type': 'application/json',
 				},
-				data: options,
+				data: {...options, Token: generateToken(options)},
 			});
 
 			const error = getError(response.data.ErrorCode || '0');
@@ -313,7 +313,7 @@ const f = async () => {
 				headers: {
 					'Content-Type': 'application/json',
 				},
-				data: options,
+				data: {...options, Token: generateToken(options)},
 			});
 
 			const error = getError(response.data.ErrorCode);
@@ -336,21 +336,12 @@ const f = async () => {
 		}
 	};
 
-	const sendInit = async (noTokenData) => {
-		const options = {
-			...noTokenData,
-			Token: generateToken(noTokenData),
-		};
-
-		return init(options);
-	};
-
 	const confirm = async (options) => {
 		try {
 			const response = await axios({
 				method: 'post',
 				url: getUrl('Confirm'),
-				data: options,
+				data: {...options, Token: generateToken(options)},
 			});
 
 			const error = getError(response.data.ErrorCode);
@@ -381,7 +372,7 @@ const f = async () => {
 			const response = await axios({
 				method: 'post',
 				url: getUrl('Resend'),
-				data: options,
+				data: {...options, Token: generateToken(options)},
 			});
 
 			const error = getError(response.data.ErrorCode);
@@ -408,7 +399,7 @@ const f = async () => {
 				headers: {
 					'Content-Type': 'application/json',
 				},
-				data: options,
+				data: {...options, Token: generateToken(options)},
 			});
 
 			const error = getError(response.data.ErrorCode);
@@ -435,7 +426,7 @@ const f = async () => {
 				headers: {
 					'Content-Type': 'application/json',
 				},
-				data: options,
+				data: {...options, Token: generateToken(options)},
 			});
 
 			const error = getError(response.data.ErrorCode);
@@ -462,7 +453,7 @@ const f = async () => {
 				headers: {
 					'Content-Type': 'application/json',
 				},
-				data: options,
+				data: {...options, Token: generateToken(options)},
 			});
 
 			const error = getError(response.data.ErrorCode);
@@ -489,7 +480,7 @@ const f = async () => {
 				headers: {
 					'Content-Type': 'application/json',
 				},
-				data: options,
+				data: {...options, Token: generateToken(options)},
 			});
 
 			const error = getError(response.data.ErrorCode);
@@ -509,14 +500,9 @@ const f = async () => {
 	};
 
 	const getBankPaymentId = async (orderId) => {
-		const noTokenCheckOrderOptions = {
+		const checkOrderOptions = {
 			TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
 			OrderId: orderId,
-		};
-
-		const checkOrderOptions = {
-			...noTokenCheckOrderOptions,
-			Token: generateToken(noTokenCheckOrderOptions),
 		};
 
 		const checkOrderResult = await checkOrder(checkOrderOptions);
@@ -973,7 +959,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
         headers: {
           'Content-Type': 'application/json',
         },
-        data: options,
+        data: {...options, Token: generateToken(options)},
       });
 
       const error = getError(response.data.ErrorCode);
@@ -994,15 +980,6 @@ async ({ deep, require, data: { newLink: payLink } }) => {
         response: null,
       };
     }
-  };
-
-  const sendInit = async (noTokenData) => {
-    const options = {
-      ...noTokenData,
-      Token: generateToken(noTokenData),
-    };
-
-    return init(options);
   };
 
   const mpDownPay = await deep.select({
@@ -1052,7 +1029,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
 
   console.log({options});
 
-  let initResult = await sendInit(options);
+  let initResult = await init(options);
 
   console.log({initResult});
 
@@ -1235,7 +1212,7 @@ async ({ deep, require, data: { newLink: cancelledLink } }) => {
 			const response = await axios({
 				method: 'post',
 				url: getUrl('Cancel'),
-				data: options,
+				data: {...options, Token: generateToken(options)},
 			});
 
 			const error = getError(response.data.ErrorCode);
@@ -1274,15 +1251,10 @@ async ({ deep, require, data: { newLink: cancelledLink } }) => {
 
 	const bankPaymentId = (await getPayLink(cancelledLink)).value.value.bankPaymentId;
 
-	const noTokenCancelOptions = {
+	const cancelOptions = {
 		TerminalKey: "${process.env.PAYMENT_TEST_TERMINAL_KEY}",
 		PaymentId: bankPaymentId,
 		Amount: cancelledLink.value.value
-	}
-
-	const cancelOptions = {
-		...noTokenCancelOptions,
-		Token: generateToken(noTokenCancelOptions)
 	}
 
 	const cancelResult = await cancel(cancelOptions);
@@ -1445,7 +1417,7 @@ async (
       const response = await axios({
         method: 'post',
         url: getUrl('Confirm'),
-        data: options,
+        data: {...options, Token: generateToken(options)},
       });
 
       const error = getError(response.data.ErrorCode);
@@ -1474,24 +1446,16 @@ async (
   const status = req.body.Status;
   console.log({status});
   if (status == 'AUTHORIZED') {
-    const noTokenConfirmOptions = {
+    const confirmOptions = {
       TerminalKey: "${process.env.PAYMENT_TEST_TERMINAL_KEY}",
       PaymentId: req.body.PaymentId,
       Amount: req.body.Amount,
       // Receipt: req.body.Receipt,
     };
 
-    const confirmOptions = {
-      ...noTokenConfirmOptions,
-      Token: generateToken(noTokenConfirmOptions)
-    }
     const confirmResult = await confirm(confirmOptions);
     console.log({confirmResult});
   } else if (status == 'CONFIRMED') {
-		const {data: payWithSpecificValueAndFromIdQueryData} = await deep.select({value: req.body.OrderId, type_id: ${PPay}, from_id: req.body.CustomerKey});
-		console.log({payWithSpecificValueAndFromIdQueryData});
-		const {data: payQueryData} = await deep.select({value: req.body.OrderId, type_id: ${PPay}, from_id: req.body.CustomerKey});
-		console.log({payQueryData});
 		const {data: [{id: payId}]} = await deep.select({value: req.body.OrderId, type_id: ${PPay}, from_id: req.body.CustomerKey});
     const payedInsertData = await deep.insert({
       type_id: ${PPayed},
@@ -1600,7 +1564,7 @@ async (
 			const response = await axios({
 				method: 'post',
 				url: getUrl('Cancel'),
-				data: options,
+				data: {...options, Token: generateToken(options)},
 			});
 
 			const error = getError(response.data.ErrorCode);
@@ -1848,7 +1812,7 @@ async (
 
 				console.log({ options: initOptions });
 
-				let initResult = await sendInit(initOptions);
+				let initResult = await init(initOptions);
 
 				console.log({ initResult });
 
@@ -1867,15 +1831,10 @@ async (
 
 				const bankPaymentId = initResult.response.PaymentId;
 
-				const noTokenCancelData = {
+				const cancelOptions = {
 					TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
 					PaymentId: bankPaymentId,
 					Amount: PRICE,
-				};
-
-				const cancelOptions = {
-					...noTokenCancelData,
-					Token: generateToken(noTokenCancelData),
 				};
 
 				console.log({ cancelOptions });
@@ -1922,7 +1881,7 @@ async (
 
 				console.log({ options: initOptions });
 
-				let initResult = await sendInit(initOptions);
+				let initResult = await init(initOptions);
 
 				console.log({ initResult });
 
@@ -1940,15 +1899,10 @@ async (
 
 				const bankPaymentId = initResult.response.PaymentId;
 
-				const noTokenCancelData = {
+				const cancelOptions = {
 					TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
 					PaymentId: bankPaymentId,
 					Amount: Math.floor(PRICE / 3),
-				};
-
-				const cancelOptions = {
-					...noTokenCancelData,
-					Token: generateToken(noTokenCancelData),
 				};
 
 				console.log({ cancelOptions });
@@ -1986,20 +1940,15 @@ async (
 					payLink?.value?.value ?? payLink.id
 				);
 
-				const noTokenCancelData = {
+				const cancelOptions = {
 					TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
 					PaymentId: bankPaymentId,
 					Amount: PRICE,
 				};
 
-				const options = {
-					...noTokenCancelData,
-					Token: generateToken(noTokenCancelData),
-				};
+				console.log({ cancelOptions });
 
-				console.log({ options });
-
-				const cancelResult = await cancel(options);
+				const cancelResult = await cancel(cancelOptions);
 
 				expect(cancelResult.error).to.equal(undefined);
 				expect(cancelResult.response.Status).to.equal('REFUNDED');
@@ -2020,27 +1969,22 @@ async (
 					payLink?.value?.value ?? payLink.id
 				);
 
-				const noTokenCancelData = {
+				const cancelOptions = {
 					TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
 					PaymentId: bankPaymentId,
 					Amount: Math.floor(PRICE / 3),
 				};
 
-				const options = {
-					...noTokenCancelData,
-					Token: generateToken(noTokenCancelData),
-				};
-
-				console.log({ options });
+				console.log({ cancelOptions });
 
 				{
-					const cancelResult = await cancel(options);
+					const cancelResult = await cancel(cancelOptions);
 
 					expect(cancelResult.error).to.equal(undefined);
 					expect(cancelResult.response.Status).to.equal('PARTIAL_REFUNDED');
 				}
 				{
-					const cancelResult = await cancel(options);
+					const cancelResult = await cancel(cancelOptions);
 
 					expect(cancelResult.error).to.equal(undefined);
 					expect(cancelResult.response.Status).to.equal('PARTIAL_REFUNDED');
@@ -2062,20 +2006,15 @@ async (
 					payLink?.value?.value ?? payLink.id
 				);
 
-				const noTokenCancelData = {
+				const cancelOptions = {
 					TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
 					PaymentId: bankPaymentId,
 					Amount: PRICE,
 				};
 
-				const options = {
-					...noTokenCancelData,
-					Token: generateToken(noTokenCancelData),
-				};
+				console.log({ cancelOptions });
 
-				console.log({ options });
-
-				const cancelResult = await cancel(options);
+				const cancelResult = await cancel(cancelOptions);
 
 				expect(cancelResult.error).to.equal(undefined);
 				expect(cancelResult.response.Status).to.equal('CANCELED');
@@ -2214,21 +2153,12 @@ async (
 				payLink?.value?.value ?? payLink.id
 			);
 
-			const noTokenGetStateData = {
+			const getStateOptions = {
 				TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
-			};
-
-			const newGetStateData = {
-				...noTokenGetStateData,
 				PaymentId: bankPaymentId,
 			};
 
-			const options = {
-				...newGetStateData,
-				Token: generateToken(newGetStateData),
-			};
-
-			const getStateResult = await getState(options);
+			const getStateResult = await getState(getStateOptions);
 
 			expect(getStateResult.error).to.equal(undefined);
 			console.log('testGetState-end');
@@ -2238,17 +2168,12 @@ async (
 			console.log('testGetCardList-end');
 			await testFinishAuthorize();
 
-			const noTokenGetCardListData = {
+			const getCardListOptions = {
 				TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
 				CustomerKey: deep.linkId,
 			};
 
-			const options = {
-				...noTokenGetCardListData,
-				Token: generateToken(noTokenGetCardListData),
-			};
-
-			const getCardListResult = await getCardList(options);
+			const getCardListResult = await getCardList(getCardListOptions);
 
 			expect(getCardListResult.error).to.equal(undefined);
 			console.log('testGetCardList-end');
@@ -2256,15 +2181,9 @@ async (
 
 		const testResend = async () => {
 			console.log('testResend-start');
-			const noTokenResendOptions = {
+			const resendOptions = {
 				TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
 			};
-
-			const resendOptions = {
-				...noTokenResendOptions,
-				Token: generateToken(noTokenResendOptions),
-			};
-
 			console.log({ resendOptions });
 
 			const resendResult = await resend(resendOptions);
@@ -2279,7 +2198,7 @@ async (
 			const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
 			const page = await browser.newPage();
 
-			const initResult = await sendInit({
+			const initResult = await init({
 				TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
 				Amount: 5500,
 				OrderId: uniqid(),
@@ -2293,53 +2212,38 @@ async (
 				url: initResult.response.PaymentURL,
 			});
 
-			const noTokenGetCardListOptions = {
+			const getCardListOptions = {
 				TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
 				CustomerKey: deep.linkId,
-			};
-
-			const getCardListOptions = {
-				...noTokenGetCardListOptions,
-				Token: generateToken(noTokenGetCardListOptions),
 			};
 
 			const getCardListResult = await getCardList(getCardListOptions);
 
 			expect(getCardListResult.response[0].RebillId).to.have.length.above(0);
 
-			const noTokenGetStateOptions = {
+			const getStateOptions = {
 				TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
 				PaymentId: initResult.response.PaymentId,
-			};
-
-			const getStateOptions = {
-				...noTokenGetStateOptions,
-				Token: generateToken(noTokenGetStateOptions),
 			};
 
 			const getStateResult = await getState(getStateOptions);
 
 			expect(getStateResult.response.Status).to.equal('AUTHORIZED');
 
-			const newInitResult = await sendInit({
+			const newInitResult = await init({
 				TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
 				Amount: 5500,
 				OrderId: uniqid(),
 				CustomerKey: deep.linkId,
 			});
 
-			const newChargeData = {
+			const newChargeOptions = {
 				TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
 				PaymentId: newInitResult.response.PaymentId,
 				RebillId: Number(getCardListResult.response[0].RebillId),
 			};
 
-			const options = {
-				...newChargeData,
-				Token: generateToken(newChargeData),
-			};
-
-			const chargeResult = await charge(options);
+			const chargeResult = await charge(newChargeOptions);
 
 			expect(chargeResult.error).to.equal(undefined);
 			console.log('testCharge-end');
@@ -2350,14 +2254,9 @@ async (
 
 			const customerKey = uniqid();
 
-			const noTokenAddCustomerOptions = {
+			const addCustomerOptions = {
 				TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
 				CustomerKey: customerKey,
-			};
-
-			const addCustomerOptions = {
-				...noTokenAddCustomerOptions,
-				Token: generateToken(noTokenAddCustomerOptions),
 			};
 
 			const addCustomerResult = await addCustomer(addCustomerOptions);
@@ -2371,31 +2270,21 @@ async (
 
 			const customerKey = uniqid();
 
-			const noTokenAddCustomerData = {
+			const customerOptions = {
 				TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
 				CustomerKey: customerKey,
 			};
 
-			const newAddCustomerData = {
-				...noTokenAddCustomerData,
-				Phone: process.env.PAYMENT_TEST_PHONE,
-			};
-
 			const addCustomerDataOptions = {
-				...newAddCustomerData,
-				Token: generateToken(newAddCustomerData),
+				...customerOptions,
+				Phone: process.env.PAYMENT_TEST_PHONE,
 			};
 
 			const addResult = await addCustomer(addCustomerDataOptions);
 
 			expect(addResult.error).to.equal(undefined);
 
-			const getCustomerDataOptions = {
-				...noTokenAddCustomerData,
-				Token: generateToken(noTokenAddCustomerData),
-			};
-
-			const getResult = await getCustomer(getCustomerDataOptions);
+			const getResult = await getCustomer(customerOptions);
 
 			expect(getResult.error).to.equal(undefined);
 			expect(getResult.response.Phone).to.equal(process.env.PAYMENT_TEST_PHONE);
@@ -2408,31 +2297,21 @@ async (
 
 			const customerKey = uniqid();
 
-			const noTokenRemoveCustomerData = {
+			const removeCustomerData = {
 				TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
 				CustomerKey: customerKey,
 			};
 
 			const newAddCustomerData = {
-				...noTokenRemoveCustomerData,
+				...removeCustomerData,
 				Phone: process.env.PAYMENT_TEST_PHONE,
 			};
 
-			const addCustomerDataOptions = {
-				...newAddCustomerData,
-				Token: generateToken(newAddCustomerData),
-			};
-
-			const addResult = await addCustomer(addCustomerDataOptions);
+			const addResult = await addCustomer(newAddCustomerData);
 
 			expect(addResult.error).to.equal(undefined);
 
-			const removeCustomerDataOptions = {
-				...noTokenRemoveCustomerData,
-				Token: generateToken(noTokenRemoveCustomerData),
-			};
-
-			const removeResult = await removeCustomer(removeCustomerDataOptions);
+			const removeResult = await removeCustomer(removeCustomerData);
 
 			expect(removeResult.error).to.equal(undefined);
 
