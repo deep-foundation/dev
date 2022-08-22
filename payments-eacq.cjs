@@ -2044,9 +2044,6 @@ async (
 	
 				const getCardListResult = await getCardList(getCardListOptions);
 	
-				const getCardListDebug = log.extend('get-card-list-result');
-				getCardListDebug(getCardListResult);
-	
 				expect(getCardListResult.error).to.equal(undefined);
 	
 			};
