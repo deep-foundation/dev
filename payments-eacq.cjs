@@ -1048,9 +1048,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
 
   console.log({options});
 
-  let initResult = await sendInit({
-    ...options
-  });
+  let initResult = await sendInit(options);
 
   console.log({initResult});
 
@@ -1954,9 +1952,7 @@ async (
 
 				console.log({ options: initOptions });
 
-				let initResult = await sendInit({
-					...initOptions,
-				});
+				let initResult = await sendInit(initOptions);
 
 				console.log({ initResult });
 
