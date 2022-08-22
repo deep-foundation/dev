@@ -21,7 +21,7 @@ dotenvExpand.expand(myEnv);
 
 const packageName = '@deep-foundation/payments-eacq';
 
-const PRICE = 5500;
+const PRICE = PRICE;
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -1655,7 +1655,7 @@ async (
 				const initOptions = {
 					TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
 					OrderId: uniqid(),
-					Amount: 5500,
+					Amount: PRICE,
 					Description: 'Test shopping',
 					CustomerKey: uniqid(),
 					Language: 'ru',
@@ -1667,9 +1667,9 @@ async (
 					// Receipt: {
 					// 	Items: [{
 					// 		Name: 'Test item',
-					// 		Price: 5500,
+					// 		Price: PRICE,
 					// 		Quantity: 1,
-					// 		Amount: 5500,
+					// 		Amount: PRICE,
 					// 		PaymentMethod: 'prepayment',
 					// 		PaymentObject: 'service',
 					// 		Tax: 'none',
@@ -1691,16 +1691,16 @@ async (
 	
 				const initOptions = {
 					TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
-					Amount: 5500,
+					Amount: PRICE,
 					OrderId: uniqid(),
 					CustomerKey: uniqid(),
 					PayType: 'T',
 					// Receipt: {
 					// 	Items: [{
 					// 		Name: 'Test item',
-					// 		Price: 5500,
+					// 		Price: PRICE,
 					// 		Quantity: 1,
-					// 		Amount: 5500,
+					// 		Amount: PRICE,
 					// 		PaymentMethod: 'prepayment',
 					// 		PaymentObject: 'service',
 					// 		Tax: 'none',
@@ -2027,7 +2027,7 @@ async (
 					TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
 					CustomerKey: uniqid(),
 					OrderId: uniqid(),
-					Amount: 5500,
+					Amount: PRICE,
 					Recurrent: 'Y',
 				});
 	
@@ -2069,7 +2069,7 @@ async (
 	
 				const initResult = await init({
 					TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
-					Amount: 5500,
+					Amount: PRICE,
 					OrderId: uniqid(),
 					CustomerKey: deep.linkId,
 					Recurrent: 'Y',
@@ -2101,7 +2101,7 @@ async (
 	
 				const newInitResult = await init({
 					TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
-					Amount: 5500,
+					Amount: PRICE,
 					OrderId: uniqid(),
 					CustomerKey: deep.linkId,
 				});
