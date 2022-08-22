@@ -853,6 +853,10 @@ const f = async () => {
 				},
 				{
 					type_id: TreeIncludeUp,
+					to_id: PCancelled,
+				},
+				{
+					type_id: TreeIncludeUp,
 					to_id: PPay,
 				},
 				{
