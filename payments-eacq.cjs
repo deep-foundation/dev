@@ -2017,7 +2017,39 @@ async (
 	
 				expect(getStateResult.error).to.equal(undefined);
 	
-			}
+			};
+
+			const testGetCardList = async () => {
+				const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
+				const page = await browser.newPage();
+	
+				const initResult = await sendInit({
+					TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
+					CustomerKey: uniqid(),
+					OrderId: uniqid(),
+					Amount: 5500,
+					Recurrent: 'Y',
+				});
+	
+				await payInBrowser({
+					browser,
+					page,
+					url: initResult.response.PaymentURL,
+				});
+	
+				const getCardListOptions = {
+					TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
+					CustomerKey: uniqid(),
+				};
+	
+				const getCardListResult = await getCardList(getCardListOptions);
+	
+				const getCardListDebug = log.extend('get-card-list-result');
+				getCardListDebug(getCardListResult);
+	
+				expect(getCardListResult.error).to.equal(undefined);
+	
+			};
 
 			const testResend = async () => {
 				console.log('testResend-start');
