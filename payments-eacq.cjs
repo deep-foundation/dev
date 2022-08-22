@@ -2181,7 +2181,11 @@ async (
 				console.log('testRemoveCustomer-end');
 			};
 
+			await testInit();
+			await testConfirm();
 			await testCancel();
+			await testGetState();
+			await getGetCardList();
 			await testResend();
 			await testCharge();
 			await testAddCustomer();
