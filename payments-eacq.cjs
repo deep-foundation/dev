@@ -2252,11 +2252,9 @@ async (
 		const testAddCustomer = async () => {
 			console.log('testAddCustomer-start');
 
-			const customerKey = uniqid();
-
 			const addCustomerOptions = {
 				TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
-				CustomerKey: customerKey,
+				CustomerKey: uniqid(),
 			};
 
 			const addCustomerResult = await addCustomer(addCustomerOptions);
@@ -2268,11 +2266,9 @@ async (
 		const testGetCustomer = async () => {
 			console.log('testGetCustomer-start');
 
-			const customerKey = uniqid();
-
 			const customerOptions = {
 				TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
-				CustomerKey: customerKey,
+				CustomerKey: uniqid(),
 			};
 
 			const addCustomerDataOptions = {
@@ -2295,11 +2291,9 @@ async (
 		const testRemoveCustomer = async () => {
 			console.log('testRemoveCustomer-start');
 
-			const customerKey = uniqid();
-
 			const removeCustomerData = {
 				TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
-				CustomerKey: customerKey,
+				CustomerKey: uniqid(),
 			};
 
 			const newAddCustomerData = {
