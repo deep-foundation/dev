@@ -19,19 +19,34 @@ When all tasks are done, you can open - http://localhost:3007/ **(ctrl/cmd + cli
 
 ### gitpod
 
+Automatic
+
+- `npm run gitpod-start` gitpod start u
+
+OR
+
+- `npm run gitpod-local` local launch processes
+- `npm run gitpod-recreate` docker/migrations clear/init
+
+Manual
+
 - `npm ci; npm run git-shh-to-https; npm run packages` before all, only ONCE PER GITPOD CONTAINER!
-- `npm ci; npm run git-shh-to-https; npm run gitpod` in gitpod to complete a start up
-- `npm run rm-migrates` to delete all .migrate artifacts of npm migrate package
-- `npm ci && npm run clear` stop and clear all dockers composes/containers/volumes
-- `npm run materialized-path` after `gitpod` script, run mp tests
+- `npm ci; npm run git-shh-to-https; npm run gitpod` gitpod start up
 
 ### local
 
+Automatic
+
+- `npm run local` local launch processes
+- `npm run local-recreate` docker/migrations clear/init
+
+Manual
+
 - `npm ci && npm run packages` before all, only ONCE PER GITPOD CONTAINER!
-- `npm run local` to complete a local start up
+
+### useful
+
 - `npm run rm-migrates` to delete all .migrate artifacts of npm migrate package
-- `npm run clear` stop and clear all dockers composes/containers/volumes
-- `npm run materialized-path` after `gitpod` script, run mp tests
 
 ## unsafe gulp methods 
 
