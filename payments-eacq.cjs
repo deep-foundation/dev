@@ -1678,49 +1678,15 @@ async (
 		console.log({ product: productId });
 
 		const deleteTestLinks = async () => {
-			const { data: objectLinks } = await deep.select({
-				type_id: PObject,
+			console.log("deleteTestLinks-start");
+			const {data: testLinks} = await deep.select({
+				type_id: {_in: {PObject, PSum, PPay, PUrl, PPayed, PError, PCancelled}}
 			});
-
-			const { data: sumLinks } = await deep.select({
-				type_id: PSum,
-			});
-
-			const { data: payLinks } = await deep.select({
-				type_id: PPay,
-			});
-
-			const { data: urlLinks } = await deep.select({
-				type_id: PUrl,
-			});
-
-			const { data: payedLinks } = await deep.select({
-				type_id: PPayed,
-			});
-
-			const { data: errorLinks } = await deep.select({
-				type_id: PError,
-			});
-
-			
-			const { data: cancelledLinks } = await deep.select({
-				type_id: PCancelled,
-			});
-
-			const allLinks = [
-				...objectLinks,
-				...sumLinks,
-				...payLinks,
-				...urlLinks,
-				...payedLinks,
-				...errorLinks,
-				...cancelledLinks
-			];
-			for (let i = 0; i < allLinks.length; i++) {
-				const { id } = allLinks[i];
+			for (let i = 0; i < testLinks.length; i++) {
+				const { id } = testLinks[i];
 				await deep.delete({ id: id });
 			}
-			console.log('Deleted test links');
+			console.log("deleteTestLinks-start");
 		};
 
 		const testInit = async () => {
