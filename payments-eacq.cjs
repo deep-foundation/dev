@@ -588,6 +588,7 @@ const f = async () => {
 	const BasePay = await deep.id('@deep-foundation/payments', 'Pay');
 	const BaseUrl = await deep.id('@deep-foundation/payments', 'Url');
 	const BasePayed = await deep.id('@deep-foundation/payments', 'Payed');
+	const BaseCancelled = await deep.id('@deep-foundation/payments', 'Cancelled');
 	const BaseError = await deep.id('@deep-foundation/payments', 'Error');
 
 	const {
@@ -790,7 +791,7 @@ const f = async () => {
 	const {
 		data: [{ id: PCancelled }],
 	} = await deep.insert({
-		type_id: Type,
+		type_id: BaseCancelled,
 		from_id: PTinkoffProvider,
 		to_id: Any,
 		in: {
