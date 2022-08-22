@@ -1683,7 +1683,55 @@ async (
 				const initResult = await init(initOptions);
 	
 				expect(initResult.error).to.equal(undefined);
-			}
+			};
+
+			const testConfirm = async () => {
+				const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
+				const page = await browser.newPage();
+	
+				const initOptions = {
+					TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
+					Amount: 5500,
+					OrderId: uniqid(),
+					CustomerKey: uniqid(),
+					PayType: 'T',
+					// Receipt: {
+					// 	Items: [{
+					// 		Name: 'Test item',
+					// 		Price: 5500,
+					// 		Quantity: 1,
+					// 		Amount: 5500,
+					// 		PaymentMethod: 'prepayment',
+					// 		PaymentObject: 'service',
+					// 		Tax: 'none',
+					// 	}],
+					// 	Email: process.env.PAYMENT_TEST_EMAIL,
+					// 	Phone: process.env.PAYMENT_TEST_PHONE,
+					// 	Taxation: 'usn_income',
+					// },
+				};
+	
+				const initResult = await init(initOptions);
+	
+				confirmDebug('initResult', initResult?.response?.Success);
+	
+				await payInBrowser({
+					browser,
+					page,
+					url: initResult.response.PaymentURL,
+				});
+	
+				const confirmOptions = {
+					TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
+					PaymentId: initResult.response.PaymentId,
+				};
+	
+				const confirmResult = await confirm(confirmOptions);
+				confirmDebug('confirm', confirmResult);
+	
+				expect(confirmResult.error).to.equal(undefined);
+				expect(confirmResult.response.Status).to.equal('CONFIRMED');
+			};
 
 
 			const testCancel = async () => {
