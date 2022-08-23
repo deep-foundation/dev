@@ -882,13 +882,9 @@ async ({ deep, require, data: { newLink: payLink } }) => {
       tree_id: { _eq: await deep.id(${packageName}, "paymentTree") },
     },
   });
-
   console.log({mpDownPay});
 
-  // const paymentLink = mpDownPay.data.find(link => link.type_id == (await deep.id(${packageName}, "Payment")));
   const sum = mpDownPay.data.find(link => link.type_id == (await deep.id(${packageName}, "Sum"))).value.value; 
-
-  // console.log({paymentLink});
   console.log({sum});
 
   const options = {
