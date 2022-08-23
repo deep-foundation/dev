@@ -205,27 +205,25 @@ const f = async () => {
 		const { Receipt, DATA, Shops, ...restData } = data;
 		const dataWithPassword = {
 			...restData,
-			Password: process.env.PAYMENT_TEST_TERMINAL_PASSWORD,
+			Password: "PLACEHOLDER_process.env.PAYMENT_TEST_TERMINAL_PASSWORD",
 		};
 		console.log({ dataWithPassword });
 		return _generateToken(dataWithPassword);
 	};
 
-	const generateTokenString = generateToken
-		.toString()
+	generateToken.toString = generateToken.toString()
 		.replace(
-			'process.env.PAYMENT_TEST_TERMINAL_PASSWORD',
-			`"${process.env.PAYMENT_TEST_TERMINAL_PASSWORD}"`
+			'PLACEHOLDER_process.env.PAYMENT_TEST_TERMINAL_PASSWORD',
+			process.env.PAYMENT_TEST_TERMINAL_PASSWORD
 		);
 	console.log({ generateTokenString });
 
 	const getUrl = (method) =>
-		`${process.env.PAYMENT_EACQ_AND_TEST_URL}/${method}`;
-	const getUrlString = getUrl
-		.toString()
+		`PLACEHOLDER_process.env.PAYMENT_EACQ_AND_TEST_URL/${method}`;
+	getUrl.toString = getUrl.toString()
 		.replace(
-			'process.env.PAYMENT_EACQ_AND_TEST_URL',
-			`${process.env.PAYMENT_EACQ_AND_TEST_URL}`
+			'PLACEHOLDER_process.env.PAYMENT_EACQ_AND_TEST_URL',
+			process.env.PAYMENT_EACQ_AND_TEST_URL
 		);
 	console.log({ getUrlString });
 
@@ -867,9 +865,9 @@ const f = async () => {
   const axios = require('axios');
   const errorsConverter = ${JSON.stringify(errorsConverter)};
   const getError = ${getError.toString()};
-  const getUrl = ${getUrlString};
+  const getUrl = ${getUrl.toString()};
   const _generateToken = ${_generateToken.toString()};
-  const generateToken = ${generateTokenString};
+  const generateToken = ${generateToken.toString()};
 	`;
 	console.log({ handlersDependencies });
 
