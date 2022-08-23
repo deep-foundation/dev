@@ -977,11 +977,15 @@ async ({ deep, require, data: { newLink: payLink } }) => {
   
 	return initResult;
 };
-	const payInsertHandlerString = payInsertHandler.toString()
-			.replace(/PLACEHOLDER_.+?/g, (matched) => {
-			const placeholderName = matched.substring("PLACEHOLDER_".length);
-			return global[placeholderName]
-		});
+
+const replacePlaceholdersInHandlers = (handler) => handler.replace(/PLACEHOLDER_.+?/g, (matched) => {
+	const placeholderName = matched.substring("PLACEHOLDER_".length);
+	const value = global[placeholderName];
+	console.log(`Replacing ${matched} with ${value}`);
+	return value;
+});
+
+	const payInsertHandlerString = replacePlaceholdersInHandlers(payInsertHandler);
 	console.log({payInsertHandlerString});
 
 	const {
@@ -1076,11 +1080,7 @@ async ({ deep, require, data: { newLink: cancelledLink } }) => {
 
 	return cancelResult;
 };
-	const cancelledInsertHandlerString = cancelledInsertHandler.toString()
-		.replace(/PLACEHOLDER_.+?/g, (matched) => {
-		const placeholderName = matched.substring("PLACEHOLDER_".length);
-		return global[placeholderName]
-	});
+	const cancelledInsertHandlerString = replacePlaceholdersInHandlers(cancelledInsertHandler);
 	console.log({cancelledInsertHandlerString});
 
 	const {
@@ -1173,11 +1173,7 @@ async (
   } 
   res.send('ok');
 };
-	const tinkoffNotificationHandlerString = tinkoffNotificationHandler.toString()
-		.replace(/PLACEHOLDER_.+?/g, (matched) => {
-		const placeholderName = matched.substring("PLACEHOLDER_".length);
-		return global[placeholderName]
-	});
+	const tinkoffNotificationHandlerString = replacePlaceholdersInHandlers(tinkoffNotificationHandler);
 	console.log({tinkoffNotificationHandlerString});
 
 	await deep.insert(
