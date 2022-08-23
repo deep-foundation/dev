@@ -216,7 +216,7 @@ const f = async () => {
 			"PLACEHOLDER_process.env.PAYMENT_TEST_TERMINAL_PASSWORD",
 			process.env.PAYMENT_TEST_TERMINAL_PASSWORD
 		);
-	console.log({ generateTokenString });
+	console.log({ generateToken });
 
 	const getUrl = (method) =>
 		`PLACEHOLDER_process.env.PAYMENT_EACQ_AND_TEST_URL/${method}`;
@@ -225,7 +225,7 @@ const f = async () => {
 			"PLACEHOLDER_process.env.PAYMENT_EACQ_AND_TEST_URL",
 			process.env.PAYMENT_EACQ_AND_TEST_URL
 		);
-	console.log({ getUrlString });
+	console.log({ getUrl });
 
 	const getMarketUrl = (method) =>
 		`${process.env.PAYMENT_TINKOFF_MARKET_URL}/${method}`;
