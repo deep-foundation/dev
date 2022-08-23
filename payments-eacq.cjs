@@ -1588,7 +1588,7 @@ async (
 					console.log('testCancelAfterPayAfterConfirmFullPrice-start');
 					const confirmResult = await testConfirm();
 
-					const bankPaymentId = confirmResult.PaymendId;
+					const bankPaymentId = confirmResult.response.PaymendId;
 					console.log({bankPaymentId});
 
 					const cancelOptions = {
@@ -1610,7 +1610,7 @@ async (
 					console.log('testCancelAfterPayAfterConfirmCustomPriceX2-start');
 					const confirmResult = await testConfirm();
 
-					const bankPaymentId = confirmResult.PaymendId;
+					const bankPaymentId = confirmResult.response.PaymendId;
 					console.log({bankPaymentId});
 
 					const cancelOptions = {
@@ -1640,7 +1640,7 @@ async (
 					console.log('testCancelBeforePay-start');
 					const initResult = await testInit();
 
-					const bankPaymentId = initResult.PaymentId;
+					const bankPaymentId = initResult.response.PaymentId;
 
 					const cancelOptions = {
 						TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
