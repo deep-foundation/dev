@@ -978,7 +978,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
 	return initResult;
 };
 
-const replacePlaceholdersInHandlers = (handler) => handler.replace(/PLACEHOLDER_.+?/g, (matched) => {
+const replacePlaceholdersInHandlers = (handler) => handler.toString().replace(/'PLACEHOLDER_.+?'/g, (matched) => {
 	const placeholderName = matched.substring("PLACEHOLDER_".length);
 	const value = global[placeholderName];
 	console.log(`Replacing ${matched} with ${value}`);
