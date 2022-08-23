@@ -1382,6 +1382,8 @@ async (
 				const initResult = await init(initOptions);
 
 				expect(initResult.error).to.equal(undefined);
+
+				return initResult;
 			};
 
 			const testConfirm = async () => {
@@ -1429,6 +1431,8 @@ async (
 
 				expect(confirmResult.error).to.equal(undefined);
 				expect(confirmResult.response.Status).to.equal('CONFIRMED');
+
+				return confirmResult;
 			};
 
 			const testCancel = async () => {
@@ -1582,16 +1586,9 @@ async (
 
 				const testCancelAfterPayAfterConfirmFullPrice = async () => {
 					console.log('testCancelAfterPayAfterConfirmFullPrice-start');
-					await testConfirm();
+					const confirmResult = await testConfirm();
 
-					const {
-						data: [payLink],
-					} = await deep.select({
-						type_id: PPay,
-					});
-					console.log({payLink});
-
-					const bankPaymentId = payLink.value.value.bankPaymentId;
+					const bankPaymentId = confirmResult.PaymendId;
 					console.log({bankPaymentId});
 
 					const cancelOptions = {
@@ -1611,15 +1608,10 @@ async (
 
 				const testCancelAfterPayAfterConfirmCustomPriceX2 = async () => {
 					console.log('testCancelAfterPayAfterConfirmCustomPriceX2-start');
-					await testConfirm();
+					const confirmResult = await testConfirm();
 
-					const {
-						data: [payLink],
-					} = await deep.select({
-						type_id: PPay,
-					});
-
-					const bankPaymentId = payLink.value.value.bankPaymentId;
+					const bankPaymentId = confirmResult.PaymendId;
+					console.log({bankPaymentId});
 
 					const cancelOptions = {
 						TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
@@ -1646,15 +1638,9 @@ async (
 
 				const testCancelBeforePay = async () => {
 					console.log('testCancelBeforePay-start');
-					await testInit();
+					const initResult = await testInit();
 
-					const {
-						data: [payLink],
-					} = await deep.select({
-						type_id: PPay,
-					});
-
-					const bankPaymentId = payLink.value.value.bankPaymentId;
+					const bankPaymentId = initResult.PaymentId;
 
 					const cancelOptions = {
 						TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
