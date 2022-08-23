@@ -354,6 +354,30 @@ const f = async () => {
 		}
 	};
 
+	const cancel = async (options) => {
+		try {
+			const response = await axios({
+				method: 'post',
+				url: getUrl('Cancel'),
+				data: { ...options, Token: generateToken(options) },
+			});
+
+			const error = getError(response.data.ErrorCode);
+
+			return {
+				error,
+				request: options,
+				response: response.data,
+			};
+		} catch (error) {
+			return {
+				error,
+				request: options,
+				response: null,
+			};
+		}
+	};
+
 	const resend = async (options) => {
 		try {
 			const response = await axios({
@@ -1239,30 +1263,6 @@ async (
 			name: 'INSERT_HANDLE_ROUTE_HIERARCHICAL',
 		}
 	);
-
-	const cancel = async (options) => {
-		try {
-			const response = await axios({
-				method: 'post',
-				url: getUrl('Cancel'),
-				data: { ...options, Token: generateToken(options) },
-			});
-
-			const error = getError(response.data.ErrorCode);
-
-			return {
-				error,
-				request: options,
-				response: response.data,
-			};
-		} catch (error) {
-			return {
-				error,
-				request: options,
-				response: null,
-			};
-		}
-	};
 
 	const callTests = async () => {
 		console.log('callTests-start');
