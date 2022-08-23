@@ -326,7 +326,11 @@ const f = async () => {
 
 			const error = getError(response.data.ErrorCode);
 
-			return d;
+			return {
+				error,
+				request: options,
+				response: response,
+			};
 		} catch (error) {
 			return {
 				error,
