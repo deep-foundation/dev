@@ -1458,9 +1458,6 @@ async (
     const confirmResult = await confirm(confirmOptions);
     console.log({confirmResult});
   } else if (status == 'CONFIRMED') {
-		const {data: payWithSpecificValueAndFromIdQueryData} = await deep.select({value: req.body.OrderId, type_id: ${PPay}, from_id: req.body.CustomerKey});
-		console.log({payWithSpecificValueAndFromIdQueryData});
-		const {data: payQueryData} = await deep.select({value: req.body.OrderId, type_id: ${PPay}, from_id: req.body.CustomerKey});
 		console.log({payQueryData});
 		const {data: [{id: payId}]} = await deep.select({value: req.body.OrderId, type_id: ${PPay}, from_id: req.body.CustomerKey});
     const payedInsertData = await deep.insert({
