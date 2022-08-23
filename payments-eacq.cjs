@@ -210,8 +210,7 @@ const f = async () => {
 		console.log({ dataWithPassword });
 		return _generateToken(dataWithPassword);
 	};
-
-	generateToken.toString = generateToken.toString()
+	const generateTokenString = generateToken.toString()
 		.replace(
 			'PLACEHOLDER_process.env.PAYMENT_TEST_TERMINAL_PASSWORD',
 			process.env.PAYMENT_TEST_TERMINAL_PASSWORD
@@ -220,7 +219,7 @@ const f = async () => {
 
 	const getUrl = (method) =>
 		`PLACEHOLDER_process.env.PAYMENT_EACQ_AND_TEST_URL/${method}`;
-	getUrl.toString = getUrl.toString()
+	getUrlString = getUrl.toString()
 		.replace(
 			'PLACEHOLDER_process.env.PAYMENT_EACQ_AND_TEST_URL',
 			process.env.PAYMENT_EACQ_AND_TEST_URL
