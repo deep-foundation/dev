@@ -186,13 +186,13 @@ const f = async () => {
 		1096: 'Повторите попытку позже',
 		9999: 'Внутренняя ошибка системы',
 	};
-
 	const errorsConverterString = JSON.stringify(errorsConverter);
+	console.log({errorsConverterString});
 
 	const getError = (errorCode) =>
 		errorCode === '0' ? undefined : errorsConverter[errorCode] || 'broken';
-
 	const getErrorString = getError.toString();
+	console.log({getErrorString});
 
 	const _generateToken = (dataWithPassword) => {
 		const dataString = Object.keys(dataWithPassword)
@@ -204,8 +204,8 @@ const f = async () => {
 		console.log({ hash });
 		return hash;
 	};
-
 	const _generateTokenString = _generateToken.toString();
+	console.log({_generateTokenString});
 
 	const generateToken = (data) => {
 		const { Receipt, DATA, Shops, ...restData } = data;
@@ -216,13 +216,12 @@ const f = async () => {
 		console.log({ dataWithPassword });
 		return _generateToken(dataWithPassword);
 	};
-
 	const generateTokenString = generateToken.toString()
 		.replace(
 		"PLACEHOLDER_process.env.PAYMENT_TEST_TERMINAL_PASSWORD",
 		process.env.PAYMENT_TEST_TERMINAL_PASSWORD
 	);
-	console.log({ generateToken });
+	console.log({ generateTokenString });
 
 	const getUrl = (method) =>
 		`PLACEHOLDER_process.env.PAYMENT_EACQ_AND_TEST_URL/${method}`;
@@ -231,7 +230,7 @@ const f = async () => {
 		"PLACEHOLDER_process.env.PAYMENT_EACQ_AND_TEST_URL",
 		process.env.PAYMENT_EACQ_AND_TEST_URL
 	);
-	console.log({ getUrl });
+	console.log({ getUrlString });
 
 	const getMarketUrl = (method) =>
 		`${process.env.PAYMENT_TINKOFF_MARKET_URL}/${method}`;
@@ -979,7 +978,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
 			const placeholderName = matched.substring("PLACEHOLDER_".length);
 			return global[placeholderName]
 		});
-	console.log("payInsertHandler", payInsertHandler);
+	console.log({payInsertHandlerString});
 
 	const {
 		data: [{ id: payInsertHandlerId }],
@@ -1078,7 +1077,7 @@ async ({ deep, require, data: { newLink: cancelledLink } }) => {
 		const placeholderName = matched.substring("PLACEHOLDER_".length);
 		return global[placeholderName]
 	});
-	console.log("cancelledInsertHandler", cancelledInsertHandler);
+	console.log({cancelledInsertHandlerString});
 
 	const {
 		data: [{ id: cancelledInsertHandlerId }],
@@ -1175,7 +1174,7 @@ async (
 		const placeholderName = matched.substring("PLACEHOLDER_".length);
 		return global[placeholderName]
 	});
-	console.log("tinkoffNotificationHandler", tinkoffNotificationHandler);
+	console.log({tinkoffNotificationHandlerString});
 
 	await deep.insert(
 		{
