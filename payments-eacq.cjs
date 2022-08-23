@@ -19,9 +19,10 @@ const { expect } = require('chai');
 var myEnv = dotenv.config();
 dotenvExpand.expand(myEnv);
 
+const basePackageName = basePackageName;
 const packageName = '@deep-foundation/payments-eacq';
 
-const PRICE = 5500;
+const PRICE = PRICE;
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -218,7 +219,7 @@ const f = async () => {
 			const response = await axios({
 				method: 'post',
 				url: getUrl('GetState'),
-				data: options,
+				data: {...options, Token: generateToken(options)},
 			});
 
 			const error = getError(response.data.ErrorCode);
@@ -252,7 +253,7 @@ const f = async () => {
 				headers: {
 					'Content-Type': 'application/json',
 				},
-				data: options,
+				data: {...options, Token: generateToken(options)},
 			});
 
 			const error = getError(response.data.ErrorCode);
@@ -279,7 +280,7 @@ const f = async () => {
 				headers: {
 					'Content-Type': 'application/json',
 				},
-				data: options,
+				data: {...options, Token: generateToken(options)},
 			});
 
 			const error = getError(response.data.ErrorCode || '0');
@@ -313,7 +314,7 @@ const f = async () => {
 				headers: {
 					'Content-Type': 'application/json',
 				},
-				data: options,
+				data: {...options, Token: generateToken(options)},
 			});
 
 			const error = getError(response.data.ErrorCode);
@@ -336,21 +337,12 @@ const f = async () => {
 		}
 	};
 
-	const sendInit = async (noTokenData) => {
-		const options = {
-			...noTokenData,
-			Token: generateToken(noTokenData),
-		};
-
-		return init(options);
-	};
-
 	const confirm = async (options) => {
 		try {
 			const response = await axios({
 				method: 'post',
 				url: getUrl('Confirm'),
-				data: options,
+				data: {...options, Token: generateToken(options)},
 			});
 
 			const error = getError(response.data.ErrorCode);
@@ -381,7 +373,7 @@ const f = async () => {
 			const response = await axios({
 				method: 'post',
 				url: getUrl('Resend'),
-				data: options,
+				data: {...options, Token: generateToken(options)},
 			});
 
 			const error = getError(response.data.ErrorCode);
@@ -408,7 +400,7 @@ const f = async () => {
 				headers: {
 					'Content-Type': 'application/json',
 				},
-				data: options,
+				data: {...options, Token: generateToken(options)},
 			});
 
 			const error = getError(response.data.ErrorCode);
@@ -435,7 +427,7 @@ const f = async () => {
 				headers: {
 					'Content-Type': 'application/json',
 				},
-				data: options,
+				data: {...options, Token: generateToken(options)},
 			});
 
 			const error = getError(response.data.ErrorCode);
@@ -462,7 +454,7 @@ const f = async () => {
 				headers: {
 					'Content-Type': 'application/json',
 				},
-				data: options,
+				data: {...options, Token: generateToken(options)},
 			});
 
 			const error = getError(response.data.ErrorCode);
@@ -489,7 +481,7 @@ const f = async () => {
 				headers: {
 					'Content-Type': 'application/json',
 				},
-				data: options,
+				data: {...options, Token: generateToken(options)},
 			});
 
 			const error = getError(response.data.ErrorCode);
@@ -509,14 +501,9 @@ const f = async () => {
 	};
 
 	const getBankPaymentId = async (orderId) => {
-		const noTokenCheckOrderOptions = {
+		const checkOrderOptions = {
 			TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
 			OrderId: orderId,
-		};
-
-		const checkOrderOptions = {
-			...noTokenCheckOrderOptions,
-			Token: generateToken(noTokenCheckOrderOptions),
 		};
 
 		const checkOrderResult = await checkOrder(checkOrderOptions);
@@ -596,13 +583,14 @@ const f = async () => {
 	const Query = await deep.id('@deep-foundation/core', 'Query');
 	const usersId = await deep.id('deep', 'users');
 
-	const BasePayment = await deep.id('@deep-foundation/payments', 'Payment');
-	const BaseObject = await deep.id('@deep-foundation/payments', 'Object');
-	const BaseSum = await deep.id('@deep-foundation/payments', 'Sum');
-	const BasePay = await deep.id('@deep-foundation/payments', 'Pay');
-	const BaseUrl = await deep.id('@deep-foundation/payments', 'Url');
-	const BasePayed = await deep.id('@deep-foundation/payments', 'Payed');
-	const BaseError = await deep.id('@deep-foundation/payments', 'Error');
+	const BasePayment = await deep.id(basePackageName, 'Payment');
+	const BaseObject = await deep.id(basePackageName, 'Object');
+	const BaseSum = await deep.id(basePackageName, 'Sum');
+	const BasePay = await deep.id(basePackageName, 'Pay');
+	const BaseUrl = await deep.id(basePackageName, 'Url');
+	const BasePayed = await deep.id(basePackageName, 'Payed');
+	const BaseCancelled = await deep.id(basePackageName, 'Cancelled');
+	const BaseError = await deep.id(basePackageName, 'Error');
 
 	const {
 		data: [{ id: packageId }],
@@ -800,6 +788,24 @@ const f = async () => {
 
 	console.log({ PError: PError });
 
+	// TODO: Use BaseCancelled
+	const {
+		data: [{ id: PCancelled }],
+	} = await deep.insert({
+		type_id: BaseCancelled,
+		from_id: PTinkoffProvider,
+		to_id: Any,
+		in: {
+			data: {
+				type_id: Contain,
+				from_id: packageId, // before created package
+				string: { data: { value: 'Cancelled' } },
+			},
+		},
+	});
+
+	console.log({ PCancelled });
+
 	const {
 		data: [{ id: paymentTreeId }],
 	} = await deep.insert({
@@ -832,6 +838,10 @@ const f = async () => {
 				{
 					type_id: TreeIncludeUp,
 					to_id: PPayed,
+				},
+				{
+					type_id: TreeIncludeUp,
+					to_id: PCancelled,
 				},
 				{
 					type_id: TreeIncludeUp,
@@ -951,7 +961,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
         headers: {
           'Content-Type': 'application/json',
         },
-        data: options,
+        data: {...options, Token: generateToken(options)},
       });
 
       const error = getError(response.data.ErrorCode);
@@ -974,15 +984,6 @@ async ({ deep, require, data: { newLink: payLink } }) => {
     }
   };
 
-  const sendInit = async (noTokenData) => {
-    const options = {
-      ...noTokenData,
-      Token: generateToken(noTokenData),
-    };
-
-    return init(options);
-  };
-
   const mpDownPay = await deep.select({
     down: {
       link_id: { _eq: payLink.id },
@@ -992,8 +993,8 @@ async ({ deep, require, data: { newLink: payLink } }) => {
 
   console.log({mpDownPay});
 
-  // const paymentLink = mpDownPay.data.find(link => link.type_id == ${PPayment});
-  const sum = mpDownPay.data.find(link => link.type_id == ${PSum}).value.value; 
+  // const paymentLink = mpDownPay.data.find(link => link.type_id == (await deep.id(${packageName}, "Payment")));
+  const sum = mpDownPay.data.find(link => link.type_id == (await deep.id(${packageName}, "Sum"))).value.value; 
 
   // console.log({paymentLink});
   console.log({sum});
@@ -1030,9 +1031,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
 
   console.log({options});
 
-  let initResult = await sendInit({
-    ...options
-  });
+  let initResult = await init(options);
 
   console.log({initResult});
 
@@ -1041,7 +1040,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
     const {
       data: [{ id: error }],
     } = await deep.insert({
-      type_id: ${PError},
+      type_id: (await deep.id(${packageName}, "Error")),
       from_id: ${tinkoffProviderId},
       to_id: payLink.id,
       string: { data: { value: initResult.error } },
@@ -1055,29 +1054,30 @@ async ({ deep, require, data: { newLink: payLink } }) => {
       },
     });
     console.log({ error });
-  } else {
-    console.log('Payment URL:', initResult.response.PaymentURL);
-    const {
-      data: [{ id: urlId }],
-    } = await deep.insert({
-      type_id: ${PUrl},
-      from_id: ${tinkoffProviderId},
-      to_id: payLink.id,
-      string: { data: { value: initResult.response.PaymentURL } },
-      in: {
-        data: [
-          {
-            type_id: ${Contain},
-            from_id: ${deep.linkId},
-          },
-        ],
-      },
-    });
-    console.log({ urlId });
-  }
+  } 
 
-  // return initResult;
-  return {data: "dataString"};
+	console.log('Payment URL:', initResult.response.PaymentURL);
+	const {
+		data: [{ id: urlId }],
+	} = await deep.insert({
+		type_id: (await deep.id(${packageName}, "Url")),
+		from_id: ${tinkoffProviderId},
+		to_id: payLink.id,
+		string: { data: { value: initResult.response.PaymentURL } },
+		in: {
+			data: [
+				{
+					type_id: ${Contain},
+					from_id: ${deep.linkId},
+				},
+			],
+		},
+	});
+	console.log({ urlId });
+
+	await deep.update(payLink.id, {value: {...payLink.value.value, bankPaymentId: initResult.response.PaymentId}})
+  
+	return initResult;
 };
 `;
 
@@ -1090,7 +1090,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
 				{
 					type_id: Contain,
 					from_id: packageId, // before created package
-					string: { data: { value: 'joinInsertHandlerFile' } },
+					string: { data: { value: 'payInsertHandlerFile' } },
 				},
 				{
 					from_id: dockerSupportsJs,
@@ -1100,7 +1100,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
 							{
 								type_id: Contain,
 								from_id: packageId, // before created package
-								string: { data: { value: 'joinInsertHandler' } },
+								string: { data: { value: 'payInsertHandler' } },
 							},
 							{
 								type_id: HandleInsert,
@@ -1110,7 +1110,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
 										{
 											type_id: Contain,
 											from_id: packageId, // before created package
-											string: { data: { value: 'joinInsertHandle' } },
+											string: { data: { value: 'payInsertHandle' } },
 										},
 									],
 								},
@@ -1128,6 +1128,199 @@ async ({ deep, require, data: { newLink: payLink } }) => {
 	});
 
 	console.log({ payInsertHandlerId });
+
+	const cancelledInsertHandler = /*javascript*/ `
+async ({ deep, require, data: { newLink: cancelledLink } }) => {
+  const crypto = require('crypto');
+  const axios = require('axios');
+  const errorsConverter = {
+    7: 'Покупатель не найден',
+    53: 'Обратитесь к продавцу',
+    99: 'Платеж отклонен',
+    100: 'Повторите попытку позже',
+    101: 'Не пройдена идентификация 3DS',
+    102: 'Операция отклонена, пожалуйста обратитесь в интернет-магазин или воспользуйтесь другой картой',
+    103: 'Повторите попытку позже',
+    119: 'Превышено кол-во запросов на авторизацию',
+    191: 'Некорректный статус договора, обратитесь к вашему менеджеру',
+    1001: 'Свяжитесь с банком, выпустившим карту, чтобы провести платеж',
+    1003: 'Неверный merchant ID',
+    1004: 'Карта украдена. Свяжитесь с банком, выпустившим карту',
+    1005: 'Платеж отклонен банком, выпустившим карту',
+    1006: 'Свяжитесь с банком, выпустившим карту, чтобы провести платеж',
+    1007: 'Карта украдена. Свяжитесь с банком, выпустившим карту',
+    1008: 'Платеж отклонен, необходима идентификация',
+    1012: 'Такие операции запрещены для этой карты',
+    1013: 'Повторите попытку позже',
+    1014: 'Карта недействительна. Свяжитесь с банком, выпустившим карту',
+    1015: 'Попробуйте снова или свяжитесь с банком, выпустившим карту',
+    1019: 'Платеж отклонен — попробуйте снова',
+    1030: 'Повторите попытку позже',
+    1033: 'Истек срок действия карты. Свяжитесь с банком, выпустившим карту',
+    1034: 'Попробуйте повторить попытку позже',
+    1038: 'Превышено количество попыток ввода ПИН-кода',
+    1039: 'Платеж отклонен — счет не найден',
+    1041: 'Карта утеряна. Свяжитесь с банком, выпустившим карту',
+    1043: 'Карта украдена. Свяжитесь с банком, выпустившим карту',
+    1051: 'Недостаточно средств на карте',
+    1053: 'Платеж отклонен — счет не найден',
+    1054: 'Истек срок действия карты',
+    1055: 'Неверный ПИН',
+    1057: 'Такие операции запрещены для этой карты',
+    1058: 'Такие операции запрещены для этой карты',
+    1059: 'Подозрение в мошенничестве. Свяжитесь с банком, выпустившим карту',
+    1061: 'Превышен дневной лимит платежей по карте',
+    1062: 'Платежи по карте ограничены',
+    1063: 'Операции по карте ограничены',
+    1064: 'Проверьте сумму',
+    1065: 'Превышен дневной лимит транзакций',
+    1075: 'Превышено число попыток ввода ПИН-кода',
+    1076: 'Платеж отклонен — попробуйте снова',
+    1077: 'Коды не совпадают — попробуйте снова',
+    1080: 'Неверный срок действия',
+    1082: 'Неверный CVV',
+    1086: 'Платеж отклонен — не получилось подтвердить ПИН-код',
+    1088: 'Ошибка шифрования. Попробуйте снова',
+    1089: 'Попробуйте повторить попытку позже',
+    1091: 'Банк, выпустивший карту недоступен для проведения авторизации',
+    1092: 'Платеж отклонен — попробуйте снова',
+    1093: 'Подозрение в мошенничестве. Свяжитесь с банком, выпустившим карту',
+    1094: 'Системная ошибка',
+    1096: 'Повторите попытку позже',
+    9999: 'Внутренняя ошибка системы',
+  };
+  const getError = (errorCode) =>
+  errorCode === '0' ? undefined : errorsConverter[errorCode] || 'broken';
+  const getUrl = (method) =>
+  "${process.env.PAYMENT_EACQ_AND_TEST_URL}" + "/" + method;
+  const _generateToken = (dataWithPassword) => {
+    const dataString = Object.keys(dataWithPassword)
+      .sort((a, b) => a.localeCompare(b))
+      .map((key) => dataWithPassword[key])
+      .reduce((acc, item) => acc.toString() + item.toString(), '');
+    const hash = crypto.createHash('sha256').update(dataString).digest('hex');
+    return hash;
+  };
+  const generateToken = (data) => {
+    const { Receipt, DATA, Shops, ...restData } = data;
+    const dataWithPassword = {
+      ...restData,
+      Password: "${process.env.PAYMENT_TEST_TERMINAL_PASSWORD}",
+    };
+    return _generateToken(dataWithPassword);
+  }; 
+	const cancel = async (options) => {
+		try {
+			const response = await axios({
+				method: 'post',
+				url: getUrl('Cancel'),
+				data: {...options, Token: generateToken(options)},
+			});
+
+			const error = getError(response.data.ErrorCode);
+
+			return {
+				error,
+				request: options,
+				response: response.data,
+			};
+		} catch (error) {
+			return {
+				error,
+				request: options,
+				response: null,
+			};
+		}
+	};
+
+	const getPayLink = async (cancelledLink) => {
+		const toLink = await deep.select({
+			id: cancelledLink.to_id
+		});
+		if(toLink.type_id === (await deep.id(${packageName}, "Pay"))) {
+			return toLink;
+		} 
+		if (toLink.type_id === (await deep.id(${packageName}, "Payed"))) {
+			return await deep.select({
+				id: toLink.to_id
+			});
+		} 
+	}
+
+	const toLink = await deep.select({
+		id: cancelledLink.to_id
+	});
+
+	const bankPaymentId = (await getPayLink(cancelledLink)).value.value.bankPaymentId;
+
+	const cancelOptions = {
+		TerminalKey: "${process.env.PAYMENT_TEST_TERMINAL_KEY}",
+		PaymentId: bankPaymentId,
+		Amount: cancelledLink.value.value
+	}
+
+	const cancelResult = await cancel(cancelOptions);
+
+	if(cancelResult.error) {
+		await deep.insert({
+			type_id: (await deep.id(${packageName}, "Error")),
+			from_id: ${tinkoffProviderId},
+			to_id: cancelledLink.id,
+			string: { data: {value: cancelResult.error } }
+		});
+	}
+
+	return cancelResult;
+};
+`;
+
+	const {
+		data: [{ id: cancelledInsertHandlerId }],
+	} = await deep.insert({
+		type_id: SyncTextFile,
+		in: {
+			data: [
+				{
+					type_id: Contain,
+					from_id: packageId, // before created package
+					string: { data: { value: 'cancelledInsertHandlerFile' } },
+				},
+				{
+					from_id: dockerSupportsJs,
+					type_id: Handler,
+					in: {
+						data: [
+							{
+								type_id: Contain,
+								from_id: packageId, // before created package
+								string: { data: { value: 'cancelledInsertHandler' } },
+							},
+							{
+								type_id: HandleInsert,
+								from_id: PPay,
+								in: {
+									data: [
+										{
+											type_id: Contain,
+											from_id: packageId, // before created package
+											string: { data: { value: 'cancelledInsertHandle' } },
+										},
+									],
+								},
+							},
+						],
+					},
+				},
+			],
+		},
+		string: {
+			data: {
+				value: cancelledInsertHandler,
+			},
+		},
+	});
+
+	console.log({ cancelledInsertHandlerId });
 
 	const tinkoffNotificationHandler = /*javascript*/ `
 async (
@@ -1226,7 +1419,7 @@ async (
       const response = await axios({
         method: 'post',
         url: getUrl('Confirm'),
-        data: options,
+        data: {...options, Token: generateToken(options)},
       });
 
       const error = getError(response.data.ErrorCode);
@@ -1255,23 +1448,23 @@ async (
   const status = req.body.Status;
   console.log({status});
   if (status == 'AUTHORIZED') {
-    const noTokenConfirmOptions = {
+    const confirmOptions = {
       TerminalKey: "${process.env.PAYMENT_TEST_TERMINAL_KEY}",
       PaymentId: req.body.PaymentId,
       Amount: req.body.Amount,
       // Receipt: req.body.Receipt,
     };
 
-    const confirmOptions = {
-      ...noTokenConfirmOptions,
-      Token: generateToken(noTokenConfirmOptions)
-    }
     const confirmResult = await confirm(confirmOptions);
     console.log({confirmResult});
   } else if (status == 'CONFIRMED') {
+		const {data: payWithSpecificValueAndFromIdQueryData} = await deep.select({value: req.body.OrderId, type_id: ${PPay}, from_id: req.body.CustomerKey});
+		console.log({payWithSpecificValueAndFromIdQueryData});
+		const {data: payQueryData} = await deep.select({value: req.body.OrderId, type_id: ${PPay}, from_id: req.body.CustomerKey});
+		console.log({payQueryData});
 		const {data: [{id: payId}]} = await deep.select({value: req.body.OrderId, type_id: ${PPay}, from_id: req.body.CustomerKey});
     const payedInsertData = await deep.insert({
-      type_id: ${PPayed},
+      type_id: (await deep.id(${packageName}, "Payed")),
 			from_id: ${tinkoffProviderId},
       to_id: payId,
       in: {
@@ -1283,27 +1476,8 @@ async (
         ],
       },
     });
-    console.log({payedInsertData})
-  } else if (status == 'CANCELED') {
-    const errorInsertData = await deep.insert({
-      type_id: ${PError},
-      from_id: ${tinkoffProviderId},
-      to_id: payId,
-      in: {
-        data: [
-          {
-            type_id: ${Contain},
-            from_id: ${deep.linkId},
-            string: { data: { value: getError(req.body.ErrorCode) } },
-          },
-        ],
-      },
-    });
-
-    console.log({errorInsertData});
-    const errorMessage = getError(req.body.ErrorCode);
-    console.log({errorMessage});
-  }
+    console.log({payedInsertData});
+  } 
   res.send('ok');
 };
 `;
@@ -1396,7 +1570,7 @@ async (
 			const response = await axios({
 				method: 'post',
 				url: getUrl('Cancel'),
-				data: options,
+				data: {...options, Token: generateToken(options)},
 			});
 
 			const error = getError(response.data.ErrorCode);
@@ -1424,9 +1598,6 @@ async (
 
 	const callTests = async () => {
 		console.log('callTests-start');
-
-		const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
-
 		const PPayment = await deep.id(packageName, 'Payment');
 		const PObject = await deep.id(packageName, 'Object');
 		const PSum = await deep.id(packageName, 'Sum');
@@ -1434,11 +1605,8 @@ async (
 		const PUrl = await deep.id(packageName, 'Url');
 		const PPayed = await deep.id(packageName, 'Payed');
 		const PError = await deep.id(packageName, 'Error');
-
+		const PCancelled = await deep.id(packageName, 'Cancelled');
 		const paymentTreeId = await deep.id(packageName, 'paymentTree');
-
-		console.log({ paymentTreeId });
-
 		const Type = await deep.id('@deep-foundation/core', 'Type');
 		const Any = await deep.id('@deep-foundation/core', 'Any');
 
@@ -1477,718 +1645,837 @@ async (
 		console.log({ product: productId });
 
 		const deleteTestLinks = async () => {
-			const { data: objectLinks } = await deep.select({
-				type_id: PObject,
+			console.log("deleteTestLinks-start");
+			const {data: testLinks} = await deep.select({
+				type_id: {_in: {PObject, PSum, PPay, PUrl, PPayed, PError, PCancelled}}
 			});
-
-			const { data: sumLinks } = await deep.select({
-				type_id: PSum,
-			});
-
-			const { data: payLinks } = await deep.select({
-				type_id: PPay,
-			});
-
-			const { data: urlLinks } = await deep.select({
-				type_id: PUrl,
-			});
-
-			const { data: payedLinks } = await deep.select({
-				type_id: PPayed,
-			});
-
-			const { data: errorLinks } = await deep.select({
-				type_id: PError,
-			});
-
-			const allLinks = [
-				...objectLinks,
-				...sumLinks,
-				...payLinks,
-				...urlLinks,
-				...payedLinks,
-				...errorLinks,
-			];
-			for (let i = 0; i < allLinks.length; i++) {
-				const { id } = allLinks[i];
+			for (let i = 0; i < testLinks.length; i++) {
+				const { id } = testLinks[i];
 				await deep.delete({ id: id });
 			}
-			console.log('Deleted test links');
+			console.log("deleteTestLinks-start");
 		};
 
-		const testInit = async () => {
-			console.log('testInit-start');
-			const {
-				data: [{ id: paymentId }],
-			} = await deep.insert({
-				type_id: PPayment,
-				in: {
-					data: [
-						{
-							type_id: Contain,
-							from_id: deep.linkId,
+		const callRealizationTests = async () => {
+			const testInit = async () => {
+				const initOptions = {
+					TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
+					OrderId: uniqid(),
+					Amount: PRICE,
+					Description: 'Test shopping',
+					CustomerKey: uniqid(),
+					Language: 'ru',
+					Recurrent: 'Y',
+					DATA: {
+						Email: process.env.PAYMENT_TEST_EMAIL,
+						Phone: process.env.PAYMENT_TEST_PHONE,
+					},
+					// Receipt: {
+					// 	Items: [{
+					// 		Name: 'Test item',
+					// 		Price: PRICE,
+					// 		Quantity: 1,
+					// 		Amount: PRICE,
+					// 		PaymentMethod: 'prepayment',
+					// 		PaymentObject: 'service',
+					// 		Tax: 'none',
+					// 	}],
+					// 	Email: process.env.PAYMENT_TEST_EMAIL,
+					// 	Phone: process.env.PAYMENT_TEST_PHONE,
+					// 	Taxation: 'usn_income',
+					// },
+				};
+	
+				const initResult = await init(initOptions);
+	
+				expect(initResult.error).to.equal(undefined);
+			};
+
+			const testConfirm = async () => {
+				const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
+				const page = await browser.newPage();
+	
+				const initOptions = {
+					TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
+					Amount: PRICE,
+					OrderId: uniqid(),
+					CustomerKey: uniqid(),
+					PayType: 'T',
+					// Receipt: {
+					// 	Items: [{
+					// 		Name: 'Test item',
+					// 		Price: PRICE,
+					// 		Quantity: 1,
+					// 		Amount: PRICE,
+					// 		PaymentMethod: 'prepayment',
+					// 		PaymentObject: 'service',
+					// 		Tax: 'none',
+					// 	}],
+					// 	Email: process.env.PAYMENT_TEST_EMAIL,
+					// 	Phone: process.env.PAYMENT_TEST_PHONE,
+					// 	Taxation: 'usn_income',
+					// },
+				};
+	
+				const initResult = await init(initOptions);
+	
+				confirmDebug('initResult', initResult?.response?.Success);
+	
+				await payInBrowser({
+					browser,
+					page,
+					url: initResult.response.PaymentURL,
+				});
+	
+				const confirmOptions = {
+					TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
+					PaymentId: initResult.response.PaymentId,
+				};
+	
+				const confirmResult = await confirm(confirmOptions);
+				confirmDebug('confirm', confirmResult);
+	
+				expect(confirmResult.error).to.equal(undefined);
+				expect(confirmResult.response.Status).to.equal('CONFIRMED');
+			};
+
+
+			const testCancel = async () => {
+				console.log('testCancel-start');
+				const testCancelAfterPayBeforeConfirmFullPrice = async () => {
+					console.log('testCanselAfterPayBeforeConfirmFullPrice-start');
+					const initOptions = {
+						TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
+						OrderId: uniqid(),
+						CustomerKey: deep.linkId,
+						PayType: 'T',
+						Amount: PRICE,
+						Description: 'Test shopping',
+						Language: 'ru',
+						Recurrent: 'Y',
+						DATA: {
+							Email: process.env.PAYMENT_TEST_EMAIL,
+							Phone: process.env.PAYMENT_TEST_PHONE,
 						},
-					],
-				},
-			});
-			console.log({ paymentId });
-
-			const {
-				data: [{ id: sumId }],
-			} = await deep.insert({
-				type_id: PSum,
-				from_id: sumProviderId,
-				to_id: paymentId,
-				number: { data: { value: 150 } },
-				in: {
-					data: [
-						{
-							type_id: Contain,
-							from_id: deep.linkId,
+						// Receipt: {
+						// 	Items: [{
+						// 		Name: 'Test item',
+						// 		Price: sum,
+						// 		Quantity: 1,
+						// 		Amount: PRICE,
+						// 		PaymentMethod: 'prepayment',
+						// 		PaymentObject: 'service',
+						// 		Tax: 'none',
+						// 	}],
+						// 	Email: process.env.PAYMENT_TEST_EMAIL,
+						// 	Phone: process.env.PAYMENT_TEST_PHONE,
+						// 	Taxation: 'usn_income',
+						// }
+					};
+	
+					console.log({ options: initOptions });
+	
+					let initResult = await init(initOptions);
+	
+					console.log({ initResult });
+	
+					expect(initResult.error).to.equal(undefined);
+	
+					const url = initResult.response.PaymentURL;
+	
+					const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
+					const page = await browser.newPage();
+	
+					await payInBrowser({
+						browser,
+						page,
+						url,
+					});
+	
+					const bankPaymentId = initResult.response.PaymentId;
+	
+					const cancelOptions = {
+						TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
+						PaymentId: bankPaymentId,
+						Amount: PRICE,
+					};
+	
+					console.log({ cancelOptions });
+	
+					const cancelResult = await cancel(cancelOptions);
+	
+					console.log({ cancelResponse: cancelResult });
+	
+					expect(cancelResult.error).to.equal(undefined);
+					expect(cancelResult.response.Status).to.equal('REVERSED');
+					console.log('testCanselAfterPayBeforeConfirmFullPrice-end');
+				};
+	
+				const testCancelAfterPayBeforeConfirmCustomPriceX2 = async () => {
+					console.log('testCanselAfterPayBeforeConfirmCustomPriceX2-start');
+					const initOptions = {
+						TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
+						OrderId: uniqid(),
+						CustomerKey: deep.linkId,
+						PayType: 'T',
+						Amount: PRICE,
+						Description: 'Test shopping',
+						Language: 'ru',
+						Recurrent: 'Y',
+						DATA: {
+							Email: process.env.PAYMENT_TEST_EMAIL,
+							Phone: process.env.PAYMENT_TEST_PHONE,
 						},
-					],
-				},
-			});
-
-			console.log({ sum: sumId });
-
-			const {
-				data: [{ id: objectId }],
-			} = await deep.insert({
-				type_id: PObject,
-				from_id: paymentId,
-				to_id: productId,
-				in: {
-					data: [
-						{
-							type_id: Contain,
-							from_id: deep.linkId,
-						},
-					],
-				},
-			});
-
-			console.log({ object: objectId });
-
-			const {
-				data: [{ id: payId }],
-			} = await deep.insert({
-				type_id: PPay,
-				from_id: deep.linkId,
-				to_id: sumId,
-				string: { data: { value: uniqid() } },
-				in: {
-					data: [
-						{
-							type_id: Contain,
-							from_id: deep.linkId,
-						},
-					],
-				},
-			});
-
-			console.log({ pay: payId });
-
-			await sleep(9000);
-
-			const {
-				data: { length },
-			} = await deep.select({
-				type_id: PUrl,
-				to_id: payId,
-			});
-
-			expect(length).to.greaterThan(0);
-			console.log('testInit-end');
-		};
-
-		const testFinishAuthorize = async () => {
-			console.log('testFinishAuthorize-start');
-			await testInit();
-			const {
-				data: [
+						// Receipt: {
+						// 	Items: [{
+						// 		Name: 'Test item',
+						// 		Price: sum,
+						// 		Quantity: 1,
+						// 		Amount: PRICE,
+						// 		PaymentMethod: 'prepayment',
+						// 		PaymentObject: 'service',
+						// 		Tax: 'none',
+						// 	}],
+						// 	Email: process.env.PAYMENT_TEST_EMAIL,
+						// 	Phone: process.env.PAYMENT_TEST_PHONE,
+						// 	Taxation: 'usn_income',
+						// }
+					};
+	
+					console.log({ options: initOptions });
+	
+					let initResult = await init(initOptions);
+	
+					console.log({ initResult });
+	
+					expect(initResult.error).to.equal(undefined);
+	
+					const url = initResult.response.PaymentURL;
+	
+					const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
+					const page = await browser.newPage();
+					await payInBrowser({
+						browser,
+						page,
+						url,
+					});
+	
+					const bankPaymentId = initResult.response.PaymentId;
+	
+					const cancelOptions = {
+						TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
+						PaymentId: bankPaymentId,
+						Amount: Math.floor(PRICE / 3),
+					};
+	
+					console.log({ cancelOptions });
+	
 					{
-						value: { value: url },
-					},
-				],
-			} = await deep.select({
-				type_id: PUrl,
-			});
-
-			const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
-			const page = await browser.newPage();
-			await payInBrowser({
-				browser,
-				page,
-				url,
-			});
-			console.log('testFinishAuthorize-end');
-		};
-
-		const testConfirm = async () => {
-			console.log('testConfirm-start');
-			await testFinishAuthorize();
-			await sleep(17000);
-			let { data } = await deep.select({
-				type_id: PPayed,
-			});
-			expect(data.length).to.greaterThan(0);
-			console.log('testConfirm-end');
-		};
-
-		const testCancel = async () => {
-			console.log('testCancel-start');
-			const testCancelAfterPayBeforeConfirmFullPrice = async () => {
-				console.log('testCanselAfterPayBeforeConfirmFullPrice-start');
-				const initOptions = {
-					TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
-					OrderId: uniqid(),
-					CustomerKey: deep.linkId,
-					PayType: 'T',
-					Amount: PRICE,
-					Description: 'Test shopping',
-					Language: 'ru',
-					Recurrent: 'Y',
-					DATA: {
-						Email: process.env.PAYMENT_TEST_EMAIL,
-						Phone: process.env.PAYMENT_TEST_PHONE,
-					},
-					// Receipt: {
-					// 	Items: [{
-					// 		Name: 'Test item',
-					// 		Price: sum,
-					// 		Quantity: 1,
-					// 		Amount: PRICE,
-					// 		PaymentMethod: 'prepayment',
-					// 		PaymentObject: 'service',
-					// 		Tax: 'none',
-					// 	}],
-					// 	Email: process.env.PAYMENT_TEST_EMAIL,
-					// 	Phone: process.env.PAYMENT_TEST_PHONE,
-					// 	Taxation: 'usn_income',
-					// }
+						const cancelResult = await cancel(cancelOptions);
+	
+						console.log({ cancelResponse: cancelResult });
+	
+						expect(cancelResult.error).to.equal(undefined);
+						expect(cancelResult.response.Status).to.equal('PARTIAL_REVERSED');
+					}
+					{
+						const cancelResult = await cancel(cancelOptions);
+	
+						console.log({ cancelResponse: cancelResult });
+	
+						expect(cancelResult.error).to.equal(undefined);
+						expect(cancelResult.response.Status).to.equal('PARTIAL_REVERSED');
+					}
+					console.log('testCanselAfterPayBeforeConfirmCustomPriceX2-end');
 				};
+	
+				const testCancelAfterPayAfterConfirmFullPrice = async () => {
+					console.log('testCancelAfterPayAfterConfirmFullPrice-start');
+					await testConfirm();
+	
+					const {
+						data: [payLink],
+					} = await deep.select({
+						type_id: PPay,
+					});
+	
+					const bankPaymentId = await getBankPaymentId(
+						payLink?.value?.value ?? payLink.id
+					);
+	
+					const cancelOptions = {
+						TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
+						PaymentId: bankPaymentId,
+						Amount: PRICE,
+					};
+	
+					console.log({ cancelOptions });
+	
+					const cancelResult = await cancel(cancelOptions);
+	
+					expect(cancelResult.error).to.equal(undefined);
+					expect(cancelResult.response.Status).to.equal('REFUNDED');
+					console.log('testCancelAfterPayAfterConfirmFullPrice-end');
+				};
+	
+				const testCancelAfterPayAfterConfirmCustomPriceX2 = async () => {
+					console.log('testCancelAfterPayAfterConfirmCustomPriceX2-start');
+					await testConfirm();
+	
+					const {
+						data: [payLink],
+					} = await deep.select({
+						type_id: PPay,
+					});
+	
+					const bankPaymentId = await getBankPaymentId(
+						payLink?.value?.value ?? payLink.id
+					);
+	
+					const cancelOptions = {
+						TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
+						PaymentId: bankPaymentId,
+						Amount: Math.floor(PRICE / 3),
+					};
+	
+					console.log({ cancelOptions });
+	
+					{
+						const cancelResult = await cancel(cancelOptions);
+	
+						expect(cancelResult.error).to.equal(undefined);
+						expect(cancelResult.response.Status).to.equal('PARTIAL_REFUNDED');
+					}
+					{
+						const cancelResult = await cancel(cancelOptions);
+	
+						expect(cancelResult.error).to.equal(undefined);
+						expect(cancelResult.response.Status).to.equal('PARTIAL_REFUNDED');
+					}
+					console.log('testCancelAfterPayAfterConfirmCustomPriceX2-end');
+				};
+	
+				const testCancelBeforePay = async () => {
+					console.log('testCancelBeforePay-start');
+					await testInit();
+	
+					const {
+						data: [payLink],
+					} = await deep.select({
+						type_id: PPay,
+					});
+	
+					const bankPaymentId = await getBankPaymentId(
+						payLink?.value?.value ?? payLink.id
+					);
+	
+					const cancelOptions = {
+						TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
+						PaymentId: bankPaymentId,
+						Amount: PRICE,
+					};
+	
+					console.log({ cancelOptions });
+	
+					const cancelResult = await cancel(cancelOptions);
+	
+					expect(cancelResult.error).to.equal(undefined);
+					expect(cancelResult.response.Status).to.equal('CANCELED');
+					console.log('testCancelBeforePay-end');
+				};
+				await testCancelAfterPayBeforeConfirmFullPrice();
+				await deleteTestLinks();
+				await testCancelAfterPayBeforeConfirmCustomPriceX2();
+				await deleteTestLinks();
+				await testCancelAfterPayAfterConfirmFullPrice();
+				await deleteTestLinks();
+				await testCancelAfterPayAfterConfirmCustomPriceX2();
+				await deleteTestLinks();
+				await testCancelBeforePay();
+				await deleteTestLinks();
+	
+				console.log('testCancel-end');
+			};
 
-				console.log({ options: initOptions });
-
-				let initResult = await sendInit(initOptions);
-
-				console.log({ initResult });
-
-				console.log('before expect');
-				expect(initResult.error).to.equal(undefined);
-				console.log('after expect');
-				console.log('before url');
-				const url = initResult.response.PaymentURL;
-				console.log('after url');
-
-				console.log('before page');
+			const testGetState = async () => {
 				const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
 				const page = await browser.newPage();
-				console.log('after page');
-				console.log('before payInBrowser');
+	
+				const initResult = await init({
+					TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
+					OrderId: uniqid(),
+					CustomerKey: uniqid(),
+					Amount: PRICE,
+				});
+	
 				await payInBrowser({
 					browser,
 					page,
-					url,
+					url: initResult.response.PaymentURL,
 				});
-				console.log('after payInBrowser');
-
-				console.log('before bankPaymentId');
-				const bankPaymentId = initResult.response.PaymentId;
-				console.log('after bankPaymentId');
-
-				console.log('before noTokenCancelData');
-				const noTokenCancelData = {
+	
+				const getStateOptions = {
 					TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
-					PaymentId: bankPaymentId,
-					Amount: PRICE,
+					PaymentId: initResult.response.PaymentId,
 				};
-				console.log('after noTokenCancelData');
-
-				console.log('before noTokenCancelData');
-				const cancelOptions = {
-					...noTokenCancelData,
-					Token: generateToken(noTokenCancelData),
-				};
-				console.log('after noTokenCancelData');
-
-				console.log({ cancelOptions });
-
-				const cancelResult = await cancel(cancelOptions);
-
-				console.log({ cancelResponse: cancelResult });
-
-				expect(cancelResult.error).to.equal(undefined);
-				expect(cancelResult.response.Status).to.equal('REVERSED');
-				console.log('testCanselAfterPayBeforeConfirmFullPrice-end');
+	
+				const getStateResult = await getState(getStateOptions);
+	
+				expect(getStateResult.error).to.equal(undefined);
+	
 			};
 
-			const testCancelAfterPayBeforeConfirmCustomPriceX2 = async () => {
-				console.log('testCanselAfterPayBeforeConfirmCustomPriceX2-start');
-				const initOptions = {
-					TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
-					OrderId: uniqid(),
-					CustomerKey: deep.linkId,
-					PayType: 'T',
-					Amount: PRICE,
-					Description: 'Test shopping',
-					Language: 'ru',
-					Recurrent: 'Y',
-					DATA: {
-						Email: process.env.PAYMENT_TEST_EMAIL,
-						Phone: process.env.PAYMENT_TEST_PHONE,
-					},
-					// Receipt: {
-					// 	Items: [{
-					// 		Name: 'Test item',
-					// 		Price: sum,
-					// 		Quantity: 1,
-					// 		Amount: PRICE,
-					// 		PaymentMethod: 'prepayment',
-					// 		PaymentObject: 'service',
-					// 		Tax: 'none',
-					// 	}],
-					// 	Email: process.env.PAYMENT_TEST_EMAIL,
-					// 	Phone: process.env.PAYMENT_TEST_PHONE,
-					// 	Taxation: 'usn_income',
-					// }
-				};
-
-				console.log({ options: initOptions });
-
-				let initResult = await sendInit({
-					...initOptions,
-				});
-
-				console.log({ initResult });
-
-				expect(initResult.error).to.equal(undefined);
-
-				const url = initResult.response.PaymentURL;
-
+			const testGetCardList = async () => {
 				const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
 				const page = await browser.newPage();
+	
+				const initResult = await sendInit({
+					TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
+					CustomerKey: uniqid(),
+					OrderId: uniqid(),
+					Amount: PRICE,
+					Recurrent: 'Y',
+				});
+	
 				await payInBrowser({
 					browser,
 					page,
-					url,
+					url: initResult.response.PaymentURL,
 				});
-
-				const bankPaymentId = initResult.response.PaymentId;
-
-				const noTokenCancelData = {
+	
+				const getCardListOptions = {
 					TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
-					PaymentId: bankPaymentId,
-					Amount: Math.floor(PRICE / 3),
+					CustomerKey: uniqid(),
 				};
-
-				const cancelOptions = {
-					...noTokenCancelData,
-					Token: generateToken(noTokenCancelData),
-				};
-
-				console.log({ cancelOptions });
-
-				{
-					const cancelResult = await cancel(cancelOptions);
-
-					console.log({ cancelResponse: cancelResult });
-
-					expect(cancelResult.error).to.equal(undefined);
-					expect(cancelResult.response.Status).to.equal('PARTIAL_REVERSED');
-				}
-				{
-					const cancelResult = await cancel(cancelOptions);
-
-					console.log({ cancelResponse: cancelResult });
-
-					expect(cancelResult.error).to.equal(undefined);
-					expect(cancelResult.response.Status).to.equal('PARTIAL_REVERSED');
-				}
-				console.log('testCanselAfterPayBeforeConfirmCustomPriceX2-end');
+	
+				const getCardListResult = await getCardList(getCardListOptions);
+	
+				expect(getCardListResult.error).to.equal(undefined);
+	
 			};
 
-			const testCancelAfterPayAfterConfirmFullPrice = async () => {
-				console.log('testCancelAfterPayAfterConfirmFullPrice-start');
-				await testConfirm();
-
-				const {
-					data: [payLink],
-				} = await deep.select({
-					type_id: PPay,
-				});
-
-				const bankPaymentId = await getBankPaymentId(
-					payLink?.value?.value ?? payLink.id
-				);
-
-				const noTokenCancelData = {
+			const testResend = async () => {
+				console.log('testResend-start');
+				const resendOptions = {
 					TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
-					PaymentId: bankPaymentId,
+				};
+				console.log({ resendOptions });
+	
+				const resendResult = await resend(resendOptions);
+				console.log({ resendResult });
+	
+				expect(resendResult.error).to.equal(undefined);
+				console.log('testResend-end');
+			};
+
+			const testCharge = async () => {
+				console.log('testCharge-start');
+				const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
+				const page = await browser.newPage();
+	
+				const initResult = await init({
+					TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
 					Amount: PRICE,
-				};
-
-				const options = {
-					...noTokenCancelData,
-					Token: generateToken(noTokenCancelData),
-				};
-
-				console.log({ options });
-
-				const cancelResult = await cancel(options);
-
-				expect(cancelResult.error).to.equal(undefined);
-				expect(cancelResult.response.Status).to.equal('REFUNDED');
-				console.log('testCancelAfterPayAfterConfirmFullPrice-end');
-			};
-
-			const testCancelAfterPayAfterConfirmCustomPriceX2 = async () => {
-				console.log('testCancelAfterPayAfterConfirmCustomPriceX2-start');
-				await testConfirm();
-
-				const {
-					data: [payLink],
-				} = await deep.select({
-					type_id: PPay,
+					OrderId: uniqid(),
+					CustomerKey: deep.linkId,
+					Recurrent: 'Y',
 				});
-
-				const bankPaymentId = await getBankPaymentId(
-					payLink?.value?.value ?? payLink.id
-				);
-
-				const noTokenCancelData = {
+	
+				await payInBrowser({
+					browser,
+					page,
+					url: initResult.response.PaymentURL,
+				});
+	
+				const getCardListOptions = {
 					TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
-					PaymentId: bankPaymentId,
-					Amount: Math.floor(PRICE / 3),
+					CustomerKey: deep.linkId,
 				};
-
-				const options = {
-					...noTokenCancelData,
-					Token: generateToken(noTokenCancelData),
+	
+				const getCardListResult = await getCardList(getCardListOptions);
+	
+				expect(getCardListResult.response[0].RebillId).to.have.length.above(0);
+	
+				const getStateOptions = {
+					TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
+					PaymentId: initResult.response.PaymentId,
 				};
-
-				console.log({ options });
-
-				{
-					const cancelResult = await cancel(options);
-
-					expect(cancelResult.error).to.equal(undefined);
-					expect(cancelResult.response.Status).to.equal('PARTIAL_REFUNDED');
-				}
-				{
-					const cancelResult = await cancel(options);
-
-					expect(cancelResult.error).to.equal(undefined);
-					expect(cancelResult.response.Status).to.equal('PARTIAL_REFUNDED');
-				}
-				console.log('testCancelAfterPayAfterConfirmCustomPriceX2-end');
+	
+				const getStateResult = await getState(getStateOptions);
+	
+				expect(getStateResult.response.Status).to.equal('AUTHORIZED');
+	
+				const newInitResult = await init({
+					TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
+					Amount: PRICE,
+					OrderId: uniqid(),
+					CustomerKey: deep.linkId,
+				});
+	
+				const newChargeOptions = {
+					TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
+					PaymentId: newInitResult.response.PaymentId,
+					RebillId: Number(getCardListResult.response[0].RebillId),
+				};
+	
+				const chargeResult = await charge(newChargeOptions);
+	
+				expect(chargeResult.error).to.equal(undefined);
+				console.log('testCharge-end');
 			};
 
-			const testCancelBeforePay = async () => {
-				console.log('testCancelBeforePay-start');
+			const testAddCustomer = async () => {
+				console.log('testAddCustomer-start');
+	
+				const addCustomerOptions = {
+					TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
+					CustomerKey: uniqid(),
+				};
+	
+				const addCustomerResult = await addCustomer(addCustomerOptions);
+	
+				expect(addCustomerResult.error).to.equal(undefined);
+				console.log('testAddCustomer-end');
+			};
+
+			const testGetCustomer = async () => {
+				console.log('testGetCustomer-start');
+	
+				const customerOptions = {
+					TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
+					CustomerKey: uniqid(),
+				};
+	
+				const addCustomerDataOptions = {
+					...customerOptions,
+					Phone: process.env.PAYMENT_TEST_PHONE,
+				};
+	
+				const addResult = await addCustomer(addCustomerDataOptions);
+	
+				expect(addResult.error).to.equal(undefined);
+	
+				const getResult = await getCustomer(customerOptions);
+	
+				expect(getResult.error).to.equal(undefined);
+				expect(getResult.response.Phone).to.equal(process.env.PAYMENT_TEST_PHONE);
+	
+				console.log('testGetCustomer-end');
+			};
+
+			const testRemoveCustomer = async () => {
+				console.log('testRemoveCustomer-start');
+	
+				const removeCustomerData = {
+					TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
+					CustomerKey: uniqid(),
+				};
+	
+				const newAddCustomerData = {
+					...removeCustomerData,
+					Phone: process.env.PAYMENT_TEST_PHONE,
+				};
+	
+				const addResult = await addCustomer(newAddCustomerData);
+	
+				expect(addResult.error).to.equal(undefined);
+	
+				const removeResult = await removeCustomer(removeCustomerData);
+	
+				expect(removeResult.error).to.equal(undefined);
+	
+				console.log('testRemoveCustomer-end');
+			};
+
+			await testInit();
+			await testConfirm();
+			await testCancel();
+			await testGetState();
+			await testGetCardList();
+			await testResend();
+			await testCharge();
+			await testAddCustomer();
+			await testGetCustomer();
+			await testRemoveCustomer();
+		};
+
+		const callIntegrationTests = async () => {
+			const testInit = async () => {
+				console.log('testInit-start');
+				const {
+					data: [{ id: paymentId }],
+				} = await deep.insert({
+					type_id: PPayment,
+					in: {
+						data: [
+							{
+								type_id: Contain,
+								from_id: deep.linkId,
+							},
+						],
+					},
+				});
+				console.log({ paymentId });
+	
+				const {
+					data: [{ id: sumId }],
+				} = await deep.insert({
+					type_id: PSum,
+					from_id: sumProviderId,
+					to_id: paymentId,
+					number: { data: { value: 150 } },
+					in: {
+						data: [
+							{
+								type_id: Contain,
+								from_id: deep.linkId,
+							},
+						],
+					},
+				});
+	
+				console.log({ sum: sumId });
+	
+				const {
+					data: [{ id: objectId }],
+				} = await deep.insert({
+					type_id: PObject,
+					from_id: paymentId,
+					to_id: productId,
+					in: {
+						data: [
+							{
+								type_id: Contain,
+								from_id: deep.linkId,
+							},
+						],
+					},
+				});
+	
+				console.log({ object: objectId });
+	
+				const {
+					data: [{ id: payId }],
+				} = await deep.insert({
+					type_id: PPay,
+					from_id: deep.linkId,
+					to_id: sumId,
+					string: { data: { value: uniqid() } },
+					in: {
+						data: [
+							{
+								type_id: Contain,
+								from_id: deep.linkId,
+							},
+						],
+					},
+				});
+	
+				console.log({ pay: payId });
+	
+				await sleep(9000);
+	
+				const {
+					data: { length },
+				} = await deep.select({
+					type_id: PUrl,
+					to_id: payId,
+				});
+	
+				expect(length).to.greaterThan(0);
+				console.log('testInit-end');
+			};
+
+			const testFinishAuthorize = async () => {
+				console.log('testFinishAuthorize-start');
 				await testInit();
+				const {
+					data: [
+						{
+							value: { value: url },
+						},
+					],
+				} = await deep.select({
+					type_id: PUrl,
+				});
+	
+				const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
+				const page = await browser.newPage();
+				await payInBrowser({
+					browser,
+					page,
+					url,
+				});
+				console.log('testFinishAuthorize-end');
+			};
 
+			const testConfirm = async () => {
+				console.log('testConfirm-start');
+				await testFinishAuthorize();
+				await sleep(17000);
+				let { data } = await deep.select({
+					type_id: PPayed,
+				});
+				expect(data.length).to.greaterThan(0);
+				console.log('testConfirm-end');
+			};
+
+			const testCancelIntegration = async () => {
+				console.log('testCancelIntegration-start');
+				const testCancelAfterPayAfterConfirmFullPrice = async () => {
+					console.log('testCancelAfterPayAfterConfirmFullPrice-start');
+					await testConfirm();
+	
+					const {
+						data: [payLink],
+					} = await deep.select({
+						type_id: PPay,
+					});
+	
+					const {data: [payedLink]} = await deep.select({
+						type_id: PPayed,
+						to_id: payLink.id
+					});
+	
+					const {data: [cancelledLink]} = await deep.insert({
+						type_id: PCancelled,
+						from_id: tinkoffProviderId,
+						to_id: payedLink.id,
+						number: {data: {value: PRICE}}
+					});
+	
+					await sleep(5000);
+	
+					const {data: cancelledErrors} = await deep.select({
+						type_id: PError,
+						to_id: cancelledLink.id
+					});
+	
+					expect(cancelledErrors.length).to.equal(0);
+					console.log('testCancelAfterPayAfterConfirmFullPrice-end');
+				};
+	
+				const testCancelAfterPayAfterConfirmCustomPriceX2 = async () => {
+					console.log('testCancelAfterPayAfterConfirmCustomPriceX2-start');
+					await testConfirm();
+	
+					const {
+						data: [payLink],
+					} = await deep.select({
+						type_id: PPay,
+					});
+	
+					const {data: [payedLink]} = await deep.select({
+						type_id: PPayed,
+						to_id: payLink.id
+					});
+	
+					for (let i = 0; i < 2; i++) {
+						const {data: [cancelledLink]} = await deep.insert({
+							type_id: PCancelled,
+							from_id: tinkoffProviderId,
+							to_id: payedLink.id,
+							number: {data: {value: Math.floor(PRICE / 3)}}
+						});
+		
+						await sleep(5000);
+		
+						const {data: cancelledErrors} = await deep.select({
+							type_id: PError,
+							to_id: cancelledLink.id
+						});
+	
+						expect(cancelledErrors.length).to.equal(0);
+					}
+					
+					console.log('testCancelAfterPayAfterConfirmCustomPriceX2-end');
+				};
+	
+				const testCancelBeforePay = async () => {
+					console.log('testCancelBeforePay-start');
+					await testInit();
+	
+					const {
+						data: [payLink],
+					} = await deep.select({
+						type_id: PPay,
+					});
+	
+					const {data: [cancelledLink]} = await deep.insert({
+						type_id: PCancelled,
+						from_id: tinkoffProviderId,
+						to_id: payLink.id,
+						number: {data: {value: PRICE}}
+					});
+	
+					await sleep(5000);
+	
+					const {data: cancelledErrors} = await deep.select({
+						type_id: PError,
+						to_id: cancelledLink.id
+					});
+	
+					expect(cancelledErrors.length).to.equal(0);
+					console.log('testCancelBeforePay-end');
+				};
+				await testCancelAfterPayAfterConfirmFullPrice();
+				await deleteTestLinks();
+				await testCancelAfterPayAfterConfirmCustomPriceX2();
+				await deleteTestLinks();
+				await testCancelBeforePay();
+				await deleteTestLinks();
+	
+				console.log('testCancelIntegration-end');
+			};
+
+			const testGetState = async () => {
+				console.log('testGetState-start');
+				await testFinishAuthorize();
+	
 				const {
 					data: [payLink],
-				} = await deep.select({
-					type_id: PPay,
-				});
-
+				} = await deep.select({ type_id: PPay });
+	
 				const bankPaymentId = await getBankPaymentId(
 					payLink?.value?.value ?? payLink.id
 				);
-
-				const noTokenCancelData = {
+	
+				const getStateOptions = {
 					TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
 					PaymentId: bankPaymentId,
-					Amount: PRICE,
 				};
+	
+				const getStateResult = await getState(getStateOptions);
+	
+				expect(getStateResult.error).to.equal(undefined);
+				console.log('testGetState-end');
+			};
 
-				const options = {
-					...noTokenCancelData,
-					Token: generateToken(noTokenCancelData),
+			const testGetCardList = async () => {
+				console.log('testGetCardList-end');
+				await testFinishAuthorize();
+	
+				const getCardListOptions = {
+					TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
+					CustomerKey: deep.linkId,
 				};
-
-				console.log({ options });
-
-				const cancelResult = await cancel(options);
-
-				expect(cancelResult.error).to.equal(undefined);
-				expect(cancelResult.response.Status).to.equal('CANCELED');
-				console.log('testCancelBeforePay-end');
+	
+				const getCardListResult = await getCardList(getCardListOptions);
+	
+				expect(getCardListResult.error).to.equal(undefined);
+				console.log('testGetCardList-end');
 			};
-			await testCancelAfterPayBeforeConfirmFullPrice();
-			await deleteTestLinks();
-			await testCancelAfterPayBeforeConfirmCustomPriceX2();
-			await deleteTestLinks();
-			await testCancelAfterPayAfterConfirmFullPrice();
-			await deleteTestLinks();
-			await testCancelAfterPayAfterConfirmCustomPriceX2();
-			await deleteTestLinks();
-			await testCancelBeforePay();
-			await deleteTestLinks();
 
-			console.log('testCancel-end');
-		};
-
-		const testGetState = async () => {
-			console.log('testGetState-start');
+			await testInit();
 			await testFinishAuthorize();
-
-			const {
-				data: [payLink],
-			} = await deep.select({ type_id: PPay });
-
-			const bankPaymentId = await getBankPaymentId(
-				payLink?.value?.value ?? payLink.id
-			);
-
-			const noTokenGetStateData = {
-				TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
-			};
-
-			const newGetStateData = {
-				...noTokenGetStateData,
-				PaymentId: bankPaymentId,
-			};
-
-			const options = {
-				...newGetStateData,
-				Token: generateToken(newGetStateData),
-			};
-
-			const getStateResult = await getState(options);
-
-			expect(getStateResult.error).to.equal(undefined);
-			console.log('testGetState-end');
+			await testConfirm();
+			await testCancelIntegration();
+			await testGetState();
+			await testGetCardList();
 		};
 
-		const testGetCardList = async () => {
-			console.log('testGetCardList-end');
-			await testFinishAuthorize();
-
-			const noTokenGetCardListData = {
-				TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
-				CustomerKey: deep.linkId,
-			};
-
-			const options = {
-				...noTokenGetCardListData,
-				Token: generateToken(noTokenGetCardListData),
-			};
-
-			const getCardListResult = await getCardList(options);
-
-			expect(getCardListResult.error).to.equal(undefined);
-			console.log('testGetCardList-end');
-		};
-
-		const testResend = async () => {
-			console.log('testResend-start');
-			const noTokenResendOptions = {
-				TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
-			};
-
-			const resendOptions = {
-				...noTokenResendOptions,
-				Token: generateToken(noTokenResendOptions),
-			};
-
-			console.log({ resendOptions });
-
-			const resendResult = await resend(resendOptions);
-			console.log({ resendResult });
-
-			expect(resendResult.error).to.equal(undefined);
-			console.log('testResend-end');
-		};
-
-		const testCharge = async () => {
-			console.log('testCharge-start');
-			const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
-			const page = await browser.newPage();
-
-			const initResult = await sendInit({
-				TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
-				Amount: 5500,
-				OrderId: uniqid(),
-				CustomerKey: deep.linkId,
-				Recurrent: 'Y',
-			});
-
-			await payInBrowser({
-				browser,
-				page,
-				url: initResult.response.PaymentURL,
-			});
-
-			const noTokenGetCardListOptions = {
-				TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
-				CustomerKey: deep.linkId,
-			};
-
-			const getCardListOptions = {
-				...noTokenGetCardListOptions,
-				Token: generateToken(noTokenGetCardListOptions),
-			};
-
-			const getCardListResult = await getCardList(getCardListOptions);
-
-			expect(getCardListResult.response[0].RebillId).to.have.length.above(0);
-
-			const noTokenGetStateOptions = {
-				TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
-				PaymentId: initResult.response.PaymentId,
-			};
-
-			const getStateOptions = {
-				...noTokenGetStateOptions,
-				Token: generateToken(noTokenGetStateOptions),
-			};
-
-			const getStateResult = await getState(getStateOptions);
-
-			expect(getStateResult.response.Status).to.equal('AUTHORIZED');
-
-			const newInitResult = await sendInit({
-				TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
-				Amount: 5500,
-				OrderId: uniqid(),
-				CustomerKey: deep.linkId,
-			});
-
-			const newChargeData = {
-				TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
-				PaymentId: newInitResult.response.PaymentId,
-				RebillId: Number(getCardListResult.response[0].RebillId),
-			};
-
-			const options = {
-				...newChargeData,
-				Token: generateToken(newChargeData),
-			};
-
-			const chargeResult = await charge(options);
-
-			expect(chargeResult.error).to.equal(undefined);
-			console.log('testCharge-end');
-		};
-
-		const testAddCustomer = async () => {
-			console.log('testAddCustomer-start');
-
-			const customerKey = uniqid();
-
-			const noTokenAddCustomerOptions = {
-				TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
-				CustomerKey: customerKey,
-			};
-
-			const addCustomerOptions = {
-				...noTokenAddCustomerOptions,
-				Token: generateToken(noTokenAddCustomerOptions),
-			};
-
-			const addCustomerResult = await addCustomer(addCustomerOptions);
-
-			expect(addCustomerResult.error).to.equal(undefined);
-			console.log('testAddCustomer-end');
-		};
-
-		const testGetCustomer = async () => {
-			console.log('testGetCustomer-start');
-
-			const customerKey = uniqid();
-
-			const noTokenAddCustomerData = {
-				TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
-				CustomerKey: customerKey,
-			};
-
-			const newAddCustomerData = {
-				...noTokenAddCustomerData,
-				Phone: process.env.PAYMENT_TEST_PHONE,
-			};
-
-			const addCustomerDataOptions = {
-				...newAddCustomerData,
-				Token: generateToken(newAddCustomerData),
-			};
-
-			const addResult = await addCustomer(addCustomerDataOptions);
-
-			expect(addResult.error).to.equal(undefined);
-
-			const getCustomerDataOptions = {
-				...noTokenAddCustomerData,
-				Token: generateToken(noTokenAddCustomerData),
-			};
-
-			const getResult = await getCustomer(getCustomerDataOptions);
-
-			expect(getResult.error).to.equal(undefined);
-			expect(getResult.response.Phone).to.equal(process.env.PAYMENT_TEST_PHONE);
-
-			console.log('testGetCustomer-end');
-		};
-
-		const testRemoveCustomer = async () => {
-			console.log('testRemoveCustomer-start');
-
-			const customerKey = uniqid();
-
-			const noTokenRemoveCustomerData = {
-				TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
-				CustomerKey: customerKey,
-			};
-
-			const newAddCustomerData = {
-				...noTokenRemoveCustomerData,
-				Phone: process.env.PAYMENT_TEST_PHONE,
-			};
-
-			const addCustomerDataOptions = {
-				...newAddCustomerData,
-				Token: generateToken(newAddCustomerData),
-			};
-
-			const addResult = await addCustomer(addCustomerDataOptions);
-
-			expect(addResult.error).to.equal(undefined);
-
-			const removeCustomerDataOptions = {
-				...noTokenRemoveCustomerData,
-				Token: generateToken(noTokenRemoveCustomerData),
-			};
-
-			const removeResult = await removeCustomer(removeCustomerDataOptions);
-
-			expect(removeResult.error).to.equal(undefined);
-
-			console.log('testRemoveCustomer-end');
-		};
-
-		await testInit();
-		await deleteTestLinks();
-		await testConfirm();
-		await deleteTestLinks();
-		await testCancel();
-		await deleteTestLinks();
-		await testGetState();
-		await deleteTestLinks();
-		await testGetCardList();
-		await deleteTestLinks();
-		await testResend();
-		await deleteTestLinks();
-		await testCharge();
-		await deleteTestLinks();
-		await testAddCustomer();
-		await deleteTestLinks();
-		await testGetCustomer();
-		await deleteTestLinks();
-		await testRemoveCustomer();
-		await deleteTestLinks();
+		await callRealizationTests();
+		await callIntegrationTests();
 	};
 
 	await callTests();
