@@ -213,7 +213,7 @@ const f = async () => {
 
 	generateToken.toString = generateToken.toString()
 		.replace(
-			'PLACEHOLDER_process.env.PAYMENT_TEST_TERMINAL_PASSWORD',
+			"PLACEHOLDER_process.env.PAYMENT_TEST_TERMINAL_PASSWORD",
 			process.env.PAYMENT_TEST_TERMINAL_PASSWORD
 		);
 	console.log({ generateTokenString });
@@ -222,7 +222,7 @@ const f = async () => {
 		`PLACEHOLDER_process.env.PAYMENT_EACQ_AND_TEST_URL/${method}`;
 	getUrl.toString = getUrl.toString()
 		.replace(
-			'PLACEHOLDER_process.env.PAYMENT_EACQ_AND_TEST_URL',
+			"PLACEHOLDER_process.env.PAYMENT_EACQ_AND_TEST_URL",
 			process.env.PAYMENT_EACQ_AND_TEST_URL
 		);
 	console.log({ getUrlString });
@@ -867,52 +867,53 @@ const f = async () => {
   const getError = ${getError.toString()};
   const getUrl = ${getUrl.toString()};
   const _generateToken = ${_generateToken.toString()};
-  const generateToken = ${generateToken.toString()};
+  const generateToken = ${generateToken.toString()}
 	`;
 	console.log({ handlersDependencies });
 
-	const payInsertHandler = /*javascript*/ `
+	const payInsertHandler = 
 async ({ deep, require, data: { newLink: payLink } }) => {
-	${handlersDependencies}
-  const init = ${init.toString()};
+	PLACEHOLDER_handlersDependencies;
+  const init = PLACEHOLDER_init;
 
   const mpDownPay = await deep.select({
     down: {
       link_id: { _eq: payLink.id },
-      tree_id: { _eq: await deep.id(${packageName}, "paymentTree") },
+      tree_id: { _eq: await deep.id("PLACEHOLDER_packageName", "paymentTree") },
     },
   });
   console.log({mpDownPay});
-
-  const sum = mpDownPay.data.find(link => link.type_id == (await deep.id(${packageName}, "Sum"))).value.value; 
+	
+	const PSUm = await deep.id("PLACEHOLDER_packageName", "Sum");
+  const sum = mpDownPay.data.find(link => link.type_id == PSUm).value.value; 
   console.log({sum});
 
   const options = {
-    TerminalKey: "${process.env.PAYMENT_TEST_TERMINAL_KEY}",
+    TerminalKey: "PLACEHOLDER_process.env.PAYMENT_TEST_TERMINAL_KEY",
     OrderId: payLink?.value?.value ?? payLink.id,
-    CustomerKey: ${deep.linkId},
-    NotificationURL: "${process.env.PAYMENT_EACQ_AND_TEST_NOTIFICATION_URL}",
+    CustomerKey: "PLACEHOLDER_deep.linkId",
+    NotificationURL: "PLACEHOLDER_process.env.PAYMENT_EACQ_AND_TEST_NOTIFICATION_URL",
     PayType: 'T',
-    Amount: ${PRICE},
+    Amount: "PLACEHOLDER_PRICE",
     Description: 'Test shopping',
     Language: 'ru',
     Recurrent: 'Y',
     DATA: {
-      Email: "${process.env.PAYMENT_TEST_EMAIL}",
-      Phone: "${process.env.PAYMENT_TEST_PHONE}",
+      Email: "PLACEHOLDER_process.env.PAYMENT_TEST_EMAIL",
+      Phone: "PLACEHOLDER_process.env.PAYMENT_TEST_PHONE",
     },
     // Receipt: {
     //   Items: [{
     //     Name: 'Test item',
     //     Price: sum,
     //     Quantity: 1,
-    //     Amount: ${PRICE},
+    //     Amount: "PLACEHOLDER_PRICE",
     //     PaymentMethod: 'prepayment',
     //     PaymentObject: 'service',
     //     Tax: 'none',
     //   }],
-    //   Email: "${process.env.PAYMENT_TEST_EMAIL}",
-    //   Phone: "${process.env.PAYMENT_TEST_PHONE}",
+    //   Email: "PLACEHOLDER_process.env.PAYMENT_TEST_EMAIL",
+    //   Phone: "PLACEHOLDER_process.env.PAYMENT_TEST_PHONE",
     //   Taxation: 'usn_income',
     // }
   };
@@ -928,15 +929,15 @@ async ({ deep, require, data: { newLink: payLink } }) => {
     const {
       data: [{ id: error }],
     } = await deep.insert({
-      type_id: (await deep.id(${packageName}, "Error")),
-      from_id: ${tinkoffProviderId},
+      type_id: (await deep.id("PLACEHOLDER_packageName", "Error")),
+      from_id: "PLACEHOLDER_tinkoffProviderId",
       to_id: payLink.id,
       string: { data: { value: initResult.error } },
       in: {
         data: [
           {
-            type_id: await deep.id(${corePackageName}, 'Contain'),
-            from_id: ${deep.linkId},
+            type_id: await deep.id("PLACEHOLDER_corePackageName", 'Contain'),
+            from_id: PLACEHOLDER_deep.linkId,
           },
         ],
       },
@@ -948,15 +949,15 @@ async ({ deep, require, data: { newLink: payLink } }) => {
 	const {
 		data: [{ id: urlId }],
 	} = await deep.insert({
-		type_id: (await deep.id(${packageName}, "Url")),
-		from_id: ${tinkoffProviderId},
+		type_id: (await deep.id("PLACEHOLDER_packageName", "Url")),
+		from_id: "PLACEHOLDER_tinkoffProviderId",
 		to_id: payLink.id,
 		string: { data: { value: initResult.response.PaymentURL } },
 		in: {
 			data: [
 				{
-					type_id: await deep.id(${corePackageName}, 'Contain'),
-					from_id: ${deep.linkId},
+					type_id: await deep.id("PLACEHOLDER_corePackageName", 'Contain'),
+					from_id: PLACEHOLDER_deep.linkId,
 				},
 			],
 		},
@@ -967,7 +968,12 @@ async ({ deep, require, data: { newLink: payLink } }) => {
   
 	return initResult;
 };
-`;
+	payInsertHandler.toString = 
+		payInsertHandler.toString()
+		.replace(/PLACEHOLDER_.+?/g, (matched) => {
+			const placeholderName = matched.substring("PLACEHOLDER_".length);
+			return global[placeholderName]
+		});
 	console.log({ payInsertHandler });
 
 	const {
@@ -1018,19 +1024,19 @@ async ({ deep, require, data: { newLink: payLink } }) => {
 
 	console.log({ payInsertHandlerId });
 
-	const cancelledInsertHandler = /*javascript*/ `
+	const cancelledInsertHandler =  
 async ({ deep, require, data: { newLink: cancelledLink } }) => {
-  ${handlersDependencies}
-	const cancel = ${cancel.toString()};
+  PLACEHOLDER_handlersDependencies
+	const cancel = PLACEHOLDER_cancel;
 
 	const getPayLink = async (cancelledLink) => {
 		const toLink = await deep.select({
 			id: cancelledLink.to_id
 		});
-		if(toLink.type_id === (await deep.id(${packageName}, "Pay"))) {
+		if(toLink.type_id === (await deep.id("PLACEHOLDER_packageName", "Pay"))) {
 			return toLink;
 		} 
-		if (toLink.type_id === (await deep.id(${packageName}, "Payed"))) {
+		if (toLink.type_id === (await deep.id("PLACEHOLDER_packageName", "Payed"))) {
 			return await deep.select({
 				id: toLink.to_id
 			});
@@ -1044,7 +1050,7 @@ async ({ deep, require, data: { newLink: cancelledLink } }) => {
 	const bankPaymentId = (await getPayLink(cancelledLink)).value.value.bankPaymentId;
 
 	const cancelOptions = {
-		TerminalKey: "${process.env.PAYMENT_TEST_TERMINAL_KEY}",
+		TerminalKey: "PLACEHOLDER_process.env.PAYMENT_TEST_TERMINAL_KEY",
 		PaymentId: bankPaymentId,
 		Amount: cancelledLink.value.value
 	}
@@ -1053,8 +1059,8 @@ async ({ deep, require, data: { newLink: cancelledLink } }) => {
 
 	if(cancelResult.error) {
 		await deep.insert({
-			type_id: (await deep.id(${packageName}, "Error")),
-			from_id: ${tinkoffProviderId},
+			type_id: (await deep.id("PLACEHOLDER_packageName", "Error")),
+			from_id: "PLACEHOLDER_tinkoffProviderId",
 			to_id: cancelledLink.id,
 			string: { data: {value: cancelResult.error } }
 		});
@@ -1062,7 +1068,12 @@ async ({ deep, require, data: { newLink: cancelledLink } }) => {
 
 	return cancelResult;
 };
-`;
+	cancelledInsertHandler.toString =
+		cancelledInsertHandler.toString()
+		.replace(/PLACEHOLDER_.+?/g, (matched) => {
+			const placeholderName = matched.substring("PLACEHOLDER_".length);
+			return global[placeholderName]
+		});
 	console.log({ cancelledInsertHandler });
 
 	const {
@@ -1113,22 +1124,22 @@ async ({ deep, require, data: { newLink: cancelledLink } }) => {
 
 	console.log({ cancelledInsertHandlerId });
 
-	const tinkoffNotificationHandler = /*javascript*/ `
+	const tinkoffNotificationHandler =  
 async (
   req,
   res,
   next,
   { deep, require, gql }
 ) => {
-  ${handlersDependencies}
+  PLACEHOLDER_handlersDependencies
 	const reqBody = req.body;
 	console.log({reqBody});
   const status = req.body.Status;
   console.log({status});
   if (status == 'AUTHORIZED') {
-		const confirm = ${confirm.toString()};
+		const confirm = PLACEHOLDER_confirm;
     const confirmOptions = {
-      TerminalKey: "${process.env.PAYMENT_TEST_TERMINAL_KEY}",
+      TerminalKey: "PLACEHOLDER_process.env.PAYMENT_TEST_TERMINAL_KEY",
       PaymentId: req.body.PaymentId,
       Amount: req.body.Amount,
       // Receipt: req.body.Receipt,
@@ -1137,16 +1148,16 @@ async (
     console.log({confirmResult});
   } else if (status == 'CONFIRMED') {
 		console.log({payQueryData});
-		const {data: [{id: payId}]} = await deep.select({value: req.body.OrderId, type_id: await deep.id(${packageName}, "Pay"), from_id: req.body.CustomerKey});
+		const {data: [{id: payId}]} = await deep.select({value: req.body.OrderId, type_id: await deep.id("PLACEHOLDER_packageName", "Pay"), from_id: req.body.CustomerKey});
     const payedInsertData = await deep.insert({
-      type_id: (await deep.id(${packageName}, "Payed")),
-			from_id: ${tinkoffProviderId},
+      type_id: (await deep.id("PLACEHOLDER_packageName", "Payed")),
+			from_id: "PLACEHOLDER_tinkoffProviderId",
       to_id: payId,
       in: {
         data: [
           {
-            type_id: await deep.id(${corePackageName}, 'Contain'),
-            from_id: ${deep.linkId},
+            type_id: await deep.id("PLACEHOLDER_corePackageName", 'Contain'),
+            from_id: "PLACEHOLDER_deep.linkId",
           },
         ],
       },
@@ -1155,7 +1166,12 @@ async (
   } 
   res.send('ok');
 };
-`;
+	tinkoffNotificationHandler.toString =
+		tinkoffNotificationHandler.toString()
+		.replace(/PLACEHOLDER_.+?/g, (matched) => {
+			const placeholderName = matched.substring("PLACEHOLDER_".length);
+			return global[placeholderName]
+		})
 	console.log({ tinkoffNotificationHandler });
 
 	await deep.insert(
