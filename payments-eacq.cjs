@@ -211,7 +211,8 @@ const f = async () => {
 		return _generateToken(dataWithPassword);
 	};
 
-	generateToken.toString = () => generateToken.toString()
+	const generateTokenString = generateToken.toString();
+	generateToken.toString = () => generateTokenString
 	.replace(
 		"PLACEHOLDER_process.env.PAYMENT_TEST_TERMINAL_PASSWORD",
 		process.env.PAYMENT_TEST_TERMINAL_PASSWORD
@@ -220,7 +221,8 @@ const f = async () => {
 
 	const getUrl = (method) =>
 		`PLACEHOLDER_process.env.PAYMENT_EACQ_AND_TEST_URL/${method}`;
-	getUrl.toString = () => getUrl.toString()
+	const getUrlString = getUrl.toString();
+	getUrl.toString = () => getUrlString
 	.replace(
 		"PLACEHOLDER_process.env.PAYMENT_EACQ_AND_TEST_URL",
 		process.env.PAYMENT_EACQ_AND_TEST_URL
@@ -968,7 +970,8 @@ async ({ deep, require, data: { newLink: payLink } }) => {
   
 	return initResult;
 };
-	payInsertHandler.toString = () => payInsertHandler.toString()
+	const payInsertHandlerString = payInsertHandler.toString();
+	payInsertHandler.toString = () => payInsertHandlerString
 		.replace(/PLACEHOLDER_.+?/g, (matched) => {
 			const placeholderName = matched.substring("PLACEHOLDER_".length);
 			return global[placeholderName]
@@ -1067,7 +1070,8 @@ async ({ deep, require, data: { newLink: cancelledLink } }) => {
 
 	return cancelResult;
 };
-	cancelledInsertHandler.toString = () => cancelledInsertHandler.toString()
+	const cancelledInsertHandlerString = cancelledInsertHandler.toString();
+	cancelledInsertHandler.toString = () => cancelledInsertHandlerString
 	.replace(/PLACEHOLDER_.+?/g, (matched) => {
 		const placeholderName = matched.substring("PLACEHOLDER_".length);
 		return global[placeholderName]
@@ -1164,7 +1168,8 @@ async (
   } 
   res.send('ok');
 };
-	tinkoffNotificationHandler.toString = () => tinkoffNotificationHandler.toString()
+	const tinkoffNotificationHandlerString = tinkoffNotificationHandler.toString();
+	tinkoffNotificationHandler.toString = () => tinkoffNotificationHandlerString
 	.replace(/PLACEHOLDER_.+?/g, (matched) => {
 		const placeholderName = matched.substring("PLACEHOLDER_".length);
 		return global[placeholderName]
