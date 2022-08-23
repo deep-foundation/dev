@@ -987,7 +987,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
   const mpDownPay = await deep.select({
     down: {
       link_id: { _eq: payLink.id },
-      tree_id: { _eq: ${paymentTreeId} },
+      tree_id: { _eq: await deep.id(${packageName}, "paymentTree") },
     },
   });
 
@@ -1047,7 +1047,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
       in: {
         data: [
           {
-            type_id: ${Contain},
+            type_id: await deep.id('@deep-foundation/core', 'Contain'),
             from_id: ${deep.linkId},
           },
         ],
@@ -1067,7 +1067,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
 		in: {
 			data: [
 				{
-					type_id: ${Contain},
+					type_id: await deep.id('@deep-foundation/core', 'Contain'),
 					from_id: ${deep.linkId},
 				},
 			],
@@ -1459,7 +1459,7 @@ async (
     console.log({confirmResult});
   } else if (status == 'CONFIRMED') {
 		console.log({payQueryData});
-		const {data: [{id: payId}]} = await deep.select({value: req.body.OrderId, type_id: ${PPay}, from_id: req.body.CustomerKey});
+		const {data: [{id: payId}]} = await deep.select({value: req.body.OrderId, type_id: await deep.id(${packageName}, "Pay"), from_id: req.body.CustomerKey});
     const payedInsertData = await deep.insert({
       type_id: (await deep.id(${packageName}, "Payed")),
 			from_id: ${tinkoffProviderId},
@@ -1467,7 +1467,7 @@ async (
       in: {
         data: [
           {
-            type_id: ${Contain},
+            type_id: await deep.id('@deep-foundation/core', 'Contain'),
             from_id: ${deep.linkId},
           },
         ],
