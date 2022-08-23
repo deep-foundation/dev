@@ -1589,10 +1589,10 @@ async (
 					} = await deep.select({
 						type_id: PPay,
 					});
+					console.log({payLink});
 
-					const bankPaymentId = await getBankPaymentId(
-						payLink?.value?.value ?? payLink.id
-					);
+					const bankPaymentId = payLink.value.value.bankPaymentId;
+					console.log({bankPaymentId});
 
 					const cancelOptions = {
 						TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
@@ -1619,9 +1619,7 @@ async (
 						type_id: PPay,
 					});
 
-					const bankPaymentId = await getBankPaymentId(
-						payLink?.value?.value ?? payLink.id
-					);
+					const bankPaymentId = payLink.value.value.bankPaymentId;
 
 					const cancelOptions = {
 						TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
@@ -1656,9 +1654,7 @@ async (
 						type_id: PPay,
 					});
 
-					const bankPaymentId = await getBankPaymentId(
-						payLink?.value?.value ?? payLink.id
-					);
+					const bankPaymentId = payLink.value.value.bankPaymentId;
 
 					const cancelOptions = {
 						TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
@@ -2137,9 +2133,7 @@ async (
 					data: [payLink],
 				} = await deep.select({ type_id: PPay });
 
-				const bankPaymentId = await getBankPaymentId(
-					payLink?.value?.value ?? payLink.id
-				);
+				const bankPaymentId = payLink.value.value.bankPaymentId;
 
 				const getStateOptions = {
 					TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
