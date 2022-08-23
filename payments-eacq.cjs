@@ -186,13 +186,9 @@ const f = async () => {
 		1096: 'Повторите попытку позже',
 		9999: 'Внутренняя ошибка системы',
 	};
-	const errorsConverterString = JSON.stringify(errorsConverter);
-	console.log({errorsConverterString});
 
 	const getError = (errorCode) =>
 		errorCode === '0' ? undefined : errorsConverter[errorCode] || 'broken';
-	const getErrorString = getError.toString();
-	console.log({getErrorString});
 
 	const _generateToken = (dataWithPassword) => {
 		const dataString = Object.keys(dataWithPassword)
@@ -204,32 +200,31 @@ const f = async () => {
 		console.log({ hash });
 		return hash;
 	};
-	const _generateTokenString = _generateToken.toString();
-	console.log({_generateTokenString});
 
 	const generateToken = (data) => {
 		const { Receipt, DATA, Shops, ...restData } = data;
 		const dataWithPassword = {
 			...restData,
-			Password: `${process.env.PAYMENT_TEST_TERMINAL_PASSWORD}`,
+			Password: "PLACEHOLDER_process.env.PAYMENT_TEST_TERMINAL_PASSWORD",
 		};
 		console.log({ dataWithPassword });
 		return _generateToken(dataWithPassword);
 	};
-	const generateTokenString = generateToken.toString()
+
+	generateToken.toString = generateToken.toString()
 		.replace(
-		"${process.env.PAYMENT_TEST_TERMINAL_PASSWORD}",
-		process.env.PAYMENT_TEST_TERMINAL_PASSWORD
-	);
+			'PLACEHOLDER_process.env.PAYMENT_TEST_TERMINAL_PASSWORD',
+			process.env.PAYMENT_TEST_TERMINAL_PASSWORD
+		);
 	console.log({ generateTokenString });
 
 	const getUrl = (method) =>
-		`${process.env.PAYMENT_EACQ_AND_TEST_URL}/${method}`;
-	const getUrlString = getUrl.toString()
+		`PLACEHOLDER_process.env.PAYMENT_EACQ_AND_TEST_URL/${method}`;
+	getUrl.toString = getUrl.toString()
 		.replace(
-		"${process.env.PAYMENT_EACQ_AND_TEST_URL}",
-		process.env.PAYMENT_EACQ_AND_TEST_URL
-	);
+			'PLACEHOLDER_process.env.PAYMENT_EACQ_AND_TEST_URL',
+			process.env.PAYMENT_EACQ_AND_TEST_URL
+		);
 	console.log({ getUrlString });
 
 	const getMarketUrl = (method) =>
@@ -326,11 +321,7 @@ const f = async () => {
 
 			const error = getError(response.data.ErrorCode);
 
-			return {
-				error,
-				request: options,
-				response: response.data,
-			};
+			return d;
 		} catch (error) {
 			return {
 				error,
@@ -872,57 +863,56 @@ const f = async () => {
 	const handlersDependencies = `
 	const crypto = require('crypto');
   const axios = require('axios');
-  const errorsConverter = ${errorsConverterString};
-  const getError = ${getErrorString};
-  const getUrl = ${getUrlString};
-  const _generateToken = ${_generateTokenString};
-  const generateToken = ${generateTokenString}
+  const errorsConverter = ${JSON.stringify(errorsConverter)};
+  const getError = ${getError.toString()};
+  const getUrl = ${getUrl.toString()};
+  const _generateToken = ${_generateToken.toString()};
+  const generateToken = ${generateToken.toString()};
 	`;
 	console.log({ handlersDependencies });
 
-	const payInsertHandler = 
+	const payInsertHandler = /*javascript*/ `
 async ({ deep, require, data: { newLink: payLink } }) => {
-	'PLACEHOLDER_handlersDependencies';
-  const init = 'PLACEHOLDER_init';
+	${handlersDependencies}
+  const init = ${init.toString()};
 
   const mpDownPay = await deep.select({
     down: {
       link_id: { _eq: payLink.id },
-      tree_id: { _eq: await deep.id("'PLACEHOLDER_packageName'", "paymentTree") },
+      tree_id: { _eq: await deep.id(${packageName}, "paymentTree") },
     },
   });
   console.log({mpDownPay});
-	
-	const PSUm = await deep.id("'PLACEHOLDER_packageName'", "Sum");
-  const sum = mpDownPay.data.find(link => link.type_id == PSUm).value.value; 
+
+  const sum = mpDownPay.data.find(link => link.type_id == (await deep.id(${packageName}, "Sum"))).value.value; 
   console.log({sum});
 
   const options = {
-    TerminalKey: "'PLACEHOLDER_process.env.PAYMENT_TEST_TERMINAL_KEY'",
+    TerminalKey: "${process.env.PAYMENT_TEST_TERMINAL_KEY}",
     OrderId: payLink?.value?.value ?? payLink.id,
-    CustomerKey: "'PLACEHOLDER_deep.linkId'",
-    NotificationURL: "'PLACEHOLDER_process.env.PAYMENT_EACQ_AND_TEST_NOTIFICATION_URL'",
+    CustomerKey: ${deep.linkId},
+    NotificationURL: "${process.env.PAYMENT_EACQ_AND_TEST_NOTIFICATION_URL}",
     PayType: 'T',
-    Amount: "'PLACEHOLDER_PRICE'",
+    Amount: ${PRICE},
     Description: 'Test shopping',
     Language: 'ru',
     Recurrent: 'Y',
     DATA: {
-      Email: "'PLACEHOLDER_process.env.PAYMENT_TEST_EMAIL'",
-      Phone: "'PLACEHOLDER_process.env.PAYMENT_TEST_PHONE'",
+      Email: "${process.env.PAYMENT_TEST_EMAIL}",
+      Phone: "${process.env.PAYMENT_TEST_PHONE}",
     },
     // Receipt: {
     //   Items: [{
     //     Name: 'Test item',
     //     Price: sum,
     //     Quantity: 1,
-    //     Amount: "'PLACEHOLDER_PRICE'",
+    //     Amount: ${PRICE},
     //     PaymentMethod: 'prepayment',
     //     PaymentObject: 'service',
     //     Tax: 'none',
     //   }],
-    //   Email: "'PLACEHOLDER_process.env.PAYMENT_TEST_EMAIL'",
-    //   Phone: "'PLACEHOLDER_process.env.PAYMENT_TEST_PHONE'",
+    //   Email: "${process.env.PAYMENT_TEST_EMAIL}",
+    //   Phone: "${process.env.PAYMENT_TEST_PHONE}",
     //   Taxation: 'usn_income',
     // }
   };
@@ -938,15 +928,15 @@ async ({ deep, require, data: { newLink: payLink } }) => {
     const {
       data: [{ id: error }],
     } = await deep.insert({
-      type_id: (await deep.id("'PLACEHOLDER_packageName'", "Error")),
-      from_id: "'PLACEHOLDER_tinkoffProviderId'",
+      type_id: (await deep.id(${packageName}, "Error")),
+      from_id: ${tinkoffProviderId},
       to_id: payLink.id,
       string: { data: { value: initResult.error } },
       in: {
         data: [
           {
-            type_id: await deep.id("'PLACEHOLDER_corePackageName'", 'Contain'),
-            from_id: "'PLACEHOLDER_deep.linkId'",
+            type_id: await deep.id(${corePackageName}, 'Contain'),
+            from_id: ${deep.linkId},
           },
         ],
       },
@@ -958,15 +948,15 @@ async ({ deep, require, data: { newLink: payLink } }) => {
 	const {
 		data: [{ id: urlId }],
 	} = await deep.insert({
-		type_id: (await deep.id("'PLACEHOLDER_packageName'", "Url")),
-		from_id: "'PLACEHOLDER_tinkoffProviderId'",
+		type_id: (await deep.id(${packageName}, "Url")),
+		from_id: ${tinkoffProviderId},
 		to_id: payLink.id,
 		string: { data: { value: initResult.response.PaymentURL } },
 		in: {
 			data: [
 				{
-					type_id: await deep.id("'PLACEHOLDER_corePackageName'", 'Contain'),
-					from_id: PLACEHOLDER_deep.linkId,
+					type_id: await deep.id(${corePackageName}, 'Contain'),
+					from_id: ${deep.linkId},
 				},
 			],
 		},
@@ -977,16 +967,8 @@ async ({ deep, require, data: { newLink: payLink } }) => {
   
 	return initResult;
 };
-
-const replacePlaceholdersInHandlers = (handler) => handler.toString().replace(/'PLACEHOLDER_.+?'/g, (matched) => {
-	const placeholderName = matched.substring("PLACEHOLDER_".length);
-	const value = global[placeholderName];
-	console.log(`Replacing ${matched} with ${value}`);
-	return value;
-});
-
-	const payInsertHandlerString = replacePlaceholdersInHandlers(payInsertHandler);
-	console.log({payInsertHandlerString});
+`;
+	console.log({ payInsertHandler });
 
 	const {
 		data: [{ id: payInsertHandlerId }],
@@ -1029,26 +1011,26 @@ const replacePlaceholdersInHandlers = (handler) => handler.toString().replace(/'
 		},
 		string: {
 			data: {
-				value: payInsertHandlerString,
+				value: payInsertHandler,
 			},
 		},
 	});
 
 	console.log({ payInsertHandlerId });
 
-	const cancelledInsertHandler =  
+	const cancelledInsertHandler = /*javascript*/ `
 async ({ deep, require, data: { newLink: cancelledLink } }) => {
-  'PLACEHOLDER_handlersDependencies';
-	const cancel = 'PLACEHOLDER_cancel';
+  ${handlersDependencies}
+	const cancel = ${cancel.toString()};
 
 	const getPayLink = async (cancelledLink) => {
 		const toLink = await deep.select({
 			id: cancelledLink.to_id
 		});
-		if(toLink.type_id === (await deep.id("'PLACEHOLDER_packageName'", "Pay"))) {
+		if(toLink.type_id === (await deep.id(${packageName}, "Pay"))) {
 			return toLink;
 		} 
-		if (toLink.type_id === (await deep.id("'PLACEHOLDER_packageName'", "Payed"))) {
+		if (toLink.type_id === (await deep.id(${packageName}, "Payed"))) {
 			return await deep.select({
 				id: toLink.to_id
 			});
@@ -1062,7 +1044,7 @@ async ({ deep, require, data: { newLink: cancelledLink } }) => {
 	const bankPaymentId = (await getPayLink(cancelledLink)).value.value.bankPaymentId;
 
 	const cancelOptions = {
-		TerminalKey: "'PLACEHOLDER_process.env.PAYMENT_TEST_TERMINAL_KEY'",
+		TerminalKey: "${process.env.PAYMENT_TEST_TERMINAL_KEY}",
 		PaymentId: bankPaymentId,
 		Amount: cancelledLink.value.value
 	}
@@ -1071,8 +1053,8 @@ async ({ deep, require, data: { newLink: cancelledLink } }) => {
 
 	if(cancelResult.error) {
 		await deep.insert({
-			type_id: (await deep.id("'PLACEHOLDER_packageName'", "Error")),
-			from_id: "'PLACEHOLDER_tinkoffProviderId'",
+			type_id: (await deep.id(${packageName}, "Error")),
+			from_id: ${tinkoffProviderId},
 			to_id: cancelledLink.id,
 			string: { data: {value: cancelResult.error } }
 		});
@@ -1080,8 +1062,8 @@ async ({ deep, require, data: { newLink: cancelledLink } }) => {
 
 	return cancelResult;
 };
-	const cancelledInsertHandlerString = replacePlaceholdersInHandlers(cancelledInsertHandler);
-	console.log({cancelledInsertHandlerString});
+`;
+	console.log({ cancelledInsertHandler });
 
 	const {
 		data: [{ id: cancelledInsertHandlerId }],
@@ -1124,29 +1106,29 @@ async ({ deep, require, data: { newLink: cancelledLink } }) => {
 		},
 		string: {
 			data: {
-				value: cancelledInsertHandlerString,
+				value: cancelledInsertHandler,
 			},
 		},
 	});
 
 	console.log({ cancelledInsertHandlerId });
 
-	const tinkoffNotificationHandler =  
+	const tinkoffNotificationHandler = /*javascript*/ `
 async (
   req,
   res,
   next,
   { deep, require, gql }
 ) => {
-  'PLACEHOLDER_handlersDependencies';
+  ${handlersDependencies}
 	const reqBody = req.body;
 	console.log({reqBody});
   const status = req.body.Status;
   console.log({status});
   if (status == 'AUTHORIZED') {
-		const confirm = 'PLACEHOLDER_confirm';
+		const confirm = ${confirm.toString()};
     const confirmOptions = {
-      TerminalKey: "'PLACEHOLDER_process.env.PAYMENT_TEST_TERMINAL_KEY'",
+      TerminalKey: "${process.env.PAYMENT_TEST_TERMINAL_KEY}",
       PaymentId: req.body.PaymentId,
       Amount: req.body.Amount,
       // Receipt: req.body.Receipt,
@@ -1155,16 +1137,16 @@ async (
     console.log({confirmResult});
   } else if (status == 'CONFIRMED') {
 		console.log({payQueryData});
-		const {data: [{id: payId}]} = await deep.select({value: req.body.OrderId, type_id: await deep.id("'PLACEHOLDER_packageName'", "Pay"), from_id: req.body.CustomerKey});
+		const {data: [{id: payId}]} = await deep.select({value: req.body.OrderId, type_id: await deep.id(${packageName}, "Pay"), from_id: req.body.CustomerKey});
     const payedInsertData = await deep.insert({
-      type_id: (await deep.id("'PLACEHOLDER_packageName'", "Payed")),
-			from_id: "'PLACEHOLDER_tinkoffProviderId'",
+      type_id: (await deep.id(${packageName}, "Payed")),
+			from_id: ${tinkoffProviderId},
       to_id: payId,
       in: {
         data: [
           {
-            type_id: await deep.id("'PLACEHOLDER_corePackageName'", 'Contain'),
-            from_id: "'PLACEHOLDER_deep.linkId'",
+            type_id: await deep.id(${corePackageName}, 'Contain'),
+            from_id: ${deep.linkId},
           },
         ],
       },
@@ -1173,8 +1155,8 @@ async (
   } 
   res.send('ok');
 };
-	const tinkoffNotificationHandlerString = replacePlaceholdersInHandlers(tinkoffNotificationHandler);
-	console.log({tinkoffNotificationHandlerString});
+`;
+	console.log({ tinkoffNotificationHandler });
 
 	await deep.insert(
 		{
@@ -1236,7 +1218,7 @@ async (
 																	type_id: SyncTextFile,
 																	string: {
 																		data: {
-																			value: tinkoffNotificationHandlerString,
+																			value: tinkoffNotificationHandler,
 																		},
 																	},
 																},
@@ -1335,7 +1317,7 @@ async (
 			console.log('deleteTestLinks-start');
 			const { data: testLinks } = await deep.select({
 				type_id: {
-					_in: [ PObject, PSum, PPay, PUrl, PPayed, PError, PCancelled ],
+					_in: { PObject, PSum, PPay, PUrl, PPayed, PError, PCancelled },
 				},
 			});
 			for (let i = 0; i < testLinks.length; i++) {
@@ -1378,8 +1360,6 @@ async (
 				const initResult = await init(initOptions);
 
 				expect(initResult.error).to.equal(undefined);
-
-				return initResult;
 			};
 
 			const testConfirm = async () => {
@@ -1409,7 +1389,8 @@ async (
 				};
 
 				const initResult = await init(initOptions);
-				console.log({initResult});
+
+				confirmDebug('initResult', initResult?.response?.Success);
 
 				await payInBrowser({
 					browser,
@@ -1423,12 +1404,10 @@ async (
 				};
 
 				const confirmResult = await confirm(confirmOptions);
-				console.log({confirmResult});
+				confirmDebug('confirm', confirmResult);
 
 				expect(confirmResult.error).to.equal(undefined);
 				expect(confirmResult.response.Status).to.equal('CONFIRMED');
-
-				return confirmResult;
 			};
 
 			const testCancel = async () => {
@@ -1582,10 +1561,17 @@ async (
 
 				const testCancelAfterPayAfterConfirmFullPrice = async () => {
 					console.log('testCancelAfterPayAfterConfirmFullPrice-start');
-					const confirmResult = await testConfirm();
+					await testConfirm();
 
-					const bankPaymentId = confirmResult.response.PaymentId;
-					console.log({bankPaymentId});
+					const {
+						data: [payLink],
+					} = await deep.select({
+						type_id: PPay,
+					});
+
+					const bankPaymentId = await getBankPaymentId(
+						payLink?.value?.value ?? payLink.id
+					);
 
 					const cancelOptions = {
 						TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
@@ -1604,10 +1590,17 @@ async (
 
 				const testCancelAfterPayAfterConfirmCustomPriceX2 = async () => {
 					console.log('testCancelAfterPayAfterConfirmCustomPriceX2-start');
-					const confirmResult = await testConfirm();
+					await testConfirm();
 
-					const bankPaymentId = confirmResult.response.PaymentId;
-					console.log({bankPaymentId});
+					const {
+						data: [payLink],
+					} = await deep.select({
+						type_id: PPay,
+					});
+
+					const bankPaymentId = await getBankPaymentId(
+						payLink?.value?.value ?? payLink.id
+					);
 
 					const cancelOptions = {
 						TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
@@ -1634,9 +1627,17 @@ async (
 
 				const testCancelBeforePay = async () => {
 					console.log('testCancelBeforePay-start');
-					const initResult = await testInit();
+					await testInit();
 
-					const bankPaymentId = initResult.response.PaymentId;
+					const {
+						data: [payLink],
+					} = await deep.select({
+						type_id: PPay,
+					});
+
+					const bankPaymentId = await getBankPaymentId(
+						payLink?.value?.value ?? payLink.id
+					);
 
 					const cancelOptions = {
 						TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
@@ -1697,7 +1698,7 @@ async (
 				const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
 				const page = await browser.newPage();
 
-				const initResult = await init({
+				const initResult = await sendInit({
 					TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
 					CustomerKey: uniqid(),
 					OrderId: uniqid(),
@@ -1713,11 +1714,10 @@ async (
 
 				const getCardListOptions = {
 					TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
-					CustomerKey: deep.linkId,
+					CustomerKey: uniqid(),
 				};
 
 				const getCardListResult = await getCardList(getCardListOptions);
-				console.log({ getCardListResult });
 
 				expect(getCardListResult.error).to.equal(undefined);
 			};
@@ -2116,7 +2116,9 @@ async (
 					data: [payLink],
 				} = await deep.select({ type_id: PPay });
 
-				const bankPaymentId = payLink.value.value.bankPaymentId;
+				const bankPaymentId = await getBankPaymentId(
+					payLink?.value?.value ?? payLink.id
+				);
 
 				const getStateOptions = {
 					TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
