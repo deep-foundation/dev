@@ -211,20 +211,20 @@ const f = async () => {
 		return _generateToken(dataWithPassword);
 	};
 
-	generateToken.toString = generateToken.toString()
-		.replace(
-			"PLACEHOLDER_process.env.PAYMENT_TEST_TERMINAL_PASSWORD",
-			process.env.PAYMENT_TEST_TERMINAL_PASSWORD
-		);
+	generateToken.toString = () => generateToken.toString()
+	.replace(
+		"PLACEHOLDER_process.env.PAYMENT_TEST_TERMINAL_PASSWORD",
+		process.env.PAYMENT_TEST_TERMINAL_PASSWORD
+	);
 	console.log({ generateToken });
 
 	const getUrl = (method) =>
 		`PLACEHOLDER_process.env.PAYMENT_EACQ_AND_TEST_URL/${method}`;
-	getUrl.toString = getUrl.toString()
-		.replace(
-			"PLACEHOLDER_process.env.PAYMENT_EACQ_AND_TEST_URL",
-			process.env.PAYMENT_EACQ_AND_TEST_URL
-		);
+	getUrl.toString = () => getUrl.toString()
+	.replace(
+		"PLACEHOLDER_process.env.PAYMENT_EACQ_AND_TEST_URL",
+		process.env.PAYMENT_EACQ_AND_TEST_URL
+	);
 	console.log({ getUrl });
 
 	const getMarketUrl = (method) =>
@@ -968,8 +968,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
   
 	return initResult;
 };
-	payInsertHandler.toString = 
-		payInsertHandler.toString()
+	payInsertHandler.toString = () => payInsertHandler.toString()
 		.replace(/PLACEHOLDER_.+?/g, (matched) => {
 			const placeholderName = matched.substring("PLACEHOLDER_".length);
 			return global[placeholderName]
@@ -1068,12 +1067,11 @@ async ({ deep, require, data: { newLink: cancelledLink } }) => {
 
 	return cancelResult;
 };
-	cancelledInsertHandler.toString =
-		cancelledInsertHandler.toString()
-		.replace(/PLACEHOLDER_.+?/g, (matched) => {
-			const placeholderName = matched.substring("PLACEHOLDER_".length);
-			return global[placeholderName]
-		});
+	cancelledInsertHandler.toString = () => cancelledInsertHandler.toString()
+	.replace(/PLACEHOLDER_.+?/g, (matched) => {
+		const placeholderName = matched.substring("PLACEHOLDER_".length);
+		return global[placeholderName]
+	});
 	console.log({ cancelledInsertHandler });
 
 	const {
@@ -1166,12 +1164,11 @@ async (
   } 
   res.send('ok');
 };
-	tinkoffNotificationHandler.toString =
-		tinkoffNotificationHandler.toString()
-		.replace(/PLACEHOLDER_.+?/g, (matched) => {
-			const placeholderName = matched.substring("PLACEHOLDER_".length);
-			return global[placeholderName]
-		})
+	tinkoffNotificationHandler.toString = () => tinkoffNotificationHandler.toString()
+	.replace(/PLACEHOLDER_.+?/g, (matched) => {
+		const placeholderName = matched.substring("PLACEHOLDER_".length);
+		return global[placeholderName]
+	});
 	console.log({ tinkoffNotificationHandler });
 
 	await deep.insert(
