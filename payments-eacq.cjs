@@ -888,9 +888,9 @@ const f = async () => {
   const axios = require('axios');
   const errorsConverter = ${JSON.stringify(errorsConverter)};
   const getError = ${getError.toString()};
-  const getUrl = ${getUrl.toString()};
+  const getUrl = ${getUrlString};
   const _generateToken = ${_generateToken.toString()};
-  const generateToken = ${generateToken.toString()};
+  const generateToken = ${generateTokenString};
 	`;
 	console.log({ handlersDependencies });
 
