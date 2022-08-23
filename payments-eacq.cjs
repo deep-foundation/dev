@@ -241,13 +241,6 @@ const f = async () => {
 
 			const error = getError(response.data.ErrorCode);
 
-			const d = {
-				error,
-				request: options,
-				response: response.data,
-			};
-			options?.log && options.log(d);
-
 			return {
 				error,
 				request: options,
@@ -302,13 +295,6 @@ const f = async () => {
 
 			const error = getError(response.data.ErrorCode || '0');
 
-			const d = {
-				error,
-				request: options,
-				response: response.data,
-			};
-			options?.log && options.log(d);
-
 			return {
 				error,
 				request: options,
@@ -336,14 +322,6 @@ const f = async () => {
 
 			const error = getError(response.data.ErrorCode);
 
-			const d = {
-				error,
-				request: options,
-				response: response.data,
-			};
-
-			options?.log && options.log(d);
-
 			return d;
 		} catch (error) {
 			return {
@@ -363,13 +341,6 @@ const f = async () => {
 			});
 
 			const error = getError(response.data.ErrorCode);
-
-			const d = {
-				error,
-				request: options,
-				response: response.data,
-			};
-			options?.log && options.log(d);
 
 			return {
 				error,
@@ -917,14 +888,6 @@ async ({ deep, require, data: { newLink: payLink } }) => {
 
       const error = getError(response.data.ErrorCode);
 
-      const d = {
-        error,
-        request: options,
-        response: response.data,
-      };
-
-      options?.log && options.log(d);
-
       return d;
     } catch (error) {
       return {
@@ -1216,12 +1179,6 @@ async (
 
       const error = getError(response.data.ErrorCode);
 
-      const d = {
-        error,
-        request: options,
-        response: response.data,
-      };
-
       return {
         error,
         request: options,
@@ -1364,13 +1321,6 @@ async (
 			});
 
 			const error = getError(response.data.ErrorCode);
-
-			const d = {
-				error,
-				request: options,
-				response: response.data,
-			};
-			options?.log && options.log(d);
 
 			return {
 				error,
