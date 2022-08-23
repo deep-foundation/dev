@@ -329,7 +329,7 @@ const f = async () => {
 			return {
 				error,
 				request: options,
-				response: response,
+				response: response.data,
 			};
 		} catch (error) {
 			return {
