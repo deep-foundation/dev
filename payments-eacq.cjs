@@ -1701,7 +1701,7 @@ async (
 				const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
 				const page = await browser.newPage();
 
-				const initResult = await sendInit({
+				const initResult = await init({
 					TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
 					CustomerKey: uniqid(),
 					OrderId: uniqid(),
