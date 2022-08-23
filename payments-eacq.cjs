@@ -15,6 +15,7 @@ const crypto = require('crypto');
 const axios = require('axios');
 const uniqid = require('uniqid');
 const { expect } = require('chai');
+const { get } = require('lodash');
 
 var myEnv = dotenv.config();
 dotenvExpand.expand(myEnv);
@@ -875,28 +876,7 @@ const f = async () => {
 	const payInsertHandler = /*javascript*/ `
 async ({ deep, require, data: { newLink: payLink } }) => {
 	${handlersDependencies}
-  const init = async (options) => {
-    try {
-      const response = await axios({
-        method: 'post',
-        url: getUrl('Init'),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        data: {...options, Token: generateToken(options)},
-      });
-
-      const error = getError(response.data.ErrorCode);
-
-      return d;
-    } catch (error) {
-      return {
-        error,
-        request: options,
-        response: null,
-      };
-    }
-  };
+  const init = ${init.toString()};
 
   const mpDownPay = await deep.select({
     down: {
@@ -1047,29 +1027,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
 	const cancelledInsertHandler = /*javascript*/ `
 async ({ deep, require, data: { newLink: cancelledLink } }) => {
   ${handlersDependencies}
-	const cancel = async (options) => {
-		try {
-			const response = await axios({
-				method: 'post',
-				url: getUrl('Cancel'),
-				data: {...options, Token: generateToken(options)},
-			});
-
-			const error = getError(response.data.ErrorCode);
-
-			return {
-				error,
-				request: options,
-				response: response.data,
-			};
-		} catch (error) {
-			return {
-				error,
-				request: options,
-				response: null,
-			};
-		}
-	};
+	const cancel = ${cancel.toString()};
 
 	const getPayLink = async (cancelledLink) => {
 		const toLink = await deep.select({
@@ -1169,41 +1127,18 @@ async (
   { deep, require, gql }
 ) => {
   ${handlersDependencies}
-  const confirm = async (options) => {
-    try {
-      const response = await axios({
-        method: 'post',
-        url: getUrl('Confirm'),
-        data: {...options, Token: generateToken(options)},
-      });
-
-      const error = getError(response.data.ErrorCode);
-
-      return {
-        error,
-        request: options,
-        response: response.data,
-      };
-    } catch (error) {
-      return {
-        error,
-        request: options,
-        response: null,
-      };
-    }
-  };
 	const reqBody = req.body;
 	console.log({reqBody});
   const status = req.body.Status;
   console.log({status});
   if (status == 'AUTHORIZED') {
+		const confirm = ${confirm.toString()};
     const confirmOptions = {
       TerminalKey: "${process.env.PAYMENT_TEST_TERMINAL_KEY}",
       PaymentId: req.body.PaymentId,
       Amount: req.body.Amount,
       // Receipt: req.body.Receipt,
     };
-
     const confirmResult = await confirm(confirmOptions);
     console.log({confirmResult});
   } else if (status == 'CONFIRMED') {
