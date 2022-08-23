@@ -1411,8 +1411,7 @@ async (
 				};
 
 				const initResult = await init(initOptions);
-
-				confirmDebug('initResult', initResult?.response?.Success);
+				console.log({initResult});
 
 				await payInBrowser({
 					browser,
@@ -1426,7 +1425,7 @@ async (
 				};
 
 				const confirmResult = await confirm(confirmOptions);
-				confirmDebug('confirm', confirmResult);
+				console.log({confirmResult});
 
 				expect(confirmResult.error).to.equal(undefined);
 				expect(confirmResult.response.Status).to.equal('CONFIRMED');
