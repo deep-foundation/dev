@@ -1717,10 +1717,11 @@ async (
 
 				const getCardListOptions = {
 					TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
-					CustomerKey: uniqid(),
+					CustomerKey: deep.linkId,
 				};
 
 				const getCardListResult = await getCardList(getCardListOptions);
+				console.log({ getCardListResult });
 
 				expect(getCardListResult.error).to.equal(undefined);
 			};
