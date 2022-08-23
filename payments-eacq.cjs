@@ -24,7 +24,7 @@ const corePackageName = '@deep-foundation/core';
 const basePackageName = '@deep-foundation/payments';
 const packageName = '@deep-foundation/payments-eacq';
 
-const PRICE = PRICE;
+const PRICE = 5500;
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
