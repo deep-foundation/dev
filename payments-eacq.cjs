@@ -187,8 +187,12 @@ const f = async () => {
 		9999: 'Внутренняя ошибка системы',
 	};
 
+	const errorsConverterString = JSON.stringify(errorsConverter);
+
 	const getError = (errorCode) =>
 		errorCode === '0' ? undefined : errorsConverter[errorCode] || 'broken';
+
+	const getErrorString = getError.toString();
 
 	const _generateToken = (dataWithPassword) => {
 		const dataString = Object.keys(dataWithPassword)
@@ -201,6 +205,8 @@ const f = async () => {
 		return hash;
 	};
 
+	const _generateTokenString = _generateToken.toString();
+
 	const generateToken = (data) => {
 		const { Receipt, DATA, Shops, ...restData } = data;
 		const dataWithPassword = {
@@ -211,9 +217,8 @@ const f = async () => {
 		return _generateToken(dataWithPassword);
 	};
 
-	const generateTokenString = generateToken.toString();
-	generateToken.toString = () => generateTokenString
-	.replace(
+	const generateTokenString = generateToken.toString()
+		.replace(
 		"PLACEHOLDER_process.env.PAYMENT_TEST_TERMINAL_PASSWORD",
 		process.env.PAYMENT_TEST_TERMINAL_PASSWORD
 	);
@@ -221,9 +226,8 @@ const f = async () => {
 
 	const getUrl = (method) =>
 		`PLACEHOLDER_process.env.PAYMENT_EACQ_AND_TEST_URL/${method}`;
-	const getUrlString = getUrl.toString();
-	getUrl.toString = () => getUrlString
-	.replace(
+	const getUrlString = getUrl.toString()
+		.replace(
 		"PLACEHOLDER_process.env.PAYMENT_EACQ_AND_TEST_URL",
 		process.env.PAYMENT_EACQ_AND_TEST_URL
 	);
@@ -865,11 +869,11 @@ const f = async () => {
 	const handlersDependencies = `
 	const crypto = require('crypto');
   const axios = require('axios');
-  const errorsConverter = ${JSON.stringify(errorsConverter)};
-  const getError = ${getError.toString()};
-  const getUrl = ${getUrl.toString()};
-  const _generateToken = ${_generateToken.toString()};
-  const generateToken = ${generateToken.toString()}
+  const errorsConverter = ${errorsConverterString};
+  const getError = ${getErrorString};
+  const getUrl = ${getUrlString};
+  const _generateToken = ${_generateTokenString};
+  const generateToken = ${generateTokenString}
 	`;
 	console.log({ handlersDependencies });
 
@@ -970,13 +974,12 @@ async ({ deep, require, data: { newLink: payLink } }) => {
   
 	return initResult;
 };
-	const payInsertHandlerString = payInsertHandler.toString();
-	payInsertHandler.toString = () => payInsertHandlerString
-		.replace(/PLACEHOLDER_.+?/g, (matched) => {
+	const payInsertHandlerString = payInsertHandler.toString()
+			.replace(/PLACEHOLDER_.+?/g, (matched) => {
 			const placeholderName = matched.substring("PLACEHOLDER_".length);
 			return global[placeholderName]
 		});
-	console.log({ payInsertHandler });
+	console.log("payInsertHandler", payInsertHandler);
 
 	const {
 		data: [{ id: payInsertHandlerId }],
@@ -1019,7 +1022,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
 		},
 		string: {
 			data: {
-				value: payInsertHandler,
+				value: payInsertHandlerString,
 			},
 		},
 	});
@@ -1070,13 +1073,12 @@ async ({ deep, require, data: { newLink: cancelledLink } }) => {
 
 	return cancelResult;
 };
-	const cancelledInsertHandlerString = cancelledInsertHandler.toString();
-	cancelledInsertHandler.toString = () => cancelledInsertHandlerString
-	.replace(/PLACEHOLDER_.+?/g, (matched) => {
+	const cancelledInsertHandlerString = cancelledInsertHandler.toString()
+		.replace(/PLACEHOLDER_.+?/g, (matched) => {
 		const placeholderName = matched.substring("PLACEHOLDER_".length);
 		return global[placeholderName]
 	});
-	console.log({ cancelledInsertHandler });
+	console.log("cancelledInsertHandler", cancelledInsertHandler);
 
 	const {
 		data: [{ id: cancelledInsertHandlerId }],
@@ -1119,7 +1121,7 @@ async ({ deep, require, data: { newLink: cancelledLink } }) => {
 		},
 		string: {
 			data: {
-				value: cancelledInsertHandler,
+				value: cancelledInsertHandlerString,
 			},
 		},
 	});
@@ -1168,13 +1170,12 @@ async (
   } 
   res.send('ok');
 };
-	const tinkoffNotificationHandlerString = tinkoffNotificationHandler.toString();
-	tinkoffNotificationHandler.toString = () => tinkoffNotificationHandlerString
-	.replace(/PLACEHOLDER_.+?/g, (matched) => {
+	const tinkoffNotificationHandlerString = tinkoffNotificationHandler.toString()
+		.replace(/PLACEHOLDER_.+?/g, (matched) => {
 		const placeholderName = matched.substring("PLACEHOLDER_".length);
 		return global[placeholderName]
 	});
-	console.log({ tinkoffNotificationHandler });
+	console.log("tinkoffNotificationHandler", tinkoffNotificationHandler);
 
 	await deep.insert(
 		{
@@ -1236,7 +1237,7 @@ async (
 																	type_id: SyncTextFile,
 																	string: {
 																		data: {
-																			value: tinkoffNotificationHandler,
+																			value: tinkoffNotificationHandlerString,
 																		},
 																	},
 																},
