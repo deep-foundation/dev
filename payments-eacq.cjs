@@ -890,7 +890,8 @@ const f = async () => {
   const getUrl = ${getUrlString};
   const _generateToken = ${_generateToken.toString()};
   const generateToken = ${generateTokenString};
-	`
+	`;
+	console.log({handlersDependencies});
 
 	const payInsertHandler = /*javascript*/ `
 async ({ deep, require, data: { newLink: payLink } }) => {
@@ -1022,6 +1023,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
 	return initResult;
 };
 `;
+console.log({payInsertHandler});
 
 	const {
 		data: [{ id: payInsertHandlerId }],
@@ -1138,6 +1140,7 @@ async ({ deep, require, data: { newLink: cancelledLink } }) => {
 	return cancelResult;
 };
 `;
+console.log({cancelledInsertHandler});
 
 	const {
 		data: [{ id: cancelledInsertHandlerId }],
@@ -1259,6 +1262,7 @@ async (
   res.send('ok');
 };
 `;
+console.log({tinkoffNotificationHandler});
 
 	await deep.insert(
 		{
