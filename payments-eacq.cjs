@@ -19,7 +19,8 @@ const { expect } = require('chai');
 var myEnv = dotenv.config();
 dotenvExpand.expand(myEnv);
 
-const basePackageName = basePackageName;
+const corePackageName = '@deep-foundation/core';
+const basePackageName = '@deep-foundation/payments';
 const packageName = '@deep-foundation/payments-eacq';
 
 const PRICE = PRICE;
@@ -540,63 +541,63 @@ const f = async () => {
 	});
 	const deep = new DeepClient({ deep: guestDeep, ...admin });
 
-	const User = await deep.id('@deep-foundation/core', 'User');
-	const Type = await deep.id('@deep-foundation/core', 'Type');
-	const Any = await deep.id('@deep-foundation/core', 'Any');
-	const Join = await deep.id('@deep-foundation/core', 'Join');
-	const Contain = await deep.id('@deep-foundation/core', 'Contain');
-	const Value = await deep.id('@deep-foundation/core', 'Value');
-	const String = await deep.id('@deep-foundation/core', 'String');
-	const Package = await deep.id('@deep-foundation/core', 'Package');
+	const User = await deep.id(corePackageName, 'User');
+	const Type = await deep.id(corePackageName, 'Type');
+	const Any = await deep.id(corePackageName, 'Any');
+	const Join = await deep.id(corePackageName, 'Join');
+	const Contain = await deep.id(corePackageName, 'Contain');
+	const Value = await deep.id(corePackageName, 'Value');
+	const String = await deep.id(corePackageName, 'String');
+	const Package = await deep.id(corePackageName, 'Package');
 
-	const SyncTextFile = await deep.id('@deep-foundation/core', 'SyncTextFile');
+	const SyncTextFile = await deep.id(corePackageName, 'SyncTextFile');
 	const dockerSupportsJs = await deep.id(
-		'@deep-foundation/core',
+		corePackageName,
 		'dockerSupportsJs'
 	);
-	const Handler = await deep.id('@deep-foundation/core', 'Handler');
-	const HandleInsert = await deep.id('@deep-foundation/core', 'HandleInsert');
-	const HandleDelete = await deep.id('@deep-foundation/core', 'HandleDelete');
+	const Handler = await deep.id(corePackageName, 'Handler');
+	const HandleInsert = await deep.id(corePackageName, 'HandleInsert');
+	const HandleDelete = await deep.id(corePackageName, 'HandleDelete');
 
-	const Tree = await deep.id('@deep-foundation/core', 'Tree');
+	const Tree = await deep.id(corePackageName, 'Tree');
 	const TreeIncludeNode = await deep.id(
-		'@deep-foundation/core',
+		corePackageName,
 		'TreeIncludeNode'
 	);
-	const TreeIncludeUp = await deep.id('@deep-foundation/core', 'TreeIncludeUp');
+	const TreeIncludeUp = await deep.id(corePackageName, 'TreeIncludeUp');
 	const TreeIncludeDown = await deep.id(
-		'@deep-foundation/core',
+		corePackageName,
 		'TreeIncludeDown'
 	);
 
-	const Rule = await deep.id('@deep-foundation/core', 'Rule');
-	const RuleSubject = await deep.id('@deep-foundation/core', 'RuleSubject');
-	const RuleObject = await deep.id('@deep-foundation/core', 'RuleObject');
-	const RuleAction = await deep.id('@deep-foundation/core', 'RuleAction');
-	const Selector = await deep.id('@deep-foundation/core', 'Selector');
+	const Rule = await deep.id(corePackageName, 'Rule');
+	const RuleSubject = await deep.id(corePackageName, 'RuleSubject');
+	const RuleObject = await deep.id(corePackageName, 'RuleObject');
+	const RuleAction = await deep.id(corePackageName, 'RuleAction');
+	const Selector = await deep.id(corePackageName, 'Selector');
 	const SelectorInclude = await deep.id(
-		'@deep-foundation/core',
+		corePackageName,
 		'SelectorInclude'
 	);
 	const SelectorExclude = await deep.id(
-		'@deep-foundation/core',
+		corePackageName,
 		'SelectorExclude'
 	);
-	const SelectorTree = await deep.id('@deep-foundation/core', 'SelectorTree');
-	const containTree = await deep.id('@deep-foundation/core', 'containTree');
+	const SelectorTree = await deep.id(corePackageName, 'SelectorTree');
+	const containTree = await deep.id(corePackageName, 'containTree');
 	const AllowInsertType = await deep.id(
-		'@deep-foundation/core',
+		corePackageName,
 		'AllowInsertType'
 	);
 	const AllowDeleteType = await deep.id(
-		'@deep-foundation/core',
+		corePackageName,
 		'AllowDeleteType'
 	);
 	const SelectorFilter = await deep.id(
-		'@deep-foundation/core',
+		corePackageName,
 		'SelectorFilter'
 	);
-	const Query = await deep.id('@deep-foundation/core', 'Query');
+	const Query = await deep.id(corePackageName, 'Query');
 	const usersId = await deep.id('deep', 'users');
 
 	const BasePayment = await deep.id(basePackageName, 'Payment');
@@ -997,7 +998,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
       in: {
         data: [
           {
-            type_id: await deep.id('@deep-foundation/core', 'Contain'),
+            type_id: await deep.id(${corePackageName}, 'Contain'),
             from_id: ${deep.linkId},
           },
         ],
@@ -1017,7 +1018,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
 		in: {
 			data: [
 				{
-					type_id: await deep.id('@deep-foundation/core', 'Contain'),
+					type_id: await deep.id(${corePackageName}, 'Contain'),
 					from_id: ${deep.linkId},
 				},
 			],
@@ -1258,7 +1259,7 @@ async (
       in: {
         data: [
           {
-            type_id: await deep.id('@deep-foundation/core', 'Contain'),
+            type_id: await deep.id(${corePackageName}, 'Contain'),
             from_id: ${deep.linkId},
           },
         ],
@@ -1273,20 +1274,20 @@ async (
 
 	await deep.insert(
 		{
-			type_id: await deep.id('@deep-foundation/core', 'Port'),
+			type_id: await deep.id(corePackageName, 'Port'),
 			number: {
 				data: { value: process.env.PAYMENT_EACQ_AND_TEST_NOTIFICATION_PORT },
 			},
 			in: {
 				data: {
-					type_id: await deep.id('@deep-foundation/core', 'RouterListening'),
+					type_id: await deep.id(corePackageName, 'RouterListening'),
 					from: {
 						data: {
-							type_id: await deep.id('@deep-foundation/core', 'Router'),
+							type_id: await deep.id(corePackageName, 'Router'),
 							in: {
 								data: {
 									type_id: await deep.id(
-										'@deep-foundation/core',
+										corePackageName,
 										'RouterStringUse'
 									),
 									string: {
@@ -1297,21 +1298,21 @@ async (
 									},
 									from: {
 										data: {
-											type_id: await deep.id('@deep-foundation/core', 'Route'),
+											type_id: await deep.id(corePackageName, 'Route'),
 											out: {
 												data: {
 													type_id: await deep.id(
-														'@deep-foundation/core',
+														corePackageName,
 														'HandleRoute'
 													),
 													to: {
 														data: {
 															type_id: await deep.id(
-																'@deep-foundation/core',
+																corePackageName,
 																'Handler'
 															),
 															from_id: await deep.id(
-																'@deep-foundation/core',
+																corePackageName,
 																'dockerSupportsJs'
 															),
 															in: {
@@ -1396,8 +1397,8 @@ async (
 		const PError = await deep.id(packageName, 'Error');
 		const PCancelled = await deep.id(packageName, 'Cancelled');
 		const paymentTreeId = await deep.id(packageName, 'paymentTree');
-		const Type = await deep.id('@deep-foundation/core', 'Type');
-		const Any = await deep.id('@deep-foundation/core', 'Any');
+		const Type = await deep.id(corePackageName, 'Type');
+		const Any = await deep.id(corePackageName, 'Any');
 
 		const {
 			data: [{ id: Product }],
