@@ -1588,7 +1588,7 @@ async (
 					console.log('testCancelAfterPayAfterConfirmFullPrice-start');
 					const confirmResult = await testConfirm();
 
-					const bankPaymentId = confirmResult.response.PaymendId;
+					const bankPaymentId = confirmResult.response.PaymentId;
 					console.log({bankPaymentId});
 
 					const cancelOptions = {
@@ -1610,7 +1610,7 @@ async (
 					console.log('testCancelAfterPayAfterConfirmCustomPriceX2-start');
 					const confirmResult = await testConfirm();
 
-					const bankPaymentId = confirmResult.response.PaymendId;
+					const bankPaymentId = confirmResult.response.PaymentId;
 					console.log({bankPaymentId});
 
 					const cancelOptions = {
