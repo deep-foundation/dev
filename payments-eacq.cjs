@@ -1339,7 +1339,7 @@ async (
 			console.log('deleteTestLinks-start');
 			const { data: testLinks } = await deep.select({
 				type_id: {
-					_in: { PObject, PSum, PPay, PUrl, PPayed, PError, PCancelled },
+					_in: [ PObject, PSum, PPay, PUrl, PPayed, PError, PCancelled ],
 				},
 			});
 			for (let i = 0; i < testLinks.length; i++) {
