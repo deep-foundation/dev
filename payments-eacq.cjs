@@ -1909,7 +1909,7 @@ async (
 					type_id: PPay,
 					from_id: deep.linkId,
 					to_id: sumId,
-					string: { data: { value: uniqid() } },
+					object: { data: { value: {orderId: uniqid()} } },
 					in: {
 						data: [
 							{
