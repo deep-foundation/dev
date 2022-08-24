@@ -1053,7 +1053,7 @@ async ({ deep, require, data: { newLink: cancelledLink } }) => {
 	const getPayLink = async (cancelledLink) => {
     console.log("getPayLink-start");
     console.log({cancelledLink});
-		const toLink = await deep.select({
+		const {data: [toLink]} = await deep.select({
 			id: cancelledLink.to_id
 		});
     console.log({toLink});
