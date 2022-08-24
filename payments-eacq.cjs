@@ -1766,14 +1766,12 @@ async (
 				console.log('testCharge-end');
 			};
 
-			const customerKey = uniqid();
-
 			const testAddCustomer = async () => {
 				console.log('testAddCustomer-start');
 
 				const addCustomerOptions = {
 					TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
-					CustomerKey: customerKey,
+					CustomerKey: uniqid(),
 				};
 				console.log({addCustomerOptions});
 
@@ -1789,7 +1787,7 @@ async (
 
 				const customerOptions = {
 					TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
-					CustomerKey: customerKey,
+					CustomerKey: uniqid(),
 				};
 
 				const addCustomerDataOptions = {
@@ -1816,7 +1814,7 @@ async (
 
 				const removeCustomerData = {
 					TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
-					CustomerKey: customerKey,
+					CustomerKey: uniqid(),
 				};
 
 				const newAddCustomerData = {
