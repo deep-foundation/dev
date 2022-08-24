@@ -1051,22 +1051,25 @@ async ({ deep, require, data: { newLink: cancelledLink } }) => {
 	const cancel = ${cancel.toString()};
 
 	const getPayLink = async (cancelledLink) => {
+    console.log("getPayLink-start");
+    console.log({cancelledLink});
 		const toLink = await deep.select({
 			id: cancelledLink.to_id
 		});
-		if(toLink.type_id === (await deep.id("${packageName}", "Pay"))) {
-			return toLink;
+    console.log({toLink});
+    var result;
+		if(toLink.type_id === (await deep.id("@deep-foundation/payments-eacq", "Pay"))) {
+			result = toLink;
 		} 
-		if (toLink.type_id === (await deep.id("${packageName}", "Payed"))) {
-			return await deep.select({
+		if (toLink.type_id === (await deep.id("@deep-foundation/payments-eacq", "Payed"))) {
+			result = await deep.select({
 				id: toLink.to_id
 			});
-		} 
-	}
-
-	const toLink = await deep.select({
-		id: cancelledLink.to_id
-	});
+		}
+    console.log({result});
+    console.log("getPayLink-end");
+    return result;
+	};
 
 	const bankPaymentId = (await getPayLink(cancelledLink)).value.value.bankPaymentId;
 
