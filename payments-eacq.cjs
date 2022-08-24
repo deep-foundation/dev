@@ -906,12 +906,12 @@ async ({ deep, require, data: { newLink: payLink } }) => {
   const mpDownPay = await deep.select({
     down: {
       link_id: { _eq: payLink.id },
-      tree_id: { _eq: await deep.id(${packageName}, "paymentTree") },
+      tree_id: { _eq: await deep.id("${packageName}", "paymentTree") },
     },
   });
   console.log({mpDownPay});
 
-  const sum = mpDownPay.data.find(link => link.type_id == (await deep.id(${packageName}, "Sum"))).value.value; 
+  const sum = mpDownPay.data.find(link => link.type_id == (await deep.id("${packageName}", "Sum"))).value.value; 
   console.log({sum});
 
   const options = {
@@ -955,14 +955,14 @@ async ({ deep, require, data: { newLink: payLink } }) => {
     const {
       data: [{ id: error }],
     } = await deep.insert({
-      type_id: (await deep.id(${packageName}, "Error")),
+      type_id: (await deep.id("${packageName}", "Error")),
       from_id: ${tinkoffProviderId},
       to_id: payLink.id,
       string: { data: { value: initResult.error } },
       in: {
         data: [
           {
-            type_id: await deep.id(${corePackageName}, 'Contain'),
+            type_id: await deep.id("${corePackageName}", 'Contain'),
             from_id: ${deep.linkId},
           },
         ],
@@ -975,14 +975,14 @@ async ({ deep, require, data: { newLink: payLink } }) => {
 	const {
 		data: [{ id: urlId }],
 	} = await deep.insert({
-		type_id: (await deep.id(${packageName}, "Url")),
+		type_id: (await deep.id("${packageName}", "Url")),
 		from_id: ${tinkoffProviderId},
 		to_id: payLink.id,
 		string: { data: { value: initResult.response.PaymentURL } },
 		in: {
 			data: [
 				{
-					type_id: await deep.id(${corePackageName}, 'Contain'),
+					type_id: await deep.id("${corePackageName}", 'Contain'),
 					from_id: ${deep.linkId},
 				},
 			],
@@ -1054,10 +1054,10 @@ async ({ deep, require, data: { newLink: cancelledLink } }) => {
 		const toLink = await deep.select({
 			id: cancelledLink.to_id
 		});
-		if(toLink.type_id === (await deep.id(${packageName}, "Pay"))) {
+		if(toLink.type_id === (await deep.id("${packageName}", "Pay"))) {
 			return toLink;
 		} 
-		if (toLink.type_id === (await deep.id(${packageName}, "Payed"))) {
+		if (toLink.type_id === (await deep.id("${packageName}", "Payed"))) {
 			return await deep.select({
 				id: toLink.to_id
 			});
@@ -1080,7 +1080,7 @@ async ({ deep, require, data: { newLink: cancelledLink } }) => {
 
 	if(cancelResult.error) {
 		await deep.insert({
-			type_id: (await deep.id(${packageName}, "Error")),
+			type_id: (await deep.id("${packageName}", "Error")),
 			from_id: ${tinkoffProviderId},
 			to_id: cancelledLink.id,
 			string: { data: {value: cancelResult.error } }
@@ -1164,15 +1164,15 @@ async (
     console.log({confirmResult});
   } else if (status == 'CONFIRMED') {
 		console.log({payQueryData});
-		const {data: [{id: payId}]} = await deep.select({value: req.body.OrderId, type_id: await deep.id(${packageName}, "Pay"), from_id: req.body.CustomerKey});
+		const {data: [{id: payId}]} = await deep.select({value: req.body.OrderId, type_id: await deep.id("${packageName}", "Pay"), from_id: req.body.CustomerKey});
     const payedInsertData = await deep.insert({
-      type_id: (await deep.id(${packageName}, "Payed")),
+      type_id: (await deep.id("${packageName}", "Payed")),
 			from_id: ${tinkoffProviderId},
       to_id: payId,
       in: {
         data: [
           {
-            type_id: await deep.id(${corePackageName}, 'Contain'),
+            type_id: await deep.id("${corePackageName}", 'Contain'),
             from_id: ${deep.linkId},
           },
         ],
