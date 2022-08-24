@@ -1654,15 +1654,10 @@ async (
 					console.log('testCancelBeforePay-end');
 				};
 				await testCancelAfterPayBeforeConfirmFullPrice();
-				await deleteTestLinks();
 				await testCancelAfterPayBeforeConfirmCustomPriceX2();
-				await deleteTestLinks();
 				await testCancelAfterPayAfterConfirmFullPrice();
-				await deleteTestLinks();
 				await testCancelAfterPayAfterConfirmCustomPriceX2();
-				await deleteTestLinks();
 				await testCancelBeforePay();
-				await deleteTestLinks();
 
 				console.log('testCancel-end');
 			};
