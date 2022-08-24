@@ -1773,19 +1773,23 @@ async (
 					TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
 					CustomerKey: deep.linkId,
 				};
+				console.log({addCustomerOptions});
 
 				const addCustomerResult = await addCustomer(addCustomerOptions);
+				console.log({addCustomerResult});
 
 				expect(addCustomerResult.error).to.equal(undefined);
 				console.log('testAddCustomer-end');
 			};
+
+			const customerKey = uniqid();
 
 			const testGetCustomer = async () => {
 				console.log('testGetCustomer-start');
 
 				const customerOptions = {
 					TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
-					CustomerKey: deep.linkId,
+					CustomerKey: customerKey,
 				};
 
 				const addCustomerDataOptions = {
@@ -1812,7 +1816,7 @@ async (
 
 				const removeCustomerData = {
 					TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
-					CustomerKey: deep.linkId,
+					CustomerKey: customerKey,
 				};
 
 				const newAddCustomerData = {
