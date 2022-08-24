@@ -213,7 +213,7 @@ const f = async () => {
 	const generateTokenString = generateToken.toString()
 		.replace(
 			'process.env.PAYMENT_TEST_TERMINAL_PASSWORD',
-			process.env.PAYMENT_TEST_TERMINAL_PASSWORD
+			`"${process.env.PAYMENT_TEST_TERMINAL_PASSWORD}"`
 		);
 	console.log({ generateTokenString });
 
