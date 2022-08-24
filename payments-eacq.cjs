@@ -1766,12 +1766,14 @@ async (
 				console.log('testCharge-end');
 			};
 
+			const customerKey = uniqid();
+
 			const testAddCustomer = async () => {
 				console.log('testAddCustomer-start');
 
 				const addCustomerOptions = {
 					TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
-					CustomerKey: deep.linkId,
+					CustomerKey: customerKey,
 				};
 				console.log({addCustomerOptions});
 
@@ -1781,8 +1783,6 @@ async (
 				expect(addCustomerResult.error).to.equal(undefined);
 				console.log('testAddCustomer-end');
 			};
-
-			const customerKey = uniqid();
 
 			const testGetCustomer = async () => {
 				console.log('testGetCustomer-start');
