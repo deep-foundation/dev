@@ -1118,7 +1118,7 @@ async ({ deep, require, data: { newLink: cancelledLink } }) => {
 							},
 							{
 								type_id: HandleInsert,
-								from_id: PPay,
+								from_id: PCancelled,
 								in: {
 									data: [
 										{
