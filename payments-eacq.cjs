@@ -205,23 +205,23 @@ const f = async () => {
 		const { Receipt, DATA, Shops, ...restData } = data;
 		const dataWithPassword = {
 			...restData,
-			Password: "PLACEHOLDER_process.env.PAYMENT_TEST_TERMINAL_PASSWORD",
+			Password: process.env.PAYMENT_TEST_TERMINAL_PASSWORD,
 		};
 		console.log({ dataWithPassword });
 		return _generateToken(dataWithPassword);
 	};
 	const generateTokenString = generateToken.toString()
 		.replace(
-			'PLACEHOLDER_process.env.PAYMENT_TEST_TERMINAL_PASSWORD',
+			'process.env.PAYMENT_TEST_TERMINAL_PASSWORD',
 			process.env.PAYMENT_TEST_TERMINAL_PASSWORD
 		);
 	console.log({ generateTokenString });
 
 	const getUrl = (method) =>
-		`PLACEHOLDER_process.env.PAYMENT_EACQ_AND_TEST_URL/${method}`;
+		`${process.env.PAYMENT_EACQ_AND_TEST_URL}/${method}`;
 	getUrlString = getUrl.toString()
 		.replace(
-			'PLACEHOLDER_process.env.PAYMENT_EACQ_AND_TEST_URL',
+			'${process.env.PAYMENT_EACQ_AND_TEST_URL}',
 			process.env.PAYMENT_EACQ_AND_TEST_URL
 		);
 	console.log({ getUrlString });
@@ -320,7 +320,11 @@ const f = async () => {
 
 			const error = getError(response.data.ErrorCode);
 
-			return d;
+			return {
+				error,
+				request: options,
+				response: response.data,
+			};
 		} catch (error) {
 			return {
 				error,
@@ -1389,8 +1393,6 @@ async (
 
 				const initResult = await init(initOptions);
 
-				confirmDebug('initResult', initResult?.response?.Success);
-
 				await payInBrowser({
 					browser,
 					page,
@@ -1403,7 +1405,6 @@ async (
 				};
 
 				const confirmResult = await confirm(confirmOptions);
-				confirmDebug('confirm', confirmResult);
 
 				expect(confirmResult.error).to.equal(undefined);
 				expect(confirmResult.response.Status).to.equal('CONFIRMED');
