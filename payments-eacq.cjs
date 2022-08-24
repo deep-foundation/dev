@@ -1337,7 +1337,7 @@ async (
 					OrderId: uniqid(),
 					Amount: PRICE,
 					Description: 'Test shopping',
-					CustomerKey: uniqid(),
+					CustomerKey: deep.linkId,
 					Language: 'ru',
 					Recurrent: 'Y',
 					DATA: {
@@ -1375,7 +1375,7 @@ async (
 					TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
 					Amount: PRICE,
 					OrderId: uniqid(),
-					CustomerKey: uniqid(),
+					CustomerKey: deep.linkId,
 					PayType: 'T',
 					// Receipt: {
 					// 	Items: [{
@@ -1646,7 +1646,7 @@ async (
 				const initResult = await init({
 					TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
 					OrderId: uniqid(),
-					CustomerKey: uniqid(),
+					CustomerKey: deep.linkId,
 					Amount: PRICE,
 				});
 
@@ -1672,7 +1672,7 @@ async (
 			const testGetCardList = async () => {
 				const initResult = await init({
 					TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
-					CustomerKey: uniqid(),
+					CustomerKey: deep.linkId,
 					OrderId: uniqid(),
 					Amount: PRICE,
 					Recurrent: 'Y',
@@ -1688,7 +1688,7 @@ async (
 
 				const getCardListOptions = {
 					TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
-					CustomerKey: uniqid(),
+					CustomerKey: deep.linkId,
 				};
 
 				const getCardListResult = await getCardList(getCardListOptions);
@@ -1771,7 +1771,7 @@ async (
 
 				const addCustomerOptions = {
 					TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
-					CustomerKey: uniqid(),
+					CustomerKey: deep.linkId,
 				};
 
 				const addCustomerResult = await addCustomer(addCustomerOptions);
@@ -1785,7 +1785,7 @@ async (
 
 				const customerOptions = {
 					TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
-					CustomerKey: uniqid(),
+					CustomerKey: deep.linkId,
 				};
 
 				const addCustomerDataOptions = {
@@ -1812,7 +1812,7 @@ async (
 
 				const removeCustomerData = {
 					TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
-					CustomerKey: uniqid(),
+					CustomerKey: deep.linkId,
 				};
 
 				const newAddCustomerData = {
