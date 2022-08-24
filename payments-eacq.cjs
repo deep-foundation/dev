@@ -990,7 +990,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
 	});
 	console.log({ urlId });
 
-	await deep.update(payLink.id, {value: {...payLink.value.value, bankPaymentId: initResult.response.PaymentId}})
+	await deep.update(payLink.id, {object: {data: {value: {...payLink.value.value, bankPaymentId: initResult.response.PaymentId}}}});
   
 	return initResult;
 };
