@@ -1670,7 +1670,7 @@ async (
 			};
 
 			const testGetCardList = async () => {
-				const initResult = await sendInit({
+				const initResult = await init({
 					TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
 					CustomerKey: uniqid(),
 					OrderId: uniqid(),
