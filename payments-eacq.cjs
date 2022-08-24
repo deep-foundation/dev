@@ -1363,6 +1363,8 @@ async (
 				const initResult = await init(initOptions);
 
 				expect(initResult.error).to.equal(undefined);
+
+				return initResult;
 			};
 
 			const testConfirm = async () => {
@@ -1408,6 +1410,8 @@ async (
 
 				expect(confirmResult.error).to.equal(undefined);
 				expect(confirmResult.response.Status).to.equal('CONFIRMED');
+
+				return confirmResult;
 			};
 
 			const testCancel = async () => {
@@ -1561,17 +1565,9 @@ async (
 
 				const testCancelAfterPayAfterConfirmFullPrice = async () => {
 					console.log('testCancelAfterPayAfterConfirmFullPrice-start');
-					await testConfirm();
+					const confirmResult = await testConfirm();
 
-					const {
-						data: [payLink],
-					} = await deep.select({
-						type_id: PPay,
-					});
-
-					const bankPaymentId = await getBankPaymentId(
-						payLink?.value?.value ?? payLink.id
-					);
+					const bankPaymentId = confirmResult.response.PaymentId;
 
 					const cancelOptions = {
 						TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
@@ -1590,17 +1586,9 @@ async (
 
 				const testCancelAfterPayAfterConfirmCustomPriceX2 = async () => {
 					console.log('testCancelAfterPayAfterConfirmCustomPriceX2-start');
-					await testConfirm();
+					const confirmResult = await testConfirm();
 
-					const {
-						data: [payLink],
-					} = await deep.select({
-						type_id: PPay,
-					});
-
-					const bankPaymentId = await getBankPaymentId(
-						payLink?.value?.value ?? payLink.id
-					);
+					const bankPaymentId = confirmResult.response.PaymentId;;
 
 					const cancelOptions = {
 						TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
@@ -1627,17 +1615,9 @@ async (
 
 				const testCancelBeforePay = async () => {
 					console.log('testCancelBeforePay-start');
-					await testInit();
+					const initResult = await testInit();
 
-					const {
-						data: [payLink],
-					} = await deep.select({
-						type_id: PPay,
-					});
-
-					const bankPaymentId = await getBankPaymentId(
-						payLink?.value?.value ?? payLink.id
-					);
+					const bankPaymentId = initResult.response.PaymentId;;
 
 					const cancelOptions = {
 						TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
@@ -1663,9 +1643,6 @@ async (
 			};
 
 			const testGetState = async () => {
-				const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
-				const page = await browser.newPage();
-
 				const initResult = await init({
 					TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
 					OrderId: uniqid(),
@@ -1673,6 +1650,9 @@ async (
 					Amount: PRICE,
 				});
 
+
+				const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
+				const page = await browser.newPage();
 				await payInBrowser({
 					browser,
 					page,
@@ -1690,9 +1670,6 @@ async (
 			};
 
 			const testGetCardList = async () => {
-				const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
-				const page = await browser.newPage();
-
 				const initResult = await sendInit({
 					TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
 					CustomerKey: uniqid(),
@@ -1701,6 +1678,8 @@ async (
 					Recurrent: 'Y',
 				});
 
+				const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
+				const page = await browser.newPage();
 				await payInBrowser({
 					browser,
 					page,
