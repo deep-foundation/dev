@@ -959,7 +959,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
       type_id: (await deep.id("${packageName}", "Error")),
       from_id: ${tinkoffProviderId},
       to_id: payLink.id,
-      string: { data: { value: initResult.error } },
+      string: { data: { value: "Could not initialize the order. " + initResult.error } },
       in: {
         data: [
           {
@@ -991,7 +991,25 @@ async ({ deep, require, data: { newLink: payLink } }) => {
 	});
 	console.log({ urlId });
 
-	await deep.update(payLink.id, {object: {data: {value: {...payLink.value.value, bankPaymentId: initResult.response.PaymentId}}}});
+	const payLinkUpdateQuery = await deep.update(payLink.id, {object: {data: {value: {...payLink.value.value, bankPaymentId: initResult.response.PaymentId}}}});
+	if (payLinkUpdateQuery.error) {
+    console.log('payLinkUpdateQuery.error:', payLinkUpdateQuery.error);
+    const {
+      data: [{ id: error }],
+    } = await deep.insert({
+      type_id: (await deep.id("${packageName}", "Error")),
+      from_id: ${tinkoffProviderId},
+      to_id: payLink.id,
+      string: { data: { value: "Could not add the bank payment id to pay value. " + payLinkUpdateQuery.error } },
+      in: {
+        data: [
+          {
+            type_id: await deep.id("${corePackageName}", 'Contain'),
+            from_id: ${deep.linkId},
+          },
+        ],
+      },
+    });
   
 	return initResult;
 };
@@ -1072,7 +1090,8 @@ async ({ deep, require, data: { newLink: cancelledLink } }) => {
     return result;
 	};
 
-	const bankPaymentId = (await getPayLink(cancelledLink)).value.value.bankPaymentId;
+	const payLink = await getPayLink(cancelledLink);
+	const bankPaymentId = payLink.value.value.bankPaymentId;
 
 	const cancelOptions = {
 		TerminalKey: "${process.env.PAYMENT_TEST_TERMINAL_KEY}",
@@ -1081,13 +1100,12 @@ async ({ deep, require, data: { newLink: cancelledLink } }) => {
 	}
 
 	const cancelResult = await cancel(cancelOptions);
-
 	if(cancelResult.error) {
 		await deep.insert({
 			type_id: (await deep.id("${packageName}", "Error")),
 			from_id: ${tinkoffProviderId},
 			to_id: cancelledLink.id,
-			string: { data: {value: cancelResult.error } }
+			string: { data: {value: "Could not cancel the pay. " + cancelResult.error } }
 		});
 	}
 
@@ -1166,12 +1184,30 @@ async (
     };
     const confirmResult = await confirm(confirmOptions);
     console.log({confirmResult});
+		if (confirmResult.error) {
+			console.log('confirmResult.error:', confirmResult.error);
+			const {
+				data: [{ id: error }],
+			} = await deep.insert({
+				type_id: (await deep.id("${packageName}", "Error")),
+				from_id: ${tinkoffProviderId},
+				to_id: payLink.id,
+				string: { data: { value: "Could not confirm the pay. " + confirmResult.error } },
+				in: {
+					data: [
+						{
+							type_id: await deep.id("${corePackageName}", 'Contain'),
+							from_id: ${deep.linkId},
+						},
+					],
+				},
+			});
   } else if (status == 'CONFIRMED') {
 		const {data: payLinks} = await deep.select({type_id: await deep.id("${packageName}", "Pay")});
 		console.log({payLinks});
 		const payLink = payLinks.find((payLink) => payLink.value.value.orderId == req.body.OrderId);
 		console.log({payLink});
-    const payedInsertData = await deep.insert({
+    const payedInsertQuery = await deep.insert({
       type_id: (await deep.id("${packageName}", "Payed")),
 			from_id: ${tinkoffProviderId},
       to_id: payLink.id,
@@ -1184,7 +1220,25 @@ async (
         ],
       },
     });
-    console.log({payedInsertData});
+		if (payedInsertQuery.error) {
+			console.log('payedInsertQuery.error:', payedInsertQuery.error);
+			const {
+				data: [{ id: error }],
+			} = await deep.insert({
+				type_id: (await deep.id("${packageName}", "Error")),
+				from_id: ${tinkoffProviderId},
+				to_id: payLink.id,
+				string: { data: { value: "Could not insert payed link after confirm. " + payedInsertQuery.error } },
+				in: {
+					data: [
+						{
+							type_id: await deep.id("${corePackageName}", 'Contain'),
+							from_id: ${deep.linkId},
+						},
+					],
+				},
+			});
+    console.log({payedInsertQuery});
   } 
   res.send('ok');
 };
