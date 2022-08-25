@@ -288,7 +288,7 @@ const f = async () => {
     }] },
     string: { data: { value: /*javascript*/`({ deep, data: { oldLink } }) => {
       const { data: [{ to_id: ruleId }] } = deep.select({
-        type_id: deep.id('@deep-foundation/core', 'JoinRule'),
+        type_id: deep.id('@deep-foundation/messaging', 'JoinRule'),
         from_id: oldLink.id,
       });
       deep.delete(ruleId);
