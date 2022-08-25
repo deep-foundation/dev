@@ -951,7 +951,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
 
   console.log({initResult});
 
-  if (initResult.error != undefined) {
+  if (initResult.error) {
     console.log('initResult.error:', initResult.error);
     const {
       data: [{ id: error }],
