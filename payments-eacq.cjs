@@ -911,12 +911,13 @@ async ({ deep, require, data: { newLink: payLink } }) => {
   });
   console.log({mpDownPay});
 
-  const sum = mpDownPay.data.find(link => link.type_id == (await deep.id("${packageName}", "Sum"))).value.value; 
+	const PSum = await deep.id("${packageName}", "Sum");
+  const sum = mpDownPay.data.find(link => link.type_id == PSum).value.value; 
   console.log({sum});
 
   const options = {
     TerminalKey: "${process.env.PAYMENT_TEST_TERMINAL_KEY}",
-    OrderId: payLink?.value?.value ?? payLink.id,
+    OrderId: payLink?.value?.value.orderId ?? payLink.id,
     CustomerKey: ${deep.linkId},
     NotificationURL: "${process.env.PAYMENT_EACQ_AND_TEST_NOTIFICATION_URL}",
     PayType: 'T',
@@ -1064,7 +1065,7 @@ async ({ deep, require, data: { newLink: cancelledLink } }) => {
 		if (toLink.type_id === (await deep.id("@deep-foundation/payments-eacq", "Payed"))) {
 			result = await deep.select({
 				id: toLink.to_id
-			});
+			}).data[0];
 		}
     console.log({result});
     console.log("getPayLink-end");
@@ -1166,12 +1167,14 @@ async (
     const confirmResult = await confirm(confirmOptions);
     console.log({confirmResult});
   } else if (status == 'CONFIRMED') {
-		console.log({payQueryData});
-		const {data: [{id: payId}]} = await deep.select({value: req.body.OrderId, type_id: await deep.id("${packageName}", "Pay"), from_id: req.body.CustomerKey});
+		const {data: payLinks} = await deep.select({type_id: await deep.id("${packageName}", "Pay")});
+		console.log({payLinks});
+		const payLink = payLinks.find((payLink) => payLink.value.value.orderId == req.body.OrderId);
+		console.log({payLink});
     const payedInsertData = await deep.insert({
       type_id: (await deep.id("${packageName}", "Payed")),
 			from_id: ${tinkoffProviderId},
-      to_id: payId,
+      to_id: payLink.id,
       in: {
         data: [
           {
@@ -2133,7 +2136,7 @@ async (
 			await testGetCardList();
 		};
 
-		await callRealizationTests();
+		// await callRealizationTests();
 		await callIntegrationTests();
 	};
 
