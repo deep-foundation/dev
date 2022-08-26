@@ -1065,106 +1065,175 @@ async ({ deep, require, data: { newLink: payLink } }) => {
 			},
 		},
 	});
-
 	console.log({ payInsertHandlerId });
 
-	const cancelledInsertHandler = /*javascript*/ `
-async ({ deep, require, data: { newLink: cancelledLink } }) => {
-  ${handlersDependencies}
-	const cancel = ${cancel.toString()};
+	const cancellingPaymentInsertHandler = /*javascript*/ `
+	async ({ deep, require, data: { newLink: paymentLink } }) => {
+		${handlersDependencies}
+		const cancel = ${cancel.toString()};
 
-	const getPayLink = async (cancelledLink) => {
-    console.log("getPayLink-start");
-    console.log({cancelledLink});
-		const {data: [toLink]} = await deep.select({
-			id: cancelledLink.to_id
-		});
-    console.log({toLink});
-    var result;
-		if(toLink.type_id === (await deep.id("@deep-foundation/payments-eacq", "Pay"))) {
-			result = toLink;
-		} 
-		if (toLink.type_id === (await deep.id("@deep-foundation/payments-eacq", "Payed"))) {
-			result = await deep.select({
-				id: toLink.to_id
-			}).data[0];
-		}
-    console.log({result});
-    console.log("getPayLink-end");
-    return result;
-	};
+		const fromLink = await deep.select(paymentLink.from_id);
+		const toLink = await deep.select(paymentLink.to_id);
+		const User = await deep.id("${corePackageName}", "User");
+		const isCancellingPayment = (fromLink.type_id === paymentLink.type_id) && (toLink.typeId === User);
+		if(isCancellingPayment) {
+			const mpUpPaymentQuery = await deep.select({
+				up: {
+					parent_id: paymentLink.id,
+					tree_id: ${paymentTreeId}
+				}
+			});
 
-	const payLink = await getPayLink(cancelledLink);
-	const bankPaymentId = payLink.value.value.bankPaymentId;
+			const PSum = await deep.id("${packageName}", "Sum");
+			const sumLink = mpUpPaymentQuery.data.find(link => link.type_id == PSum);
+			const amount = sumLink.value.value;
 
-	const cancelOptions = {
-		TerminalKey: "${process.env.PAYMENT_TEST_TERMINAL_KEY}",
-		PaymentId: bankPaymentId,
-		Amount: cancelledLink.value.value
-	}
+			const cancelOptions = {
+				TerminalKey: "${process.env.PAYMENT_TEST_TERMINAL_KEY}",
+				PaymentId: paymentLink.value.value.bankPaymentId,
+				Amount: amount,
+			};
+			console.log({ cancelOptions });
 
-	const cancelResult = await cancel(cancelOptions);
-	if(cancelResult.error) {
-		await deep.insert({
-			type_id: (await deep.id("${packageName}", "Error")),
-			from_id: ${tinkoffProviderId},
-			to_id: cancelledLink.id,
-			string: { data: {value: "Could not cancel the pay. " + cancelResult.error } }
-		});
-	}
+			const cancelPromise = cancel(cancelOptions);
+			
+			const PPay = await deep.id("${packageName}", "Pay");
 
-	return cancelResult;
-};
-`;
-	console.log({ cancelledInsertHandler });
-
-	const {
-		data: [{ id: cancelledInsertHandlerId }],
-	} = await deep.insert({
-		type_id: SyncTextFile,
-		in: {
-			data: [
-				{
-					type_id: Contain,
-					from_id: packageId, // before created package
-					string: { data: { value: 'cancelledInsertHandlerFile' } },
-				},
-				{
-					from_id: dockerSupportsJs,
-					type_id: Handler,
+			const payInsertQuery = await deep.insert({
+				type_id: PPay,
+				from_id: ${deep.linkId},
+				to_id: sumLink.id
+			});
+			console.log({payInsertQuery});
+			if(payInsertQuery.error) {
+				const errorMessage = "Could not cancel the order. " + cancelResult.error;
+				const {
+					data: [{ id: error }],
+				} = await deep.insert({
+					type_id: (await deep.id("${packageName}", "Error")),
+					from_id: ${tinkoffProviderId},
+					to_id: payLink.id,
+					string: { data: { value: errorMessage } },
 					in: {
 						data: [
 							{
-								type_id: Contain,
-								from_id: packageId, // before created package
-								string: { data: { value: 'cancelledInsertHandler' } },
-							},
-							{
-								type_id: HandleInsert,
-								from_id: PCancelled,
-								in: {
-									data: [
-										{
-											type_id: Contain,
-											from_id: packageId, // before created package
-											string: { data: { value: 'cancelledInsertHandle' } },
-										},
-									],
-								},
+								type_id: await deep.id("${corePackageName}", 'Contain'),
+								from_id: ${deep.linkId},
 							},
 						],
 					},
-				},
-			],
-		},
-		string: {
-			data: {
-				value: cancelledInsertHandler,
-			},
-		},
-	});
+				});
+				console.log({ error });
+				throw new Error(errorMessage);
+			}
+			const payLink = payInsertQuery.data[0];
 
-	console.log({ cancelledInsertHandlerId });
+			const cancelResult = await cancelPromise;
+			console.log({cancelResult});
+			if (cancelResult.error) {
+				const errorMessage = "Could not cancel the order. " + cancelResult.error;
+				const {
+					data: [{ id: error }],
+				} = await deep.insert({
+					type_id: (await deep.id("${packageName}", "Error")),
+					from_id: ${tinkoffProviderId},
+					to_id: payLink.id,
+					string: { data: { value: errorMessage } },
+					in: {
+						data: [
+							{
+								type_id: await deep.id("${corePackageName}", 'Contain'),
+								from_id: ${deep.linkId},
+							},
+						],
+					},
+				});
+				console.log({ error });
+				throw new Error(errorMessage);
+			} 
+
+			const payValueInsertQuery = await deep.insert({linkId: payLink.id, value: {orderId: cancelResult.response.OrderId, bankPaymentId: cancelResult.response.PaymentId}}, {table: "objects"});
+			console.log({payValueInsertQuery});
+			if (payValueInsertQuery.error) {
+				const errroMessage = "Could not insert value of the pay link. " + payValueInsertQuery.error;
+				const {
+					data: [{ id: error }],
+				} = await deep.insert({
+					type_id: (await deep.id("${packageName}", "Error")),
+					from_id: ${tinkoffProviderId},
+					to_id: payLink.id,
+					string: { data: { value: errroMessage } },
+					in: {
+						data: [
+							{
+								type_id: await deep.id("${corePackageName}", 'Contain'),
+								from_id: ${deep.linkId},
+							},
+						],
+					},
+				});
+				throw new Error(errorMessage);
+			}
+
+			const PPayed = await deep.id("${packageName}", "Payed");
+			await deep.insert({
+				type_id: PPayed,
+				from_id: ${tinkoffProviderId},
+				to_id: payLink.id
+			});
+		}
+		
+		return cancelResult;
+	};
+	`;
+		console.log({ paymentInsertHandler: cancellingPaymentInsertHandler });
+	
+		const {
+			data: [{ id: paymentInsertHandlerId }],
+		} = await deep.insert({
+			type_id: SyncTextFile,
+			in: {
+				data: [
+					{
+						type_id: Contain,
+						from_id: packageId, // before created package
+						string: { data: { value: 'paymentInsertHandlerFile' } },
+					},
+					{
+						from_id: dockerSupportsJs,
+						type_id: Handler,
+						in: {
+							data: [
+								{
+									type_id: Contain,
+									from_id: packageId, // before created package
+									string: { data: { value: 'paymentInsertHandler' } },
+								},
+								{
+									type_id: HandleInsert,
+									from_id: PPay,
+									in: {
+										data: [
+											{
+												type_id: Contain,
+												from_id: packageId, // before created package
+												string: { data: { value: 'paymentInsertHandle' } },
+											},
+										],
+									},
+								},
+							],
+						},
+					},
+				],
+			},
+			string: {
+				data: {
+					value: payInsertHandler,
+				},
+			},
+		});
+		console.log({ paymentInsertHandlerId });
 
 	const tinkoffNotificationHandler = /*javascript*/ `
 async (
