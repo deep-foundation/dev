@@ -75,7 +75,7 @@ const f = async () => {
 
   const { data: [{ id: packageId }] } = await deep.insert({
     type_id: Package,
-    string: { data: { value: `@deep-foundation/messaging` } },
+    string: { data: { value: `@deep-foundation/messenger` } },
     in: { data: [
       {
         type_id: Contain,
@@ -197,7 +197,7 @@ const f = async () => {
         type_id: deep.id('@deep-foundation/core', 'Rule'),
       });
       deep.insert({
-        type_id: deep.id('@deep-foundation/messaging', 'JoinRule'),
+        type_id: deep.id('@deep-foundation/messenger', 'JoinRule'),
         from_id: newLink.id,
         to_id: ruleId,
       });
@@ -237,7 +237,7 @@ const f = async () => {
       deep.insert({
         type_id: deep.id('@deep-foundation/core', 'SelectorTree'),
         from_id: ruleObjectIncludeId,
-        to_id: deep.id('@deep-foundation/messaging', 'messagingTree'),
+        to_id: deep.id('@deep-foundation/messenger', 'messengerTree'),
       });
       // action
       const { data: [{ id: actionSelectorId }] } = deep.insert({
@@ -288,7 +288,7 @@ const f = async () => {
     }] },
     string: { data: { value: /*javascript*/`({ deep, data: { oldLink } }) => {
       const { data: [{ to_id: ruleId }] } = deep.select({
-        type_id: deep.id('@deep-foundation/messaging', 'JoinRule'),
+        type_id: deep.id('@deep-foundation/messenger', 'JoinRule'),
         from_id: oldLink.id,
       });
       deep.delete(ruleId);
@@ -297,12 +297,12 @@ const f = async () => {
 
   console.log({ deleteHandlerId });
 
-  const { data: [{ id: messagingTree }] } = await deep.insert({
+  const { data: [{ id: messengerTree }] } = await deep.insert({
     type_id: Tree,
     in: { data: {
       type_id: Contain,
       from_id: packageId,
-      string: { data: { value: 'messagingTree' } },
+      string: { data: { value: 'messengerTree' } },
     } },
     out: { data: [
       {
@@ -311,7 +311,7 @@ const f = async () => {
         in: { data: {
           type_id: Contain,
           from_id: packageId,
-          string: { data: { value: 'messagingTreeUser' } },
+          string: { data: { value: 'messengerTreeUser' } },
         } },
       },
       {
@@ -320,7 +320,7 @@ const f = async () => {
         in: { data: {
           type_id: Contain,
           from_id: packageId,
-          string: { data: { value: 'messagingTreeMessage' } },
+          string: { data: { value: 'messengerTreeMessage' } },
         } },
       },
       {
@@ -329,7 +329,7 @@ const f = async () => {
         in: { data: {
           type_id: Contain,
           from_id: packageId,
-          string: { data: { value: 'messagingTreeReply' } },
+          string: { data: { value: 'messengerTreeReply' } },
         } },
       },
       {
@@ -338,7 +338,7 @@ const f = async () => {
         in: { data: {
           type_id: Contain,
           from_id: packageId,
-          string: { data: { value: 'messagingTreeAuthor' } },
+          string: { data: { value: 'messengerTreeAuthor' } },
         } },
       },
       {
@@ -347,13 +347,13 @@ const f = async () => {
         in: { data: {
           type_id: Contain,
           from_id: packageId,
-          string: { data: { value: 'messagingTreeJoin' } },
+          string: { data: { value: 'messengerTreeJoin' } },
         } },
       },
     ] },
   });
 
-  console.log({ messagingTree });
+  console.log({ messengerTree });
 
   // const { data: [{ id: messageId1 }] } = await deep.insert({
   //   type_id: MMessage,
@@ -409,10 +409,10 @@ const f = async () => {
                 object: { data: { value: {
                   _or: [
                     { to: {
-                      _by_item: { path_item_id: { _eq: 'X-Deep-User-Id' }, group_id: { _eq: messagingTree }, },
+                      _by_item: { path_item_id: { _eq: 'X-Deep-User-Id' }, group_id: { _eq: messengerTree }, },
                     } },
                     { from: {
-                      _by_item: { path_item_id: { _eq: 'X-Deep-User-Id' }, group_id: { _eq: messagingTree }, },
+                      _by_item: { path_item_id: { _eq: 'X-Deep-User-Id' }, group_id: { _eq: messengerTree }, },
                     } },
                   ],
                 } } }
@@ -602,7 +602,7 @@ const f = async () => {
                 type_id: Query,
                 object: { data: { value: {
                   from: {
-                    _by_item: { path_item_id: { _eq: 'X-Deep-User-Id' }, group_id: { _eq: messagingTree }, },
+                    _by_item: { path_item_id: { _eq: 'X-Deep-User-Id' }, group_id: { _eq: messengerTree }, },
                   }
                   // AND ONLY ONE AUTHOR LINK
                 } } }
@@ -670,7 +670,7 @@ const f = async () => {
                 type_id: Query,
                 object: { data: { value: {
                   from: {
-                    _by_item: { path_item_id: { _eq: 'X-Deep-User-Id' }, group_id: { _eq: messagingTree }, },
+                    _by_item: { path_item_id: { _eq: 'X-Deep-User-Id' }, group_id: { _eq: messengerTree }, },
                   }
                   // AND ONLY ONE AUTHOR LINK
                 } } }
