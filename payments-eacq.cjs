@@ -915,9 +915,13 @@ async ({ deep, require, data: { newLink: payLink } }) => {
   const sum = mpDownPay.data.find(link => link.type_id == PSum).value.value; 
   console.log({sum});
 
+	const PPayment = await deep.id("${packageName}", "Payment");
+	const paymentLink = mpDownPay.data.find(link => link.type_id === PPayment);
+	console.log({paymentLink});
+
   const options = {
     TerminalKey: "${process.env.PAYMENT_TEST_TERMINAL_KEY}",
-    OrderId: payLink?.value?.value.orderId ?? payLink.id,
+    OrderId: paymentLink?.value?.value.orderId ?? paymentLink.id,
     CustomerKey: ${deep.linkId},
     NotificationURL: "${process.env.PAYMENT_EACQ_AND_TEST_NOTIFICATION_URL}",
     PayType: 'T',
