@@ -1174,6 +1174,18 @@ async (
 	console.log({reqBody});
   const status = req.body.Status;
   console.log({status});
+
+	const paymentLink = deep.select({
+		object: {value: {_contains: req.body.OrderId}}
+	});
+
+	const payLink = deep.select({
+		up: {
+			parent_id: paymentLink.id,
+			tree_id: ${paymentTreeId}
+		}
+	});
+
   if (status == 'AUTHORIZED') {
 		const confirm = ${confirm.toString()};
     const confirmOptions = {
@@ -1203,10 +1215,6 @@ async (
 				},
 			});
   } else if (status == 'CONFIRMED') {
-		const {data: payLinks} = await deep.select({type_id: await deep.id("${packageName}", "Pay")});
-		console.log({payLinks});
-		const payLink = payLinks.find((payLink) => payLink.value.value.orderId == req.body.OrderId);
-		console.log({payLink});
     const payedInsertQuery = await deep.insert({
       type_id: (await deep.id("${packageName}", "Payed")),
 			from_id: ${tinkoffProviderId},
