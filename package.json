@@ -60,7 +60,7 @@
     "ebm": "npm run electron-build-mac",
     "enu": "npm run electron-next-build-unix",
     "enw": "npm run electron-next-build-windows",
-    "pull-ci-apply": "(cd packages/hasura; git pull; npm ci); (cd packages/deeplinks; git pull; npm ci); (cd packages/deepcase; git pull; npm ci); (cd packages/deepcase/electron; npm ci); git pull && npm run apply-hasura && npm run apply-deeplinks",
+    "pull-ci-apply": "(cd packages/hasura; git pull; npm ci); (cd packages/deeplinks; git pull; npm ci); (cd packages/deepcase; git pull; npm ci); (cd packages/deepcase/electron; npm ci); git pull && npm run apply-deeplinks && npm run apply-hasura",
     "nextjs": "(cd packages/nextjs; PORT=4000 npm run dev)",
     "local-recreate": "npm run local-unmigrate; npm run local-clear; npm run rm-migrates; npm run local-engine; npm run local-migrate;",
     "gitpod-recreate": "npm run gitpod-unmigrate; npm run gitpod-clear; npm run rm-migrates; npm run gitpod-engine; npm run gitpod-migrate;"
