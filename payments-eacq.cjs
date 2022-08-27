@@ -1982,7 +1982,7 @@ async (
 		};
 
 		const callIntegrationTests = async () => {
-			const testInit = async () => {
+			const testInit = async ({customerKey} = {customerKey: uniqid()}) => {
 				console.log('testInit-start');
 				const {
 					data: [{ id: paymentId }],
@@ -2042,7 +2042,7 @@ async (
 					type_id: PPay,
 					from_id: deep.linkId,
 					to_id: sumId,
-					object: { data: { value: {orderId: uniqid()} } },
+					object: { data: { value: {orderId: customerKey} } },
 					in: {
 						data: [
 							{
@@ -2068,9 +2068,9 @@ async (
 				console.log('testInit-end');
 			};
 
-			const testFinishAuthorize = async () => {
+			const testFinishAuthorize = async ({customerKey} = {customerKey: uniqid()}) => {
 				console.log('testFinishAuthorize-start');
-				await testInit();
+				await testInit({customerKey});
 				const {
 					data: [
 						{
@@ -2091,9 +2091,9 @@ async (
 				console.log('testFinishAuthorize-end');
 			};
 
-			const testConfirm = async () => {
+			const testConfirm = async ({customerKey} = {customerKey: uniqid()}) => {
 				console.log('testConfirm-start');
-				await testFinishAuthorize();
+				await testFinishAuthorize({customerKey});
 				await sleep(17000);
 				let { data } = await deep.select({
 					type_id: PPayed,
@@ -2102,11 +2102,17 @@ async (
 				console.log('testConfirm-end');
 			};
 
-			const testCancelIntegration = async () => {
-				console.log('testCancelIntegration-start');
+			const testCancel = async ({customerKey} = {customerKey: uniqid()}) => {
+				console.log('testCancel-start');
 				const testCancelAfterPayAfterConfirmFullPrice = async () => {
 					console.log('testCancelAfterPayAfterConfirmFullPrice-start');
-					await testConfirm();
+					await testConfirm({customerKey});
+
+					const {
+						data: [paymentLink],
+					} = await deep.select({
+						type_id: PPayment,
+					});
 
 					const {
 						data: [payLink],
@@ -2128,6 +2134,12 @@ async (
 						from_id: tinkoffProviderId,
 						to_id: payedLink.id,
 						number: { data: { value: PRICE } },
+					});
+
+					await deep.insert({
+						type_id: PPayment,
+						from_id: paymentLink.id,
+						to_id: customerKey
 					});
 
 					await sleep(5000);
@@ -2217,7 +2229,7 @@ async (
 				await testCancelBeforePay();
 				await deleteTestLinks();
 
-				console.log('testCancelIntegration-end');
+				console.log('testCancel-end');
 			};
 
 			const testGetState = async () => {
@@ -2261,7 +2273,7 @@ async (
 			await testInit();
 			await testFinishAuthorize();
 			await testConfirm();
-			await testCancelIntegration();
+			await testCancel();
 			await testGetState();
 			await testGetCardList();
 		};
