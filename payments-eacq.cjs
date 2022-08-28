@@ -912,7 +912,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
   console.log({mpDownPay});
 
 	const PSum = await deep.id("${packageName}", "Sum");
-  const sum = mpDownPay.data.find(link => link.type_id == PSum).value.value; 
+  const sum = mpDownPay.data.find(link => link.type_id === PSum).value.value; 
   console.log({sum});
 
 	const PPayment = await deep.id("${packageName}", "Payment");
@@ -1083,7 +1083,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
 			});
 
 			const PSum = await deep.id("${packageName}", "Sum");
-			const sumLink = mpUpPaymentQuery.data.find(link => link.type_id == PSum);
+			const sumLink = mpUpPaymentQuery.data.find(link => link.type_id === PSum);
 			const amount = sumLink.value.value;
 
 			const cancelOptions = {
@@ -1254,7 +1254,7 @@ async (
 		}
 	});
 
-  if (status == 'AUTHORIZED') {
+  if (status === 'AUTHORIZED') {
 		const confirm = ${confirm.toString()};
     const confirmOptions = {
       TerminalKey: "${process.env.PAYMENT_TEST_TERMINAL_KEY}",
@@ -1282,7 +1282,7 @@ async (
 					],
 				},
 			});
-  } else if (status == 'CONFIRMED') {
+  } else if (status === 'CONFIRMED') {
     const payedInsertQuery = await deep.insert({
       type_id: (await deep.id("${packageName}", "Payed")),
 			from_id: ${tinkoffProviderId},
