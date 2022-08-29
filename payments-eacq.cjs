@@ -1014,6 +1014,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
     });
   
 	return initResult;
+	};
 };
 `;
 	console.log({ payInsertHandler });
