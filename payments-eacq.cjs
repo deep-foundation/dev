@@ -993,16 +993,16 @@ async ({ deep, require, data: { newLink: payLink } }) => {
 	});
 	console.log({ urlId });
 
-	const payLinkUpdateQuery = await deep.update(payLink.id, {object: {data: {value: {...payLink.value.value, bankPaymentId: initResult.response.PaymentId}}}});
-	if (payLinkUpdateQuery.error) {
-    console.log('payLinkUpdateQuery.error:', payLinkUpdateQuery.error);
+	const payLinkUpdateQuery = await deep.update({link_id: {_eq: paymentLink.id}}, {value: {...paymentLink.value.value, bankPaymentId: initResult.response.PaymentId}}, {table: "objects"});
+	console.log({paymentLinkUpdateQuery});
+	if (paymentLinkUpdateQuery.error) {
     const {
       data: [{ id: error }],
     } = await deep.insert({
       type_id: (await deep.id("${packageName}", "Error")),
       from_id: ${tinkoffProviderId},
       to_id: payLink.id,
-      string: { data: { value: "Could not add the bank payment id to pay value. " + payLinkUpdateQuery.error } },
+      string: { data: { value: "Could not add the bank payment id to payment value. " + paymentLinkUpdateQuery.error } },
       in: {
         data: [
           {
