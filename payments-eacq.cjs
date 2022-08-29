@@ -954,7 +954,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
   let initResult = await init(options);
   console.log({initResult});
   if (initResult.error) {
-		const errorMessage = "Could not initialize the order. " + error;
+		const errorMessage = "Could not initialize the order. " + initResult.error;
     const {
       data: [{ id: error }],
     } = await deep.insert({
