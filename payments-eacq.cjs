@@ -898,7 +898,7 @@ const f = async () => {
 	`;
 	console.log({ handlersDependencies });
 
-	const payInsertHandler = /*javascript*/ `
+	const payInsertHandler = `
 async ({ deep, require, data: { newLink: payLink } }) => {
 	${handlersDependencies}
   const init = ${init.toString()};
@@ -993,7 +993,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
 	});
 	console.log({ urlId });
 
-	const payLinkUpdateQuery = await deep.update({link_id: {_eq: paymentLink.id}}, {value: {...paymentLink.value.value, bankPaymentId: initResult.response.PaymentId}}, {table: "objects"});
+	const paymentLinkUpdateQuery = await deep.update({link_id: {_eq: paymentLink.id}}, {value: {...paymentLink.value.value, bankPaymentId: initResult.response.PaymentId}}, {table: "objects"});
 	console.log({paymentLinkUpdateQuery});
 	if (paymentLinkUpdateQuery.error) {
     const {
@@ -1066,7 +1066,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
 	});
 	console.log({ payInsertHandlerId });
 
-	const cancellingPaymentInsertHandler = /*javascript*/ `
+	const cancellingPaymentInsertHandler = `
 	async ({ deep, require, data: { newLink: cacellingPaymentLink } }) => {
 		${handlersDependencies}
 		const cancel = ${cancel.toString()};
@@ -1233,7 +1233,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
 		});
 		console.log({ cancellingPaymentInsertHandlerId });
 
-	const tinkoffNotificationHandler = /*javascript*/ `
+	const tinkoffNotificationHandler = `
 async (
   req,
   res,
@@ -1991,6 +1991,7 @@ async (
 					data: [{ id: paymentId }],
 				} = await deep.insert({
 					type_id: PPayment,
+					object: { data: { value: {orderId: uniqid()} } },
 					in: {
 						data: [
 							{
@@ -2045,7 +2046,6 @@ async (
 					type_id: PPay,
 					from_id: deep.linkId,
 					to_id: sumId,
-					object: { data: { value: {orderId: customerKey} } },
 					in: {
 						data: [
 							{
