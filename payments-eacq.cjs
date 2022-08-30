@@ -1059,85 +1059,67 @@ async ({ deep, require, data: { newLink: payLink } }) => {
 		const User = await deep.id("${corePackageName}", "User");
 		const isCancellingPayment = (cancelledPayment.type_id === cacellingPaymentLink.type_id) && (userLink.typeId === User);
 		if(isCancellingPayment) {
-			const {error} = await deep.insert({link_id: cancellingPaymentLink.id, value: cancelledPaymentLink.value.value}, {table: "objects"});
-			if(error) {
-				// TODO ???
-			}
+			const insertPaymentValueQuery = await deep.insert({link_id: cancellingPaymentLink.id, value: cancelledPaymentLink.value.value}, {table: "objects"});
+			insertPaymentValueQuery.error && throw new Error(insertPaymentValueQuery.error);
 
-			const {data: mpUpPayment, error} = await deep.select({
+			const {data: mpUpCancelledPayment, error} = await deep.select({
 				up: {
 					parent_id: cancelledPaymentLink.id,
 					tree_id: ${paymentTreeId}
 				}
 			});
-			if(error) {
-				// TODO ???
-			}
+			console.log({mpUpCancelledPayment});
+			console.log({error});
+			error && throw new Error(error);
 
 			const PObject = await deep.id("${packageName}", "Object"); 
-			const objectLinkOfCancelledPayment = mpUpPayment.find(link => link.type_id === PObject);
+			const objectLinkOfCancelledPayment = mpUpCancelledPayment.find(link => link.type_id === PObject);
+			(!objectLinkOfCancelledPayment) && throw new Error("The link of type object associated with the cancelled payment " + cancelledPaymentLink.id + " is not found.");
 			const {error, data: [objectLink]} = await deep.insert({
 				type_id: PObject,
 				from_id: cacellingPaymentLink.id,
 				to_id: objectLinkOfCancelledPayment.to_id
 			});
-			if(error) {
-				// TODO ???
-			}
+			error && throw new Error(error);
 			
 			const PSum = await deep.id("${packageName}", "Sum")
-			const sumLinkOfCancelledPayment = mpUpPayment.find(link => link.type_id === PSum);
+			const sumLinkOfCancelledPayment = mpUpCancelledPayment.find(link => link.type_id === PSum);
+			(!sumLinkOfCancelledPayment) && throw new Error("The link of type sum associated with the cancelled payment " + cancelledPaymentLink.id + " is not found.");
 			const {error, data: [sumLink]} = await deep.insert({
 				type_id: PSum,
 				from_id: sumLinkOfCancelledPayment.from_id,
 				to_id: cancellingPaymentLink.id
 			});
-			if(error) {
-				// TODO ???
-			}
+			error && throw new Error(error);
 
 			const PPay = await deep.id("${packageName}", "Payed");
-			const payLinkOfCancelledPayment = mpUpPayment.find(link => link.type_id === PPay); 
+			const payLinkOfCancelledPayment = mpUpCancelledPayment.find(link => link.type_id === PPay); 
+			(!payLinkOfCancelledPayment) && throw new Error("The link of type pay associated with the cancelled payment " + cancelledPaymentLink.id + " is not found.");
 			const {error, data: [payLink]} = await deep.insert({
 				type_id: PPay,
 				from_id: payLinkOfCancelledPayment.from_id,
 				to_id: sumLink.id
 			});
-			if(error) {
-				// TODO ???
-			}
+			error && throw new Error(error);
 		
 			const PUrl = await deep.id("${packageName}", "Url");
-			const urlLinkOfCancelledPayment = mpUpPayment.find(link => link.type_id === PUrl);
+			const urlLinkOfCancelledPayment = mpUpCancelledPayment.find(link => link.type_id === PUrl);
+			(!urlLinkOfCancelledPayment) && throw new Error("The link of type url associated with the cancelled payment " + cancelledPaymentLink.id + " is not found.");
 			const {error, data: [urlLink]} = await deep.insert({
 				type_id: PUrl,
 				from_id: urlLinkOfCancelledPayment.from_id,
 				to_id: payLink.id,
 				object: { data: { value: urlLinkOfCancelledPayment.value.value }}
 			});
-			if(error) {
-				// TODO ???
-			}
-
-			const PPayed = await deep.id("${packageName}", "Payed");
-			const payedLinkOfCancelledPayment = mpUpPayment.find(link => link.type_id === PPayed);
-			const {error, data: [payedLink]} = await deep.insert({
-				type_id: PPayed,
-				from_id: payedLinkOfCancelledPayment.from_id,
-				to_id: payLink.id
-			});
-			if(error) {
-				// TODO ???
-			}
-
-			const amount = sumLink.value.value;
+			error && throw new Error(error);
 
 			const cancelOptions = {
 				TerminalKey: "${process.env.PAYMENT_TEST_TERMINAL_KEY}",
 				PaymentId: cacellingPaymentLink.value.value.bankPaymentId,
-				Amount: amount,
+				Amount: sumLink.value.value,
 			};
 			console.log({ cancelOptions });
+			
 			const cancelResult = await cancel(cancelOptions);
 			console.log({cancelResult});
 			const {error, response} = cancelResult;
