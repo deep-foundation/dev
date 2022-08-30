@@ -1011,11 +1011,11 @@ async ({ deep, require, data: { newLink: payLink } }) => {
   };
   console.log({options});
 
-  let initResult = await init(options);
+  let {response, error} = await init(options);
   console.log({initResult});
-  if (initResult.error) {
-		const errorMessage = "Could not initialize the order. " + initResult.error;
-    const errorInsertQuery = await deep.insert({
+  if (error) {
+		const errorMessage = "Could not initialize the order. " + error;
+    const {error} = await deep.insert({
       type_id: (await deep.id("${packageName}", "Error")),
       from_id: ${tinkoffProviderId},
       to_id: payLink.id,
@@ -1029,11 +1029,11 @@ async ({ deep, require, data: { newLink: payLink } }) => {
         ],
       },
     });
-    console.log({ errorInsertQuery });
-		errorInsertQuery.error && throw new Error(errorInsertQuery.error);
+		error && throw new Error(error);
+		throw new Error(errorMessage);
   }
 
-	const urlInsertQuery = await deep.insert({
+	const {error} = await deep.insert({
 		type_id: PUrl,
 		from_id: ${tinkoffProviderId},
 		to_id: payLink.id,
@@ -1048,11 +1048,10 @@ async ({ deep, require, data: { newLink: payLink } }) => {
 		},
 	});
 	console.log({urlInsertQuery});
-	urlInsertQuery.error && throw new Error(urlInsertQuery.error);
+	error && throw new Error(error);
 
-	const paymentLinkUpdateQuery = await deep.update({link_id: {_eq: paymentLink.id}}, {value: {...paymentLink.value.value, bankPaymentId: initResult.response.PaymentId}}, {table: "objects"});
-	console.log({paymentLinkUpdateQuery});
-	paymentLinkUpdateQuery.error && throw new Error(paymentLinkUpdateQuery.error);
+	const {error} = await deep.update({link_id: {_eq: paymentLink.id}}, {value: {...paymentLink.value.value, bankPaymentId: initResult.response.PaymentId}}, {table: "objects"});
+	error && throw new Error(error);
   
 	return initResult;
 	};
@@ -1115,8 +1114,8 @@ async ({ deep, require, data: { newLink: payLink } }) => {
 		const User = await deep.id("${corePackageName}", "User");
 		const isCancellingPayment = (cancelledPayment.type_id === cacellingPaymentLink.type_id) && (userLink.typeId === User);
 		if(isCancellingPayment) {
-			const insertPaymentValueQuery = await deep.insert({link_id: cancellingPaymentLink.id, value: cancelledPaymentLink.value.value}, {table: "objects"});
-			insertPaymentValueQuery.error && throw new Error(insertPaymentValueQuery.error);
+			const {error} = await deep.insert({link_id: cancellingPaymentLink.id, value: cancelledPaymentLink.value.value}, {table: "objects"});
+			error && throw new Error(error);
 
 			const {data: mpUpCancelledPayment, error} = await deep.select({
 				up: {
@@ -1252,13 +1251,10 @@ async (
       Amount: req.body.Amount,
       // Receipt: req.body.Receipt,
     };
-    const confirmResult = await confirm(confirmOptions);
-    console.log({confirmResult});
-		if (confirmResult.error) {
-			const errorMessage = "Could not confirm the pay. " + confirmResult.error;
-			const {
-				data: [{ id: error }],
-			} = await deep.insert({
+    const {error} = await confirm(confirmOptions);
+		if (error) {
+			const errorMessage = "Could not confirm the pay. " + error;
+			const {error} = await deep.insert({
 				type_id: (await deep.id("${packageName}", "Error")),
 				from_id: ${tinkoffProviderId},
 				to_id: payLink.id,
@@ -1272,8 +1268,10 @@ async (
 					],
 				},
 			});
+			error && throw new Error(error);
+			throw new Error(errorMessage);
   } else if (status === 'CONFIRMED') {
-    const payedInsertQuery = await deep.insert({
+    const {error} = await deep.insert({
       type_id: (await deep.id("${packageName}", "Payed")),
 			from_id: ${tinkoffProviderId},
       to_id: payLink.id,
@@ -1286,15 +1284,13 @@ async (
         ],
       },
     });
-		if (payedInsertQuery.error) {
-			console.log('payedInsertQuery.error:', payedInsertQuery.error);
-			const {
-				data: [{ id: error }],
-			} = await deep.insert({
+		if (error) {
+			const errorMessage = "Could not insert payed link after confirm. " + error;
+			const { error } = await deep.insert({
 				type_id: (await deep.id("${packageName}", "Error")),
 				from_id: ${tinkoffProviderId},
 				to_id: payLink.id,
-				string: { data: { value: "Could not insert payed link after confirm. " + payedInsertQuery.error } },
+				string: { data: { value: errorMessage } },
 				in: {
 					data: [
 						{
@@ -1304,7 +1300,8 @@ async (
 					],
 				},
 			});
-    console.log({payedInsertQuery});
+			error && throw new Error(error);
+    	throw new Error(errorMessage);
   } 
   res.send('ok');
 };
