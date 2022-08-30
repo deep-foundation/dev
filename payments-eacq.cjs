@@ -969,6 +969,12 @@ async ({ deep, require, data: { newLink: payLink } }) => {
 			throw new Error(errorMessage);
 		} 
 
+		await deep.insert({
+			type_id: await deep.id("${packageName}", "Payed");
+			from_id: ${tinkoffProviderId},
+			to_id: payLink.id
+		});
+
 		return cancelResult;
 	}
   
