@@ -909,7 +909,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
     },
   });
   console.log({mpDownPay});
-	error && throw new Error(error);
+	if(error) { throw new Error(error); }
 
 	const PPayment = await deep.id("${packageName}", "Payment");
 	const paymentLink = mpDownPay.find(link => link.type_id === PPayment);
@@ -926,12 +926,12 @@ async ({ deep, require, data: { newLink: payLink } }) => {
 	const {error, data: {paymentFromLink}} = await deep.insert({
 		id: paymentLink.from_id
 	});
-	error && throw new Error(error);
+	if(error) { throw new Error(error); }
 
 	const {error, data: {paymentToLink}} = await deep.insert({
 		id: paymentLink.to_id
 	});
-	error && throw new Error(error);
+	if(error) { throw new Error(error); }
 
 	const isCancellingPay = (paymentFromLink.type_id === paymentLink.type_id) && (paymentToLink.type_id === await deep.id("${corePackageName}", "User"));
 
@@ -965,7 +965,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
 					],
 				},
 			});
-			error && throw new Error(error);
+			if(error) { throw new Error(error); }
 			throw new Error(errorMessage);
 		} 
 
@@ -1029,7 +1029,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
         ],
       },
     });
-		error && throw new Error(error);
+		if(error) { throw new Error(error); }
 		throw new Error(errorMessage);
   }
 
@@ -1048,10 +1048,10 @@ async ({ deep, require, data: { newLink: payLink } }) => {
 		},
 	});
 	console.log({urlInsertQuery});
-	error && throw new Error(error);
+	if(error) { throw new Error(error); }
 
 	const {error} = await deep.update({link_id: {_eq: paymentLink.id}}, {value: {...paymentLink.value.value, bankPaymentId: initResult.response.PaymentId}}, {table: "objects"});
-	error && throw new Error(error);
+	if(error) { throw new Error(error); }
   
 	return initResult;
 	};
@@ -1115,7 +1115,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
 		const isCancellingPayment = (cancelledPayment.type_id === cacellingPaymentLink.type_id) && (userLink.typeId === User);
 		if(isCancellingPayment) {
 			const {error} = await deep.insert({link_id: cancellingPaymentLink.id, value: cancelledPaymentLink.value.value}, {table: "objects"});
-			error && throw new Error(error);
+			if(error) { throw new Error(error); }
 
 			const {data: mpUpCancelledPayment, error} = await deep.select({
 				up: {
@@ -1125,48 +1125,48 @@ async ({ deep, require, data: { newLink: payLink } }) => {
 			});
 			console.log({mpUpCancelledPayment});
 			console.log({error});
-			error && throw new Error(error);
+			if(error) { throw new Error(error); }
 
 			const PObject = await deep.id("${packageName}", "Object"); 
 			const objectLinkOfCancelledPayment = mpUpCancelledPayment.find(link => link.type_id === PObject);
-			(!objectLinkOfCancelledPayment) && throw new Error("The link of type object associated with the cancelled payment " + cancelledPaymentLink.id + " is not found.");
+			if (!objectLinkOfCancelledPayment) { throw new Error("The link of type object associated with the cancelled payment " + cancelledPaymentLink.id + " is not found."); }
 			const {error, data: [objectLink]} = await deep.insert({
 				type_id: PObject,
 				from_id: cacellingPaymentLink.id,
 				to_id: objectLinkOfCancelledPayment.to_id
 			});
-			error && throw new Error(error);
+			if(error) { throw new Error(error); }
 			
 			const PSum = await deep.id("${packageName}", "Sum")
 			const sumLinkOfCancelledPayment = mpUpCancelledPayment.find(link => link.type_id === PSum);
-			(!sumLinkOfCancelledPayment) && throw new Error("The link of type sum associated with the cancelled payment " + cancelledPaymentLink.id + " is not found.");
+			if (!sumLinkOfCancelledPayment) { throw new Error("The link of type sum associated with the cancelled payment " + cancelledPaymentLink.id + " is not found."); }
 			const {error, data: [sumLink]} = await deep.insert({
 				type_id: PSum,
 				from_id: sumLinkOfCancelledPayment.from_id,
 				to_id: cancellingPaymentLink.id
 			});
-			error && throw new Error(error);
+			if(error) { throw new Error(error); }
 
 			const PPay = await deep.id("${packageName}", "Payed");
 			const payLinkOfCancelledPayment = mpUpCancelledPayment.find(link => link.type_id === PPay); 
-			(!payLinkOfCancelledPayment) && throw new Error("The link of type pay associated with the cancelled payment " + cancelledPaymentLink.id + " is not found.");
+			if (!payLinkOfCancelledPayment) { throw new Error("The link of type pay associated with the cancelled payment " + cancelledPaymentLink.id + " is not found."); }
 			const {error, data: [payLink]} = await deep.insert({
 				type_id: PPay,
 				from_id: payLinkOfCancelledPayment.from_id,
 				to_id: sumLink.id
 			});
-			error && throw new Error(error);
+			if(error) { throw new Error(error); }
 		
 			const PUrl = await deep.id("${packageName}", "Url");
 			const urlLinkOfCancelledPayment = mpUpCancelledPayment.find(link => link.type_id === PUrl);
-			(!urlLinkOfCancelledPayment) && throw new Error("The link of type url associated with the cancelled payment " + cancelledPaymentLink.id + " is not found.");
+			if (!urlLinkOfCancelledPayment) { throw new Error("The link of type url associated with the cancelled payment " + cancelledPaymentLink.id + " is not found."); }
 			const {error, data: [urlLink]} = await deep.insert({
 				type_id: PUrl,
 				from_id: urlLinkOfCancelledPayment.from_id,
 				to_id: payLink.id,
 				object: { data: { value: urlLinkOfCancelledPayment.value.value }}
 			});
-			error && throw new Error(error);
+			if(error) { throw new Error(error); }
 		}
 	};
 	`;
@@ -1268,7 +1268,7 @@ async (
 					],
 				},
 			});
-			error && throw new Error(error);
+			if(error) { throw new Error(error); }
 			throw new Error(errorMessage);
   } else if (status === 'CONFIRMED') {
     const {error} = await deep.insert({
@@ -1300,7 +1300,7 @@ async (
 					],
 				},
 			});
-			error && throw new Error(error);
+			if(error) { throw new Error(error); }
     	throw new Error(errorMessage);
   } 
   res.send('ok');
