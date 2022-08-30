@@ -1101,7 +1101,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
 	});
 	console.log({ payInsertHandlerId });
 
-	const cancellingPaymentInsertHandler = `
+	const paymentInsertHandler = `
 	async ({ deep, require, data: { newLink: cacellingPaymentLink } }) => {
 		${handlersDependencies}
 		const cancelledPaymentLink = await deep.select(cacellingPaymentLink.from_id);
@@ -1165,10 +1165,10 @@ async ({ deep, require, data: { newLink: payLink } }) => {
 		}
 	};
 	`;
-		console.log({ cancellingPaymentInsertHandler });
+		console.log({ paymentInsertHandler });
 	
 		const {
-			data: [{ id: cancellingPaymentInsertHandlerId }],
+			data: [{ id: paymentInsertHandlerId }],
 		} = await deep.insert({
 			type_id: SyncTextFile,
 			in: {
@@ -1212,7 +1212,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
 				},
 			},
 		});
-		console.log({ cancellingPaymentInsertHandlerId });
+		console.log({ paymentInsertHandlerId });
 
 	const tinkoffNotificationHandler = `
 async (
