@@ -910,14 +910,17 @@ async ({ deep, require, data: { newLink: payLink } }) => {
     },
   });
   console.log({mpDownPay});
+	mpDownPay.error && throw new Error(mpDownPay.error);
 
 	const PSum = await deep.id("${packageName}", "Sum");
   const sum = mpDownPay.data.find(link => link.type_id === PSum).value.value; 
   console.log({sum});
+	if(!sum) throw new Error("Sum link associated with the pay link " + payLink.id + " is not found.");
 
 	const PPayment = await deep.id("${packageName}", "Payment");
 	const paymentLink = mpDownPay.data.find(link => link.type_id === PPayment);
 	console.log({paymentLink});
+	if(!paymentLink) throw new Error("Payment link associated with the pay link " + payLink.id + " is not found.")
 
   const options = {
     TerminalKey: "${process.env.PAYMENT_TEST_TERMINAL_KEY}",
@@ -948,16 +951,13 @@ async ({ deep, require, data: { newLink: payLink } }) => {
     //   Taxation: 'usn_income',
     // }
   };
-
   console.log({options});
 
   let initResult = await init(options);
   console.log({initResult});
   if (initResult.error) {
 		const errorMessage = "Could not initialize the order. " + initResult.error;
-    const {
-      data: [{ id: error }],
-    } = await deep.insert({
+    const errorInsertQuery = await deep.insert({
       type_id: (await deep.id("${packageName}", "Error")),
       from_id: ${tinkoffProviderId},
       to_id: payLink.id,
@@ -971,13 +971,11 @@ async ({ deep, require, data: { newLink: payLink } }) => {
         ],
       },
     });
-    console.log({ error });
-  } 
+    console.log({ errorInsertQuery });
+		errorInsertQuery.error && throw new Error(errorInsertQuery.error);
+  }
 
-	console.log('Payment URL:', initResult.response.PaymentURL);
-	const {
-		data: [{ id: urlId }],
-	} = await deep.insert({
+	const urlInsertQuery = await deep.insert({
 		type_id: (await deep.id("${packageName}", "Url")),
 		from_id: ${tinkoffProviderId},
 		to_id: payLink.id,
@@ -991,27 +989,12 @@ async ({ deep, require, data: { newLink: payLink } }) => {
 			],
 		},
 	});
-	console.log({ urlId });
+	console.log({urlInsertQuery});
+	urlInsertQuery.error && throw new Error(urlInsertQuery.error);
 
 	const paymentLinkUpdateQuery = await deep.update({link_id: {_eq: paymentLink.id}}, {value: {...paymentLink.value.value, bankPaymentId: initResult.response.PaymentId}}, {table: "objects"});
 	console.log({paymentLinkUpdateQuery});
-	if (paymentLinkUpdateQuery.error) {
-    const {
-      data: [{ id: error }],
-    } = await deep.insert({
-      type_id: (await deep.id("${packageName}", "Error")),
-      from_id: ${tinkoffProviderId},
-      to_id: payLink.id,
-      string: { data: { value: "Could not add the bank payment id to payment value. " + paymentLinkUpdateQuery.error } },
-      in: {
-        data: [
-          {
-            type_id: await deep.id("${corePackageName}", 'Contain'),
-            from_id: ${deep.linkId},
-          },
-        ],
-      },
-    });
+	paymentLinkUpdateQuery.error && throw new Error(paymentLinkUpdateQuery.error);
   
 	return initResult;
 	};
