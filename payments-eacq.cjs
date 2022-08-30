@@ -902,43 +902,39 @@ const f = async () => {
 async ({ deep, require, data: { newLink: payLink } }) => {
 	${handlersDependencies}
 
-	const {data: mpDownPay, error} = await deep.select({
+	const {data: mpDownPay, error: mpDownPaySelectQueryError} = await deep.select({
     down: {
       link_id: { _eq: payLink.id },
       tree_id: { _eq: await deep.id("${packageName}", "paymentTree") },
     },
   });
   console.log({mpDownPay});
-	if(error) { throw new Error(error); }
+	if(mpDownPaySelectQueryError) { throw new Error(mpDownPaySelectQueryError); }
 
 	const PPayment = await deep.id("${packageName}", "Payment");
-	const paymentLink = mpDownPay.find(link => link.type_id === PPayment);
+	const paymentLink = mpDownPayQuery.data.find(link => link.type_id === PPayment);
 	console.log({paymentLink});
 	if(!paymentLink) throw new Error("Payment link associated with the pay link " + payLink.id + " is not found.")
 
 	const PSum = await deep.id("${packageName}", "Sum");
-  const sum = mpDownPay.find(link => link.type_id === PSum).value.value; 
+  const sum = mpDownPayQuery.data.find(link => link.type_id === PSum).value.value; 
   console.log({sum});
 	if(!sum) throw new Error("Sum link associated with the pay link " + payLink.id + " is not found.");
 
 	const PUrl = await deep.id("${packageName}", "Url");
 
-	const {error, data: {paymentFromLink}} = await deep.insert({
-		id: paymentLink.from_id
-	});
-	if(error) { throw new Error(error); }
+	const {data: [fromLinkOfPayment], error: fromLinkOfPaymentSelectQueryError} = await deep.select(paymentLink.from_id);
+	if(fromLinkOfPaymentSelectQueryError) { throw new Error(fromLinkOfPaymentSelectQueryError); }
 
-	const {error, data: {paymentToLink}} = await deep.insert({
-		id: paymentLink.to_id
-	});
-	if(error) { throw new Error(error); }
+	const {data: [toLinkOfPayment], error: toLinkOfPaymentSelectQueryError} = await deep.select(paymentLink.to_id);
+	if(toLinkOfPaymentSelectQueryError) { throw new Error(toLinkOfPaymentSelectQueryError); }
 
-	const isCancellingPay = (paymentFromLink.type_id === paymentLink.type_id) && (paymentToLink.type_id === await deep.id("${corePackageName}", "User"));
+	const isCancellingPay = (fromLinkOfPayment.type_id === paymentLink.type_id) && (toLinkOfPayment.type_id === await deep.id("${corePackageName}", "User"));
 
 	if(isCancellingPay) {
 		const cancel = ${cancel.toString()};
 
-		const cancellingPaymentLink = paymentFromLink;
+		const cancellingPaymentLink = fromLinkOfPayment;
 		const cancelOptions = {
 			TerminalKey: "${process.env.PAYMENT_TEST_TERMINAL_KEY}",
 			PaymentId: cancellingPaymentLink.value.value.bankPaymentId,
@@ -948,10 +944,9 @@ async ({ deep, require, data: { newLink: payLink } }) => {
 
 		const cancelResult = await cancel(cancelOptions);
 		console.log({cancelResult});
-		const {error, response} = cancelResult;
-		if (error) {
-			const errorMessage = "Could not cancel the order. " + error;
-			const {error} = await deep.insert({
+		if (cancelResult.error) {
+			const errorMessage = "Could not cancel the order. " + cancelResult.error;
+			const {error: errorLinkInsertQueryError} = await deep.insert({
 				type_id: (await deep.id("${packageName}", "Error")),
 				from_id: ${tinkoffProviderId},
 				to_id: payLink.id,
@@ -965,15 +960,16 @@ async ({ deep, require, data: { newLink: payLink } }) => {
 					],
 				},
 			});
-			if(error) { throw new Error(error); }
+			if(errorLinkInsertQueryError) { throw new Error(errorLinkInsertQueryError); }
 			throw new Error(errorMessage);
 		} 
 
-		await deep.insert({
+		const {error: payedLinkInsertQueryError} = await deep.insert({
 			type_id: await deep.id("${packageName}", "Payed");
 			from_id: ${tinkoffProviderId},
 			to_id: payLink.id
 		});
+		if(payedLinkInsertQueryError) {throw new Error(payedLinkInsertQueryError); }
 
 		return cancelResult;
 	}
@@ -1011,11 +1007,11 @@ async ({ deep, require, data: { newLink: payLink } }) => {
   };
   console.log({options});
 
-  let {response, error} = await init(options);
+  let initResult = await init(options);
   console.log({initResult});
-  if (error) {
-		const errorMessage = "Could not initialize the order. " + error;
-    const {error} = await deep.insert({
+  if (initResult.error) {
+		const errorMessage = "Could not initialize the order. " + initResult.error;
+    const {error: errorLinkInsertQueryError} = await deep.insert({
       type_id: (await deep.id("${packageName}", "Error")),
       from_id: ${tinkoffProviderId},
       to_id: payLink.id,
@@ -1029,11 +1025,11 @@ async ({ deep, require, data: { newLink: payLink } }) => {
         ],
       },
     });
-		if(error) { throw new Error(error); }
+		if(errorLinkInsertQueryError) { throw new Error(errorLinkInsertQueryError); }
 		throw new Error(errorMessage);
   }
 
-	const {error} = await deep.insert({
+	const {error: urlLinkInsertQueryError} = await deep.insert({
 		type_id: PUrl,
 		from_id: ${tinkoffProviderId},
 		to_id: payLink.id,
@@ -1047,11 +1043,10 @@ async ({ deep, require, data: { newLink: payLink } }) => {
 			],
 		},
 	});
-	console.log({urlInsertQuery});
-	if(error) { throw new Error(error); }
+	if(urlLinkInsertQueryError) { throw new Error(urlLinkInsertQueryError); }
 
-	const {error} = await deep.update({link_id: {_eq: paymentLink.id}}, {value: {...paymentLink.value.value, bankPaymentId: initResult.response.PaymentId}}, {table: "objects"});
-	if(error) { throw new Error(error); }
+	const {error: paymentLinkValueUpdateQueryError} = await deep.update({link_id: {_eq: paymentLink.id}}, {value: {...paymentLink.value.value, bankPaymentId: initResult.response.PaymentId}}, {table: "objects"});
+	if(paymentLinkValueUpdateQueryError) { throw new Error(paymentLinkValueUpdateQueryError); }
   
 	return initResult;
 	};
@@ -1107,66 +1102,72 @@ async ({ deep, require, data: { newLink: payLink } }) => {
 	console.log({ payInsertHandlerId });
 
 	const paymentInsertHandler = `
-	async ({ deep, require, data: { newLink: cacellingPaymentLink } }) => {
+	async ({ deep, require, data: { newLink: cancellingPaymentLink } }) => {
 		${handlersDependencies}
-		const cancelledPaymentLink = await deep.select(cacellingPaymentLink.from_id);
-		const userLink = await deep.select(cacellingPaymentLink.to_id);
-		const User = await deep.id("${corePackageName}", "User");
-		const isCancellingPayment = (cancelledPayment.type_id === cacellingPaymentLink.type_id) && (userLink.typeId === User);
-		if(isCancellingPayment) {
-			const {error} = await deep.insert({link_id: cancellingPaymentLink.id, value: cancelledPaymentLink.value.value}, {table: "objects"});
-			if(error) { throw new Error(error); }
+		const {data: [fromLinkOfPayment], error: fromLinkOfPaymentSelectQueryError} = await deep.select(cancellingPaymentLink.from_id);
+		if(fromLinkOfPaymentSelectQueryError) {throw new Error(fromLinkOfPaymentSelectQueryError)};
 
-			const {data: mpUpCancelledPayment, error} = await deep.select({
+		const {data: [toLinkOfPayment], error: toLinkOfPaymentSelectQueryError} = await deep.select(cancellingPaymentLink.to_id);
+		if(toLinkOfPaymentSelectQueryError) {throw new Error(toLinkOfPaymentSelectQueryError)};
+		const {data: [toLinkOfPayment]} = toLinkOfPaymentQuery;
+		
+		const User = await deep.id("${corePackageName}", "User");
+		const isCancellingPayment = (fromLinkOfPayment.type_id === cancellingPaymentLink.type_id) && (toLinkOfPayment.type_id === User);
+		if(isCancellingPayment) {
+			const cancelledPaymentLink = fromLinkOfPayment;
+			const userLink = toLinkOfPayment;
+
+			const {error: cancellingPaymentLinkValueInsertQueryError} = await deep.insert({link_id: cancellingPaymentLink.id, value: cancelledPaymentLink.value.value}, {table: "objects"});
+			if(cancellingPaymentLinkValueInsertQueryError) { throw new Error(cancellingPaymentLinkValueInsertQueryError); }
+
+			const {data: mpUpCancelledPayment, error: mpUpCancelledPaymentQueryError} = await deep.select({
 				up: {
 					parent_id: cancelledPaymentLink.id,
 					tree_id: ${paymentTreeId}
 				}
 			});
-			console.log({mpUpCancelledPayment});
-			console.log({error});
-			if(error) { throw new Error(error); }
+			if(mpUpCancelledPaymentQueryError) { throw new Error(mpUpCancelledPaymentQueryError); }
 
 			const PObject = await deep.id("${packageName}", "Object"); 
 			const objectLinkOfCancelledPayment = mpUpCancelledPayment.find(link => link.type_id === PObject);
 			if (!objectLinkOfCancelledPayment) { throw new Error("The link of type object associated with the cancelled payment " + cancelledPaymentLink.id + " is not found."); }
-			const {error, data: [objectLink]} = await deep.insert({
+			const {data: [objectLink], error: objectLinkInsertQueryError} = await deep.insert({
 				type_id: PObject,
-				from_id: cacellingPaymentLink.id,
+				from_id: cancellingPaymentLink.id,
 				to_id: objectLinkOfCancelledPayment.to_id
 			});
-			if(error) { throw new Error(error); }
+			if(objectLinkInsertQueryError) { throw new Error(objectLinkInsertQueryError); }
 			
 			const PSum = await deep.id("${packageName}", "Sum")
 			const sumLinkOfCancelledPayment = mpUpCancelledPayment.find(link => link.type_id === PSum);
 			if (!sumLinkOfCancelledPayment) { throw new Error("The link of type sum associated with the cancelled payment " + cancelledPaymentLink.id + " is not found."); }
-			const {error, data: [sumLink]} = await deep.insert({
+			const {data: [sumLink], error: sumLinkInsertQueryError} = await deep.insert({
 				type_id: PSum,
 				from_id: sumLinkOfCancelledPayment.from_id,
 				to_id: cancellingPaymentLink.id
 			});
-			if(error) { throw new Error(error); }
+			if(sumLinkInsertQueryError) { throw new Error(sumLinkInsertQueryError); }
 
 			const PPay = await deep.id("${packageName}", "Payed");
 			const payLinkOfCancelledPayment = mpUpCancelledPayment.find(link => link.type_id === PPay); 
 			if (!payLinkOfCancelledPayment) { throw new Error("The link of type pay associated with the cancelled payment " + cancelledPaymentLink.id + " is not found."); }
-			const {error, data: [payLink]} = await deep.insert({
+			const {data: [payLink], error: payLinkInsertQueryError} = await deep.insert({
 				type_id: PPay,
 				from_id: payLinkOfCancelledPayment.from_id,
 				to_id: sumLink.id
 			});
-			if(error) { throw new Error(error); }
-		
+			if(payLinkInsertQueryError) { throw new Error(payLinkInsertQueryError); }
+
 			const PUrl = await deep.id("${packageName}", "Url");
 			const urlLinkOfCancelledPayment = mpUpCancelledPayment.find(link => link.type_id === PUrl);
 			if (!urlLinkOfCancelledPayment) { throw new Error("The link of type url associated with the cancelled payment " + cancelledPaymentLink.id + " is not found."); }
-			const {error, data: [urlLink]} = await deep.insert({
+			const {data: [urlLink], error: urlLinkInsertQueryError} = await deep.insert({
 				type_id: PUrl,
 				from_id: urlLinkOfCancelledPayment.from_id,
 				to_id: payLink.id,
 				object: { data: { value: urlLinkOfCancelledPayment.value.value }}
 			});
-			if(error) { throw new Error(error); }
+			if(urlLinkInsertQueryError) { throw new Error(urlLinkInsertQueryError); }
 		}
 	};
 	`;
@@ -1229,12 +1230,11 @@ async (
   ${handlersDependencies}
 	const reqBody = req.body;
 	console.log({reqBody});
-  const status = req.body.Status;
-  console.log({status});
 
-	const paymentLink = deep.select({
+	const {data: [paymentLink], error: paymentLinkSelectQueryError} = deep.select({
 		object: {value: {_contains: req.body.OrderId}}
 	});
+	if(paymentLinkSelectQueryError) { throw new Error(paymentLinkSelectQueryError); }
 
 	const payLink = deep.select({
 		up: {
@@ -1245,16 +1245,20 @@ async (
 
   if (status === 'AUTHORIZED') {
 		const confirm = ${confirm.toString()};
+
     const confirmOptions = {
       TerminalKey: "${process.env.PAYMENT_TEST_TERMINAL_KEY}",
       PaymentId: req.body.PaymentId,
       Amount: req.body.Amount,
       // Receipt: req.body.Receipt,
     };
-    const {error} = await confirm(confirmOptions);
-		if (error) {
-			const errorMessage = "Could not confirm the pay. " + error;
-			const {error} = await deep.insert({
+
+    const confirmResult = await confirm(confirmOptions);
+		console.log({confirmResult});
+
+		if (confirmResult.error) {
+			const errorMessage = "Could not confirm the pay. " + confirmResult.error;
+			const {errorLinkInsertError} = await deep.insert({
 				type_id: (await deep.id("${packageName}", "Error")),
 				from_id: ${tinkoffProviderId},
 				to_id: payLink.id,
@@ -1268,10 +1272,13 @@ async (
 					],
 				},
 			});
-			if(error) { throw new Error(error); }
+			if(errorLinkInsertError) { throw new Error(errorLinkInsertError); }
 			throw new Error(errorMessage);
+		}
+
+		return confirmResult;
   } else if (status === 'CONFIRMED') {
-    const {error} = await deep.insert({
+    const {error: payedLinkInsertError, data: [payedLink]} = await deep.insert({
       type_id: (await deep.id("${packageName}", "Payed")),
 			from_id: ${tinkoffProviderId},
       to_id: payLink.id,
@@ -1284,24 +1291,8 @@ async (
         ],
       },
     });
-		if (error) {
-			const errorMessage = "Could not insert payed link after confirm. " + error;
-			const { error } = await deep.insert({
-				type_id: (await deep.id("${packageName}", "Error")),
-				from_id: ${tinkoffProviderId},
-				to_id: payLink.id,
-				string: { data: { value: errorMessage } },
-				in: {
-					data: [
-						{
-							type_id: await deep.id("${corePackageName}", 'Contain'),
-							from_id: ${deep.linkId},
-						},
-					],
-				},
-			});
-			if(error) { throw new Error(error); }
-    	throw new Error(errorMessage);
+		if(payedLinkInsertError) { throw new Error(payedLinkInsertError); }
+		return payedLink; 
   } 
   res.send('ok');
 };
