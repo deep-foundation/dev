@@ -2261,12 +2261,18 @@ async (
 				console.log('testGetCardList-end');
 			};
 
-			await testInit();
-			await testFinishAuthorize();
+			// await testInit();
+			// await deleteTestLinks();
+			// await testFinishAuthorize();
+			// await deleteTestLinks();
 			await testConfirm();
+			await deleteTestLinks();
 			await testCancel();
+			await deleteTestLinks();
 			await testGetState();
+			await deleteTestLinks();
 			await testGetCardList();
+			await deleteTestLinks();
 		};
 
 		// await callRealizationTests();
