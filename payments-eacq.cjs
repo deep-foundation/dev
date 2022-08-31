@@ -1253,7 +1253,8 @@ async (
 	console.log({payLink});
 	if(!payLink) { throw new Error("The pay link associated with payment link " + paymentLink + " is not found.") }
 
-  if (reqBody.status === 'AUTHORIZED') {
+
+  if (req.body.Status === 'AUTHORIZED') {
 		const confirm = ${confirm.toString()};
 
     const confirmOptions = {
@@ -1288,7 +1289,7 @@ async (
 		}
 
 		return confirmResult;
-  } else if (reqBody.status === 'CONFIRMED') {
+  } else if (req.body.Status === 'CONFIRMED') {
     const {error: payedLinkInsertError, data: [payedLink]} = await deep.insert({
       type_id: (await deep.id("${packageName}", "Payed")),
 			from_id: ${tinkoffProviderId},
@@ -1457,7 +1458,7 @@ async (
 			console.log('deleteTestLinks-start');
 			const { data: testLinks } = await deep.select({
 				type_id: {
-					_in: { PObject, PSum, PPay, PUrl, PPayed, PError, PCancelled },
+					_in: [ PObject, PSum, PPay, PUrl, PPayed, PError, PCancelled ],
 				},
 			});
 			for (let i = 0; i < testLinks.length; i++) {
@@ -1703,15 +1704,16 @@ async (
 				const testCancelAfterPayAfterConfirmFullPrice = async () => {
 					console.log('testCancelAfterPayAfterConfirmFullPrice-start');
 					const confirmResult = await testConfirm();
+					console.log({confirmResult});
 
 					const bankPaymentId = confirmResult.response.PaymentId;
+					console.log({bankPaymentId});
 
 					const cancelOptions = {
 						TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
 						PaymentId: bankPaymentId,
 						Amount: PRICE,
 					};
-
 					console.log({ cancelOptions });
 
 					const cancelResult = await cancel(cancelOptions);
@@ -2114,12 +2116,14 @@ async (
 					} = await deep.select({
 						type_id: PPayment,
 					});
+					console.log({paymentLink});
 
 					const {
 						data: [payLink],
 					} = await deep.select({
 						type_id: PPay,
 					});
+					console.log({payLink});
 
 					const {
 						data: [payedLink],
@@ -2127,7 +2131,9 @@ async (
 						type_id: PPayed,
 						to_id: payLink.id,
 					});
+					console.log({payedLink});
 
+					// TODO Remove this here and in other cancel tests
 					const {
 						data: [cancelledLink],
 					} = await deep.insert({
@@ -2136,6 +2142,7 @@ async (
 						to_id: payedLink.id,
 						number: { data: { value: PRICE } },
 					});
+					console.log({cancelledLink});
 
 					await deep.insert({
 						type_id: PPayment,
@@ -2275,8 +2282,8 @@ async (
 			// await deleteTestLinks();
 			// await testFinishAuthorize();
 			// await deleteTestLinks();
-			await testConfirm();
-			await deleteTestLinks();
+			// await testConfirm();
+			// await deleteTestLinks();
 			await testCancel();
 			await deleteTestLinks();
 			await testGetState();
