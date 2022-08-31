@@ -1233,18 +1233,27 @@ async (
 	console.log({reqBody});
 
 	const {data: [paymentLink], error: paymentLinkSelectQueryError} = await deep.select({
-		object: {value: {_contains: req.body.OrderId}}
+		object: {value: {_contains: {orderId: req.body.OrderId}}}
 	});
+	console.log({paymentLink});
 	if(paymentLinkSelectQueryError) { throw new Error(paymentLinkSelectQueryError.message); }
+	if(!paymentLink) { throw new Error("The payment link associated with the order id " + req.body.OrderId + " is not found."); }
 
-	const payLink = deep.select({
+	const {data: mpUpPaymentLink, error: mpUpPaymentLinkSelectQueryError} = await deep.select({
 		up: {
-			parent_id: paymentLink.id,
-			tree_id: ${paymentTreeId}
+			parent_id: { _eq: paymentLink.id },
+			tree_id: { _eq: ${paymentTreeId} }
 		}
 	});
+	console.log({mpUpPaymentLink});
+	if(mpUpPaymentLinkSelectQueryError) { throw new Error(mpUpPaymentLinkSelectQueryError.message); }
 
-  if (status === 'AUTHORIZED') {
+	const PPay = await deep.id("${packageName}", "Pay");
+	const payLink = mpUpPaymentLink.find(link => link.type_id === PPay);
+	console.log({payLink});
+	if(!payLink) { throw new Error("The pay link associated with payment link " + paymentLink + " is not found.") }
+
+  if (reqBody.status === 'AUTHORIZED') {
 		const confirm = ${confirm.toString()};
 
     const confirmOptions = {
@@ -1253,6 +1262,7 @@ async (
       Amount: req.body.Amount,
       // Receipt: req.body.Receipt,
     };
+		console.log({confirmOptions});
 
     const confirmResult = await confirm(confirmOptions);
 		console.log({confirmResult});
@@ -1278,7 +1288,7 @@ async (
 		}
 
 		return confirmResult;
-  } else if (status === 'CONFIRMED') {
+  } else if (reqBody.status === 'CONFIRMED') {
     const {error: payedLinkInsertError, data: [payedLink]} = await deep.insert({
       type_id: (await deep.id("${packageName}", "Payed")),
 			from_id: ${tinkoffProviderId},
