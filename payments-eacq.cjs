@@ -931,7 +931,8 @@ async ({ deep, require, data: { newLink: payLink } }) => {
 	});
 	if(fromLinkOfPaymentQuery.error) { throw new Error(fromLinkOfPaymentQuery.error.message); }
 	if(toLinkOfPaymentQuery.error) { throw new Error(toLinkOfPaymentQuery.error.message); }
-	const isCancellingPay = fromLinkOfPaymentQuery.data && toLinkOfPaymentQuery.data && (fromLinkOfPaymentQuery.data[0].type_id === paymentLink.type_id) && (toLinkOfPaymentQuery.data[0].type_id === await deep.id("@deep-foundation/core", "User"));
+	console.log(fromLinkOfPaymentQuery.data);
+	const isCancellingPay = fromLinkOfPaymentQuery.data.length > 0 && toLinkOfPaymentQuery.data.length > 0 && (fromLinkOfPaymentQuery.data[0].type_id === paymentLink.type_id) && (toLinkOfPaymentQuery.data[0].type_id === await deep.id("@deep-foundation/core", "User"));
 	if(isCancellingPay) {
 		const cancel = ${cancel.toString()};
 
