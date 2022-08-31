@@ -1232,7 +1232,7 @@ async (
 	const reqBody = req.body;
 	console.log({reqBody});
 
-	const {data: [paymentLink], error: paymentLinkSelectQueryError} = deep.select({
+	const {data: [paymentLink], error: paymentLinkSelectQueryError} = await deep.select({
 		object: {value: {_contains: req.body.OrderId}}
 	});
 	if(paymentLinkSelectQueryError) { throw new Error(paymentLinkSelectQueryError.message); }
