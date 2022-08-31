@@ -1363,6 +1363,18 @@ async (
 																			value: tinkoffNotificationHandler,
 																		},
 																	},
+																	in: {
+																		data: {
+																			type_id: Contain,
+																			// from_id: deep.linkId,
+																			from_id: await deep.id('deep', 'admin'),
+																			string: {
+																				data: {
+																					value: 'tinkoffNotificationHandler',
+																				},
+																			},
+																		},
+																	},
 																},
 															},
 														},
