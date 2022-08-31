@@ -909,7 +909,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
     },
   });
   console.log({mpDownPay});
-	if(mpDownPaySelectQueryError) { throw new Error(mpDownPaySelectQueryError); }
+	if(mpDownPaySelectQueryError) { throw new Error(mpDownPaySelectQueryError.message); }
 
 	const PPayment = await deep.id("${packageName}", "Payment");
 	const paymentLink = mpDownPay.find(link => link.type_id === PPayment);
@@ -929,8 +929,8 @@ async ({ deep, require, data: { newLink: payLink } }) => {
 	const toLinkOfPaymentQuery = await deep.select({
 		id: paymentLink.to_id
 	});
-	if(fromLinkOfPaymentQuery.error) { throw new Error(fromLinkOfPaymentQuery.error); }
-	if(toLinkOfPaymentQuery.error) { throw new Error(toLinkOfPaymentQuery.error); }
+	if(fromLinkOfPaymentQuery.error) { throw new Error(fromLinkOfPaymentQuery.error.message); }
+	if(toLinkOfPaymentQuery.error) { throw new Error(toLinkOfPaymentQuery.error.message); }
 	const isCancellingPay = fromLinkOfPaymentQuery.data && toLinkOfPaymentQuery.data && (fromLinkOfPaymentQuery.data[0].type_id === paymentLink.type_id) && (toLinkOfPaymentQuery.data[0].type_id === await deep.id("@deep-foundation/core", "User"));
 	if(isCancellingPay) {
 		const cancel = ${cancel.toString()};
@@ -961,7 +961,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
 					],
 				},
 			});
-			if(errorLinkInsertQueryError) { throw new Error(errorLinkInsertQueryError); }
+			if(errorLinkInsertQueryError) { throw new Error(errorLinkInsertQueryError.message); }
 			throw new Error(errorMessage);
 		} 
 
@@ -970,7 +970,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
 			from_id: ${tinkoffProviderId},
 			to_id: payLink.id
 		});
-		if(payedLinkInsertQueryError) {throw new Error(payedLinkInsertQueryError); }
+		if(payedLinkInsertQueryError) {throw new Error(payedLinkInsertQueryError.message); }
 
 		return cancelResult;
 	}
@@ -1026,7 +1026,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
         ],
       },
     });
-		if(errorLinkInsertQueryError) { throw new Error(errorLinkInsertQueryError); }
+		if(errorLinkInsertQueryError) { throw new Error(errorLinkInsertQueryError.message); }
 		throw new Error(errorMessage);
   }
 
@@ -1044,10 +1044,10 @@ async ({ deep, require, data: { newLink: payLink } }) => {
 			],
 		},
 	});
-	if(urlLinkInsertQueryError) { throw new Error(urlLinkInsertQueryError); }
+	if(urlLinkInsertQueryError) { throw new Error(urlLinkInsertQueryError.message); }
 
 	const {error: paymentLinkValueUpdateQueryError} = await deep.update({link_id: {_eq: paymentLink.id}}, {value: {...paymentLink.value.value, bankPaymentId: initResult.response.PaymentId}}, {table: "objects"});
-	if(paymentLinkValueUpdateQueryError) { throw new Error(paymentLinkValueUpdateQueryError); }
+	if(paymentLinkValueUpdateQueryError) { throw new Error(paymentLinkValueUpdateQueryError.message); }
   
 	return initResult;
 };
@@ -1105,10 +1105,10 @@ async ({ deep, require, data: { newLink: payLink } }) => {
 	async ({ deep, require, data: { newLink: cancellingPaymentLink } }) => {
 		${handlersDependencies}
 		const {data: [fromLinkOfPayment], error: fromLinkOfPaymentSelectQueryError} = await deep.select(cancellingPaymentLink.from_id);
-		if(fromLinkOfPaymentSelectQueryError) {throw new Error(fromLinkOfPaymentSelectQueryError)};
+		if(fromLinkOfPaymentSelectQueryError) {throw new Error(fromLinkOfPaymentSelectQueryError.message)};
 
 		const {data: [toLinkOfPayment], error: toLinkOfPaymentSelectQueryError} = await deep.select(cancellingPaymentLink.to_id);
-		if(toLinkOfPaymentSelectQueryError) {throw new Error(toLinkOfPaymentSelectQueryError)};
+		if(toLinkOfPaymentSelectQueryError) {throw new Error(toLinkOfPaymentSelectQueryError.message)};
 		const {data: [toLinkOfPayment]} = toLinkOfPaymentQuery;
 		
 		const User = await deep.id("${corePackageName}", "User");
@@ -1118,7 +1118,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
 			const userLink = toLinkOfPayment;
 
 			const {error: cancellingPaymentLinkValueInsertQueryError} = await deep.insert({link_id: cancellingPaymentLink.id, value: cancelledPaymentLink.value.value}, {table: "objects"});
-			if(cancellingPaymentLinkValueInsertQueryError) { throw new Error(cancellingPaymentLinkValueInsertQueryError); }
+			if(cancellingPaymentLinkValueInsertQueryError) { throw new Error(cancellingPaymentLinkValueInsertQueryError.message); }
 
 			const {data: mpUpCancelledPayment, error: mpUpCancelledPaymentQueryError} = await deep.select({
 				up: {
@@ -1126,7 +1126,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
 					tree_id: ${paymentTreeId}
 				}
 			});
-			if(mpUpCancelledPaymentQueryError) { throw new Error(mpUpCancelledPaymentQueryError); }
+			if(mpUpCancelledPaymentQueryError) { throw new Error(mpUpCancelledPaymentQueryError.message); }
 
 			const PObject = await deep.id("${packageName}", "Object"); 
 			const objectLinkOfCancelledPayment = mpUpCancelledPayment.find(link => link.type_id === PObject);
@@ -1136,7 +1136,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
 				from_id: cancellingPaymentLink.id,
 				to_id: objectLinkOfCancelledPayment.to_id
 			});
-			if(objectLinkInsertQueryError) { throw new Error(objectLinkInsertQueryError); }
+			if(objectLinkInsertQueryError) { throw new Error(objectLinkInsertQueryError.message); }
 			
 			const PSum = await deep.id("${packageName}", "Sum")
 			const sumLinkOfCancelledPayment = mpUpCancelledPayment.find(link => link.type_id === PSum);
@@ -1146,7 +1146,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
 				from_id: sumLinkOfCancelledPayment.from_id,
 				to_id: cancellingPaymentLink.id
 			});
-			if(sumLinkInsertQueryError) { throw new Error(sumLinkInsertQueryError); }
+			if(sumLinkInsertQueryError) { throw new Error(sumLinkInsertQueryError.message); }
 
 			const PPay = await deep.id("${packageName}", "Payed");
 			const payLinkOfCancelledPayment = mpUpCancelledPayment.find(link => link.type_id === PPay); 
@@ -1156,7 +1156,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
 				from_id: payLinkOfCancelledPayment.from_id,
 				to_id: sumLink.id
 			});
-			if(payLinkInsertQueryError) { throw new Error(payLinkInsertQueryError); }
+			if(payLinkInsertQueryError) { throw new Error(payLinkInsertQueryError.message); }
 
 			const PUrl = await deep.id("${packageName}", "Url");
 			const urlLinkOfCancelledPayment = mpUpCancelledPayment.find(link => link.type_id === PUrl);
@@ -1167,7 +1167,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
 				to_id: payLink.id,
 				object: { data: { value: urlLinkOfCancelledPayment.value.value }}
 			});
-			if(urlLinkInsertQueryError) { throw new Error(urlLinkInsertQueryError); }
+			if(urlLinkInsertQueryError) { throw new Error(urlLinkInsertQueryError.message); }
 		}
 	};
 	`;
@@ -1234,7 +1234,7 @@ async (
 	const {data: [paymentLink], error: paymentLinkSelectQueryError} = deep.select({
 		object: {value: {_contains: req.body.OrderId}}
 	});
-	if(paymentLinkSelectQueryError) { throw new Error(paymentLinkSelectQueryError); }
+	if(paymentLinkSelectQueryError) { throw new Error(paymentLinkSelectQueryError.message); }
 
 	const payLink = deep.select({
 		up: {
