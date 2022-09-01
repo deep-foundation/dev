@@ -2105,9 +2105,9 @@ async (
 				console.log('testConfirm-end');
 			};
 
-			const testCancel = async ({customerKey} = {customerKey: uniqid()}) => {
+			const testCancel = async () => {
 				console.log('testCancel-start');
-				const testCancelAfterPayAfterConfirmFullPrice = async () => {
+				const testCancelAfterPayAfterConfirmFullPrice = async ({customerKey} = {customerKey: uniqid()}) => {
 					console.log('testCancelAfterPayAfterConfirmFullPrice-start');
 					await testConfirm({customerKey});
 
@@ -2155,7 +2155,7 @@ async (
 					console.log('testCancelAfterPayAfterConfirmFullPrice-end');
 				};
 
-				const testCancelAfterPayAfterConfirmCustomPriceX2 = async () => {
+				const testCancelAfterPayAfterConfirmCustomPriceX2 = async ({customerKey} = {customerKey: uniqid()}) => {
 					console.log('testCancelAfterPayAfterConfirmCustomPriceX2-start');
 					await testConfirm();
 
@@ -2184,7 +2184,7 @@ async (
 					console.log('testCancelAfterPayAfterConfirmCustomPriceX2-end');
 				};
 
-				const testCancelBeforePay = async () => {
+				const testCancelBeforePay = async ({customerKey} = {customerKey: uniqid()}) => {
 					console.log('testCancelBeforePay-start');
 					await testInit();
 
