@@ -2118,46 +2118,26 @@ async (
 					});
 					console.log({paymentLink});
 
-					const {
-						data: [payLink],
-					} = await deep.select({
-						type_id: PPay,
-					});
-					console.log({payLink});
-
-					const {
-						data: [payedLink],
-					} = await deep.select({
-						type_id: PPayed,
-						to_id: payLink.id,
-					});
-					console.log({payedLink});
-
-					// TODO Remove this here and in other cancel tests
-					const {
-						data: [cancelledLink],
-					} = await deep.insert({
-						type_id: PCancelled,
-						from_id: tinkoffProviderId,
-						to_id: payedLink.id,
-						number: { data: { value: PRICE } },
-					});
-					console.log({cancelledLink});
-
-					await deep.insert({
+					const {data: [cancellingPaymentLink], error: cancellingPaymentLinkInsertQueryError} = await deep.insert({
 						type_id: PPayment,
 						from_id: paymentLink.id,
-						to_id: customerKey
+						to_id: deep.linkId
 					});
+					if(cancellingPaymentLinkInsertQueryError) {throw new Error(cancellingPaymentLinkInsertQueryError); }
 
 					await sleep(5000);
 
-					const { data: cancelledErrors } = await deep.select({
-						type_id: PError,
-						to_id: cancelledLink.id,
+					const {data: mpUpCancelledPayment, error: mpUpCancelledPaymentSelectQueryError} = await deep.select({
+						up: {
+							parent_id: {_eq: cancellingPaymentLink.id},
+							tree_id: paymentTreeId
+						}
 					});
+					if(mpUpCancelledPaymentSelectQueryError) {throw new Error(mpUpCancelledPaymentSelectQueryError); }
+					const PPayed = await deep.id(packageName, "Payd");
+					const payedLink = mpUpCancelledPayment.data.find(link => link.type_id === PPayed);
+					expect(payedLink).to.equal(true);
 
-					expect(cancelledErrors.length).to.equal(0);
 					console.log('testCancelAfterPayAfterConfirmFullPrice-end');
 				};
 
