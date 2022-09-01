@@ -2125,7 +2125,21 @@ async (
 					});
 					if(cancellingPaymentLinkInsertQueryError) {throw new Error(cancellingPaymentLinkInsertQueryError); }
 
-					await sleep(5000);
+					await sleep(3000);
+
+					const {
+						data: [sumLink]
+					} = await deep.select({
+						type_id: PSum
+					});
+					
+					await deep.insert({
+						type_id: PPay,
+						from_id: deep.linkId,
+						to_id: sumLink.id
+					});
+
+					await sleep(3000);
 
 					const {data: mpUpCancelledPayment, error: mpUpCancelledPaymentSelectQueryError} = await deep.select({
 						up: {
@@ -2146,37 +2160,26 @@ async (
 					await testConfirm();
 
 					const {
-						data: [payLink],
+						data: [paymentLink],
 					} = await deep.select({
-						type_id: PPay,
+						type_id: PPayment,
 					});
 
 					const {
-						data: [payedLink],
+						data: [sumLink]
 					} = await deep.select({
-						type_id: PPayed,
-						to_id: payLink.id,
+						type_id: PSum
 					});
 
-					for (let i = 0; i < 2; i++) {
-						const {
-							data: [cancelledLink],
-						} = await deep.insert({
-							type_id: PCancelled,
-							from_id: tinkoffProviderId,
-							to_id: payedLink.id,
-							number: { data: { value: Math.floor(PRICE / 3) } },
-						});
+					await deep.update({link_id: sumLink.id, value: parseInt(sumLink.value.value) / 3}, {table: "strings"})
 
-						await sleep(5000);
+					await deep.insert({
+						type_id: PPay,
+						from_id: deep.linkId,
+						to_id: sumLink.id
+					});
 
-						const { data: cancelledErrors } = await deep.select({
-							type_id: PError,
-							to_id: cancelledLink.id,
-						});
-
-						expect(cancelledErrors.length).to.equal(0);
-					}
+					
 
 					console.log('testCancelAfterPayAfterConfirmCustomPriceX2-end');
 				};
