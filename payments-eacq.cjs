@@ -1356,7 +1356,7 @@ async (
 				const { id } = testLinks[i];
 				await deep.delete({ id: id });
 			}
-			console.log('deleteTestLinks-start');
+			console.log('deleteTestLinks-end');
 		};
 
 		const callRealizationTests = async () => {
