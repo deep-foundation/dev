@@ -2059,7 +2059,7 @@ async (
 
 				const testCancelAfterPayAfterConfirmCustomPriceX2 = async ({customerKey} = {customerKey: uniqid()}) => {
 					console.log('testCancelAfterPayAfterConfirmCustomPriceX2-start');
-					await testConfirm();
+					await testConfirm({customerKey});
 
 					const {
 						data: [paymentLink],
@@ -2090,9 +2090,7 @@ async (
 							number: {data: {value: Math.floor(PRICE / 3)}}
 						});
 						console.log({sumLinkOfCancellingPayment});
-	
-						await sleep(15000);
-						
+							
 						const payLinkInsertQuery = await deep.insert({
 							type_id: PPay,
 							from_id: deep.linkId,
@@ -2120,7 +2118,14 @@ async (
 
 				const testCancelBeforePay = async ({customerKey} = {customerKey: uniqid()}) => {
 					console.log('testCancelBeforePay-start');
-					await testInit();
+					await testInit({customerKey});
+
+					const {
+						data: [paymentLink],
+					} = await deep.select({
+						type_id: PPayment,
+					});
+					console.log({paymentLink});
 
 					const cancellingPaymentLinkInsertQuery = await deep.insert({
 						type_id: PPayment,
