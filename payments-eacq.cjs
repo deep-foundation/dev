@@ -2184,7 +2184,7 @@ async (
 
 				console.log('testCancel-end');
 			};
-
+			/*
 			const testGetState = async () => {
 				console.log('testGetState-start');
 				await testFinishAuthorize();
@@ -2222,19 +2222,19 @@ async (
 				expect(getCardListResult.error).to.equal(undefined);
 				console.log('testGetCardList-end');
 			};
-
-			// await testInit();
-			// await deleteTestLinks();
-			// await testFinishAuthorize();
-			// await deleteTestLinks();
-			// await testConfirm();
-			// await deleteTestLinks();
+			*/
+			await testInit();
+			await deleteTestLinks();
+			await testFinishAuthorize();
+			await deleteTestLinks();
+			await testConfirm();
+			await deleteTestLinks();
 			await testCancel();
 			await deleteTestLinks();
-			await testGetState();
+			/*await testGetState();
 			await deleteTestLinks();
 			await testGetCardList();
-			await deleteTestLinks();
+			await deleteTestLinks();*/
 		};
 
 		// await callRealizationTests();
