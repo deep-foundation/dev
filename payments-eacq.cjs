@@ -2107,6 +2107,7 @@ async (
 								tree_id: {_eq: paymentTreeId}
 							}
 						});
+						console.log({mpUpCancelledPayment});
 						if(mpUpCancelledPaymentSelectQueryError) {throw new Error(mpUpCancelledPaymentSelectQueryError); }
 						const PPayed = await deep.id(packageName, "Payed");
 						const payedLink = mpUpCancelledPayment.find(link => link.type_id === PPayed);
