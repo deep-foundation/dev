@@ -1309,17 +1309,6 @@ async (
 
 	const callTests = async () => {
 		console.log('callTests-start');
-		const PPayment = await deep.id(packageName, 'Payment');
-		const PObject = await deep.id(packageName, 'Object');
-		const PSum = await deep.id(packageName, 'Sum');
-		const PPay = await deep.id(packageName, 'Pay');
-		const PUrl = await deep.id(packageName, 'Url');
-		const PPayed = await deep.id(packageName, 'Payed');
-		const PError = await deep.id(packageName, 'Error');
-		const PCancelled = await deep.id(packageName, 'Cancelled');
-		const paymentTreeId = await deep.id(packageName, 'paymentTree');
-		const Type = await deep.id(corePackageName, 'Type');
-		const Any = await deep.id(corePackageName, 'Any');
 
 		console.log({ paymentTreeId });
 
