@@ -952,7 +952,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
   console.log({sumLink});
 	if(!sumLink) throw new Error("Sum link associated with the pay link " + payLink.id + " is not found.");
 
-	const PUrl = await deep.id("${packageName}, "Url");
+	const PUrl = await deep.id("${packageName}", "Url");
 
 	const fromLinkOfPaymentQuery = await deep.select({
 		id: paymentLink.from_id
