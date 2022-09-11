@@ -1013,8 +1013,18 @@ async ({ deep, require, data: { newLink: payLink } }) => {
   
 	const init = ${init.toString()};
 
+	const storageBusiness = toLinkOfPayment;
+	const Token = await deep.id("${packageName}", "Token");
+	const tokenLinkSelectQuery = await deep.select({
+		type_id: Token,
+		from_id: storageBusiness,
+		to_id: storageBusiness
+	});
+	if(tokenLinkSelectQuery.error) {throw new Error(tokenLinkSelectQuery.error.message);}
+	const tokenLink = tokenLinkSelectQuery.data[0];
+
   const options = {
-    TerminalKey: "${process.env.PAYMENT_TEST_TERMINAL_KEY}",
+    TerminalKey: tokenLink.value.value,
     OrderId: paymentLink?.value?.value.orderId ?? paymentLink.id,
     CustomerKey: ${deep.linkId},
     NotificationURL: "${process.env.PAYMENT_EACQ_AND_TEST_NOTIFICATION_URL}",
