@@ -967,7 +967,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
 		id: paymentLink.to_id
 	});
 	if(toLinkOfPaymentQuery.error) { throw new Error(toLinkOfPaymentQuery.error.message); }
-	const toLinkOfPayment = fromLinkOfPaymentQuery.data[0];
+	const toLinkOfPayment = toLinkOfPaymentQuery.data[0];
 	console.log({toLinkOfPayment});
 
 	const isCancellingPay = fromLinkOfPaymentQuery.data.length > 0 && toLinkOfPaymentQuery.data.length > 0 && (fromLinkOfPaymentQuery.data[0].type_id === paymentLink.type_id) && (toLinkOfPaymentQuery.data[0].type_id === await deep.id("@deep-foundation/core", "User"));
@@ -1024,6 +1024,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
 	const init = ${init.toString()};
 
 	const storageBusinessLink = toLinkOfPayment;
+	console.log({storageBusinessLink});
 	const Token = await deep.id("${packageName}", "Token");
 	const tokenLinkSelectQuery = await deep.select({
 		type_id: Token,
@@ -1032,6 +1033,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
 	});
 	if(tokenLinkSelectQuery.error) {throw new Error(tokenLinkSelectQuery.error.message);}
 	const tokenLink = tokenLinkSelectQuery.data[0];
+	console.log({tokenLink});
 
   const options = {
     TerminalKey: tokenLink.value.value,
@@ -1185,7 +1187,7 @@ async (
 	const {data: mpUpPaymentLink, error: mpUpPaymentLinkSelectQueryError} = await deep.select({
 		up: {
 			parent_id: { _eq: paymentLink.id },
-			tree_id: { _eq: await deep.id("${packageName}", "paymentTree) }
+			tree_id: { _eq: await deep.id("${packageName}", "paymentTree") }
 		}
 	});
 	console.log({mpUpPaymentLink});
@@ -1445,7 +1447,7 @@ async (
 		console.log({ storageBusinessLink });
 
 		const {
-			data: [{ id: token }],
+			data: [{ id: tokenId }],
 		} = await deep.insert({
 			type_id: Token,
 			from_id: storageBusinessLink.id,
@@ -1461,7 +1463,7 @@ async (
 			},
 		});
 	
-		console.log({ token });
+		console.log({ token: tokenId });
 
 		const {
 			data: [{ id: Product }],
