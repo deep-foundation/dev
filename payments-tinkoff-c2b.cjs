@@ -1013,12 +1013,12 @@ async ({ deep, require, data: { newLink: payLink } }) => {
   
 	const init = ${init.toString()};
 
-	const storageBusiness = toLinkOfPayment;
+	const storageBusinessLink = toLinkOfPayment;
 	const Token = await deep.id("${packageName}", "Token");
 	const tokenLinkSelectQuery = await deep.select({
 		type_id: Token,
-		from_id: storageBusiness,
-		to_id: storageBusiness
+		from_id: storageBusinessLink.id,
+		to_id: storageBusinessLink.id
 	});
 	if(tokenLinkSelectQuery.error) {throw new Error(tokenLinkSelectQuery.error.message);}
 	const tokenLink = tokenLinkSelectQuery.data[0];
@@ -1183,8 +1183,23 @@ async (
   if (req.body.Status === 'AUTHORIZED') {
 		const confirm = ${confirm.toString()};
 
+		const storageBusinessLinkSelectQuery = await deep.select({
+			id: paymentLink.to_id
+		});
+		if(storageBusinessLinkSelectQuery.error) {throw new Error(storageBusinessLinkSelectQuery.error.message);}
+		const storageBusinessLink = storageBusinessLinkSelectQuery.data[0];
+
+		const Token = await deep.id("${packageName}", "Token");
+		const tokenLinkSelectQuery = await deep.select({
+			type_id: Token,
+			from_id: storageBusinessLink.id,
+			to_id: storageBusinessLink.id
+		});
+		if(tokenLinkSelectQuery.error) {throw new Error(tokenLinkSelectQuery.error.message);}
+		const tokenLink = tokenLinkSelectQuery.data[0];
+
     const confirmOptions = {
-      TerminalKey: "${process.env.PAYMENT_TEST_TERMINAL_KEY}",
+      TerminalKey: tokenLink.value.value,
       PaymentId: req.body.PaymentId,
       Amount: req.body.Amount,
       // Receipt: req.body.Receipt,
@@ -1397,7 +1412,7 @@ async (
 		console.log({ sumProviderId });
 
 		const {
-			data: [{ id: storageBusiness }],
+			data: [{ id: storageBusinessLink }],
 		} = await deep.insert({
 			type_id: StorageBusiness,
 			in: {
@@ -1410,14 +1425,14 @@ async (
 			},
 		});
 	
-		console.log({ storageBusiness });
+		console.log({ storageBusinessLink });
 
 		const {
 			data: [{ id: token }],
 		} = await deep.insert({
 			type_id: Token,
-			from_id: storageBusiness,
-			to_id: storageBusiness,
+			from_id: storageBusiness.id,
+			to_id: storageBusiness.id,
 			string: {data: {value: process.env.PAYMENT_TEST_TERMINAL_KEY}},
 			in: {
 				data: [
@@ -1429,7 +1444,7 @@ async (
 			},
 		});
 	
-		console.log({ storageBusiness });
+		console.log({ token });
 
 		const {
 			data: [{ id: Product }],
