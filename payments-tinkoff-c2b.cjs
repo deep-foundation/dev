@@ -873,6 +873,8 @@ const f = async () => {
 		data: [{ id: Token }],
 	} = await deep.insert({
 		type_id: Type,
+		from_id: Any,
+		to_id: Any,
 		in: {
 			data: {
 				type_id: Contain,
