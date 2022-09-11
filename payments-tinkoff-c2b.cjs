@@ -992,7 +992,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
 					data: [
 						{
 							type_id: await deep.id("${corePackageName}", 'Contain'),
-							from_id: ${deep.linkId},
+							from_id: deep.linkId,
 						},
 					],
 				},
@@ -1026,7 +1026,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
   const options = {
     TerminalKey: tokenLink.value.value,
     OrderId: paymentLink?.value?.value.orderId ?? paymentLink.id,
-    CustomerKey: ${deep.linkId},
+    CustomerKey: deep.linkId,
     NotificationURL: "${process.env.PAYMENT_EACQ_AND_TEST_NOTIFICATION_URL}",
     PayType: 'T',
     Amount: ${PRICE},
@@ -1067,7 +1067,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
         data: [
           {
             type_id: await deep.id("${corePackageName}", 'Contain'),
-            from_id: ${deep.linkId},
+            from_id: deep.linkId,
           },
         ],
       },
@@ -1085,7 +1085,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
 			data: [
 				{
 					type_id: await deep.id("${corePackageName}", 'Contain'),
-					from_id: ${deep.linkId},
+					from_id: deep.linkId,
 				},
 			],
 		},
@@ -1220,7 +1220,7 @@ async (
 					data: [
 						{
 							type_id: await deep.id("${corePackageName}", 'Contain'),
-							from_id: ${deep.linkId},
+							from_id: deep.linkId,
 						},
 					],
 				},
@@ -1239,7 +1239,7 @@ async (
         data: [
           {
             type_id: await deep.id("${corePackageName}", 'Contain'),
-            from_id: ${deep.linkId},
+            from_id: deep.linkId,
           },
         ],
       },
