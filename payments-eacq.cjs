@@ -882,6 +882,19 @@ const f = async () => {
 		},
 	});
 
+	const {
+		data: [{ id: StorageClient }],
+	} = await deep.insert({
+		type_id: Storage,
+		in: {
+			data: {
+				type_id: Contain,
+				from_id: packageId, // before created package
+				string: { data: { value: 'StorageClient' } },
+			},
+		},
+	});
+
 	const handlersDependencies = `
 	const crypto = require('crypto');
   const axios = require('axios');
