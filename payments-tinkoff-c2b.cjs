@@ -1427,7 +1427,7 @@ async (
 		console.log({ sumProviderId });
 
 		const {
-			data: [{ id: storageBusinessLink }],
+			data: [storageBusinessLink],
 		} = await deep.insert({
 			type_id: StorageBusiness,
 			in: {
