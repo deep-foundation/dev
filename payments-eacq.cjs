@@ -670,20 +670,6 @@ const f = async () => {
 	console.log({ PTinkoffProvider });
 
 	const {
-		data: [{ id: tinkoffProviderId }],
-	} = await deep.insert({
-		type_id: PTinkoffProvider,
-		in: {
-			data: [
-				{
-					type_id: Contain,
-					from_id: deep.linkId,
-				},
-			],
-		},
-	});
-
-	const {
 		data: [{ id: PPayment }],
 	} = await deep.insert({
 		type_id: BasePayment,
@@ -868,24 +854,6 @@ const f = async () => {
 			],
 		},
 	});
-
-	console.log({ tinkoffProviderId });
-
-	const {
-		data: [{ id: sumProviderId }],
-	} = await deep.insert({
-		type_id: PSumProvider,
-		in: {
-			data: [
-				{
-					type_id: Contain,
-					from_id: deep.linkId,
-				},
-			],
-		},
-	});
-
-	console.log({ sumProviderId });
 
 	const handlersDependencies = `
 	const crypto = require('crypto');
@@ -1310,6 +1278,40 @@ async (
 		const paymentTreeId = await deep.id(packageName, 'paymentTree');
 		const Type = await deep.id(corePackageName, 'Type');
 		const Any = await deep.id(corePackageName, 'Any');
+
+		console.log({ paymentTreeId });
+
+		const {
+			data: [{ id: tinkoffProviderId }],
+		} = await deep.insert({
+			type_id: PTinkoffProvider,
+			in: {
+				data: [
+					{
+						type_id: Contain,
+						from_id: deep.linkId,
+					},
+				],
+			},
+		});
+	
+		console.log({ tinkoffProviderId });
+	
+		const {
+			data: [{ id: sumProviderId }],
+		} = await deep.insert({
+			type_id: PSumProvider,
+			in: {
+				data: [
+					{
+						type_id: Contain,
+						from_id: deep.linkId,
+					},
+				],
+			},
+		});
+	
+		console.log({ sumProviderId });
 
 		const {
 			data: [{ id: Product }],
