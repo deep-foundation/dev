@@ -1446,8 +1446,8 @@ async (
 			data: [{ id: token }],
 		} = await deep.insert({
 			type_id: Token,
-			from_id: storageBusiness.id,
-			to_id: storageBusiness.id,
+			from_id: storageBusinessLink.id,
+			to_id: storageBusinessLink.id,
 			string: {data: {value: process.env.PAYMENT_TEST_TERMINAL_KEY}},
 			in: {
 				data: [
