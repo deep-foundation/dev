@@ -605,6 +605,7 @@ const f = async () => {
 	const BasePayed = await deep.id(basePackageName, 'Payed');
 	const BaseCancelled = await deep.id(basePackageName, 'Cancelled');
 	const BaseError = await deep.id(basePackageName, 'Error');
+	const Storage = await deep.id(basePackageName, 'Storage')o
 
 	const {
 		data: [{ id: packageId }],
@@ -852,6 +853,19 @@ const f = async () => {
 					to_id: PUrl,
 				},
 			],
+		},
+	});
+
+	const {
+		data: [{ id: StorageBusiness }],
+	} = await deep.insert({
+		type_id: Storage,
+		in: {
+			data: {
+				type_id: Contain,
+				from_id: packageId, // before created package
+				string: { data: { value: 'Storage' } },
+			},
 		},
 	});
 
