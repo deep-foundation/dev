@@ -1358,7 +1358,26 @@ async (
 			},
 		});
 	
-		console.log({ sumProviderId });
+		console.log({ storageBusiness });
+
+		const {
+			data: [{ id: token }],
+		} = await deep.insert({
+			type_id: Token,
+			from_id: storageBusiness,
+			to_id: storageBusiness,
+			string: {data: {value: process.env.PAYMENT_TEST_TERMINAL_KEY}},
+			in: {
+				data: [
+					{
+						type_id: Contain,
+						from_id: deep.linkId,
+					},
+				],
+			},
+		});
+	
+		console.log({ storageBusiness });
 
 		const {
 			data: [{ id: Product }],
