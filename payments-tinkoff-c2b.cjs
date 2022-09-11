@@ -926,6 +926,13 @@ const f = async () => {
 async ({ deep, require, data: { newLink: payLink } }) => {
 	${handlersDependencies}
 
+	const TinkoffProvider = await deep.id("${packageName}", "TinkoffProvider");
+	const tinkoffProviderLinkSelectQuery = await deep.select({
+		type_id: TinkoffProvider
+	});
+	if(tinkoffProviderLinkSelectQuery.error) {throw new Error(tinkoffProviderLinkSelectQuery.error.message);}
+	const tinkoffProviderLink = tinkoffProviderLinkSelectQuery.data[0];
+
 	const {data: mpDownPay, error: mpDownPaySelectQueryError} = await deep.select({
     down: {
       link_id: { _eq: payLink.id },
@@ -938,7 +945,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
 	const PPayment = await deep.id("${packageName}", "Payment");
 	const paymentLink = mpDownPay.find(link => link.type_id === PPayment);
 	console.log({paymentLink});
-	if(!paymentLink) throw new Error("Payment link associated with the pay link " + payLink.id + " is not found.")
+	if(!paymentLink) throw new Error("Payment link associated with the pay link " + payLink.id + " is not found.");
 
 	const PSum = await deep.id("${packageName}", "Sum");
   const sumLink = mpDownPay.find(link => link.type_id === PSum); 
@@ -983,9 +990,10 @@ async ({ deep, require, data: { newLink: payLink } }) => {
 		console.log({cancelResult});
 		if (cancelResult.error) {
 			const errorMessage = "Could not cancel the order. " + JSON.stringify(cancelResult.error);
+
 			const {error: errorLinkInsertQueryError} = await deep.insert({
 				type_id: (await deep.id("${packageName}", "Error")),
-				from_id: ${tinkoffProviderId},
+				from_id: tinkoffProviderLink.id,
 				to_id: payLink.id,
 				string: { data: { value: errorMessage } },
 				in: {
@@ -1003,7 +1011,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
 
 		const {error: payedLinkInsertQueryError} = await deep.insert({
 			type_id: await deep.id("${packageName}", "Payed"),
-			from_id: ${tinkoffProviderId},
+			from_id: tinkoffProviderLink.id,
 			to_id: payLink.id
 		});
 		if(payedLinkInsertQueryError) {throw new Error(payedLinkInsertQueryError.message); }
@@ -1060,7 +1068,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
 		const errorMessage = "Could not initialize the order. " + initResult.error;
     const {error: errorLinkInsertQueryError} = await deep.insert({
       type_id: (await deep.id("${packageName}", "Error")),
-      from_id: ${tinkoffProviderId},
+      from_id: tinkoffProviderLink.id,
       to_id: payLink.id,
       string: { data: { value: errorMessage } },
       in: {
@@ -1078,7 +1086,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
 
 	const {error: urlLinkInsertQueryError} = await deep.insert({
 		type_id: PUrl,
-		from_id: ${tinkoffProviderId},
+		from_id: tinkoffProviderLink.id,
 		to_id: payLink.id,
 		string: { data: { value: initResult.response.PaymentURL } },
 		in: {
@@ -1158,6 +1166,13 @@ async (
 	const reqBody = req.body;
 	console.log({reqBody});
 
+	const TinkoffProvider = await deep.id("${packageName}", "TinkoffProvider");
+	const tinkoffProviderLinkSelectQuery = await deep.select({
+		type_id: TinkoffProvider
+	});
+	if(tinkoffProviderLinkSelectQuery.error) {throw new Error(tinkoffProviderLinkSelectQuery.error.message);}
+	const tinkoffProviderLink = tinkoffProviderLinkSelectQuery.data[0];
+
 	const {data: [paymentLink], error: paymentLinkSelectQueryError} = await deep.select({
 		object: {value: {_contains: {orderId: req.body.OrderId}}}
 	});
@@ -1213,7 +1228,7 @@ async (
 			const errorMessage = "Could not confirm the pay. " + confirmResult.error;
 			const {errorLinkInsertError} = await deep.insert({
 				type_id: (await deep.id("${packageName}", "Error")),
-				from_id: ${tinkoffProviderId},
+				from_id: tinkoffProviderLink.id,
 				to_id: payLink.id,
 				string: { data: { value: errorMessage } },
 				in: {
@@ -1233,7 +1248,7 @@ async (
   } else if (req.body.Status === 'CONFIRMED') {
     const {error: payedLinkInsertError, data: [payedLink]} = await deep.insert({
       type_id: (await deep.id("${packageName}", "Payed")),
-			from_id: ${tinkoffProviderId},
+			from_id: tinkoffProviderLink.id,
       to_id: payLink.id,
       in: {
         data: [
