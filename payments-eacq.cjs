@@ -1221,12 +1221,13 @@ async (
     });
 		if(payedLinkInsertError) { throw new Error(payedLinkInsertError); }
 
-		/*const {error: paymentLinkValueUpdateQueryError} = await deep.update({link_id: {_eq: paymentLink.id}}, {value: {...paymentLink.value.value, bankPaymentId: initResult.response.PaymentId}}, {table: "objects"});
+		const {error: paymentLinkValueUpdateQueryError} = await deep.update({link_id: {_eq: paymentLink.id}}, {value: {...paymentLink.value.value, bankPaymentId: initResult.response.PaymentId}}, {table: "objects"});
 		if(paymentLinkValueUpdateQueryError) { throw new Error(paymentLinkValueUpdateQueryError.message); }
 	
 		const StorageClient = await deep.id("${packageName}", "StorageClient");
 		const storageClientLinkInsertQuery = await deep.insert({
-			type_id: StorageClient
+			type_id: StorageClient,
+			string: {data: {value: req.body.CardId}}
 		});
 		if(storageClientLinkInsertQuery.error) {throw new Error(storageClientLinkInsertQuery.error.message);}
 		const storageClientLink = storageClientLinkInsertQuery.data[0];
@@ -1234,7 +1235,7 @@ async (
 		const Title = await deep.id("${packageName}", "Title");
 		const titleLinkInsertQuery = await deep.insert({
 			type_id: Title,
-			string: {data: {value: initResult}}
+			string: {data: {value: req.body.Pan}}
 		});
 	
 		const Income = await deep.id("${packageName}", "Income");
@@ -1244,7 +1245,7 @@ async (
 			to_id: storageClientLink.id
 		});
 		if(incomeLinkInsertQuery.error) {throw new Error(incomeLinkInsertQuery.error.message);}
-		const incomeLink = incomeLinkInsertQuery.data[0];*/
+		const incomeLink = incomeLinkInsertQuery.data[0];
 
 		return payedLink; 
   } 
