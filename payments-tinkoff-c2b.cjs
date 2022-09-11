@@ -605,7 +605,7 @@ const f = async () => {
 	const BasePayed = await deep.id(basePackageName, 'Payed');
 	const BaseCancelled = await deep.id(basePackageName, 'Cancelled');
 	const BaseError = await deep.id(basePackageName, 'Error');
-	const Storage = await deep.id(basePackageName, 'Storage')o
+	const Storage = await deep.id(basePackageName, 'Storage');
 
 	const {
 		data: [{ id: packageId }],
