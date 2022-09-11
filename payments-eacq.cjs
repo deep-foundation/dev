@@ -886,6 +886,8 @@ const f = async () => {
 		data: [{ id: StorageClient }],
 	} = await deep.insert({
 		type_id: Storage,
+		from_id: PPayment,
+		to_id: Any,
 		in: {
 			data: {
 				type_id: Contain,
