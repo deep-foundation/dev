@@ -1183,7 +1183,7 @@ async (
 	const {data: mpUpPaymentLink, error: mpUpPaymentLinkSelectQueryError} = await deep.select({
 		up: {
 			parent_id: { _eq: paymentLink.id },
-			tree_id: { _eq: ${paymentTreeId} }
+			tree_id: { _eq: await deep.id("${packageName}", "paymentTree) }
 		}
 	});
 	console.log({mpUpPaymentLink});
