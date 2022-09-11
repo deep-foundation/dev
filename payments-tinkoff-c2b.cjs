@@ -2033,6 +2033,8 @@ async (
 				} = await deep.insert({
 					type_id: PPayment,
 					object: { data: { value: {orderId: uniqid()} } },
+					from_id: deep.linkId,
+					to_id: storageBusinessLink.id,
 					in: {
 						data: [
 							{
