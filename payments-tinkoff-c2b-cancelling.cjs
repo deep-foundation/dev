@@ -20,9 +20,9 @@ const { get } = require('lodash');
 var myEnv = dotenv.config();
 dotenvExpand.expand(myEnv);
 
-const corePackageName = '@deep-foundation/core';
-const basePackageName = '@deep-foundation/payments';
-const packageName = '@deep-foundation/payments-c2b';
+const '@deep-foundation/core' = '@deep-foundation/core';
+const '@deep-foundation/payments' = '@deep-foundation/payments';
+const '@deep-foundation/payments-tinkoff-c2b' = '@deep-foundation/payments-tinkoff-c2b';
 
 const PRICE = 5500;
 
@@ -538,80 +538,80 @@ const f = async () => {
 	});
 	const deep = new DeepClient({ deep: guestDeep, ...admin });
 
-	const User = await deep.id(corePackageName, 'User');
-	const Type = await deep.id(corePackageName, 'Type');
-	const Any = await deep.id(corePackageName, 'Any');
-	const Join = await deep.id(corePackageName, 'Join');
-	const Contain = await deep.id(corePackageName, 'Contain');
-	const Value = await deep.id(corePackageName, 'Value');
-	const String = await deep.id(corePackageName, 'String');
-	const Package = await deep.id(corePackageName, 'Package');
+	const User = await deep.id('@deep-foundation/core', 'User');
+	const Type = await deep.id('@deep-foundation/core', 'Type');
+	const Any = await deep.id('@deep-foundation/core', 'Any');
+	const Join = await deep.id('@deep-foundation/core', 'Join');
+	const Contain = await deep.id('@deep-foundation/core', 'Contain');
+	const Value = await deep.id('@deep-foundation/core', 'Value');
+	const String = await deep.id('@deep-foundation/core', 'String');
+	const Package = await deep.id('@deep-foundation/core', 'Package');
 
-	const SyncTextFile = await deep.id(corePackageName, 'SyncTextFile');
+	const SyncTextFile = await deep.id('@deep-foundation/core', 'SyncTextFile');
 	const dockerSupportsJs = await deep.id(
-		corePackageName,
+		'@deep-foundation/core',
 		'dockerSupportsJs'
 	);
-	const Handler = await deep.id(corePackageName, 'Handler');
-	const HandleInsert = await deep.id(corePackageName, 'HandleInsert');
-	const HandleDelete = await deep.id(corePackageName, 'HandleDelete');
+	const Handler = await deep.id('@deep-foundation/core', 'Handler');
+	const HandleInsert = await deep.id('@deep-foundation/core', 'HandleInsert');
+	const HandleDelete = await deep.id('@deep-foundation/core', 'HandleDelete');
 
-	const Tree = await deep.id(corePackageName, 'Tree');
+	const Tree = await deep.id('@deep-foundation/core', 'Tree');
 	const TreeIncludeNode = await deep.id(
-		corePackageName,
+		'@deep-foundation/core',
 		'TreeIncludeNode'
 	);
-	const TreeIncludeUp = await deep.id(corePackageName, 'TreeIncludeUp');
+	const TreeIncludeUp = await deep.id('@deep-foundation/core', 'TreeIncludeUp');
 	const TreeIncludeDown = await deep.id(
-		corePackageName,
+		'@deep-foundation/core',
 		'TreeIncludeDown'
 	);
 
-	const Rule = await deep.id(corePackageName, 'Rule');
-	const RuleSubject = await deep.id(corePackageName, 'RuleSubject');
-	const RuleObject = await deep.id(corePackageName, 'RuleObject');
-	const RuleAction = await deep.id(corePackageName, 'RuleAction');
-	const Selector = await deep.id(corePackageName, 'Selector');
+	const Rule = await deep.id('@deep-foundation/core', 'Rule');
+	const RuleSubject = await deep.id('@deep-foundation/core', 'RuleSubject');
+	const RuleObject = await deep.id('@deep-foundation/core', 'RuleObject');
+	const RuleAction = await deep.id('@deep-foundation/core', 'RuleAction');
+	const Selector = await deep.id('@deep-foundation/core', 'Selector');
 	const SelectorInclude = await deep.id(
-		corePackageName,
+		'@deep-foundation/core',
 		'SelectorInclude'
 	);
 	const SelectorExclude = await deep.id(
-		corePackageName,
+		'@deep-foundation/core',
 		'SelectorExclude'
 	);
-	const SelectorTree = await deep.id(corePackageName, 'SelectorTree');
-	const containTree = await deep.id(corePackageName, 'containTree');
+	const SelectorTree = await deep.id('@deep-foundation/core', 'SelectorTree');
+	const containTree = await deep.id('@deep-foundation/core', 'containTree');
 	const AllowInsertType = await deep.id(
-		corePackageName,
+		'@deep-foundation/core',
 		'AllowInsertType'
 	);
 	const AllowDeleteType = await deep.id(
-		corePackageName,
+		'@deep-foundation/core',
 		'AllowDeleteType'
 	);
 	const SelectorFilter = await deep.id(
-		corePackageName,
+		'@deep-foundation/core',
 		'SelectorFilter'
 	);
-	const Query = await deep.id(corePackageName, 'Query');
+	const Query = await deep.id('@deep-foundation/core', 'Query');
 	const usersId = await deep.id('deep', 'users');
 
-	const BasePayment = await deep.id(basePackageName, 'Payment');
-	const BaseObject = await deep.id(basePackageName, 'Object');
-	const BaseSum = await deep.id(basePackageName, 'Sum');
-	const BasePay = await deep.id(basePackageName, 'Pay');
-	const BaseUrl = await deep.id(basePackageName, 'Url');
-	const BasePayed = await deep.id(basePackageName, 'Payed');
-	const BaseCancelled = await deep.id(basePackageName, 'Cancelled');
-	const BaseError = await deep.id(basePackageName, 'Error');
-	const Storage = await deep.id(basePackageName, 'Storage');
+	const BasePayment = await deep.id('@deep-foundation/payments', 'Payment');
+	const BaseObject = await deep.id('@deep-foundation/payments', 'Object');
+	const BaseSum = await deep.id('@deep-foundation/payments', 'Sum');
+	const BasePay = await deep.id('@deep-foundation/payments', 'Pay');
+	const BaseUrl = await deep.id('@deep-foundation/payments', 'Url');
+	const BasePayed = await deep.id('@deep-foundation/payments', 'Payed');
+	const BaseCancelled = await deep.id('@deep-foundation/payments', 'Cancelled');
+	const BaseError = await deep.id('@deep-foundation/payments', 'Error');
+	const Storage = await deep.id('@deep-foundation/payments', 'Storage');
 
 	const {
 		data: [{ id: packageId }],
 	} = await deep.insert({
 		type_id: Package,
-		string: { data: { value: packageName } },
+		string: { data: { value: '@deep-foundation/payments-tinkoff-c2b' } },
 		in: {
 			data: [
 				{
@@ -782,7 +782,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
 				in: {
 					data: [
 						{
-							type_id: await deep.id("${corePackageName}", 'Contain'),
+							type_id: await deep.id("${'@deep-foundation/core'}", 'Contain'),
 							from_id: deep.linkId,
 						},
 					],
@@ -931,20 +931,20 @@ async (
 
 	await deep.insert(
 		{
-			type_id: await deep.id(corePackageName, 'Port'),
+			type_id: await deep.id('@deep-foundation/core', 'Port'),
 			number: {
 				data: { value: process.env.PAYMENT_EACQ_AND_TEST_NOTIFICATION_PORT },
 			},
 			in: {
 				data: {
-					type_id: await deep.id(corePackageName, 'RouterListening'),
+					type_id: await deep.id('@deep-foundation/core', 'RouterListening'),
 					from: {
 						data: {
-							type_id: await deep.id(corePackageName, 'Router'),
+							type_id: await deep.id('@deep-foundation/core', 'Router'),
 							in: {
 								data: {
 									type_id: await deep.id(
-										corePackageName,
+										'@deep-foundation/core',
 										'RouterStringUse'
 									),
 									string: {
@@ -955,21 +955,21 @@ async (
 									},
 									from: {
 										data: {
-											type_id: await deep.id(corePackageName, 'Route'),
+											type_id: await deep.id('@deep-foundation/core', 'Route'),
 											out: {
 												data: {
 													type_id: await deep.id(
-														corePackageName,
+														'@deep-foundation/core',
 														'HandleRoute'
 													),
 													to: {
 														data: {
 															type_id: await deep.id(
-																corePackageName,
+																'@deep-foundation/core',
 																'Handler'
 															),
 															from_id: await deep.id(
-																corePackageName,
+																'@deep-foundation/core',
 																'dockerSupportsJs'
 															),
 															in: {
@@ -1830,7 +1830,7 @@ async (
 						}
 					});
 					if(mpUpCancelledPaymentSelectQueryError) {throw new Error(mpUpCancelledPaymentSelectQueryError); }
-					const Payed = await deep.id(packageName, "Payed");
+					const Payed = await deep.id('@deep-foundation/payments-tinkoff-c2b', "Payed");
 					const payedLink = mpUpCancelledPayment.find(link => link.type_id === Payed);
 					expect(payedLink).to.not.equal(undefined);
 
@@ -1889,7 +1889,7 @@ async (
 						});
 						console.log({mpUpCancelledPayment});
 						if(mpUpCancelledPaymentSelectQueryError) {throw new Error(mpUpCancelledPaymentSelectQueryError); }
-						const Payed = await deep.id(packageName, "Payed");
+						const Payed = await deep.id('@deep-foundation/payments-tinkoff-c2b', "Payed");
 						const payedLink = mpUpCancelledPayment.find(link => link.type_id === Payed);
 						expect(payedLink).to.not.equal(undefined);
 					}
@@ -1949,7 +1949,7 @@ async (
 						}
 					});
 					if(mpUpCancelledPaymentSelectQueryError) {throw new Error(mpUpCancelledPaymentSelectQueryError); }
-					const Payed = await deep.id(packageName, "Payed");
+					const Payed = await deep.id('@deep-foundation/payments-tinkoff-c2b', "Payed");
 					const payedLink = mpUpCancelledPayment.find(link => link.type_id === Payed);
 					expect(payedLink).to.not.equal(undefined);
 
