@@ -1100,7 +1100,9 @@ async ({ deep, require, data: { newLink: payLink } }) => {
   });
   if(urlLinkInsertQueryError) { throw new Error(urlLinkInsertQueryError.message); }
 
-  const {error: paymentLinkValueUpdateQueryError} = await deep.update({link_id: {_eq: paymentLink.id}}, {value: {...paymentLink.value.value, bankPaymentId: initResult.response.PaymentId}}, {table: "objects"});
+  const paymentLinkValueUpdateExp = {link_id: {_eq: paymentLink.id}}, {value: {...paymentLink.value.value, bankPaymentId: initResult.response.PaymentId}}, {table: "objects"};
+  console.log({paymentLinkValueUpdateExp});
+  const {error: paymentLinkValueUpdateQueryError} = await deep.update(paymentLinkValueUpdateExp);
   if(paymentLinkValueUpdateQueryError) { throw new Error(paymentLinkValueUpdateQueryError.message); }
   
   return initResult;
@@ -1179,7 +1181,7 @@ async (
     object: {value: {_contains: {orderId: req.body.OrderId}}}
   });
   console.log({paymentLinkSelectQuery});
-  if(paymentLinkSelectQueryError) { throw new Error(paymentLinkSelectQueryError.message); }
+  if(paymentLinkSelectQuery.error) { throw new Error(paymentLinkSelectQuery.error.message); }
   const paymentLink = paymentLinkSelectQuery.data[0];
   console.log({paymentLink});
   if(!paymentLink) { throw new Error("The payment link associated with the order id " + req.body.OrderId + " is not found."); }
