@@ -970,52 +970,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
   const isCancellingPay = fromLinkOfPaymentQuery.data.length > 0 && toLinkOfPaymentQuery.data.length > 0 && (fromLinkOfPaymentQuery.data[0].type_id === paymentLink.type_id) && (toLinkOfPaymentQuery.data[0].type_id === await deep.id("@deep-foundation/core", "User"));
   console.log({isCancellingPay});
   if(isCancellingPay) {
-    const cancel = ${cancel.toString()};
-
-    const cancellingPaymentLink = fromLinkOfPayment;
-
-    const cancelledPaymentLink = fromLinkOfPayment;
-
-    await deep.insert({link_id: 1, value: cancelledPaymentLink.value.value}, {table: "objects"});
-
-    const cancelOptions = {
-      TerminalKey: "${process.env.PAYMENT_TEST_TERMINAL_KEY}",
-      PaymentId: cancelledPaymentLink.value.value.bankPaymentId,
-      Amount: sumLink.value.value,
-    };
-    console.log({ cancelOptions });
-
-    const cancelResult = await cancel(cancelOptions);
-    console.log({cancelResult});
-    if (cancelResult.error) {
-      const errorMessage = "Could not cancel the order. " + JSON.stringify(cancelResult.error);
-
-      const {error: errorLinkInsertQueryError} = await deep.insert({
-        type_id: (await deep.id("@deep-foundation/payments-tinkoff-c2b", "Error")),
-        from_id: tinkoffProviderLink.id,
-        to_id: payLink.id,
-        string: { data: { value: errorMessage } },
-        in: {
-          data: [
-            {
-              type_id: await deep.id("@deep-foundation/core", 'Contain'),
-              from_id: deep.linkId,
-            },
-          ],
-        },
-      });
-      if(errorLinkInsertQueryError) { throw new Error(errorLinkInsertQueryError.message); }
-      throw new Error(errorMessage);
-    } 
-
-    const {error: payedLinkInsertQueryError} = await deep.insert({
-      type_id: await deep.id("@deep-foundation/payments-tinkoff-c2b", "Payed"),
-      from_id: tinkoffProviderLink.id,
-      to_id: payLink.id
-    });
-    if(payedLinkInsertQueryError) {throw new Error(payedLinkInsertQueryError.message); }
-
-    return cancelResult;
+    return;
   }
   
   const init = ${init.toString()};
@@ -1454,7 +1409,6 @@ async (
         ],
       },
     });
-  
     console.log({ storageBusinessLink });
 
     const {
@@ -2043,6 +1997,20 @@ async (
     const callIntegrationTests = async () => {
       const testInit = async ({customerKey} = {customerKey: uniqid()}) => {
         console.log('testInit-start');
+        console.log("REMOVE THIS", {
+          type_id: Payment,
+          object: { data: { value: {orderId: uniqid()} } },
+          from_id: deep.linkId,
+          to_id: storageBusinessLink.id,
+          in: {
+            data: [
+              {
+                type_id: Contain,
+                from_id: deep.linkId,
+              },
+            ],
+          },
+        });
         const {
           data: [{ id: paymentId }],
         } = await deep.insert({
@@ -2163,194 +2131,6 @@ async (
         console.log('testConfirm-end');
       };
 
-      const testCancel = async () => {
-        console.log('testCancel-start');
-        const testCancelAfterPayAfterConfirmFullPrice = async ({customerKey} = {customerKey: uniqid()}) => {
-          console.log('testCancelAfterPayAfterConfirmFullPrice-start');
-          await testConfirm({customerKey});
-
-          const {
-            data: [paymentLink],
-          } = await deep.select({
-            type_id: Payment,
-          });
-          console.log({paymentLink});
-
-          const cancellingPaymentLinkInsertQuery = await deep.insert({
-            type_id: Payment,
-            from_id: paymentLink.id,
-            to_id: deep.linkId
-          });
-          console.log({cancellingPaymentLinkInsertQuery});
-          if(cancellingPaymentLinkInsertQuery.error) {throw new Error(cancellingPaymentLinkInsertQuery.error.message); }
-          const cancellingPaymentLink = cancellingPaymentLinkInsertQuery.data[0];
-          console.log({cancellingPaymentLink});
-
-          await sleep(3000);
-
-          const {
-            data: [sumLinkOfCancellingPayment]
-          } = await deep.insert({
-            type_id: Sum,
-            from_id: sumProviderId,
-            to_id: cancellingPaymentLink.id,
-            number: {data: {value: PRICE}}
-          });
-          console.log({sumLinkOfCancellingPayment});
-
-          await sleep(15000);
-          
-          const payLinkInsertQuery = await deep.insert({
-            type_id: Pay,
-            from_id: deep.linkId,
-            to_id: sumLinkOfCancellingPayment.id
-          });
-          console.log({payLinkInsertQuery});
-          if(payLinkInsertQuery.error) {throw new Error(payLinkInsertQuery.error.message);}
-
-          await sleep(3000);
-
-          const {data: mpUpCancelledPayment, error: mpUpCancelledPaymentSelectQueryError} = await deep.select({
-            up: {
-              parent_id: {_eq: cancellingPaymentLink.id},
-              tree_id: {_eq: paymentTreeId}
-            }
-          });
-          if(mpUpCancelledPaymentSelectQueryError) {throw new Error(mpUpCancelledPaymentSelectQueryError); }
-          const Payed = await deep.id('@deep-foundation/payments-tinkoff-c2b', "Payed");
-          const payedLink = mpUpCancelledPayment.find(link => link.type_id === Payed);
-          expect(payedLink).to.not.equal(undefined);
-
-          console.log('testCancelAfterPayAfterConfirmFullPrice-end');
-        };
-
-        const testCancelAfterPayAfterConfirmCustomPriceX2 = async ({customerKey} = {customerKey: uniqid()}) => {
-          console.log('testCancelAfterPayAfterConfirmCustomPriceX2-start');
-          await testConfirm({customerKey});
-
-          const {
-            data: [paymentLink],
-          } = await deep.select({
-            type_id: Payment,
-          });
-          console.log({paymentLink});
-
-          for (let i = 0; i < 2; i++) {
-            const cancellingPaymentLinkInsertQuery = await deep.insert({
-              type_id: Payment,
-              from_id: paymentLink.id,
-              to_id: deep.linkId
-            });
-            console.log({cancellingPaymentLinkInsertQuery});
-            if(cancellingPaymentLinkInsertQuery.error) {throw new Error(cancellingPaymentLinkInsertQuery.error.message); }
-            const cancellingPaymentLink = cancellingPaymentLinkInsertQuery.data[0];
-            console.log({cancellingPaymentLink});
-  
-            await sleep(3000);
-  
-            const {
-              data: [sumLinkOfCancellingPayment]
-            } = await deep.insert({
-              type_id: Sum,
-              from_id: sumProviderId,
-              to_id: cancellingPaymentLink.id,
-              number: {data: {value: Math.floor(PRICE / 3)}}
-            });
-            console.log({sumLinkOfCancellingPayment});
-              
-            const payLinkInsertQuery = await deep.insert({
-              type_id: Pay,
-              from_id: deep.linkId,
-              to_id: sumLinkOfCancellingPayment.id
-            });
-            console.log({payLinkInsertQuery});
-            if(payLinkInsertQuery.error) {throw new Error(payLinkInsertQuery.error.message);}
-  
-            await sleep(3000);
-  
-            const {data: mpUpCancelledPayment, error: mpUpCancelledPaymentSelectQueryError} = await deep.select({
-              up: {
-                parent_id: {_eq: cancellingPaymentLink.id},
-                tree_id: {_eq: paymentTreeId}
-              }
-            });
-            console.log({mpUpCancelledPayment});
-            if(mpUpCancelledPaymentSelectQueryError) {throw new Error(mpUpCancelledPaymentSelectQueryError); }
-            const Payed = await deep.id('@deep-foundation/payments-tinkoff-c2b', "Payed");
-            const payedLink = mpUpCancelledPayment.find(link => link.type_id === Payed);
-            expect(payedLink).to.not.equal(undefined);
-          }
-
-          console.log('testCancelAfterPayAfterConfirmCustomPriceX2-end');
-        };
-
-        const testCancelBeforePay = async ({customerKey} = {customerKey: uniqid()}) => {
-          console.log('testCancelBeforePay-start');
-          await testInit({customerKey});
-
-          const {
-            data: [paymentLink],
-          } = await deep.select({
-            type_id: Payment,
-          });
-          console.log({paymentLink});
-
-          const cancellingPaymentLinkInsertQuery = await deep.insert({
-            type_id: Payment,
-            from_id: paymentLink.id,
-            to_id: deep.linkId
-          });
-          console.log({cancellingPaymentLinkInsertQuery});
-          if(cancellingPaymentLinkInsertQuery.error) {throw new Error(cancellingPaymentLinkInsertQuery.error.message); }
-          const cancellingPaymentLink = cancellingPaymentLinkInsertQuery.data[0];
-          console.log({cancellingPaymentLink});
-
-          await sleep(3000);
-
-          const {
-            data: [sumLinkOfCancellingPayment]
-          } = await deep.insert({
-            type_id: Sum,
-            from_id: sumProviderId,
-            to_id: cancellingPaymentLink.id,
-            number: {data: {value: PRICE}}
-          });
-          console.log({sumLinkOfCancellingPayment});
-
-          await sleep(15000);
-          
-          const payLinkInsertQuery = await deep.insert({
-            type_id: Pay,
-            from_id: deep.linkId,
-            to_id: sumLinkOfCancellingPayment.id
-          });
-          console.log({payLinkInsertQuery});
-          if(payLinkInsertQuery.error) {throw new Error(payLinkInsertQuery.error.message);}
-
-          await sleep(3000);
-
-          const {data: mpUpCancelledPayment, error: mpUpCancelledPaymentSelectQueryError} = await deep.select({
-            up: {
-              parent_id: {_eq: cancellingPaymentLink.id},
-              tree_id: {_eq: paymentTreeId}
-            }
-          });
-          if(mpUpCancelledPaymentSelectQueryError) {throw new Error(mpUpCancelledPaymentSelectQueryError); }
-          const Payed = await deep.id('@deep-foundation/payments-tinkoff-c2b', "Payed");
-          const payedLink = mpUpCancelledPayment.find(link => link.type_id === Payed);
-          expect(payedLink).to.not.equal(undefined);
-
-          console.log('testCancelBeforePay-end');
-        };
-        await testCancelAfterPayAfterConfirmFullPrice();
-        await deleteTestLinks();
-        await testCancelAfterPayAfterConfirmCustomPriceX2();
-        await deleteTestLinks();
-        await testCancelBeforePay();
-        await deleteTestLinks();
-
-        console.log('testCancel-end');
-      };
       /*
       const testGetState = async () => {
         console.log('testGetState-start');
@@ -2396,8 +2176,6 @@ async (
       await deleteTestLinks();
       await testConfirm();
       await deleteTestLinks();
-      // await testCancel();
-      // await deleteTestLinks();
       /*await testGetState();
       await deleteTestLinks();
       await testGetCardList();
