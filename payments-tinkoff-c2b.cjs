@@ -1100,10 +1100,11 @@ async ({ deep, require, data: { newLink: payLink } }) => {
   });
   if(urlLinkInsertQueryError) { throw new Error(urlLinkInsertQueryError.message); }
 
-  const paymentLinkValueUpdateExp = {link_id: {_eq: paymentLink.id}}, {value: {...paymentLink.value.value, bankPaymentId: initResult.response.PaymentId}}, {table: "objects"};
-  console.log({paymentLinkValueUpdateExp});
-  const {error: paymentLinkValueUpdateQueryError} = await deep.update(paymentLinkValueUpdateExp);
-  if(paymentLinkValueUpdateQueryError) { throw new Error(paymentLinkValueUpdateQueryError.message); }
+  console.log("paymentLink.value.value", paymentLink.value.value);
+  console.log("paymentLink.value.value", paymentLink.value.value);
+  const paymentLinkValueUpdateQuery = await deep.update({link_id: {_eq: paymentLink.id}}, {value: {...paymentLink.value.value, bankPaymentId: initResult.response.PaymentId}}, {table: "objects"});
+  console.log({paymentLinkValueUpdateQuery});
+  if(paymentLinkValueUpdateQuery.error) { throw new Error(paymentLinkValueUpdateQuery.error.message); }
   
   return initResult;
 };
