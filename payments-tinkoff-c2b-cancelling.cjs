@@ -20,10 +20,6 @@ const { get } = require('lodash');
 var myEnv = dotenv.config();
 dotenvExpand.expand(myEnv);
 
-const '@deep-foundation/core' = '@deep-foundation/core';
-const '@deep-foundation/payments' = '@deep-foundation/payments';
-const '@deep-foundation/payments-tinkoff-c2b' = '@deep-foundation/payments-tinkoff-c2b';
-
 const PRICE = 5500;
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
