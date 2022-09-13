@@ -593,16 +593,6 @@ const f = async () => {
   const Query = await deep.id('@deep-foundation/core', 'Query');
   const usersId = await deep.id('deep', 'users');
 
-  const BasePayment = await deep.id('@deep-foundation/payments', 'Payment');
-  const BaseObject = await deep.id('@deep-foundation/payments', 'Object');
-  const BaseSum = await deep.id('@deep-foundation/payments', 'Sum');
-  const BasePay = await deep.id('@deep-foundation/payments', 'Pay');
-  const BaseUrl = await deep.id('@deep-foundation/payments', 'Url');
-  const BasePayed = await deep.id('@deep-foundation/payments', 'Payed');
-  const BaseCancelled = await deep.id('@deep-foundation/payments', 'Cancelled');
-  const BaseError = await deep.id('@deep-foundation/payments', 'Error');
-  const Storage = await deep.id('@deep-foundation/payments', 'Storage');
-
   const {
     data: [{ id: packageId }],
   } = await deep.insert({
