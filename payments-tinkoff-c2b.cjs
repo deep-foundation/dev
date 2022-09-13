@@ -20,10 +20,6 @@ const { get } = require('lodash');
 var myEnv = dotenv.config();
 dotenvExpand.expand(myEnv);
 
-const corePackageName = '@deep-foundation/core';
-const basePackageName = '@deep-foundation/payments';
-const packageName = '@deep-foundation/payments-c2b';
-
 const PRICE = 5500;
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -538,80 +534,80 @@ const f = async () => {
 	});
 	const deep = new DeepClient({ deep: guestDeep, ...admin });
 
-	const User = await deep.id(corePackageName, 'User');
-	const Type = await deep.id(corePackageName, 'Type');
-	const Any = await deep.id(corePackageName, 'Any');
-	const Join = await deep.id(corePackageName, 'Join');
-	const Contain = await deep.id(corePackageName, 'Contain');
-	const Value = await deep.id(corePackageName, 'Value');
-	const String = await deep.id(corePackageName, 'String');
-	const Package = await deep.id(corePackageName, 'Package');
+	const User = await deep.id('@deep-foundation/core', 'User');
+	const Type = await deep.id('@deep-foundation/core', 'Type');
+	const Any = await deep.id('@deep-foundation/core', 'Any');
+	const Join = await deep.id('@deep-foundation/core', 'Join');
+	const Contain = await deep.id('@deep-foundation/core', 'Contain');
+	const Value = await deep.id('@deep-foundation/core', 'Value');
+	const String = await deep.id('@deep-foundation/core', 'String');
+	const Package = await deep.id('@deep-foundation/core', 'Package');
 
-	const SyncTextFile = await deep.id(corePackageName, 'SyncTextFile');
+	const SyncTextFile = await deep.id('@deep-foundation/core', 'SyncTextFile');
 	const dockerSupportsJs = await deep.id(
-		corePackageName,
+		'@deep-foundation/core',
 		'dockerSupportsJs'
 	);
-	const Handler = await deep.id(corePackageName, 'Handler');
-	const HandleInsert = await deep.id(corePackageName, 'HandleInsert');
-	const HandleDelete = await deep.id(corePackageName, 'HandleDelete');
+	const Handler = await deep.id('@deep-foundation/core', 'Handler');
+	const HandleInsert = await deep.id('@deep-foundation/core', 'HandleInsert');
+	const HandleDelete = await deep.id('@deep-foundation/core', 'HandleDelete');
 
-	const Tree = await deep.id(corePackageName, 'Tree');
+	const Tree = await deep.id('@deep-foundation/core', 'Tree');
 	const TreeIncludeNode = await deep.id(
-		corePackageName,
+		'@deep-foundation/core',
 		'TreeIncludeNode'
 	);
-	const TreeIncludeUp = await deep.id(corePackageName, 'TreeIncludeUp');
+	const TreeIncludeUp = await deep.id('@deep-foundation/core', 'TreeIncludeUp');
 	const TreeIncludeDown = await deep.id(
-		corePackageName,
+		'@deep-foundation/core',
 		'TreeIncludeDown'
 	);
 
-	const Rule = await deep.id(corePackageName, 'Rule');
-	const RuleSubject = await deep.id(corePackageName, 'RuleSubject');
-	const RuleObject = await deep.id(corePackageName, 'RuleObject');
-	const RuleAction = await deep.id(corePackageName, 'RuleAction');
-	const Selector = await deep.id(corePackageName, 'Selector');
+	const Rule = await deep.id('@deep-foundation/core', 'Rule');
+	const RuleSubject = await deep.id('@deep-foundation/core', 'RuleSubject');
+	const RuleObject = await deep.id('@deep-foundation/core', 'RuleObject');
+	const RuleAction = await deep.id('@deep-foundation/core', 'RuleAction');
+	const Selector = await deep.id('@deep-foundation/core', 'Selector');
 	const SelectorInclude = await deep.id(
-		corePackageName,
+		'@deep-foundation/core',
 		'SelectorInclude'
 	);
 	const SelectorExclude = await deep.id(
-		corePackageName,
+		'@deep-foundation/core',
 		'SelectorExclude'
 	);
-	const SelectorTree = await deep.id(corePackageName, 'SelectorTree');
-	const containTree = await deep.id(corePackageName, 'containTree');
+	const SelectorTree = await deep.id('@deep-foundation/core', 'SelectorTree');
+	const containTree = await deep.id('@deep-foundation/core', 'containTree');
 	const AllowInsertType = await deep.id(
-		corePackageName,
+		'@deep-foundation/core',
 		'AllowInsertType'
 	);
 	const AllowDeleteType = await deep.id(
-		corePackageName,
+		'@deep-foundation/core',
 		'AllowDeleteType'
 	);
 	const SelectorFilter = await deep.id(
-		corePackageName,
+		'@deep-foundation/core',
 		'SelectorFilter'
 	);
-	const Query = await deep.id(corePackageName, 'Query');
+	const Query = await deep.id('@deep-foundation/core', 'Query');
 	const usersId = await deep.id('deep', 'users');
 
-	const BasePayment = await deep.id(basePackageName, 'Payment');
-	const BaseObject = await deep.id(basePackageName, 'Object');
-	const BaseSum = await deep.id(basePackageName, 'Sum');
-	const BasePay = await deep.id(basePackageName, 'Pay');
-	const BaseUrl = await deep.id(basePackageName, 'Url');
-	const BasePayed = await deep.id(basePackageName, 'Payed');
-	const BaseCancelled = await deep.id(basePackageName, 'Cancelled');
-	const BaseError = await deep.id(basePackageName, 'Error');
-	const Storage = await deep.id(basePackageName, 'Storage');
+	const BasePayment = await deep.id('@deep-foundation/payments', 'Payment');
+	const BaseObject = await deep.id('@deep-foundation/payments', 'Object');
+	const BaseSum = await deep.id('@deep-foundation/payments', 'Sum');
+	const BasePay = await deep.id('@deep-foundation/payments', 'Pay');
+	const BaseUrl = await deep.id('@deep-foundation/payments', 'Url');
+	const BasePayed = await deep.id('@deep-foundation/payments', 'Payed');
+	const BaseCancelled = await deep.id('@deep-foundation/payments', 'Cancelled');
+	const BaseError = await deep.id('@deep-foundation/payments', 'Error');
+	const Storage = await deep.id('@deep-foundation/payments', 'Storage');
 
 	const {
 		data: [{ id: packageId }],
 	} = await deep.insert({
 		type_id: Package,
-		string: { data: { value: packageName } },
+		string: { data: { value: '@deep-foundation/payments-tinkoff-c2b' } },
 		in: {
 			data: [
 				{
@@ -637,7 +633,7 @@ const f = async () => {
 	console.log({ packageId });
 
 	const {
-		data: [{ id: PSumProvider }],
+		data: [{ id: SumProvider }],
 	} = await deep.insert({
 		type_id: Type,
 		from_id: Any,
@@ -651,10 +647,10 @@ const f = async () => {
 		},
 	});
 
-	console.log({ PSumProvider: PSumProvider });
+	console.log({ SumProvider: SumProvider });
 
 	const {
-		data: [{ id: PTinkoffProvider }],
+		data: [{ id: TinkoffProvider }],
 	} = await deep.insert({
 		type_id: Type,
 		from_id: Any,
@@ -668,10 +664,10 @@ const f = async () => {
 		},
 	});
 
-	console.log({ PTinkoffProvider });
+	console.log({ TinkoffProvider });
 
 	const {
-		data: [{ id: PPayment }],
+		data: [{ id: Payment }],
 	} = await deep.insert({
 		type_id: BasePayment,
 		from_id: Any,
@@ -685,13 +681,13 @@ const f = async () => {
 		},
 	});
 
-	console.log({ PPayment: PPayment });
+	console.log({ Payment: Payment });
 
 	const {
-		data: [{ id: PObject }],
+		data: [{ id: Object }],
 	} = await deep.insert({
 		type_id: BaseObject,
-		from_id: PPayment,
+		from_id: Payment,
 		to_id: Any,
 		in: {
 			data: {
@@ -702,14 +698,14 @@ const f = async () => {
 		},
 	});
 
-	console.log({ PObject: PObject });
+	console.log({ Object: Object });
 
 	const {
-		data: [{ id: PSum }],
+		data: [{ id: Sum }],
 	} = await deep.insert({
 		type_id: BaseSum,
 		from_id: Any,
-		to_id: PPayment,
+		to_id: Payment,
 		in: {
 			data: {
 				type_id: Contain,
@@ -719,14 +715,14 @@ const f = async () => {
 		},
 	});
 
-	console.log({ PSum: PSum });
+	console.log({ Sum: Sum });
 
 	const {
-		data: [{ id: PPay }],
+		data: [{ id: Pay }],
 	} = await deep.insert({
 		type_id: BasePay,
 		from_id: User,
-		to_id: PSum,
+		to_id: Sum,
 		in: {
 			data: {
 				type_id: Contain,
@@ -736,14 +732,14 @@ const f = async () => {
 		},
 	});
 
-	console.log({ PPay: PPay });
+	console.log({ Pay: Pay });
 
 	const {
-		data: [{ id: PUrl }],
+		data: [{ id: Url }],
 	} = await deep.insert({
 		type_id: BaseUrl,
-		from_id: PTinkoffProvider,
-		to_id: PPay,
+		from_id: TinkoffProvider,
+		to_id: Pay,
 		in: {
 			data: {
 				type_id: Contain,
@@ -753,14 +749,14 @@ const f = async () => {
 		},
 	});
 
-	console.log({ PUrl: PUrl });
+	console.log({ Url: Url });
 
 	const {
-		data: [{ id: PPayed }],
+		data: [{ id: Payed }],
 	} = await deep.insert({
 		type_id: BasePayed,
-		from_id: PTinkoffProvider,
-		to_id: PPay,
+		from_id: TinkoffProvider,
+		to_id: Pay,
 		in: {
 			data: {
 				type_id: Contain,
@@ -770,14 +766,14 @@ const f = async () => {
 		},
 	});
 
-	console.log({ PPayed: PPayed });
+	console.log({ Payed: Payed });
 
 	const {
-		data: [{ id: PError }],
+		data: [{ id: Error }],
 	} = await deep.insert({
 		type_id: BaseError,
-		from_id: PTinkoffProvider,
-		to_id: PPay,
+		from_id: TinkoffProvider,
+		to_id: Pay,
 		in: {
 			data: {
 				type_id: Contain,
@@ -787,14 +783,14 @@ const f = async () => {
 		},
 	});
 
-	console.log({ PError: PError });
+	console.log({ Error: Error });
 
 	// TODO: Use BaseCancelled
 	const {
-		data: [{ id: PCancelled }],
+		data: [{ id: Cancelled }],
 	} = await deep.insert({
 		type_id: BaseCancelled,
-		from_id: PTinkoffProvider,
+		from_id: TinkoffProvider,
 		to_id: Any,
 		in: {
 			data: {
@@ -805,7 +801,7 @@ const f = async () => {
 		},
 	});
 
-	console.log({ PCancelled });
+	console.log({ Cancelled });
 
 	const {
 		data: [{ id: paymentTreeId }],
@@ -822,35 +818,35 @@ const f = async () => {
 			data: [
 				{
 					type_id: TreeIncludeNode,
-					to_id: PPayment,
+					to_id: Payment,
 				},
 				{
 					type_id: TreeIncludeUp,
-					to_id: PSum,
+					to_id: Sum,
 				},
 				{
 					type_id: TreeIncludeDown,
-					to_id: PObject,
+					to_id: Object,
 				},
 				{
 					type_id: TreeIncludeUp,
-					to_id: PError,
+					to_id: Error,
 				},
 				{
 					type_id: TreeIncludeUp,
-					to_id: PPayed,
+					to_id: Payed,
 				},
 				{
 					type_id: TreeIncludeUp,
-					to_id: PCancelled,
+					to_id: Cancelled,
 				},
 				{
 					type_id: TreeIncludeUp,
-					to_id: PPay,
+					to_id: Pay,
 				},
 				{
 					type_id: TreeIncludeUp,
-					to_id: PUrl,
+					to_id: Url,
 				},
 			],
 		},
@@ -864,7 +860,7 @@ const f = async () => {
 			data: {
 				type_id: Contain,
 				from_id: packageId, // before created package
-				string: { data: { value: 'Storage' } },
+				string: { data: { value: 'StorageBusiness' } },
 			},
 		},
 	});
@@ -888,7 +884,7 @@ const f = async () => {
 		data: [{ id: StorageClient }],
 	} = await deep.insert({
 		type_id: Storage,
-		from_id: PPayment,
+		from_id: Payment,
 		to_id: Any,
 		in: {
 			data: {
@@ -928,7 +924,7 @@ const f = async () => {
 async ({ deep, require, data: { newLink: payLink } }) => {
 	${handlersDependencies}
 
-	const TinkoffProvider = await deep.id("${packageName}", "TinkoffProvider");
+	const TinkoffProvider = await deep.id("@deep-foundation/payments-tinkoff-c2b", "TinkoffProvider");
 	const tinkoffProviderLinkSelectQuery = await deep.select({
 		type_id: TinkoffProvider
 	});
@@ -938,23 +934,23 @@ async ({ deep, require, data: { newLink: payLink } }) => {
 	const {data: mpDownPay, error: mpDownPaySelectQueryError} = await deep.select({
     down: {
       link_id: { _eq: payLink.id },
-      tree_id: { _eq: await deep.id("${packageName}", "paymentTree") },
+      tree_id: { _eq: await deep.id("@deep-foundation/payments-tinkoff-c2b", "paymentTree") },
     },
   });
   console.log({mpDownPay});
 	if(mpDownPaySelectQueryError) { throw new Error(mpDownPaySelectQueryError.message); }
 
-	const PPayment = await deep.id("${packageName}", "Payment");
-	const paymentLink = mpDownPay.find(link => link.type_id === PPayment);
+	const Payment = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Payment");
+	const paymentLink = mpDownPay.find(link => link.type_id === Payment);
 	console.log({paymentLink});
 	if(!paymentLink) throw new Error("Payment link associated with the pay link " + payLink.id + " is not found.");
 
-	const PSum = await deep.id("${packageName}", "Sum");
-  const sumLink = mpDownPay.find(link => link.type_id === PSum); 
+	const Sum = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Sum");
+  const sumLink = mpDownPay.find(link => link.type_id === Sum); 
   console.log({sumLink});
 	if(!sumLink) throw new Error("Sum link associated with the pay link " + payLink.id + " is not found.");
 
-	const PUrl = await deep.id("${packageName}", "Url");
+	const Url = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Url");
 
 	const fromLinkOfPaymentQuery = await deep.select({
 		id: paymentLink.from_id
@@ -994,14 +990,14 @@ async ({ deep, require, data: { newLink: payLink } }) => {
 			const errorMessage = "Could not cancel the order. " + JSON.stringify(cancelResult.error);
 
 			const {error: errorLinkInsertQueryError} = await deep.insert({
-				type_id: (await deep.id("${packageName}", "Error")),
+				type_id: (await deep.id("@deep-foundation/payments-tinkoff-c2b", "Error")),
 				from_id: tinkoffProviderLink.id,
 				to_id: payLink.id,
 				string: { data: { value: errorMessage } },
 				in: {
 					data: [
 						{
-							type_id: await deep.id("${corePackageName}", 'Contain'),
+							type_id: await deep.id("@deep-foundation/payments", 'Contain'),
 							from_id: deep.linkId,
 						},
 					],
@@ -1012,7 +1008,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
 		} 
 
 		const {error: payedLinkInsertQueryError} = await deep.insert({
-			type_id: await deep.id("${packageName}", "Payed"),
+			type_id: await deep.id("@deep-foundation/payments-tinkoff-c2b", "Payed"),
 			from_id: tinkoffProviderLink.id,
 			to_id: payLink.id
 		});
@@ -1025,7 +1021,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
 
 	const storageBusinessLink = toLinkOfPayment;
 	console.log({storageBusinessLink});
-	const Token = await deep.id("${packageName}", "Token");
+	const Token = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Token");
 	const tokenLinkSelectQuery = await deep.select({
 		type_id: Token,
 		from_id: storageBusinessLink.id,
@@ -1071,14 +1067,14 @@ async ({ deep, require, data: { newLink: payLink } }) => {
   if (initResult.error) {
 		const errorMessage = "Could not initialize the order. " + initResult.error;
     const {error: errorLinkInsertQueryError} = await deep.insert({
-      type_id: (await deep.id("${packageName}", "Error")),
+      type_id: (await deep.id("@deep-foundation/payments-tinkoff-c2b", "Error")),
       from_id: tinkoffProviderLink.id,
       to_id: payLink.id,
       string: { data: { value: errorMessage } },
       in: {
         data: [
           {
-            type_id: await deep.id("${corePackageName}", 'Contain'),
+            type_id: await deep.id("@deep-foundation/payments", 'Contain'),
             from_id: deep.linkId,
           },
         ],
@@ -1089,14 +1085,14 @@ async ({ deep, require, data: { newLink: payLink } }) => {
   }
 
 	const {error: urlLinkInsertQueryError} = await deep.insert({
-		type_id: PUrl,
+		type_id: Url,
 		from_id: tinkoffProviderLink.id,
 		to_id: payLink.id,
 		string: { data: { value: initResult.response.PaymentURL } },
 		in: {
 			data: [
 				{
-					type_id: await deep.id("${corePackageName}", 'Contain'),
+					type_id: await deep.id("@deep-foundation/payments", 'Contain'),
 					from_id: deep.linkId,
 				},
 			],
@@ -1135,7 +1131,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
 							},
 							{
 								type_id: HandleInsert,
-								from_id: PPay,
+								from_id: Pay,
 								in: {
 									data: [
 										{
@@ -1170,7 +1166,7 @@ async (
 	const reqBody = req.body;
 	console.log({reqBody});
 
-	const TinkoffProvider = await deep.id("${packageName}", "TinkoffProvider");
+	const TinkoffProvider = await deep.id("@deep-foundation/payments-tinkoff-c2b", "TinkoffProvider");
 	const tinkoffProviderLinkSelectQuery = await deep.select({
 		type_id: TinkoffProvider
 	});
@@ -1184,17 +1180,17 @@ async (
 	if(paymentLinkSelectQueryError) { throw new Error(paymentLinkSelectQueryError.message); }
 	if(!paymentLink) { throw new Error("The payment link associated with the order id " + req.body.OrderId + " is not found."); }
 
-	const {data: mpUpPaymentLink, error: mpUpPaymentLinkSelectQueryError} = await deep.select({
+	const {data: mpUpPayment, error: mpUpPaymentLinkSelectQueryError} = await deep.select({
 		up: {
 			parent_id: { _eq: paymentLink.id },
-			tree_id: { _eq: await deep.id("${packageName}", "paymentTree") }
+			tree_id: { _eq: await deep.id("@deep-foundation/payments-tinkoff-c2b", "paymentTree") }
 		}
 	});
-	console.log({mpUpPaymentLink});
-	if(mpUpPaymentLinkSelectQueryError) { throw new Error(mpUpPaymentLinkSelectQueryError.message); }
+	console.log({mpUpPayment});
+	if(mpUpPaymentSelectQueryError) { throw new Error(mpUpPaymentSelectQueryError.message); }
 
-	const PPay = await deep.id("${packageName}", "Pay");
-	const payLink = mpUpPaymentLink.find(link => link.type_id === PPay);
+	const Pay = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Pay");
+	const payLink = mpUpPayment.find(link => link.type_id === Pay);
 	console.log({payLink});
 	if(!payLink) { throw new Error("The pay link associated with payment link " + paymentLink + " is not found.") }
 
@@ -1208,7 +1204,7 @@ async (
 		if(storageBusinessLinkSelectQuery.error) {throw new Error(storageBusinessLinkSelectQuery.error.message);}
 		const storageBusinessLink = storageBusinessLinkSelectQuery.data[0];
 
-		const Token = await deep.id("${packageName}", "Token");
+		const Token = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Token");
 		const tokenLinkSelectQuery = await deep.select({
 			type_id: Token,
 			from_id: storageBusinessLink.id,
@@ -1231,14 +1227,14 @@ async (
 		if (confirmResult.error) {
 			const errorMessage = "Could not confirm the pay. " + confirmResult.error;
 			const {errorLinkInsertError} = await deep.insert({
-				type_id: (await deep.id("${packageName}", "Error")),
+				type_id: (await deep.id("@deep-foundation/payments-tinkoff-c2b", "Error")),
 				from_id: tinkoffProviderLink.id,
 				to_id: payLink.id,
 				string: { data: { value: errorMessage } },
 				in: {
 					data: [
 						{
-							type_id: await deep.id("${corePackageName}", 'Contain'),
+							type_id: await deep.id("@deep-foundation/payments", 'Contain'),
 							from_id: deep.linkId,
 						},
 					],
@@ -1251,13 +1247,13 @@ async (
 		return confirmResult;
   } else if (req.body.Status === 'CONFIRMED') {
     const {error: payedLinkInsertError, data: [payedLink]} = await deep.insert({
-      type_id: (await deep.id("${packageName}", "Payed")),
+      type_id: (await deep.id("@deep-foundation/payments-tinkoff-c2b", "Payed")),
 			from_id: tinkoffProviderLink.id,
       to_id: payLink.id,
       in: {
         data: [
           {
-            type_id: await deep.id("${corePackageName}", 'Contain'),
+            type_id: await deep.id("@deep-foundation/payments", 'Contain'),
             from_id: deep.linkId,
           },
         ],
@@ -1268,7 +1264,7 @@ async (
 		const {error: paymentLinkValueUpdateQueryError} = await deep.update({link_id: {_eq: paymentLink.id}}, {value: {...paymentLink.value.value, bankPaymentId: initResult.response.PaymentId}}, {table: "objects"});
 		if(paymentLinkValueUpdateQueryError) { throw new Error(paymentLinkValueUpdateQueryError.message); }
 	
-		const StorageClient = await deep.id("${packageName}", "StorageClient");
+		const StorageClient = await deep.id("@deep-foundation/payments-tinkoff-c2b", "StorageClient");
 		const storageClientLinkInsertQuery = await deep.insert({
 			type_id: StorageClient,
 			string: {data: {value: req.body.CardId}}
@@ -1276,13 +1272,13 @@ async (
 		if(storageClientLinkInsertQuery.error) {throw new Error(storageClientLinkInsertQuery.error.message);}
 		const storageClientLink = storageClientLinkInsertQuery.data[0];
 	
-		const Title = await deep.id("${packageName}", "Title");
+		const Title = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Title");
 		const titleLinkInsertQuery = await deep.insert({
 			type_id: Title,
 			string: {data: {value: req.body.Pan}}
 		});
 	
-		const Income = await deep.id("${packageName}", "Income");
+		const Income = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Income");
 		const incomeLinkInsertQuery = await deep.insert({
 			type_id: Income,
 			from_id: paymentLink.id,
@@ -1300,20 +1296,20 @@ async (
 
 	await deep.insert(
 		{
-			type_id: await deep.id(corePackageName, 'Port'),
+			type_id: await deep.id('@deep-foundation/core', 'Port'),
 			number: {
 				data: { value: process.env.PAYMENT_EACQ_AND_TEST_NOTIFICATION_PORT },
 			},
 			in: {
 				data: {
-					type_id: await deep.id(corePackageName, 'RouterListening'),
+					type_id: await deep.id('@deep-foundation/core', 'RouterListening'),
 					from: {
 						data: {
-							type_id: await deep.id(corePackageName, 'Router'),
+							type_id: await deep.id('@deep-foundation/core', 'Router'),
 							in: {
 								data: {
 									type_id: await deep.id(
-										corePackageName,
+										'@deep-foundation/core',
 										'RouterStringUse'
 									),
 									string: {
@@ -1324,21 +1320,21 @@ async (
 									},
 									from: {
 										data: {
-											type_id: await deep.id(corePackageName, 'Route'),
+											type_id: await deep.id('@deep-foundation/core', 'Route'),
 											out: {
 												data: {
 													type_id: await deep.id(
-														corePackageName,
+														'@deep-foundation/core',
 														'HandleRoute'
 													),
 													to: {
 														data: {
 															type_id: await deep.id(
-																corePackageName,
+																'@deep-foundation/core',
 																'Handler'
 															),
 															from_id: await deep.id(
-																corePackageName,
+																'@deep-foundation/core',
 																'dockerSupportsJs'
 															),
 															in: {
@@ -1401,7 +1397,7 @@ async (
 		const {
 			data: [{ id: tinkoffProviderId }],
 		} = await deep.insert({
-			type_id: PTinkoffProvider,
+			type_id: TinkoffProvider,
 			in: {
 				data: [
 					{
@@ -1417,7 +1413,7 @@ async (
 		const {
 			data: [{ id: sumProviderId }],
 		} = await deep.insert({
-			type_id: PSumProvider,
+			type_id: SumProvider,
 			in: {
 				data: [
 					{
@@ -1503,7 +1499,7 @@ async (
 			console.log('deleteTestLinks-start');
 			const { data: testLinks } = await deep.select({
 				type_id: {
-					_in: [ PPayment, PObject, PSum, PPay, PUrl, PPayed, PError, PCancelled ],
+					_in: [ Payment, Object, Sum, Pay, Url, Payed, Error, Cancelled ],
 				},
 			});
 			for (let i = 0; i < testLinks.length; i++) {
@@ -2035,7 +2031,7 @@ async (
 				const {
 					data: [{ id: paymentId }],
 				} = await deep.insert({
-					type_id: PPayment,
+					type_id: Payment,
 					object: { data: { value: {orderId: uniqid()} } },
 					from_id: deep.linkId,
 					to_id: storageBusinessLink.id,
@@ -2053,7 +2049,7 @@ async (
 				const {
 					data: [{ id: sumId }],
 				} = await deep.insert({
-					type_id: PSum,
+					type_id: Sum,
 					from_id: sumProviderId,
 					to_id: paymentId,
 					number: { data: { value: 150 } },
@@ -2072,7 +2068,7 @@ async (
 				const {
 					data: [{ id: objectId }],
 				} = await deep.insert({
-					type_id: PObject,
+					type_id: Object,
 					from_id: paymentId,
 					to_id: productId,
 					in: {
@@ -2090,7 +2086,7 @@ async (
 				const {
 					data: [{ id: payId }],
 				} = await deep.insert({
-					type_id: PPay,
+					type_id: Pay,
 					from_id: deep.linkId,
 					to_id: sumId,
 					in: {
@@ -2110,7 +2106,7 @@ async (
 				const {
 					data: { length },
 				} = await deep.select({
-					type_id: PUrl,
+					type_id: Url,
 					to_id: payId,
 				});
 
@@ -2128,7 +2124,7 @@ async (
 						},
 					],
 				} = await deep.select({
-					type_id: PUrl,
+					type_id: Url,
 				});
 
 				const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
@@ -2146,7 +2142,7 @@ async (
 				await testFinishAuthorize({customerKey});
 				await sleep(17000);
 				let { data } = await deep.select({
-					type_id: PPayed,
+					type_id: Payed,
 				});
 				expect(data.length).to.greaterThan(0);
 				console.log('testConfirm-end');
@@ -2161,12 +2157,12 @@ async (
 					const {
 						data: [paymentLink],
 					} = await deep.select({
-						type_id: PPayment,
+						type_id: Payment,
 					});
 					console.log({paymentLink});
 
 					const cancellingPaymentLinkInsertQuery = await deep.insert({
-						type_id: PPayment,
+						type_id: Payment,
 						from_id: paymentLink.id,
 						to_id: deep.linkId
 					});
@@ -2180,7 +2176,7 @@ async (
 					const {
 						data: [sumLinkOfCancellingPayment]
 					} = await deep.insert({
-						type_id: PSum,
+						type_id: Sum,
 						from_id: sumProviderId,
 						to_id: cancellingPaymentLink.id,
 						number: {data: {value: PRICE}}
@@ -2190,7 +2186,7 @@ async (
 					await sleep(15000);
 					
 					const payLinkInsertQuery = await deep.insert({
-						type_id: PPay,
+						type_id: Pay,
 						from_id: deep.linkId,
 						to_id: sumLinkOfCancellingPayment.id
 					});
@@ -2206,8 +2202,8 @@ async (
 						}
 					});
 					if(mpUpCancelledPaymentSelectQueryError) {throw new Error(mpUpCancelledPaymentSelectQueryError); }
-					const PPayed = await deep.id(packageName, "Payed");
-					const payedLink = mpUpCancelledPayment.find(link => link.type_id === PPayed);
+					const Payed = await deep.id('@deep-foundation/payments-tinkoff-c2b', "Payed");
+					const payedLink = mpUpCancelledPayment.find(link => link.type_id === Payed);
 					expect(payedLink).to.not.equal(undefined);
 
 					console.log('testCancelAfterPayAfterConfirmFullPrice-end');
@@ -2220,13 +2216,13 @@ async (
 					const {
 						data: [paymentLink],
 					} = await deep.select({
-						type_id: PPayment,
+						type_id: Payment,
 					});
 					console.log({paymentLink});
 
 					for (let i = 0; i < 2; i++) {
 						const cancellingPaymentLinkInsertQuery = await deep.insert({
-							type_id: PPayment,
+							type_id: Payment,
 							from_id: paymentLink.id,
 							to_id: deep.linkId
 						});
@@ -2240,7 +2236,7 @@ async (
 						const {
 							data: [sumLinkOfCancellingPayment]
 						} = await deep.insert({
-							type_id: PSum,
+							type_id: Sum,
 							from_id: sumProviderId,
 							to_id: cancellingPaymentLink.id,
 							number: {data: {value: Math.floor(PRICE / 3)}}
@@ -2248,7 +2244,7 @@ async (
 						console.log({sumLinkOfCancellingPayment});
 							
 						const payLinkInsertQuery = await deep.insert({
-							type_id: PPay,
+							type_id: Pay,
 							from_id: deep.linkId,
 							to_id: sumLinkOfCancellingPayment.id
 						});
@@ -2265,8 +2261,8 @@ async (
 						});
 						console.log({mpUpCancelledPayment});
 						if(mpUpCancelledPaymentSelectQueryError) {throw new Error(mpUpCancelledPaymentSelectQueryError); }
-						const PPayed = await deep.id(packageName, "Payed");
-						const payedLink = mpUpCancelledPayment.find(link => link.type_id === PPayed);
+						const Payed = await deep.id('@deep-foundation/payments-tinkoff-c2b', "Payed");
+						const payedLink = mpUpCancelledPayment.find(link => link.type_id === Payed);
 						expect(payedLink).to.not.equal(undefined);
 					}
 
@@ -2280,12 +2276,12 @@ async (
 					const {
 						data: [paymentLink],
 					} = await deep.select({
-						type_id: PPayment,
+						type_id: Payment,
 					});
 					console.log({paymentLink});
 
 					const cancellingPaymentLinkInsertQuery = await deep.insert({
-						type_id: PPayment,
+						type_id: Payment,
 						from_id: paymentLink.id,
 						to_id: deep.linkId
 					});
@@ -2299,7 +2295,7 @@ async (
 					const {
 						data: [sumLinkOfCancellingPayment]
 					} = await deep.insert({
-						type_id: PSum,
+						type_id: Sum,
 						from_id: sumProviderId,
 						to_id: cancellingPaymentLink.id,
 						number: {data: {value: PRICE}}
@@ -2309,7 +2305,7 @@ async (
 					await sleep(15000);
 					
 					const payLinkInsertQuery = await deep.insert({
-						type_id: PPay,
+						type_id: Pay,
 						from_id: deep.linkId,
 						to_id: sumLinkOfCancellingPayment.id
 					});
@@ -2325,8 +2321,8 @@ async (
 						}
 					});
 					if(mpUpCancelledPaymentSelectQueryError) {throw new Error(mpUpCancelledPaymentSelectQueryError); }
-					const PPayed = await deep.id(packageName, "Payed");
-					const payedLink = mpUpCancelledPayment.find(link => link.type_id === PPayed);
+					const Payed = await deep.id('@deep-foundation/payments-tinkoff-c2b', "Payed");
+					const payedLink = mpUpCancelledPayment.find(link => link.type_id === Payed);
 					expect(payedLink).to.not.equal(undefined);
 
 					console.log('testCancelBeforePay-end');
@@ -2347,7 +2343,7 @@ async (
 
 				const {
 					data: [payLink],
-				} = await deep.select({ type_id: PPay });
+				} = await deep.select({ type_id: Pay });
 
 				const bankPaymentId = await getBankPaymentId(
 					payLink?.value?.value ?? payLink.id
