@@ -631,22 +631,6 @@ const f = async () => {
   const Payment = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Payment");
   console.log({ Payment: Payment });
 
-  const {
-    data: [{ id: CancellingPayment }],
-  } = await deep.insert({
-    type_id: Type,
-    from_id: StorageBusiness,
-    to_id: User,
-    in: {
-      data: {
-        type_id: Contain,
-        from_id: packageId,
-        string: { data: { value: 'CancellingPayment' } },
-      },
-    },
-  });
-  console.log({ CancellingPayment });
-
   const Object = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Object");
   console.log({ Object: Object });
 
@@ -680,6 +664,22 @@ const f = async () => {
 
   const Title = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Title");
   console.log({ Title });
+
+  const {
+    data: [{ id: CancellingPayment }],
+  } = await deep.insert({
+    type_id: Type,
+    from_id: StorageBusiness,
+    to_id: User,
+    in: {
+      data: {
+        type_id: Contain,
+        from_id: packageId,
+        string: { data: { value: 'CancellingPayment' } },
+      },
+    },
+  });
+  console.log({ CancellingPayment });
 
   const handlersDependencies = `
   const crypto = require('crypto');
