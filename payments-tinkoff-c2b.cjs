@@ -905,10 +905,11 @@ const f = async () => {
       data: {
         type_id: Contain,
         from_id: packageId, // before created package
-        string: { data: { value: 'StorageClient' } },
+        string: { data: { value: 'Title' } },
       },
     },
   });
+  console.log({Title});
 
   const handlersDependencies = `
   const crypto = require('crypto');
