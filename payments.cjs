@@ -160,6 +160,19 @@ const f = async () => {
 
   console.log({ PPayed: PPayed });
 
+  const { data: [{ id: PCancelled }] } = await deep.insert({
+    type_id: Type,
+    from_id: Any,
+    to_id: Any,
+    in: { data: {
+      type_id: Contain,
+      from_id: packageId, // before created package
+      string: { data: { value: 'Cancelled' } },
+    } },
+  });
+
+  console.log({ PPayed: PPayed });
+
   const { data: [{ id: PError }] } = await deep.insert({
     type_id: Type,
     from_id: Any,
@@ -172,5 +185,18 @@ const f = async () => {
   });
 
   console.log({ PError: PError });
+
+  const { data: [{ id: PStorage }] } = await deep.insert({
+    type_id: Type,
+    from_id: Any,
+    to_id: Any,
+    in: { data: {
+      type_id: Contain,
+      from_id: packageId, // before created package
+      string: { data: { value: 'Storage' } },
+    } },
+  });
+
+  console.log({ PError: PStorage });
 };
 f();
