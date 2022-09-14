@@ -1048,7 +1048,7 @@ async (
     console.log({ sumProviderId });
 
     const {
-      data: [{ id: storageBusinessLink }],
+      data: [storageBusinessLink],
     } = await deep.insert({
       type_id: StorageBusiness,
       in: {
@@ -1451,6 +1451,20 @@ async (
     const callIntegrationTests = async () => {
       const testInit = async ({ customerKey } = { customerKey: uniqid() }) => {
         console.log('testInit-start');
+        console.log("Payment insert arg " , {
+          type_id: Payment,
+          object: { data: { value: { orderId: uniqid() } } },
+          from_id: deep.linkId,
+          to_id: storageBusinessLink.id,
+          in: {
+            data: [
+              {
+                type_id: Contain,
+                from_id: deep.linkId,
+              },
+            ],
+          },
+        });
         const {
           data: [{ id: paymentId }],
         } = await deep.insert({
