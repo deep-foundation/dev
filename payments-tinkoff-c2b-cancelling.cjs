@@ -20,6 +20,8 @@ const { get } = require('lodash');
 var myEnv = dotenv.config();
 dotenvExpand.expand(myEnv);
 
+console.log("Installing @deep-foundation/payments-tinkoff-c2b-cancelling package");
+
 const PRICE = 5500;
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
