@@ -20,6 +20,7 @@ const { get } = require('lodash');
 var myEnv = dotenv.config();
 dotenvExpand.expand(myEnv);
 
+console.log("Installing payments-tinkoff-c2b package");
 const PRICE = 5500;
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -704,8 +705,8 @@ const f = async () => {
     data: [{ id: Sum }],
   } = await deep.insert({
     type_id: BaseSum,
-    from_id: Any,
-    to_id: Payment,
+    from_id: SumProvider,
+    to_id: Any,
     in: {
       data: {
         type_id: Contain,
