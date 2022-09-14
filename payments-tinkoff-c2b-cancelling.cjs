@@ -1632,15 +1632,15 @@ async (
 
           await sleep(3000);
 
-          const { data: mpUpCancelledPayment, error: mpUpCancelledPaymentSelectQueryError } = await deep.select({
+          const { data: mpUpCancellingPayment, error: mpUpCancellingPaymentSelectQueryError } = await deep.select({
             up: {
               parent_id: { _eq: cancellingPaymentLink.id },
               tree_id: { _eq: paymentTreeId }
             }
           });
-          if (mpUpCancelledPaymentSelectQueryError) { throw new Error(mpUpCancelledPaymentSelectQueryError); }
+          if (mpUpCancellingPaymentSelectQueryError) { throw new Error(mpUpCancellingPaymentSelectQueryError); }
           const Payed = await deep.id('@deep-foundation/payments-tinkoff-c2b', "Payed");
-          const payedLink = mpUpCancelledPayment.find(link => link.type_id === Payed);
+          const payedLink = mpUpCancellingPayment.find(link => link.type_id === Payed);
           expect(payedLink).to.not.equal(undefined);
 
           console.log('testCancelAfterPayAfterConfirmFullPrice-end');
@@ -1690,16 +1690,16 @@ async (
 
             await sleep(3000);
 
-            const { data: mpUpCancelledPayment, error: mpUpCancelledPaymentSelectQueryError } = await deep.select({
+            const { data: mpUpCancellingPayment, error: mpUpCancellingPaymentSelectQueryError } = await deep.select({
               up: {
                 parent_id: { _eq: cancellingPaymentLink.id },
                 tree_id: { _eq: paymentTreeId }
               }
             });
-            console.log({ mpUpCancelledPayment });
-            if (mpUpCancelledPaymentSelectQueryError) { throw new Error(mpUpCancelledPaymentSelectQueryError); }
+            console.log({ mpUpCancellingPayment });
+            if (mpUpCancellingPaymentSelectQueryError) { throw new Error(mpUpCancellingPaymentSelectQueryError); }
             const Payed = await deep.id('@deep-foundation/payments-tinkoff-c2b', "Payed");
-            const payedLink = mpUpCancelledPayment.find(link => link.type_id === Payed);
+            const payedLink = mpUpCancellingPayment.find(link => link.type_id === Payed);
             expect(payedLink).to.not.equal(undefined);
           }
 
@@ -1751,15 +1751,15 @@ async (
 
           await sleep(3000);
 
-          const { data: mpUpCancelledPayment, error: mpUpCancelledPaymentSelectQueryError } = await deep.select({
+          const { data: mpUpCancellingPayment, error: mpUpCancellingPaymentSelectQueryError } = await deep.select({
             up: {
               parent_id: { _eq: cancellingPaymentLink.id },
               tree_id: { _eq: paymentTreeId }
             }
           });
-          if (mpUpCancelledPaymentSelectQueryError) { throw new Error(mpUpCancelledPaymentSelectQueryError); }
+          if (mpUpCancellingPaymentSelectQueryError) { throw new Error(mpUpCancellingPaymentSelectQueryError); }
           const Payed = await deep.id('@deep-foundation/payments-tinkoff-c2b', "Payed");
-          const payedLink = mpUpCancelledPayment.find(link => link.type_id === Payed);
+          const payedLink = mpUpCancellingPayment.find(link => link.type_id === Payed);
           expect(payedLink).to.not.equal(undefined);
 
           console.log('testCancelBeforePay-end');
