@@ -735,12 +735,13 @@ const f = async () => {
 
   console.log({ Pay: Pay });
 
+  // TODO Restore restrictions
   const {
     data: [{ id: Url }],
   } = await deep.insert({
     type_id: BaseUrl,
-    from_id: TinkoffProvider,
-    to_id: Pay,
+    from_id: Any,
+    to_id: Any,
     in: {
       data: {
         type_id: Contain,
