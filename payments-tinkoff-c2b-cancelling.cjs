@@ -639,8 +639,24 @@ const f = async () => {
   const Sum = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Sum");
   console.log({ Sum: Sum });
 
-  const Pay = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Pay");
-  console.log({ Pay: Pay });
+  const BasePay = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Pay");
+  console.log({ BasePay });
+
+  const {
+    data: [{ id: Pay }],
+  } = await deep.insert({
+    type_id: BasePay,
+    from_id: User,
+    to_id: Sum,
+    in: {
+      data: {
+        type_id: Contain,
+        from_id: packageId,
+        string: { data: { value: 'Pay' } },
+      },
+    },
+  });
+  console.log({ Pay });
 
   const Url = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Url");
   console.log({ Url: Url });
@@ -697,13 +713,6 @@ const f = async () => {
 async ({ deep, require, data: { newLink: payLink } }) => {
   ${handlersDependencies}
 
-  const TinkoffProvider = await deep.id("@deep-foundation/payments-tinkoff-c2b", "TinkoffProvider");
-  const tinkoffProviderLinkSelectQuery = await deep.select({
-    type_id: TinkoffProvider
-  });
-  if(tinkoffProviderLinkSelectQuery.error) {throw new Error(tinkoffProviderLinkSelectQuery.error.message);}
-  const tinkoffProviderLink = tinkoffProviderLinkSelectQuery.data[0];
-
   const {data: mpDownPay, error: mpDownPaySelectQueryError} = await deep.select({
     down: {
       link_id: { _eq: payLink.id },
@@ -716,6 +725,16 @@ async ({ deep, require, data: { newLink: payLink } }) => {
   const CancellingPayment = await deep.id("@deep-foundation/payments-tinkoff-c2b", "CancellingPayment");
   const cancellingPaymentLink = mpDownPay.find(link => link.type_id === CancellingPayment);
   console.log({cancellingPaymentLink});
+  if(!cancellingPaymentLink) {
+    return;
+  }
+
+  const TinkoffProvider = await deep.id("@deep-foundation/payments-tinkoff-c2b", "TinkoffProvider");
+  const tinkoffProviderLinkSelectQuery = await deep.select({
+    type_id: TinkoffProvider
+  });
+  if(tinkoffProviderLinkSelectQuery.error) {throw new Error(tinkoffProviderLinkSelectQuery.error.message);}
+  const tinkoffProviderLink = tinkoffProviderLinkSelectQuery.data[0];
 
   const Sum = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Sum");
   const sumLink = mpDownPay.find(link => link.type_id === Sum); 
@@ -724,67 +743,61 @@ async ({ deep, require, data: { newLink: payLink } }) => {
 
   const Url = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Url");
 
-  const fromLinkOfPaymentQuery = await deep.select({
+  const cancelledPaymentLinkSelectQuery = await deep.select({
     id: paymentLink.from_id
   });
-  if(fromLinkOfPaymentQuery.error) { throw new Error(fromLinkOfPaymentQuery.error.message); }
-  const fromLinkOfPayment = fromLinkOfPaymentQuery.data[0];
-  console.log({fromLinkOfPayment}); 
+  if(cancelledPaymentLinkSelectQuery.error) { throw new Error(cancelledPaymentLinkSelectQuery.error.message); }
+  const cancelledPaymentLink = fromLinkOfPaymentQuery.data[0];
+  console.log({cancelledPaymentLink}); 
 
-  const toLinkOfPaymentQuery = await deep.select({
+  const userLinkSelectQuery = await deep.select({
     id: paymentLink.to_id
   });
-  if(toLinkOfPaymentQuery.error) { throw new Error(toLinkOfPaymentQuery.error.message); }
-  const toLinkOfPayment = fromLinkOfPaymentQuery.data[0];
-  console.log({toLinkOfPayment});
+  if(userLinkSelectQuery.error) { throw new Error(userLinkSelectQuery.error.message); }
+  const userLink = userLinkSelectQuery.data[0];
+  console.log({userLink});
+  
+  const cancel = ${cancel.toString()};
 
-  const isCancellingPay = Boolean(cancellingPaymentLink);
-  if(isCancellingPay) {
-    const cancel = ${cancel.toString()};
+  await deep.insert({link_id: 1, value: cancelledPaymentLink.value.value}, {table: "objects"});
 
-    const cancellingPaymentLink = fromLinkOfPayment;
+  const cancelOptions = {
+    TerminalKey: "${process.env.PAYMENT_TEST_TERMINAL_KEY}",
+    PaymentId: cancelledPaymentLink.value.value.bankPaymentId,
+    Amount: sumLink.value.value,
+  };
+  console.log({ cancelOptions });
 
-    const cancelledPaymentLink = fromLinkOfPayment;
+  const cancelResult = await cancel(cancelOptions);
+  console.log({cancelResult});
+  if (cancelResult.error) {
+    const errorMessage = "Could not cancel the order. " + JSON.stringify(cancelResult.error);
 
-    await deep.insert({link_id: 1, value: cancelledPaymentLink.value.value}, {table: "objects"});
-
-    const cancelOptions = {
-      TerminalKey: "${process.env.PAYMENT_TEST_TERMINAL_KEY}",
-      PaymentId: cancelledPaymentLink.value.value.bankPaymentId,
-      Amount: sumLink.value.value,
-    };
-    console.log({ cancelOptions });
-
-    const cancelResult = await cancel(cancelOptions);
-    console.log({cancelResult});
-    if (cancelResult.error) {
-      const errorMessage = "Could not cancel the order. " + JSON.stringify(cancelResult.error);
-
-      const {error: errorLinkInsertQueryError} = await deep.insert({
-        type_id: (await deep.id("@deep-foundation/payments-tinkoff-c2b", "Error")),
-        from_id: tinkoffProviderLink.id,
-        to_id: payLink.id,
-        string: { data: { value: errorMessage } },
-        in: {
-          data: [
-            {
-              type_id: await deep.id("${'@deep-foundation/core'}", 'Contain'),
-              from_id: deep.linkId,
-            },
-          ],
-        },
-      });
-      if(errorLinkInsertQueryError) { throw new Error(errorLinkInsertQueryError.message); }
-      throw new Error(errorMessage);
-    } 
-
-    const {error: payedLinkInsertQueryError} = await deep.insert({
-      type_id: await deep.id("@deep-foundation/payments-tinkoff-c2b", "Payed"),
+    const {error: errorLinkInsertQueryError} = await deep.insert({
+      type_id: (await deep.id("@deep-foundation/payments-tinkoff-c2b", "Error")),
       from_id: tinkoffProviderLink.id,
-      to_id: payLink.id
+      to_id: payLink.id,
+      string: { data: { value: errorMessage } },
+      in: {
+        data: [
+          {
+            type_id: await deep.id("${'@deep-foundation/core'}", 'Contain'),
+            from_id: deep.linkId,
+          },
+        ],
+      },
     });
-    if(payedLinkInsertQueryError) {throw new Error(payedLinkInsertQueryError.message); }
-  }
+    if(errorLinkInsertQueryError) { throw new Error(errorLinkInsertQueryError.message); }
+    throw new Error(errorMessage);
+  } 
+
+  const {error: payedLinkInsertQueryError} = await deep.insert({
+    type_id: await deep.id("@deep-foundation/payments-tinkoff-c2b", "Payed"),
+    from_id: tinkoffProviderLink.id,
+    to_id: payLink.id
+  });
+  if(payedLinkInsertQueryError) {throw new Error(payedLinkInsertQueryError.message); }
+  
 };
 `;
   console.log({ payInsertHandler });
