@@ -718,12 +718,13 @@ const f = async () => {
 
   console.log({ Sum: Sum });
 
+  // TODO Rest restrictions
   const {
     data: [{ id: Pay }],
   } = await deep.insert({
     type_id: BasePay,
-    from_id: User,
-    to_id: Sum,
+    from_id: Any,
+    to_id: Any,
     in: {
       data: {
         type_id: Contain,
