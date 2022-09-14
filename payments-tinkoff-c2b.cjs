@@ -20,6 +20,7 @@ const { get } = require('lodash');
 var myEnv = dotenv.config();
 dotenvExpand.expand(myEnv);
 
+console.log("Installing payments-tinkoff-c2b package");
 const PRICE = 5500;
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -1997,6 +1998,7 @@ async (
     const callIntegrationTests = async () => {
       const testInit = async ({customerKey} = {customerKey: uniqid()}) => {
         console.log('testInit-start');
+        console.log(1111111111111111111);
         console.log("REMOVE THIS", {
           type_id: Payment,
           object: { data: { value: {orderId: uniqid()} } },
