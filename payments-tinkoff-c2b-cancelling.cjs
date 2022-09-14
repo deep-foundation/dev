@@ -639,24 +639,24 @@ const f = async () => {
   const Sum = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Sum");
   console.log({ Sum: Sum });
 
-  const BasePay = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Pay");
-  console.log({ BasePay });
+  const Pay = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Pay");
+  console.log({ Pay });
 
   const {
-    data: [{ id: Pay }],
+    data: [{ id: CancellingPay }],
   } = await deep.insert({
-    type_id: BasePay,
+    type_id: Pay,
     from_id: User,
     to_id: Sum,
     in: {
       data: {
         type_id: Contain,
         from_id: packageId,
-        string: { data: { value: 'Pay' } },
+        string: { data: { value: 'CancellingPay' } },
       },
     },
   });
-  console.log({ Pay });
+  console.log({ CancellingPay });
 
   const Url = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Url");
   console.log({ Url: Url });
@@ -669,6 +669,12 @@ const f = async () => {
 
   const paymentTreeId = await deep.id("@deep-foundation/payments-tinkoff-c2b", "paymentTree");
   console.log({ paymentTreeId });
+
+  await deep.insert({
+    type_id: TreeIncludeUp,
+    from_id: paymentTreeId,
+    to_id: Pay
+  });
 
   const StorageBusiness = await deep.id("@deep-foundation/payments-tinkoff-c2b", "StorageBusiness");
   console.log({ StorageBusiness });
@@ -867,39 +873,31 @@ async (
   if(tinkoffProviderLinkSelectQuery.error) {throw new Error(tinkoffProviderLinkSelectQuery.error.message);}
   const tinkoffProviderLink = tinkoffProviderLinkSelectQuery.data[0];
 
-  const {data: [paymentLink], error: paymentLinkSelectQueryError} = await deep.select({
+  const cancellingPaymentLinkelectQuery = await deep.select({
     object: {value: {_contains: {orderId: req.body.OrderId}}}
   });
-  console.log({paymentLink});
-  if(paymentLinkSelectQueryError) { throw new Error(paymentLinkSelectQueryError.message); }
-  if(!paymentLink) { throw new Error("The payment link associated with the order id " + req.body.OrderId + " is not found."); }
+  console.log({cancellingPaymentLink});
+  if(cancellingPaymentLinkelectQuery.error) { throw new Error(cancellingPaymentLinkelectQuery.error.message); }
+  const cancellingPaymentLink = cancellingPaymentLinkelectQuery.data[0];
+  if(!cancellingPaymentLink) { throw new Error("The cancelling payment link associated with the order id " + req.body.OrderId + " is not found."); }
 
-  const {data: mpUpPaymentLink, error: mpUpPaymentLinkSelectQueryError} = await deep.select({
+  const {data: mpUpcancellingPaymentLink, error: mpUpcancellingPaymentLinkSelectQueryError} = await deep.select({
     up: {
-      parent_id: { _eq: paymentLink.id },
+      parent_id: { _eq: cancellingPaymentLink.id },
       tree_id: { _eq: await deep.id("@deep-foundation/payments-tinkoff-c2b", "paymentTree) }
     }
   });
-  console.log({mpUpPaymentLink});
-  if(mpUpPaymentLinkSelectQueryError) { throw new Error(mpUpPaymentLinkSelectQueryError.message); }
+  console.log({mpUpcancellingPaymentLink});
+  if(mpUpcancellingPaymentLinkSelectQueryError) { throw new Error(mpUpcancellingPaymentLinkSelectQueryError.message); }
 
   const Pay = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Pay");
-  const payLink = mpUpPaymentLink.find(link => link.type_id === Pay);
+  const payLink = mpUpcancellingPaymentLink.find(link => link.type_id === Pay);
   console.log({payLink});
-  if(!payLink) { throw new Error("The pay link associated with payment link " + paymentLink + " is not found.") }
+  if(!payLink) { throw new Error("The pay link associated with cancelling payment link " + cancellingPaymentLink + " is not found.") }
 
 
   if (req.body.Status === 'CANCELLED') {
   const bankPaymentId = req.body.PaymentId;
-
-  const CancellingPayment = await deep.id("@deep-foundation/payments-tinkoff-c2b-cancelling", "CancellingPayment");
-  const cancellingPaymentLinkSelectQuery = await deep.select({
-    type_id: CancellingPayment,
-    object: {value: {_contains: {bankPaymentId} }}
-  });
-  if(cancellingPaymentLinkSelectQuery.error) {throw new Error(cancellingPaymentLinkSelectQuery.error.message);}
-  if(!cancellingPaymentLinkSelectQuery.data || !cancellingPaymentLinkSelectQuery.data[0]) {throw new Error("Could not find cancelling payment link with bank payment id " + bankPaymentId);}
-  const cancellingPaymentLink = cancellingPaymentLinkSelectQuery.data[0];
 
   const {data: mpUpPayment, error: mpUpPaymentLinkSelectQueryError} = await deep.select({
     up: {
@@ -1634,7 +1632,7 @@ async (
           await sleep(15000);
 
           const payLinkInsertQuery = await deep.insert({
-            type_id: Pay,
+            type_id: CancellingPay,
             from_id: deep.linkId,
             to_id: sumLinkOfCancellingPayment.id
           });
@@ -1691,13 +1689,13 @@ async (
             });
             console.log({ sumLinkOfCancellingPayment });
 
-            const payLinkInsertQuery = await deep.insert({
-              type_id: Pay,
+            const cancellingPayLinkInsertQuery = await deep.insert({
+              type_id: CancellingPay,
               from_id: deep.linkId,
               to_id: sumLinkOfCancellingPayment.id
             });
-            console.log({ payLinkInsertQuery });
-            if (payLinkInsertQuery.error) { throw new Error(payLinkInsertQuery.error.message); }
+            console.log({ payLinkInsertQuery: cancellingPayLinkInsertQuery });
+            if (cancellingPayLinkInsertQuery.error) { throw new Error(cancellingPayLinkInsertQuery.error.message); }
 
             await sleep(3000);
 
@@ -1752,13 +1750,13 @@ async (
 
           await sleep(15000);
 
-          const payLinkInsertQuery = await deep.insert({
-            type_id: Pay,
+          const cancellingPayLinkInsertQuery = await deep.insert({
+            type_id: CancellingPay,
             from_id: deep.linkId,
             to_id: sumLinkOfCancellingPayment.id
           });
-          console.log({ payLinkInsertQuery });
-          if (payLinkInsertQuery.error) { throw new Error(payLinkInsertQuery.error.message); }
+          console.log({ payLinkInsertQuery: cancellingPayLinkInsertQuery });
+          if (cancellingPayLinkInsertQuery.error) { throw new Error(cancellingPayLinkInsertQuery.error.message); }
 
           await sleep(3000);
 
