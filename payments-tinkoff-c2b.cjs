@@ -1231,10 +1231,6 @@ async (
   console.log({payedLinkInsertQuery})
   if(payedLinkInsertQuery.error) { throw new Error(payedLinkInsertQuery.error.message); }
 
-  const paymentLinkValueUpdateQuery = await deep.update({link_id: {_eq: paymentLink.id}}, {value: {...paymentLink.value.value, bankPaymentId: req.body.PaymentId}}, {table: "objects"});
-  console.log({paymentLinkValueUpdateQuery});
-  if(paymentLinkValueUpdateQuery.error) { throw new Error(paymentLinkValueUpdateQuery.error.message); }
-
   const StorageClient = await deep.id("@deep-foundation/payments-tinkoff-c2b", "StorageClient");
   const storageClientLinkInsertQuery = await deep.insert({
     type_id: StorageClient,
