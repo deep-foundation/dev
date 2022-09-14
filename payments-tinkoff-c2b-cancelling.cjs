@@ -713,10 +713,9 @@ async ({ deep, require, data: { newLink: payLink } }) => {
   console.log({mpDownPay});
   if(mpDownPaySelectQueryError) { throw new Error(mpDownPaySelectQueryError.message); }
 
-  const Payment = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Payment");
-  const paymentLink = mpDownPay.find(link => link.type_id === Payment);
-  console.log({paymentLink});
-  if(!paymentLink) throw new Error("Payment link associated with the pay link " + payLink.id + " is not found.");
+  const CancellingPayment = await deep.id("@deep-foundation/payments-tinkoff-c2b", "CancellingPayment");
+  const cancellingPaymentLink = mpDownPay.find(link => link.type_id === CancellingPayment);
+  console.log({cancellingPaymentLink});
 
   const Sum = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Sum");
   const sumLink = mpDownPay.find(link => link.type_id === Sum); 
@@ -739,8 +738,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
   const toLinkOfPayment = fromLinkOfPaymentQuery.data[0];
   console.log({toLinkOfPayment});
 
-  const isCancellingPay = fromLinkOfPaymentQuery.data.length > 0 && toLinkOfPaymentQuery.data.length > 0 && (fromLinkOfPaymentQuery.data[0].type_id === paymentLink.type_id) && (toLinkOfPaymentQuery.data[0].type_id === await deep.id("@deep-foundation/core", "User"));
-  console.log({isCancellingPay});
+  const isCancellingPay = Boolean(cancellingPaymentLink);
   if(isCancellingPay) {
     const cancel = ${cancel.toString()};
 
