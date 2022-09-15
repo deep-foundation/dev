@@ -837,7 +837,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
               },
               {
                 type_id: HandleInsert,
-                from_id: Pay,
+                from_id: CancellingPay,
                 in: {
                   data: [
                     {
