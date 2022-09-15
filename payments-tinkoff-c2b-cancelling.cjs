@@ -1779,6 +1779,7 @@ async (
 
           console.log('testCancelBeforePay-end');
         };
+
         await testCancelAfterPayAfterConfirmFullPrice();
         await deleteTestLinks();
         await testCancelAfterPayAfterConfirmCustomPriceX2();
