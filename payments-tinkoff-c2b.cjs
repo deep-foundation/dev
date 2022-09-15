@@ -931,16 +931,15 @@ async ({ deep, require, data: { newLink: payLink } }) => {
   const fromLinkOfPayment = fromLinkOfPaymentQuery.data[0];
   console.log({fromLinkOfPayment}); 
 
-  const toLinkOfPaymentQuery = await deep.select({
+  const userLinkSelectQuery = await deep.select({
     id: paymentLink.to_id
   });
-  if(toLinkOfPaymentQuery.error) { throw new Error(toLinkOfPaymentQuery.error.message); }
-  const toLinkOfPayment = toLinkOfPaymentQuery.data[0];
-  console.log({toLinkOfPayment});
+  if(userLinkSelectQuery.error) { throw new Error(userLinkSelectQuery.error.message); }
+  const userLink = userLinkSelectQuery.data[0];
+  console.log({userLink});
   
   const init = ${init.toString()};
 
-  const storageBusinessLink = toLinkOfPayment;
   console.log({storageBusinessLink});
   const Token = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Token");
   const tokenLinkSelectQuery = await deep.select({
@@ -1427,7 +1426,7 @@ async (
       console.log('deleteTestLinks-start');
       const { data: testLinks } = await deep.select({
         type_id: {
-          _in: [ Payment, Object, Sum, Pay, Url, Payed, Error ],
+          _in: [Payment, Object, Sum, Pay, Url, Payed, Error, CancellingPayment, CancellingPay, StorageBusiness, StorageClient, Token, Title, TinkoffProvider, SumProvider, Product],
         },
       });
       for (let i = 0; i < testLinks.length; i++) {
