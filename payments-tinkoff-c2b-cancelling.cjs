@@ -771,7 +771,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
   
   const cancel = ${cancel.toString()};
 
-  await deep.insert({link_id: 1, value: cancelledPaymentLink.value.value}, {table: "objects"});
+  await deep.insert({link_id: cancellingPaymentLink.id, value: cancelledPaymentLink.value.value}, {table: "objects"});
 
   const cancelOptions = {
     TerminalKey: "${process.env.PAYMENT_TEST_TERMINAL_KEY}",
