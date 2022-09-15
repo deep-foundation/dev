@@ -645,7 +645,7 @@ const f = async () => {
   const {
     data: [{ id: CancellingPay }],
   } = await deep.insert({
-    type_id: Pay,
+    type_id: /* Pay */ Type,
     from_id: User,
     to_id: Sum,
     in: {
