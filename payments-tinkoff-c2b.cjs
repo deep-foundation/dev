@@ -787,24 +787,6 @@ const f = async () => {
 
   console.log({ Error: Error });
 
-  // TODO: Use BaseCancelled
-  const {
-    data: [{ id: Cancelled }],
-  } = await deep.insert({
-    type_id: BaseCancelled,
-    from_id: TinkoffProvider,
-    to_id: Any,
-    in: {
-      data: {
-        type_id: Contain,
-        from_id: packageId, // before created package
-        string: { data: { value: 'Cancelled' } },
-      },
-    },
-  });
-
-  console.log({ Cancelled });
-
   const {
     data: [{ id: paymentTreeId }],
   } = await deep.insert({
@@ -1234,7 +1216,7 @@ async (
   const StorageClient = await deep.id("@deep-foundation/payments-tinkoff-c2b", "StorageClient");
   const storageClientLinkInsertQuery = await deep.insert({
     type_id: StorageClient,
-    string: {data: {value: req.body.CardId}}
+    number: {data: {value: req.body.CardId}}
   });
   console.log({storageClientLinkInsertQuery});
   if(storageClientLinkInsertQuery.error) {throw new Error(storageClientLinkInsertQuery.error.message);}
