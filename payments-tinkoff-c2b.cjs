@@ -822,10 +822,6 @@ const f = async () => {
         },
         {
           type_id: TreeIncludeUp,
-          to_id: Cancelled,
-        },
-        {
-          type_id: TreeIncludeUp,
           to_id: Pay,
         },
         {
@@ -1357,8 +1353,6 @@ async (
 
   const callTests = async () => {
     console.log('callTests-start');
-
-    console.log({ paymentTreeId });
 
     const {
       data: [{ id: tinkoffProviderId }],
