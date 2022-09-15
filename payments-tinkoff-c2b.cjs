@@ -1464,7 +1464,7 @@ async (
       console.log('deleteTestLinks-start');
       const { data: testLinks } = await deep.select({
         type_id: {
-          _in: [ Payment, Object, Sum, Pay, Url, Payed, Error, Cancelled ],
+          _in: [ Payment, Object, Sum, Pay, Url, Payed, Error ],
         },
       });
       for (let i = 0; i < testLinks.length; i++) {
