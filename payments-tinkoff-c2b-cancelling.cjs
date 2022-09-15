@@ -1404,7 +1404,7 @@ async (
           console.log('testCancelAfterPayAfterConfirmCustomPriceX2-start');
           const confirmResult = await testConfirm();
 
-          const bankPaymentId = confirmResult.response.PaymentId;;
+          const bankPaymentId = confirmResult.response.PaymentId;
 
           const cancelOptions = {
             TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
