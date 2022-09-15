@@ -670,18 +670,6 @@ const f = async () => {
   const paymentTreeId = await deep.id("@deep-foundation/payments-tinkoff-c2b", "paymentTree");
   console.log({ paymentTreeId });
 
-  await deep.insert({
-    type_id: TreeIncludeUp,
-    from_id: paymentTreeId,
-    to_id: CancellingPayment
-  });
-
-  await deep.insert({
-    type_id: TreeIncludeUp,
-    from_id: paymentTreeId,
-    to_id: CancellingPay
-  });
-
   const StorageBusiness = await deep.id("@deep-foundation/payments-tinkoff-c2b", "StorageBusiness");
   console.log({ StorageBusiness });
 
@@ -710,6 +698,18 @@ const f = async () => {
     },
   });
   console.log({ CancellingPayment });
+
+  await deep.insert({
+    type_id: TreeIncludeUp,
+    from_id: paymentTreeId,
+    to_id: CancellingPayment
+  });
+
+  await deep.insert({
+    type_id: TreeIncludeUp,
+    from_id: paymentTreeId,
+    to_id: CancellingPay
+  });
 
   const handlersDependencies = `
   const crypto = require('crypto');
