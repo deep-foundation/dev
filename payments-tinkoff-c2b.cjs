@@ -932,7 +932,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
   console.log({userLink});
 
   const storageBusinessLinkSelectQuery = await deep.select({
-    id: paymentLink.from_id
+    id: paymentLink.to_id
   });
   if(storageBusinessLinkSelectQuery.error) { throw new Error(storageBusinessLinkSelectQuery.error.message); }
   const storageBusinessLink = userLinkSelectQuery.data[0];
