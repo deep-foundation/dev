@@ -895,6 +895,22 @@ const f = async () => {
   });
   console.log({Title});
 
+  const {
+    data: [{ id: Income }],
+  } = await deep.insert({
+    type_id: Type,
+    from_id: Any,
+    to_id: Any,
+    in: {
+      data: {
+        type_id: Contain,
+        from_id: packageId, // before created package
+        string: { data: { value: 'Income' } },
+      },
+    },
+  });
+  console.log({Income});
+
   const handlersDependencies = `
   const crypto = require('crypto');
   const axios = require('axios');
