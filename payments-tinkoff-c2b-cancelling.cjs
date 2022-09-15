@@ -1600,7 +1600,7 @@ async (
         console.log('testConfirm-end');
       };
 
-      const testCancel = async () => {
+      const callCancelTests = async () => {
         console.log('testCancel-start');
         const testCancelAfterPayAfterConfirmFullPrice = async ({ customerKey } = { customerKey: uniqid() }) => {
           console.log('testCancelAfterPayAfterConfirmFullPrice-start');
@@ -1789,8 +1789,7 @@ async (
         console.log('testCancel-end');
       };
 
-      await testCancel();
-      // await deleteTestLinks();
+      await callCancelTests();
     };
 
     // await callRealizationTests();
