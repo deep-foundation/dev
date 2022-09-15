@@ -673,7 +673,13 @@ const f = async () => {
   await deep.insert({
     type_id: TreeIncludeUp,
     from_id: paymentTreeId,
-    to_id: Pay
+    to_id: CancellingPayment
+  });
+
+  await deep.insert({
+    type_id: TreeIncludeUp,
+    from_id: paymentTreeId,
+    to_id: CancellingPay
   });
 
   const StorageBusiness = await deep.id("@deep-foundation/payments-tinkoff-c2b", "StorageBusiness");
