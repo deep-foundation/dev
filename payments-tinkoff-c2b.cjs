@@ -779,30 +779,86 @@ const f = async () => {
         {
           type_id: TreeIncludeNode,
           to_id: Payment,
+          in: {
+      data: [
+        {
+          type_id: Contain,
+          from_id: deep.linkId,
+        },
+      ],
+    },
         },
         {
           type_id: TreeIncludeUp,
           to_id: Sum,
+          in: {
+      data: [
+        {
+          type_id: Contain,
+          from_id: deep.linkId,
+        },
+      ],
+    },
         },
         {
           type_id: TreeIncludeDown,
           to_id: Object,
+          in: {
+      data: [
+        {
+          type_id: Contain,
+          from_id: deep.linkId,
+        },
+      ],
+    },
         },
         {
           type_id: TreeIncludeUp,
           to_id: Error,
+          in: {
+      data: [
+        {
+          type_id: Contain,
+          from_id: deep.linkId,
+        },
+      ],
+    },
         },
         {
           type_id: TreeIncludeUp,
           to_id: Payed,
+          in: {
+      data: [
+        {
+          type_id: Contain,
+          from_id: deep.linkId,
+        },
+      ],
+    },
         },
         {
           type_id: TreeIncludeUp,
           to_id: Pay,
+          in: {
+      data: [
+        {
+          type_id: Contain,
+          from_id: deep.linkId,
+        },
+      ],
+    },
         },
         {
           type_id: TreeIncludeUp,
           to_id: Url,
+          in: {
+      data: [
+        {
+          type_id: Contain,
+          from_id: deep.linkId,
+        },
+      ],
+    },
         },
       ],
     },
@@ -1196,7 +1252,15 @@ async (
   const StorageClient = await deep.id("@deep-foundation/payments-tinkoff-c2b", "StorageClient");
   const storageClientLinkInsertQuery = await deep.insert({
     type_id: StorageClient,
-    number: {data: {value: req.body.CardId}}
+    number: {data: {value: req.body.CardId}},
+    in: {
+      data: [
+        {
+          type_id: Contain,
+          from_id: deep.linkId,
+        },
+      ],
+    },
   });
   console.log({storageClientLinkInsertQuery});
   if(storageClientLinkInsertQuery.error) {throw new Error(storageClientLinkInsertQuery.error.message);}
@@ -1205,7 +1269,15 @@ async (
   const Title = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Title");
   const titleLinkInsertQuery = await deep.insert({
     type_id: Title,
-    string: {data: {value: req.body.Pan}}
+    string: {data: {value: req.body.Pan}},
+    in: {
+      data: [
+        {
+          type_id: Contain,
+          from_id: deep.linkId,
+        },
+      ],
+    },
   });
   console.log({titleLinkInsertQuery});
   if(titleLinkInsertQuery.error) {throw new Error(titleLinkInsertQuery.error.message);}
@@ -1214,7 +1286,15 @@ async (
   const incomeLinkInsertQuery = await deep.insert({
     type_id: Income,
     from_id: paymentLink.id,
-    to_id: storageClientLink.id
+    to_id: storageClientLink.id,
+    in: {
+      data: [
+        {
+          type_id: Contain,
+          from_id: deep.linkId,
+        },
+      ],
+    },
   });
   console.log({incomeLinkInsertQuery});
   if(incomeLinkInsertQuery.error) {throw new Error(incomeLinkInsertQuery.error.message);}
