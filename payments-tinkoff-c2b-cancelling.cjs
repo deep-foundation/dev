@@ -1552,6 +1552,7 @@ async (
         } = await deep.select({
           type_id: Url,
         });
+        console.log({url});
 
         const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
         const page = await browser.newPage();
