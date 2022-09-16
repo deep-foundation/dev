@@ -865,7 +865,7 @@ const f = async () => {
       },
     },
   });
-  console.log({Title});
+  console.log({ Title });
 
   const {
     data: [{ id: Income }],
@@ -881,7 +881,7 @@ const f = async () => {
       },
     },
   });
-  console.log({Income});
+  console.log({ Income });
 
   const handlersDependencies = `
   const crypto = require('crypto');
@@ -1339,7 +1339,7 @@ async (
     });
     console.log({ tinkoffProviderId });
     linkIdsToDelete.push(tinkoffProviderId);
-  
+
     const {
       data: [{ id: sumProviderId }],
     } = await deep.insert({
@@ -1378,7 +1378,7 @@ async (
       type_id: Token,
       from_id: storageBusinessLink.id,
       to_id: storageBusinessLink.id,
-      string: {data: {value: process.env.PAYMENT_TEST_TERMINAL_KEY}},
+      string: { data: { value: process.env.PAYMENT_TEST_TERMINAL_KEY } },
       in: {
         data: [
           {
@@ -1508,7 +1508,7 @@ async (
 
         return confirmResult;
       };
-      
+
       const testGetState = async () => {
         const initResult = await init({
           TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
@@ -1640,10 +1640,10 @@ async (
           TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
           CustomerKey: uniqid(),
         };
-        console.log({addCustomerOptions});
+        console.log({ addCustomerOptions });
 
         const addCustomerResult = await addCustomer(addCustomerOptions);
-        console.log({addCustomerResult});
+        console.log({ addCustomerResult });
 
         expect(addCustomerResult.error).to.equal(undefined);
         console.log('testAddCustomer-end');
@@ -1712,13 +1712,13 @@ async (
     };
 
     const callIntegrationTests = async () => {
-      const testInit = async ({customerKey} = {customerKey: uniqid()}) => {
+      const testInit = async ({ customerKey } = { customerKey: uniqid() }) => {
         console.log('testInit-start');
         const {
           data: [{ id: paymentId }],
         } = await deep.insert({
           type_id: Payment,
-          object: { data: { value: {orderId: uniqid()} } },
+          object: { data: { value: { orderId: uniqid() } } },
           from_id: deep.linkId,
           to_id: storageBusinessLink.id,
           in: {
@@ -1802,9 +1802,9 @@ async (
         console.log('testInit-end');
       };
 
-      const testFinishAuthorize = async ({customerKey} = {customerKey: uniqid()}) => {
+      const testFinishAuthorize = async ({ customerKey } = { customerKey: uniqid() }) => {
         console.log('testFinishAuthorize-start');
-        await testInit({customerKey});
+        await testInit({ customerKey });
         const {
           data: [
             {
@@ -1825,9 +1825,9 @@ async (
         console.log('testFinishAuthorize-end');
       };
 
-      const testConfirm = async ({customerKey} = {customerKey: uniqid()}) => {
+      const testConfirm = async ({ customerKey } = { customerKey: uniqid() }) => {
         console.log('testConfirm-start');
-        await testFinishAuthorize({customerKey});
+        await testFinishAuthorize({ customerKey });
         await sleep(17000);
         let { data } = await deep.select({
           type_id: Payed,
@@ -1889,6 +1889,7 @@ async (
   };
 
   await callTests();
+
 };
 
 f();
