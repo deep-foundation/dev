@@ -779,30 +779,86 @@ const f = async () => {
         {
           type_id: TreeIncludeNode,
           to_id: Payment,
+          in: {
+      data: [
+        {
+          type_id: Contain,
+          from_id: deep.linkId,
+        },
+      ],
+    },
         },
         {
           type_id: TreeIncludeUp,
           to_id: Sum,
+          in: {
+      data: [
+        {
+          type_id: Contain,
+          from_id: deep.linkId,
+        },
+      ],
+    },
         },
         {
           type_id: TreeIncludeDown,
           to_id: Object,
+          in: {
+      data: [
+        {
+          type_id: Contain,
+          from_id: deep.linkId,
+        },
+      ],
+    },
         },
         {
           type_id: TreeIncludeUp,
           to_id: Error,
+          in: {
+      data: [
+        {
+          type_id: Contain,
+          from_id: deep.linkId,
+        },
+      ],
+    },
         },
         {
           type_id: TreeIncludeUp,
           to_id: Payed,
+          in: {
+      data: [
+        {
+          type_id: Contain,
+          from_id: deep.linkId,
+        },
+      ],
+    },
         },
         {
           type_id: TreeIncludeUp,
           to_id: Pay,
+          in: {
+      data: [
+        {
+          type_id: Contain,
+          from_id: deep.linkId,
+        },
+      ],
+    },
         },
         {
           type_id: TreeIncludeUp,
           to_id: Url,
+          in: {
+      data: [
+        {
+          type_id: Contain,
+          from_id: deep.linkId,
+        },
+      ],
+    },
         },
       ],
     },
@@ -865,7 +921,7 @@ const f = async () => {
       },
     },
   });
-  console.log({Title});
+  console.log({ Title });
 
   const {
     data: [{ id: Income }],
@@ -881,7 +937,7 @@ const f = async () => {
       },
     },
   });
-  console.log({Income});
+  console.log({ Income });
 
   const handlersDependencies = `
   const crypto = require('crypto');
@@ -896,6 +952,8 @@ const f = async () => {
   const payInsertHandler = `
 async ({ deep, require, data: { newLink: payLink } }) => {
   ${handlersDependencies}
+
+  const Contain = await deep.id("@deep-foundation/core", 'Contain');
 
   const TinkoffProvider = await deep.id("@deep-foundation/payments-tinkoff-c2b", "TinkoffProvider");
   const tinkoffProviderLinkSelectQuery = await deep.select({
@@ -994,7 +1052,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
       in: {
         data: [
           {
-            type_id: await deep.id("@deep-foundation/core", 'Contain'),
+            type_id: Contain,
             from_id: deep.linkId,
           },
         ],
@@ -1012,7 +1070,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
     in: {
       data: [
         {
-          type_id: await deep.id("@deep-foundation/core", 'Contain'),
+          type_id: Contain,
           from_id: deep.linkId,
         },
       ],
@@ -1088,6 +1146,8 @@ async (
   ${handlersDependencies}
   const reqBody = req.body;
   console.log({reqBody});
+
+  const Contain = await deep.id("@deep-foundation/core", 'Contain');
 
   const TinkoffProvider = await deep.id("@deep-foundation/payments-tinkoff-c2b", "TinkoffProvider");
   const tinkoffProviderLinkSelectQuery = await deep.select({
@@ -1165,7 +1225,7 @@ async (
         in: {
           data: [
             {
-              type_id: await deep.id("@deep-foundation/core", 'Contain'),
+              type_id: Contain,
               from_id: deep.linkId,
             },
           ],
@@ -1184,7 +1244,7 @@ async (
       in: {
         data: [
           {
-            type_id: await deep.id("@deep-foundation/core", 'Contain'),
+            type_id: Contain,
             from_id: deep.linkId,
           },
         ],
@@ -1196,7 +1256,15 @@ async (
   const StorageClient = await deep.id("@deep-foundation/payments-tinkoff-c2b", "StorageClient");
   const storageClientLinkInsertQuery = await deep.insert({
     type_id: StorageClient,
-    number: {data: {value: req.body.CardId}}
+    number: {data: {value: req.body.CardId}},
+    in: {
+      data: [
+        {
+          type_id: Contain,
+          from_id: deep.linkId,
+        },
+      ],
+    },
   });
   console.log({storageClientLinkInsertQuery});
   if(storageClientLinkInsertQuery.error) {throw new Error(storageClientLinkInsertQuery.error.message);}
@@ -1205,7 +1273,15 @@ async (
   const Title = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Title");
   const titleLinkInsertQuery = await deep.insert({
     type_id: Title,
-    string: {data: {value: req.body.Pan}}
+    string: {data: {value: req.body.Pan}},
+    in: {
+      data: [
+        {
+          type_id: Contain,
+          from_id: deep.linkId,
+        },
+      ],
+    },
   });
   console.log({titleLinkInsertQuery});
   if(titleLinkInsertQuery.error) {throw new Error(titleLinkInsertQuery.error.message);}
@@ -1214,7 +1290,15 @@ async (
   const incomeLinkInsertQuery = await deep.insert({
     type_id: Income,
     from_id: paymentLink.id,
-    to_id: storageClientLink.id
+    to_id: storageClientLink.id,
+    in: {
+      data: [
+        {
+          type_id: Contain,
+          from_id: deep.linkId,
+        },
+      ],
+    },
   });
   console.log({incomeLinkInsertQuery});
   if(incomeLinkInsertQuery.error) {throw new Error(incomeLinkInsertQuery.error.message);}
@@ -1339,7 +1423,7 @@ async (
     });
     console.log({ tinkoffProviderId });
     linkIdsToDelete.push(tinkoffProviderId);
-  
+
     const {
       data: [{ id: sumProviderId }],
     } = await deep.insert({
@@ -1378,7 +1462,7 @@ async (
       type_id: Token,
       from_id: storageBusinessLink.id,
       to_id: storageBusinessLink.id,
-      string: {data: {value: process.env.PAYMENT_TEST_TERMINAL_KEY}},
+      string: { data: { value: process.env.PAYMENT_TEST_TERMINAL_KEY } },
       in: {
         data: [
           {
@@ -1508,7 +1592,7 @@ async (
 
         return confirmResult;
       };
-      
+
       const testGetState = async () => {
         const initResult = await init({
           TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
@@ -1640,10 +1724,10 @@ async (
           TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
           CustomerKey: uniqid(),
         };
-        console.log({addCustomerOptions});
+        console.log({ addCustomerOptions });
 
         const addCustomerResult = await addCustomer(addCustomerOptions);
-        console.log({addCustomerResult});
+        console.log({ addCustomerResult });
 
         expect(addCustomerResult.error).to.equal(undefined);
         console.log('testAddCustomer-end');
@@ -1712,13 +1796,13 @@ async (
     };
 
     const callIntegrationTests = async () => {
-      const testInit = async ({customerKey} = {customerKey: uniqid()}) => {
+      const testInit = async ({ customerKey } = { customerKey: uniqid() }) => {
         console.log('testInit-start');
         const {
           data: [{ id: paymentId }],
         } = await deep.insert({
           type_id: Payment,
-          object: { data: { value: {orderId: uniqid()} } },
+          object: { data: { value: { orderId: uniqid() } } },
           from_id: deep.linkId,
           to_id: storageBusinessLink.id,
           in: {
@@ -1802,9 +1886,9 @@ async (
         console.log('testInit-end');
       };
 
-      const testFinishAuthorize = async ({customerKey} = {customerKey: uniqid()}) => {
+      const testFinishAuthorize = async ({ customerKey } = { customerKey: uniqid() }) => {
         console.log('testFinishAuthorize-start');
-        await testInit({customerKey});
+        await testInit({ customerKey });
         const {
           data: [
             {
@@ -1825,9 +1909,9 @@ async (
         console.log('testFinishAuthorize-end');
       };
 
-      const testConfirm = async ({customerKey} = {customerKey: uniqid()}) => {
+      const testConfirm = async ({ customerKey } = { customerKey: uniqid() }) => {
         console.log('testConfirm-start');
-        await testFinishAuthorize({customerKey});
+        await testFinishAuthorize({ customerKey });
         await sleep(17000);
         let { data } = await deep.select({
           type_id: Payed,
@@ -1889,7 +1973,6 @@ async (
   };
 
   await callTests();
-  
 };
 
 f();
