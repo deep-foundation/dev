@@ -936,7 +936,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
     id: paymentLink.to_id
   });
   if(storageBusinessLinkSelectQuery.error) { throw new Error(storageBusinessLinkSelectQuery.error.message); }
-  const storageBusinessLink = userLinkSelectQuery.data[0];
+  const storageBusinessLink = storageBusinessLinkSelectQuery.data[0];
   console.log({storageBusinessLink});
   
   const init = ${init.toString()};
