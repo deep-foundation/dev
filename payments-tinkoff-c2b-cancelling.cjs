@@ -890,7 +890,7 @@ async (
   const {data: mpUpcancellingPaymentLink, error: mpUpcancellingPaymentLinkSelectQueryError} = await deep.select({
     up: {
       parent_id: { _eq: cancellingPaymentLink.id },
-      tree_id: { _eq: await deep.id("@deep-foundation/payments-tinkoff-c2b", "paymentTree) }
+      tree_id: { _eq: await deep.id("@deep-foundation/payments-tinkoff-c2b", "paymentTree") }
     }
   });
   console.log({mpUpcancellingPaymentLink});
