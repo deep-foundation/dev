@@ -1370,7 +1370,7 @@ async (
       },
     });
     console.log({ storageBusinessLink });
-    linkIdsToDelete.push(storageBusinessLink);
+    linkIdsToDelete.push(storageBusinessLink.id);
 
     const {
       data: [{ id: tokenId }],
