@@ -1781,16 +1781,14 @@ async (
         };
 
         await testCancelAfterPayAfterConfirmFullPrice();
-        await deleteTestLinks();
         await testCancelAfterPayAfterConfirmCustomPriceX2();
-        await deleteTestLinks();
         await testCancelBeforePay();
-        await deleteTestLinks();
 
         console.log('testCancel-end');
       };
 
       await callCancelTests();
+      await deleteTestLinks();
     };
 
     // await callRealizationTests();
