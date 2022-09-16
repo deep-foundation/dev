@@ -741,6 +741,8 @@ const f = async () => {
 async ({ deep, require, data: { newLink: payLink } }) => {
   ${handlersDependencies}
 
+  const Contain = await deep.id("@deep-foundation/core", 'Contain');
+
   const {data: mpDownPay, error: mpDownPaySelectQueryError} = await deep.select({
     down: {
       link_id: { _eq: payLink.id },
@@ -809,7 +811,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
       in: {
         data: [
           {
-            type_id: await deep.id("@deep-foundation/core", 'Contain'),
+            type_id: Contain,
             from_id: deep.linkId,
           },
         ],
