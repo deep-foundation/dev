@@ -1065,7 +1065,7 @@ async (
     const linkIdsToDelete = [];
 
     const {
-      data: [{ id: tinkoffProviderId }],
+      data: [tinkoffProviderLink],
     } = await deep.insert({
       type_id: TinkoffProvider,
       in: {
@@ -1077,11 +1077,11 @@ async (
         ],
       },
     });
-    console.log({ tinkoffProviderId });
-    linkIdsToDelete.push(tinkoffProviderId);
+    console.log({ tinkoffProviderLink });
+    linkIdsToDelete.push(tinkoffProviderLink);
 
     const {
-      data: [{ id: sumProviderId }],
+      data: [sumProviderLink],
     } = await deep.insert({
       type_id: SumProvider,
       in: {
@@ -1093,8 +1093,8 @@ async (
         ],
       },
     });
-    console.log({ sumProviderId });
-    linkIdsToDelete.push(sumProviderId);
+    console.log({ sumProviderLink });
+    linkIdsToDelete.push(sumProviderLink);
 
     const {
       data: [storageBusinessLink],
@@ -1110,10 +1110,10 @@ async (
       },
     });
     console.log({ storageBusinessLink });
-    linkIdsToDelete.push(storageBusinessLink.id);
+    linkIdsToDelete.push(storageBusinessLink);
 
     const {
-      data: [{ id: tokenId }],
+      data: [tokenLink],
     } = await deep.insert({
       type_id: Token,
       from_id: storageBusinessLink.id,
@@ -1129,8 +1129,8 @@ async (
       },
     });
 
-    console.log({ tokenId });
-    linkIdsToDelete.push(tokenId);
+    console.log({ tokenLink });
+    linkIdsToDelete.push(tokenLink);
 
     const {
       data: [{ id: Product }],
@@ -1151,7 +1151,7 @@ async (
     linkIdsToDelete.push(Product);
 
     const {
-      data: [{ id: productId }],
+      data: [productLink],
     } = await deep.insert({
       type_id: Product,
       in: {
@@ -1487,8 +1487,11 @@ async (
     const callIntegrationTests = async () => {
       const testInit = async ({ customerKey } = { customerKey: uniqid() }) => {
         console.log('testInit-start');
+
+        const createdLinks = [];
+
         const {
-          data: [{ id: paymentId }],
+          data: [paymentLink],
         } = await deep.insert({
           type_id: Payment,
           object: { data: { value: { orderId: uniqid() } } },
@@ -1503,15 +1506,15 @@ async (
             ],
           },
         });
-        console.log({ paymentId });
-        linkIdsToDelete.push(paymentId);
+        console.log({ paymentLink });
+        createdLinks.push(paymentLink);
 
         const {
-          data: [{ id: sumId }],
+          data: [sumLink],
         } = await deep.insert({
           type_id: Sum,
-          from_id: sumProviderId,
-          to_id: paymentId,
+          from_id: sumProviderLink.id,
+          to_id: paymentLink.id,
           number: { data: { value: 150 } },
           in: {
             data: [
@@ -1522,15 +1525,15 @@ async (
             ],
           },
         });
-        console.log({ sumId });
-        linkIdsToDelete.push(sumId);
+        console.log({ sumLink });
+        createdLinks.push(sumLink);
 
         const {
-          data: [{ id: objectId }],
+          data: [objectLink],
         } = await deep.insert({
           type_id: Object,
-          from_id: paymentId,
-          to_id: productId,
+          from_id: paymentLink.id,
+          to_id: productLink.id,
           in: {
             data: [
               {
@@ -1540,15 +1543,15 @@ async (
             ],
           },
         });
-        console.log({ objectId });
-        linkIdsToDelete.push(objectId);
+        console.log({ objectLink });
+        createdLinks.push(objectLink);
 
         const {
-          data: [{ id: payId }],
+          data: [payLink],
         } = await deep.insert({
           type_id: Pay,
           from_id: deep.linkId,
-          to_id: sumId,
+          to_id: sumLink.id,
           in: {
             data: [
               {
@@ -1558,34 +1561,37 @@ async (
             ],
           },
         });
-        console.log({ payId });
-        linkIdsToDelete.push(payId);
+        console.log({ payLink });
+        createdLinks.push(payLink);
 
         await sleep(9000);
 
         const {
-          data: { length },
+          data,
         } = await deep.select({
           type_id: Url,
-          to_id: payId,
+          to_id: payLink.id,
         });
 
-        expect(length).to.greaterThan(0);
+        expect(data.length).to.greaterThan(0);
+
+        createdLinks.push(data[0]);
+
         console.log('testInit-end');
+
+        return {
+          createdLinks
+        }
       };
 
       const testFinishAuthorize = async ({ customerKey } = { customerKey: uniqid() }) => {
         console.log('testFinishAuthorize-start');
-        await testInit({ customerKey });
-        const {
-          data: [
-            {
-              value: { value: url },
-            },
-          ],
-        } = await deep.select({
-          type_id: Url,
-        });
+        const {createdLinks} = await testInit({ customerKey });
+
+        const urlLink = createdLinks.find(link => link.type_id === Url);
+        expect(urlLink).to.not.be.undefined()
+
+        const url = urlLink.value.value;
         console.log({url});
 
         const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
@@ -1596,17 +1602,34 @@ async (
           url,
         });
         console.log('testFinishAuthorize-end');
+
+        return {
+          createdLinks
+        }
       };
 
       const testConfirm = async ({ customerKey } = { customerKey: uniqid() }) => {
         console.log('testConfirm-start');
-        await testFinishAuthorize({ customerKey });
+        const {createdLinks} = await testFinishAuthorize({ customerKey });
         await sleep(7000);
-        let { data } = await deep.select({
+
+        const payLink = createdLinks.find(link => link.type_id === Pay);
+        expect(payLink).to.be.not.undefined();
+
+        const {data} = await deep.select({
           type_id: Payed,
+          to_id: payLink.id
         });
+
         expect(data.length).to.greaterThan(0);
+
+        createdLinks.push(data[0]);
+
         console.log('testConfirm-end');
+
+        return {
+          createdLinks
+        }
       };
 
       const callCancelTests = async () => {
@@ -1639,7 +1662,7 @@ async (
           if (cancellingPaymentLinkInsertQuery.error) { throw new Error(cancellingPaymentLinkInsertQuery.error.message); }
           const cancellingPaymentLink = cancellingPaymentLinkInsertQuery.data[0];
           console.log({ cancellingPaymentLink });
-          linkIdsToDelete.push(cancellingPaymentLink.id);
+          createdLinkIds.push(cancellingPaymentLink.id);
 
           await sleep(3000);
 
@@ -1647,7 +1670,7 @@ async (
             data: [sumLinkOfCancellingPayment]
           } = await deep.insert({
             type_id: Sum,
-            from_id: sumProviderId,
+            from_id: sumProviderLink.id,
             to_id: cancellingPaymentLink.id,
             number: { data: { value: PRICE } },
             in: {
@@ -1660,7 +1683,7 @@ async (
             },
           });
           console.log({ sumLinkOfCancellingPayment });
-          linkIdsToDelete.push(sumLinkOfCancellingPayment.id);
+          createdLinkIds.push(sumLinkOfCancellingPayment.id);
 
           await sleep(5000);
 
@@ -1679,7 +1702,7 @@ async (
           });
           console.log({ payLinkInsertQuery });
           if (payLinkInsertQuery.error) { throw new Error(payLinkInsertQuery.error.message); }
-          linkIdsToDelete.push(payLinkInsertQuery.data[0].id);
+          createdLinkIds.push(payLinkInsertQuery.data[0].id);
 
           await sleep(3000);
 
@@ -1726,7 +1749,7 @@ async (
             if (cancellingPaymentLinkInsertQuery.error) { throw new Error(cancellingPaymentLinkInsertQuery.error.message); }
             const cancellingPaymentLink = cancellingPaymentLinkInsertQuery.data[0];
             console.log({ cancellingPaymentLink });
-            linkIdsToDelete.push(cancellingPaymentLink.id);
+            createdLinkIds.push(cancellingPaymentLink.id);
 
             await sleep(3000);
 
@@ -1734,7 +1757,7 @@ async (
               data: [sumLinkOfCancellingPayment]
             } = await deep.insert({
               type_id: Sum,
-              from_id: sumProviderId,
+              from_id: sumProviderLink.id,
               to_id: cancellingPaymentLink.id,
               number: { data: { value: Math.floor(PRICE / 3) } },
               in: {
@@ -1747,7 +1770,7 @@ async (
               },
             });
             console.log({ sumLinkOfCancellingPayment });
-            linkIdsToDelete.push(sumLinkOfCancellingPayment.id);
+            createdLinkIds.push(sumLinkOfCancellingPayment.id);
 
             const cancellingPayLinkInsertQuery = await deep.insert({
               type_id: CancellingPay,
@@ -1764,7 +1787,7 @@ async (
             });
             console.log({ cancellingPayLinkInsertQuery });
             if (cancellingPayLinkInsertQuery.error) { throw new Error(cancellingPayLinkInsertQuery.error.message); }
-            linkIdsToDelete.push(cancellingPayLinkInsertQuery.data[0].id);
+            createdLinkIds.push(cancellingPayLinkInsertQuery.data[0].id);
 
             await sleep(3000);
 
@@ -1812,7 +1835,7 @@ async (
           if (cancellingPaymentLinkInsertQuery.error) { throw new Error(cancellingPaymentLinkInsertQuery.error.message); }
           const cancellingPaymentLink = cancellingPaymentLinkInsertQuery.data[0];
           console.log({ cancellingPaymentLink });
-          linkIdsToDelete.push(cancellingPaymentLink.id);
+          createdLinkIds.push(cancellingPaymentLink.id);
 
           await sleep(3000);
 
@@ -1820,7 +1843,7 @@ async (
             data: [sumLinkOfCancellingPayment]
           } = await deep.insert({
             type_id: Sum,
-            from_id: sumProviderId,
+            from_id: sumProviderLink.id,
             to_id: cancellingPaymentLink.id,
             number: { data: { value: PRICE } },
             in: {
@@ -1833,7 +1856,7 @@ async (
             },
           });
           console.log({ sumLinkOfCancellingPayment });
-          linkIdsToDelete.push(sumLinkOfCancellingPayment.id);
+          createdLinkIds.push(sumLinkOfCancellingPayment.id);
 
           await sleep(5000);
 
@@ -1852,7 +1875,7 @@ async (
           });
           console.log({ cancellingPayLinkInsertQuery });
           if (cancellingPayLinkInsertQuery.error) { throw new Error(cancellingPayLinkInsertQuery.error.message); }
-          linkIdsToDelete.push(cancellingPayLinkInsertQuery.data[0].id);
+          createdLinkIds.push(cancellingPayLinkInsertQuery.data[0].id);
 
           await sleep(3000);
 
