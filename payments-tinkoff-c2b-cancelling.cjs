@@ -1601,7 +1601,7 @@ async (
       const testConfirm = async ({ customerKey } = { customerKey: uniqid() }) => {
         console.log('testConfirm-start');
         await testFinishAuthorize({ customerKey });
-        await sleep(17000);
+        await sleep(7000);
         let { data } = await deep.select({
           type_id: Payed,
         });
@@ -1662,7 +1662,7 @@ async (
           console.log({ sumLinkOfCancellingPayment });
           linkIdsToDelete.push(sumLinkOfCancellingPayment.id);
 
-          await sleep(15000);
+          await sleep(5000);
 
           const payLinkInsertQuery = await deep.insert({
             type_id: CancellingPay,
@@ -1835,7 +1835,7 @@ async (
           console.log({ sumLinkOfCancellingPayment });
           linkIdsToDelete.push(sumLinkOfCancellingPayment.id);
 
-          await sleep(15000);
+          await sleep(5000);
 
           const cancellingPayLinkInsertQuery = await deep.insert({
             type_id: CancellingPay,
