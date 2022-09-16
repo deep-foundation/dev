@@ -702,13 +702,29 @@ const f = async () => {
   await deep.insert({
     type_id: TreeIncludeUp,
     from_id: paymentTreeId,
-    to_id: CancellingPayment
+    to_id: CancellingPayment,
+    in: {
+      data: [
+        {
+          type_id: Contain,
+          from_id: deep.linkId,
+        },
+      ],
+    },
   });
 
   await deep.insert({
     type_id: TreeIncludeUp,
     from_id: paymentTreeId,
-    to_id: CancellingPay
+    to_id: CancellingPay,
+    in: {
+      data: [
+        {
+          type_id: Contain,
+          from_id: deep.linkId,
+        },
+      ],
+    },
   });
 
   const handlersDependencies = `
@@ -793,7 +809,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
       in: {
         data: [
           {
-            type_id: await deep.id("${'@deep-foundation/core'}", 'Contain'),
+            type_id: await deep.id("@deep-foundation/core", 'Contain'),
             from_id: deep.linkId,
           },
         ],
@@ -806,7 +822,15 @@ async ({ deep, require, data: { newLink: payLink } }) => {
   const {error: payedLinkInsertQueryError} = await deep.insert({
     type_id: await deep.id("@deep-foundation/payments-tinkoff-c2b", "Payed"),
     from_id: tinkoffProviderLink.id,
-    to_id: payLink.id
+    to_id: payLink.id,
+    in: {
+      data: [
+        {
+          type_id: Contain,
+          from_id: deep.linkId,
+        },
+      ],
+    },
   });
   if(payedLinkInsertQueryError) {throw new Error(payedLinkInsertQueryError.message); }
   
@@ -920,7 +944,15 @@ async (
   const payedInsertLinkInsertQuery = await deep.insert({
     type_id: Payed,
     from_id: tinkoffProviderLink.id,
-    to_id: sumLink.id
+    to_id: sumLink.id,
+    in: {
+      data: [
+        {
+          type_id: Contain,
+          from_id: deep.linkId,
+        },
+      ],
+    },
   });
   if(payedInsertLinkInsertQuery.error) {throw new Error(payedInsertLinkInsertQuery.error.message);}
   }
@@ -1591,7 +1623,15 @@ async (
           const cancellingPaymentLinkInsertQuery = await deep.insert({
             type_id: CancellingPayment,
             from_id: paymentLink.id,
-            to_id: deep.linkId
+            to_id: deep.linkId,
+            in: {
+              data: [
+                {
+                  type_id: Contain,
+                  from_id: deep.linkId,
+                },
+              ],
+            },
           });
           console.log({ cancellingPaymentLinkInsertQuery });
           if (cancellingPaymentLinkInsertQuery.error) { throw new Error(cancellingPaymentLinkInsertQuery.error.message); }
@@ -1607,7 +1647,15 @@ async (
             type_id: Sum,
             from_id: sumProviderId,
             to_id: cancellingPaymentLink.id,
-            number: { data: { value: PRICE } }
+            number: { data: { value: PRICE } },
+            in: {
+              data: [
+                {
+                  type_id: Contain,
+                  from_id: deep.linkId,
+                },
+              ],
+            },
           });
           console.log({ sumLinkOfCancellingPayment });
           linkIdsToDelete.push(sumLinkOfCancellingPayment.id);
@@ -1617,7 +1665,15 @@ async (
           const payLinkInsertQuery = await deep.insert({
             type_id: CancellingPay,
             from_id: deep.linkId,
-            to_id: sumLinkOfCancellingPayment.id
+            to_id: sumLinkOfCancellingPayment.id,
+            in: {
+              data: [
+                {
+                  type_id: Contain,
+                  from_id: deep.linkId,
+                },
+              ],
+            },
           });
           console.log({ payLinkInsertQuery });
           if (payLinkInsertQuery.error) { throw new Error(payLinkInsertQuery.error.message); }
@@ -1654,7 +1710,15 @@ async (
             const cancellingPaymentLinkInsertQuery = await deep.insert({
               type_id: CancellingPayment,
               from_id: paymentLink.id,
-              to_id: deep.linkId
+              to_id: deep.linkId,
+              in: {
+                data: [
+                  {
+                    type_id: Contain,
+                    from_id: deep.linkId,
+                  },
+                ],
+              },
             });
             console.log({ cancellingPaymentLinkInsertQuery });
             if (cancellingPaymentLinkInsertQuery.error) { throw new Error(cancellingPaymentLinkInsertQuery.error.message); }
@@ -1670,7 +1734,15 @@ async (
               type_id: Sum,
               from_id: sumProviderId,
               to_id: cancellingPaymentLink.id,
-              number: { data: { value: Math.floor(PRICE / 3) } }
+              number: { data: { value: Math.floor(PRICE / 3) } },
+              in: {
+                data: [
+                  {
+                    type_id: Contain,
+                    from_id: deep.linkId,
+                  },
+                ],
+              },
             });
             console.log({ sumLinkOfCancellingPayment });
             linkIdsToDelete.push(sumLinkOfCancellingPayment.id);
@@ -1678,7 +1750,15 @@ async (
             const cancellingPayLinkInsertQuery = await deep.insert({
               type_id: CancellingPay,
               from_id: deep.linkId,
-              to_id: sumLinkOfCancellingPayment.id
+              to_id: sumLinkOfCancellingPayment.id,
+              in: {
+                data: [
+                  {
+                    type_id: Contain,
+                    from_id: deep.linkId,
+                  },
+                ],
+              },
             });
             console.log({ cancellingPayLinkInsertQuery });
             if (cancellingPayLinkInsertQuery.error) { throw new Error(cancellingPayLinkInsertQuery.error.message); }
@@ -1716,7 +1796,15 @@ async (
           const cancellingPaymentLinkInsertQuery = await deep.insert({
             type_id: CancellingPayment,
             from_id: paymentLink.id,
-            to_id: deep.linkId
+            to_id: deep.linkId,
+            in: {
+              data: [
+                {
+                  type_id: Contain,
+                  from_id: deep.linkId,
+                },
+              ],
+            },
           });
           console.log({ cancellingPaymentLinkInsertQuery });
           if (cancellingPaymentLinkInsertQuery.error) { throw new Error(cancellingPaymentLinkInsertQuery.error.message); }
@@ -1732,7 +1820,15 @@ async (
             type_id: Sum,
             from_id: sumProviderId,
             to_id: cancellingPaymentLink.id,
-            number: { data: { value: PRICE } }
+            number: { data: { value: PRICE } },
+            in: {
+              data: [
+                {
+                  type_id: Contain,
+                  from_id: deep.linkId,
+                },
+              ],
+            },
           });
           console.log({ sumLinkOfCancellingPayment });
           linkIdsToDelete.push(sumLinkOfCancellingPayment.id);
@@ -1742,7 +1838,15 @@ async (
           const cancellingPayLinkInsertQuery = await deep.insert({
             type_id: CancellingPay,
             from_id: deep.linkId,
-            to_id: sumLinkOfCancellingPayment.id
+            to_id: sumLinkOfCancellingPayment.id,
+            in: {
+              data: [
+                {
+                  type_id: Contain,
+                  from_id: deep.linkId,
+                },
+              ],
+            },
           });
           console.log({ cancellingPayLinkInsertQuery });
           if (cancellingPayLinkInsertQuery.error) { throw new Error(cancellingPayLinkInsertQuery.error.message); }
