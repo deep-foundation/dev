@@ -1373,7 +1373,7 @@ async (
     linkIdsToDelete.push(storageBusinessLink.id);
 
     const {
-      data: [{ id: tokenId }],
+      data: [tokenLink],
     } = await deep.insert({
       type_id: Token,
       from_id: storageBusinessLink.id,
@@ -1388,8 +1388,8 @@ async (
         ],
       },
     });
-    console.log({ tokenId });
-    linkIdsToDelete.push(tokenId);
+    console.log({ tokenLink });
+    linkIdsToDelete.push(tokenLink.id);
 
     const {
       data: [{ id: Product }],
