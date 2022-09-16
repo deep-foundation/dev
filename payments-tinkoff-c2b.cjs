@@ -16,6 +16,7 @@ const axios = require('axios');
 const uniqid = require('uniqid');
 const { expect } = require('chai');
 const { get } = require('lodash');
+const { default: links } = require('@deep-foundation/deeplinks/imports/router/links');
 
 var myEnv = dotenv.config();
 dotenvExpand.expand(myEnv);
@@ -1321,6 +1322,8 @@ async (
   const callTests = async () => {
     console.log('callTests-start');
 
+    const linkIdsToDelete = [];
+
     const {
       data: [{ id: tinkoffProviderId }],
     } = await deep.insert({
@@ -1334,8 +1337,8 @@ async (
         ],
       },
     });
-  
     console.log({ tinkoffProviderId });
+    linkIdsToDelete.push(tinkoffProviderId);
   
     const {
       data: [{ id: sumProviderId }],
@@ -1350,8 +1353,8 @@ async (
         ],
       },
     });
-  
     console.log({ sumProviderId });
+    linkIdsToDelete.push(sumProviderId);
 
     const {
       data: [storageBusinessLink],
@@ -1367,6 +1370,7 @@ async (
       },
     });
     console.log({ storageBusinessLink });
+    linkIdsToDelete.push(storageBusinessLink);
 
     const {
       data: [{ id: tokenId }],
@@ -1384,8 +1388,8 @@ async (
         ],
       },
     });
-  
-    console.log({ token: tokenId });
+    console.log({ tokenId });
+    linkIdsToDelete.push(tokenId);
 
     const {
       data: [{ id: Product }],
@@ -1402,8 +1406,8 @@ async (
         ],
       },
     });
-
     console.log({ Product });
+    linkIdsToDelete.push(Product);
 
     const {
       data: [{ id: productId }],
@@ -1418,22 +1422,8 @@ async (
         ],
       },
     });
-
     console.log({ product: productId });
-
-    const deleteTestLinks = async () => {
-      console.log('deleteTestLinks-start');
-      const { data: testLinks } = await deep.select({
-        type_id: {
-          _in: [Payment, Object, Sum, Pay, Url, Payed, Error, CancellingPayment, CancellingPay, StorageBusiness, StorageClient, Token, Title, TinkoffProvider, SumProvider, Product],
-        },
-      });
-      for (let i = 0; i < testLinks.length; i++) {
-        const { id } = testLinks[i];
-        await deep.delete({ id: id });
-      }
-      console.log('deleteTestLinks-end');
-    };
+    linkIdsToDelete.push(productId);
 
     const callRealizationTests = async () => {
       const testInit = async () => {
@@ -1741,6 +1731,8 @@ async (
           },
         });
         console.log({ paymentId });
+        linkIdsToDelete.push(paymentId);
+
 
         const {
           data: [{ id: sumId }],
@@ -1758,8 +1750,8 @@ async (
             ],
           },
         });
-
         console.log({ sum: sumId });
+        linkIdsToDelete.push(sumId);
 
         const {
           data: [{ id: objectId }],
@@ -1776,8 +1768,8 @@ async (
             ],
           },
         });
-
-        console.log({ object: objectId });
+        console.log({ objectId });
+        linkIdsToDelete.push(objectId);
 
         const {
           data: [{ id: payId }],
@@ -1794,8 +1786,8 @@ async (
             ],
           },
         });
-
-        console.log({ pay: payId });
+        console.log({ payId });
+        linkIdsToDelete.push(payId);
 
         await sleep(9000);
 
@@ -1887,14 +1879,13 @@ async (
       await testFinishAuthorize();
       await testConfirm();
       /*await testGetState();
-      await deleteTestLinks();
-      await testGetCardList();
-      await deleteTestLinks();*/
+      await testGetCardList();*/
     };
 
     // await callRealizationTests();
     await callIntegrationTests();
-    await deleteTestLinks();
+
+    await deep.delete(linkIdsToDelete);
   };
 
   await callTests();
