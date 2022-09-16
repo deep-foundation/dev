@@ -1540,8 +1540,8 @@ async (
             ],
           },
         });
-        console.log({ sumId });
-        linkIdsToDelete.push(sumId);
+        console.log({ objectId });
+        linkIdsToDelete.push(objectId);
 
         const {
           data: [{ id: payId }],
