@@ -1884,11 +1884,8 @@ async (
       };
       */
       await testInit();
-      await deleteTestLinks();
       await testFinishAuthorize();
-      await deleteTestLinks();
       await testConfirm();
-      await deleteTestLinks();
       /*await testGetState();
       await deleteTestLinks();
       await testGetCardList();
@@ -1897,6 +1894,7 @@ async (
 
     // await callRealizationTests();
     await callIntegrationTests();
+    await deleteTestLinks();
   };
 
   await callTests();
