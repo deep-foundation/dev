@@ -1374,8 +1374,7 @@ async (
 																	in: {
 																		data: {
 																			type_id: Contain,
-																			// from_id: deep.linkId,
-																			from_id: await deep.id('deep', 'admin'),
+																			from_id: packageId,
 																			string: {
 																				data: {
 																					value: 'tinkoffNotificationHandler',
