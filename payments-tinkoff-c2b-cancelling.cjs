@@ -1515,7 +1515,7 @@ async (
           type_id: Sum,
           from_id: sumProviderLink.id,
           to_id: paymentLink.id,
-          number: { data: { value: 150 } },
+          number: { data: { value: PRICE } },
           in: {
             data: [
               {
