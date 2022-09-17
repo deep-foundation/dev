@@ -1970,9 +1970,13 @@ async (
         console.log('testGetCardList-end');
       };
       */
-      await testInit();
-      await testFinishAuthorize();
-      await testConfirm();
+      var createdLinks;
+      const {createdLinks} = await testInit();
+      await deep.delete(createdLinks.map(link => link.id));
+      const {createdLinks} = await testFinishAuthorize();
+      await deep.delete(createdLinks.map(link => link.id));
+      const {createdLinks} = await testConfirm();
+      await deep.delete(createdLinks.map(link => link.id));
       /*await testGetState();
       await testGetCardList();*/
     };
