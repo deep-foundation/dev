@@ -1636,13 +1636,9 @@ async (
         console.log('testCancel-start');
         const testCancelAfterPayAfterConfirmFullPrice = async ({ customerKey } = { customerKey: uniqid() }) => {
           console.log('testCancelAfterPayAfterConfirmFullPrice-start');
-          await testConfirm({ customerKey });
+          const {createdLinks} = await testConfirm({ customerKey });
 
-          const {
-            data: [paymentLink],
-          } = await deep.select({
-            type_id: Payment,
-          });
+          const paymentLink = createdLinks.find(link => link.type_id === Payment);
           console.log({ paymentLink });
 
           const cancellingPaymentLinkInsertQuery = await deep.insert({
@@ -1662,7 +1658,7 @@ async (
           if (cancellingPaymentLinkInsertQuery.error) { throw new Error(cancellingPaymentLinkInsertQuery.error.message); }
           const cancellingPaymentLink = cancellingPaymentLinkInsertQuery.data[0];
           console.log({ cancellingPaymentLink });
-          createdLinkIds.push(cancellingPaymentLink.id);
+          createdLinks.push(cancellingPaymentLink);
 
           await sleep(3000);
 
@@ -1683,7 +1679,7 @@ async (
             },
           });
           console.log({ sumLinkOfCancellingPayment });
-          createdLinkIds.push(sumLinkOfCancellingPayment.id);
+          createdLinks.push(sumLinkOfCancellingPayment);
 
           await sleep(5000);
 
@@ -1702,7 +1698,7 @@ async (
           });
           console.log({ payLinkInsertQuery });
           if (payLinkInsertQuery.error) { throw new Error(payLinkInsertQuery.error.message); }
-          createdLinkIds.push(payLinkInsertQuery.data[0].id);
+          createdLinks.push(payLinkInsertQuery.data[0]);
 
           await sleep(3000);
 
@@ -1722,13 +1718,9 @@ async (
 
         const testCancelAfterPayAfterConfirmCustomPriceX2 = async ({ customerKey } = { customerKey: uniqid() }) => {
           console.log('testCancelAfterPayAfterConfirmCustomPriceX2-start');
-          await testConfirm({ customerKey });
+          const {createdLinks} = await testConfirm({ customerKey });
 
-          const {
-            data: [paymentLink],
-          } = await deep.select({
-            type_id: Payment,
-          });
+          const paymentLink = createdLinks.find(link => link.type_id === Payment);
           console.log({ paymentLink });
 
           for (let i = 0; i < 2; i++) {
@@ -1749,7 +1741,7 @@ async (
             if (cancellingPaymentLinkInsertQuery.error) { throw new Error(cancellingPaymentLinkInsertQuery.error.message); }
             const cancellingPaymentLink = cancellingPaymentLinkInsertQuery.data[0];
             console.log({ cancellingPaymentLink });
-            createdLinkIds.push(cancellingPaymentLink.id);
+            createdLinks.push(cancellingPaymentLink);
 
             await sleep(3000);
 
@@ -1770,7 +1762,7 @@ async (
               },
             });
             console.log({ sumLinkOfCancellingPayment });
-            createdLinkIds.push(sumLinkOfCancellingPayment.id);
+            createdLinks.push(sumLinkOfCancellingPayment);
 
             const cancellingPayLinkInsertQuery = await deep.insert({
               type_id: CancellingPay,
@@ -1787,7 +1779,7 @@ async (
             });
             console.log({ cancellingPayLinkInsertQuery });
             if (cancellingPayLinkInsertQuery.error) { throw new Error(cancellingPayLinkInsertQuery.error.message); }
-            createdLinkIds.push(cancellingPayLinkInsertQuery.data[0].id);
+            createdLinks.push(cancellingPayLinkInsertQuery.data[0]);
 
             await sleep(3000);
 
@@ -1811,11 +1803,7 @@ async (
           console.log('testCancelBeforePay-start');
           await testInit({ customerKey });
 
-          const {
-            data: [paymentLink],
-          } = await deep.select({
-            type_id: Payment,
-          });
+          const paymentLink = createdLinks.find(link => link.type_id === Payment);
           console.log({ paymentLink });
 
           const cancellingPaymentLinkInsertQuery = await deep.insert({
@@ -1835,7 +1823,7 @@ async (
           if (cancellingPaymentLinkInsertQuery.error) { throw new Error(cancellingPaymentLinkInsertQuery.error.message); }
           const cancellingPaymentLink = cancellingPaymentLinkInsertQuery.data[0];
           console.log({ cancellingPaymentLink });
-          createdLinkIds.push(cancellingPaymentLink.id);
+          createdLinks.push(cancellingPaymentLink);
 
           await sleep(3000);
 
@@ -1856,7 +1844,7 @@ async (
             },
           });
           console.log({ sumLinkOfCancellingPayment });
-          createdLinkIds.push(sumLinkOfCancellingPayment.id);
+          createdLinks.push(sumLinkOfCancellingPayment);
 
           await sleep(5000);
 
@@ -1875,7 +1863,7 @@ async (
           });
           console.log({ cancellingPayLinkInsertQuery });
           if (cancellingPayLinkInsertQuery.error) { throw new Error(cancellingPayLinkInsertQuery.error.message); }
-          createdLinkIds.push(cancellingPayLinkInsertQuery.data[0].id);
+          createdLinks.push(cancellingPayLinkInsertQuery.data[0]);
 
           await sleep(3000);
 
