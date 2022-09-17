@@ -1567,18 +1567,23 @@ async (
         console.log({ payLink });
         createdLinks.push(payLink);
 
-        await sleep(9000);
+        var urlLinkSelectQuery;
+        for (let i = 0; i < 10; i++) {
+          urlLinkSelectQuery = await deep.select({
+            type_id: Url,
+            to_id: payLink.id,
+          }); 
+          
+          if(urlLinkSelectQuery.data.length > 0) {
+            break;
+          }
 
-        const {
-          data,
-        } = await deep.select({
-          type_id: Url,
-          to_id: payLink.id,
-        }); 
+          await sleep(1000);
+        }
 
-        expect(data.length).to.greaterThan(0);
+        expect(urlLinkSelectQuery.data.length).to.greaterThan(0);
 
-        createdLinks.push(data[0]);
+        createdLinks.push(urlLinkSelectQuery.data[0]);
 
         console.log('testInit-end');
 
@@ -1619,12 +1624,21 @@ async (
         const payLink = createdLinks.find(link => link.type_id === Pay);
         expect(payLink).to.be.not.undefined();
 
-        const {data} = await deep.select({
-          type_id: Payed,
-          to_id: payLink.id
-        });
+        var payedLinkSelectQuery;
+        for (let i = 0; i < 10; i++) {
+          payedLinkSelectQuery = await deep.select({
+            type_id: Payed,
+            to_id: payLink.id
+          });
+          
+          if(payedLinkSelectQuery.data.length > 0) {
+            break;
+          }
 
-        expect(data.length).to.greaterThan(0);
+          await sleep(1000);
+        }
+
+        expect(payedLinkSelectQuery.data.length).to.greaterThan(0);
 
         createdLinks.push(data[0]);
 
@@ -1663,8 +1677,6 @@ async (
           console.log({ cancellingPaymentLink });
           createdLinks.push(cancellingPaymentLink);
 
-          await sleep(3000);
-
           const {
             data: [sumLinkOfCancellingPayment]
           } = await deep.insert({
@@ -1684,8 +1696,6 @@ async (
           console.log({ sumLinkOfCancellingPayment });
           createdLinks.push(sumLinkOfCancellingPayment);
 
-          await sleep(5000);
-
           const payLinkInsertQuery = await deep.insert({
             type_id: CancellingPay,
             from_id: deep.linkId,
@@ -1703,17 +1713,24 @@ async (
           if (payLinkInsertQuery.error) { throw new Error(payLinkInsertQuery.error.message); }
           createdLinks.push(payLinkInsertQuery.data[0]);
 
-          await sleep(3000);
-
-          const { data: mpUpCancellingPayment, error: mpUpCancellingPaymentSelectQueryError } = await deep.select({
-            up: {
-              parent_id: { _eq: cancellingPaymentLink.id },
-              tree_id: { _eq: paymentTreeId }
+          var mpUpCancellingPaymentSelectQuery;
+          for (let i = 0; i < 10; i++) {
+            mpUpCancellingPaymentSelectQuery = await deep.select({
+              up: {
+                parent_id: { _eq: cancellingPaymentLink.id },
+                tree_id: { _eq: paymentTreeId }
+              }
+            });
+            
+            if(mpUpCancellingPaymentSelectQuery.data.length > 0) {
+              break;
             }
-          });
-          if (mpUpCancellingPaymentSelectQueryError) { throw new Error(mpUpCancellingPaymentSelectQueryError); }
-          const Payed = await deep.id('@deep-foundation/payments-tinkoff-c2b', "Payed");
-          const payedLink = mpUpCancellingPayment.find(link => link.type_id === Payed);
+  
+            await sleep(1000);
+          }
+
+          if (mpUpCancellingPaymentSelectQuery.error) { throw new Error(mpUpCancellingPaymentSelectQuery.error.message); }
+          const payedLink = mpUpCancellingPaymentSelectQuery.data.find(link => link.type_id === Payed);
           expect(payedLink).to.not.equal(undefined);
           createdLinks.push(payedLink);
 
@@ -1748,8 +1765,6 @@ async (
             const cancellingPaymentLink = cancellingPaymentLinkInsertQuery.data[0];
             console.log({ cancellingPaymentLink });
             createdLinks.push(cancellingPaymentLink);
-
-            await sleep(3000);
 
             const {
               data: [sumLinkOfCancellingPayment]
@@ -1787,18 +1802,24 @@ async (
             if (cancellingPayLinkInsertQuery.error) { throw new Error(cancellingPayLinkInsertQuery.error.message); }
             createdLinks.push(cancellingPayLinkInsertQuery.data[0]);
 
-            await sleep(3000);
-
-            const { data: mpUpCancellingPayment, error: mpUpCancellingPaymentSelectQueryError } = await deep.select({
-              up: {
-                parent_id: { _eq: cancellingPaymentLink.id },
-                tree_id: { _eq: paymentTreeId }
+            var mpUpCancellingPaymentSelectQuery;
+            for (let i = 0; i < 10; i++) {
+              mpUpCancellingPaymentSelectQuery = await deep.select({
+                up: {
+                  parent_id: { _eq: cancellingPaymentLink.id },
+                  tree_id: { _eq: paymentTreeId }
+                }
+              });
+              
+              if(mpUpCancellingPaymentSelectQuery.data.length > 0) {
+                break;
               }
-            });
-            console.log({ mpUpCancellingPayment });
-            if (mpUpCancellingPaymentSelectQueryError) { throw new Error(mpUpCancellingPaymentSelectQueryError); }
-            const Payed = await deep.id('@deep-foundation/payments-tinkoff-c2b', "Payed");
-            const payedLink = mpUpCancellingPayment.find(link => link.type_id === Payed);
+    
+              await sleep(1000);
+            }
+  
+            if (mpUpCancellingPaymentSelectQuery.error) { throw new Error(mpUpCancellingPaymentSelectQuery.error.message); }
+            const payedLink = mpUpCancellingPaymentSelectQuery.data.find(link => link.type_id === Payed);
             expect(payedLink).to.not.equal(undefined);
             createdLinks.push(payedLink);
           }
@@ -1834,8 +1855,6 @@ async (
           console.log({ cancellingPaymentLink });
           createdLinks.push(cancellingPaymentLink);
 
-          await sleep(3000);
-
           const {
             data: [sumLinkOfCancellingPayment]
           } = await deep.insert({
@@ -1855,8 +1874,6 @@ async (
           console.log({ sumLinkOfCancellingPayment });
           createdLinks.push(sumLinkOfCancellingPayment);
 
-          await sleep(5000);
-
           const cancellingPayLinkInsertQuery = await deep.insert({
             type_id: CancellingPay,
             from_id: deep.linkId,
@@ -1874,17 +1891,24 @@ async (
           if (cancellingPayLinkInsertQuery.error) { throw new Error(cancellingPayLinkInsertQuery.error.message); }
           createdLinks.push(cancellingPayLinkInsertQuery.data[0]);
 
-          await sleep(3000);
-
-          const { data: mpUpCancellingPayment, error: mpUpCancellingPaymentSelectQueryError } = await deep.select({
-            up: {
-              parent_id: { _eq: cancellingPaymentLink.id },
-              tree_id: { _eq: paymentTreeId }
+          var mpUpCancellingPaymentSelectQuery;
+          for (let i = 0; i < 10; i++) {
+            mpUpCancellingPaymentSelectQuery = await deep.select({
+              up: {
+                parent_id: { _eq: cancellingPaymentLink.id },
+                tree_id: { _eq: paymentTreeId }
+              }
+            });
+            
+            if(mpUpCancellingPaymentSelectQuery.data.length > 0) {
+              break;
             }
-          });
-          if (mpUpCancellingPaymentSelectQueryError) { throw new Error(mpUpCancellingPaymentSelectQueryError); }
-          const Payed = await deep.id('@deep-foundation/payments-tinkoff-c2b', "Payed");
-          const payedLink = mpUpCancellingPayment.find(link => link.type_id === Payed);
+  
+            await sleep(1000);
+          }
+
+          if (mpUpCancellingPaymentSelectQuery.error) { throw new Error(mpUpCancellingPaymentSelectQuery.error.message); }
+          const payedLink = mpUpCancellingPaymentSelectQuery.data.find(link => link.type_id === Payed);
           expect(payedLink).to.not.equal(undefined);
           createdLinks.push(payedLink);
 
