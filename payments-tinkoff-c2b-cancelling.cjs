@@ -1571,7 +1571,7 @@ async (
         } = await deep.select({
           type_id: Url,
           to_id: payLink.id,
-        });
+        }); 
 
         expect(data.length).to.greaterThan(0);
 
@@ -1712,8 +1712,11 @@ async (
           const Payed = await deep.id('@deep-foundation/payments-tinkoff-c2b', "Payed");
           const payedLink = mpUpCancellingPayment.find(link => link.type_id === Payed);
           expect(payedLink).to.not.equal(undefined);
+          createdLinks.push(payedLink);
 
           console.log('testCancelAfterPayAfterConfirmFullPrice-end');
+
+          return {createdLinks};
         };
 
         const testCancelAfterPayAfterConfirmCustomPriceX2 = async ({ customerKey } = { customerKey: uniqid() }) => {
@@ -1794,14 +1797,17 @@ async (
             const Payed = await deep.id('@deep-foundation/payments-tinkoff-c2b', "Payed");
             const payedLink = mpUpCancellingPayment.find(link => link.type_id === Payed);
             expect(payedLink).to.not.equal(undefined);
+            createdLinks.push(payedLink);
           }
 
           console.log('testCancelAfterPayAfterConfirmCustomPriceX2-end');
+
+          return {createdLinks}
         };
 
         const testCancelBeforePay = async ({ customerKey } = { customerKey: uniqid() }) => {
           console.log('testCancelBeforePay-start');
-          await testInit({ customerKey });
+          const {createdLinks} = await testInit({ customerKey });
 
           const paymentLink = createdLinks.find(link => link.type_id === Payment);
           console.log({ paymentLink });
@@ -1877,19 +1883,27 @@ async (
           const Payed = await deep.id('@deep-foundation/payments-tinkoff-c2b', "Payed");
           const payedLink = mpUpCancellingPayment.find(link => link.type_id === Payed);
           expect(payedLink).to.not.equal(undefined);
+          createdLinks.push(payedLink);
 
           console.log('testCancelBeforePay-end');
+
+          return {createdLinks}
         };
 
-        await testCancelAfterPayAfterConfirmFullPrice();
-        await testCancelAfterPayAfterConfirmCustomPriceX2();
-        await testCancelBeforePay();
+        var createdLinks;
+        const {createdLinks} = await testCancelAfterPayAfterConfirmFullPrice();
+        await deep.delete(createdLinks);
+        const {createdLinks} = await testCancelAfterPayAfterConfirmCustomPriceX2();
+        await deep.delete(createdLinks);
+        const {createdLinks} = await testCancelBeforePay();
+        await deep.delete(createdLinks);
 
         console.log('testCancel-end');
+
+        return {createdLinks}
       };
 
       await callCancelTests();
-      await deleteTestLinks();
     };
 
     // await callRealizationTests();
