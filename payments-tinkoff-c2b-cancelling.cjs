@@ -512,23 +512,6 @@ const f = async () => {
     }
   };
 
-  const getBankPaymentLinkId = async (orderLinkId) => {
-    const checkOrderOptions = {
-      TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
-      OrderLinkId: orderLinkId,
-    };
-
-    const checkOrderResult = await checkOrder(checkOrderOptions);
-    expect(checkOrderResult.error).to.equal(undefined);
-
-    console.log({ checkOrderResponse: checkOrderResult });
-
-    const { PaymentLinkId: bankPaymentLinkId } = checkOrderResult.response.Payments[0];
-
-    console.log({ paymentLinkId: bankPaymentLinkId });
-    return bankPaymentLinkId;
-  };
-
   const guest = await unloginedDeep.guest();
   const guestDeep = new DeepClient({ deep: unloginedDeep, ...guest });
   const admin = await guestDeep.login({
