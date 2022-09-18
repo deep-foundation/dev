@@ -847,7 +847,6 @@ async ({ deep, require, data: { newLink: payLink } }) => {
   
 };
 `;
-  console.log({ payInsertHandler });
 
   const {
     data: [{ id: payInsertHandlerLinkId }],
@@ -973,7 +972,6 @@ async (
   res.send('ok');
 };
 `;
-  console.log({ tinkoffNotificationHandler });
 
   await deep.insert(
     {
