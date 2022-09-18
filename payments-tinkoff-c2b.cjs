@@ -964,7 +964,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
     type_id: TinkoffProvider
   });
   if(tinkoffProviderLinkSelectQuery.error) {throw new Error(tinkoffProviderLinkSelectQuery.error.message);}
-  const tinkoffProviderLink = tinkoffProviderLinkSelectQuery.data[0];
+  const tinkoffProviderLinkId = tinkoffProviderLinkSelectQuery.data[0].id;
 
   const {data: mpDownPay, error: mpDownPaySelectQueryError} = await deep.select({
     down: {
@@ -1050,7 +1050,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
     const errorMessage = "Could not initialize the order. " + initResult.error;
     const {error: errorLinkInsertQueryError} = await deep.insert({
       type_id: (await deep.id("@deep-foundation/payments-tinkoff-c2b", "Error")),
-      from_id: tinkoffProviderLink.id,
+      from_id: tinkoffProviderLinkId,
       to_id: payLink.id,
       string: { data: { value: errorMessage } },
       in: {
@@ -1068,7 +1068,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
 
   const {error: urlLinkInsertQueryError} = await deep.insert({
     type_id: Url,
-    from_id: tinkoffProviderLink.id,
+    from_id: tinkoffProviderLinkId,
     to_id: payLink.id,
     string: { data: { value: initResult.response.PaymentURL } },
     in: {
@@ -1158,7 +1158,7 @@ async (
   });
   console.log({tinkoffProviderLinkSelectQuery});
   if(tinkoffProviderLinkSelectQuery.error) {throw new Error(tinkoffProviderLinkSelectQuery.error.message);}
-  const tinkoffProviderLink = tinkoffProviderLinkSelectQuery.data[0];
+  const tinkoffProviderLinkId = tinkoffProviderLinkSelectQuery.data[0].id;
   console.log({tinkoffProviderLink});
 
   const paymentLinkSelectQuery = await deep.select({
@@ -1222,7 +1222,7 @@ async (
       const errorMessage = "Could not confirm the pay. " + confirmResult.error;
       const {errorLinkInsertError} = await deep.insert({
         type_id: (await deep.id("@deep-foundation/payments-tinkoff-c2b", "Error")),
-        from_id: tinkoffProviderLink.id,
+        from_id: tinkoffProviderLinkId,
         to_id: payLink.id,
         string: { data: { value: errorMessage } },
         in: {
@@ -1242,7 +1242,7 @@ async (
   } else if (req.body.Status === 'CONFIRMED') {
     const payedLinkInsertQuery = await deep.insert({
       type_id: await deep.id("@deep-foundation/payments-tinkoff-c2b", "Payed"),
-    from_id: tinkoffProviderLink.id,
+    from_id: tinkoffProviderLinkId,
       to_id: payLink.id,
       in: {
         data: [
