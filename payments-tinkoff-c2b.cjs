@@ -1941,7 +1941,7 @@ async (
 					const createdLinkIds = [];
 		 
 					const payLink = createdLinks.find(link => link.type_id === Pay);
-					expect(payLink).to.be.equal(undefined);
+					expect(payLink).to.not.be.equal(undefined);
 		 
 					var payedLinkSelectQuery;
 					for (let i = 0; i < 10; i++) {
