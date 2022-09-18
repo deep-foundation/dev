@@ -1927,7 +1927,7 @@ async (
 					console.log('testFinishAuthorize-end');
 		 
 					return {
-					  createdLinks: await deep.select(createdLinks.map(link => link.id))
+					  createdLinks
 					}
 				 };
 		 
