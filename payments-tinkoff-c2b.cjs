@@ -1899,7 +1899,7 @@ async (
 				console.log('testInit-end');
 
 				return {
-					createdLinks,
+					createdLinks: await deep.select(createdLinks)
 				};
 			};
 
@@ -1920,7 +1920,9 @@ async (
 				});
 				console.log('testFinishAuthorize-end');
 
-				return { createdLinks };
+				return { 
+          createdLinks: await deep.select(createdLinks)
+         };
 			};
 
 			const testConfirm = async (
@@ -1951,7 +1953,9 @@ async (
 
 				console.log('testConfirm-end');
 
-				return { createdLinks };
+				return { 
+          createdLinks: await deep.select(createdLinks)
+         };
 			};
 
 			/*
