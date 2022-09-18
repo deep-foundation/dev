@@ -1926,13 +1926,18 @@ async (
           return {createdLinks}
         };
 
-        var createdLinks;
-        const {createdLinks} = await testCancelAfterPayAfterConfirmFullPrice();
-        await deep.delete(createdLinks);
-        const {createdLinks} = await testCancelAfterPayAfterConfirmCustomPriceX2();
-        await deep.delete(createdLinks);
-        const {createdLinks} = await testCancelBeforePay();
-        await deep.delete(createdLinks);
+        {
+          const {createdLinks} = await testCancelAfterPayAfterConfirmFullPrice();
+          await deep.delete(createdLinks.map(link => link.id));
+        }
+        {
+          const {createdLinks} = await testCancelAfterPayAfterConfirmCustomPriceX2();
+          await deep.delete(createdLinks.map(link => link.id));
+        }
+        {
+          const {createdLinks} = await testCancelBeforePay();
+          await deep.delete(createdLinks.map(link => link.id));
+        }
 
         console.log('testCancel-end');
 
