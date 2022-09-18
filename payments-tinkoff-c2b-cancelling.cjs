@@ -763,7 +763,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
   const cancelledPaymentLink = fromLinkOfPaymentQuery.data[0];
   console.log({cancelledPaymentLink}); 
 
-  const Income = awaid deep.id("@deep-foundation/payments-tinkoff-c2b", "Income");
+  const Income = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Income");
   const incomeLinkInsertQuery = await deep.insert({
     type_id: Income,
     from_id: cancellingPaymentLink.id,
