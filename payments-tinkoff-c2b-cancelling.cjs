@@ -1444,8 +1444,8 @@ async (
           data: [{id: tokenLinkId}],
         } = await deep.insert({
           type_id: Token,
-          from_id: storageBusinessLinkId.id,
-          to_id: storageBusinessLinkId.id,
+          from_id: storageBusinessLinkId,
+          to_id: storageBusinessLinkId,
           string: { data: { value: process.env.PAYMENT_TEST_TERMINAL_KEY } },
           in: {
             data: [
@@ -1504,7 +1504,7 @@ async (
           type_id: Payment,
           object: { data: { value: { orderLinkId: uniqid() } } },
           from_id: deep.linkId,
-          to_id: storageBusinessLinkId.id,
+          to_id: storageBusinessLinkId,
           in: {
             data: [
               {
@@ -1521,7 +1521,7 @@ async (
           data: [{id: sumLinkId}],
         } = await deep.insert({
           type_id: Sum,
-          from_id: sumProviderLinkId.id,
+          from_id: sumProviderLinkId,
           to_id: paymentLinkId,
           number: { data: { value: PRICE } },
           in: {
@@ -1541,7 +1541,7 @@ async (
         } = await deep.insert({
           type_id: Object,
           from_id: paymentLinkId,
-          to_id: productLinkId.id,
+          to_id: productLinkId,
           in: {
             data: [
               {
@@ -1697,7 +1697,7 @@ async (
 
           const sumLinkOfCancellingPaymentQuery = await deep.insert({
             type_id: Sum,
-            from_id: sumProviderLinkId.id,
+            from_id: sumProviderLinkId,
             to_id: cancellingPaymentLinkId,
             number: { data: { value: PRICE } },
             in: {
@@ -1795,7 +1795,7 @@ async (
               data: [sumLinkOfCancellingPayment]
             } = await deep.insert({
               type_id: Sum,
-              from_id: sumProviderLinkId.id,
+              from_id: sumProviderLinkId,
               to_id: cancellingPaymentLinkId,
               number: { data: { value: Math.floor(PRICE / 3) } },
               in: {
@@ -1888,7 +1888,7 @@ async (
 
           const sumLinkOfCancellingPaymentSelectQuery = await deep.insert({
             type_id: Sum,
-            from_id: sumProviderLinkId.id,
+            from_id: sumProviderLinkId,
             to_id: cancellingPaymentLinkId,
             number: { data: { value: PRICE } },
             in: {
