@@ -1836,6 +1836,8 @@ async (
 
           createdLinks.push(...(await deep.select(createdLinkIds)).data)
 
+          console.log({createdLinks});
+
           console.log('testCancelAfterPayAfterConfirmCustomPriceX2-end');
 
           return { 
