@@ -1814,7 +1814,7 @@ async (
             for (let i = 0; i < 10; i++) {
               mpUpCancellingPaymentSelectQuery = await deep.select({
                 up: {
-                  parent_id: { _eq: cancellingPaymentLink.id },
+                  parent_id: { _eq: cancellingPaymentLinkId },
                   tree_id: { _eq: paymentTreeLinkId }
                 }
               });
