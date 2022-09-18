@@ -1899,7 +1899,7 @@ async (
 				console.log('testInit-end');
 
 				return {
-					createdLinks: await deep.select(createdLinks)
+					createdLinks: await deep.select(createdLinks.map(link => link.id))
 				};
 			};
 
@@ -1921,7 +1921,7 @@ async (
 				console.log('testFinishAuthorize-end');
 
 				return { 
-          createdLinks: await deep.select(createdLinks)
+          createdLinks: await deep.select(createdLinks.map(link => link.id))
          };
 			};
 
@@ -1954,7 +1954,7 @@ async (
 				console.log('testConfirm-end');
 
 				return { 
-          createdLinks: await deep.select(createdLinks)
+          createdLinks: await deep.select(createdLinks.map(link => link.id))
          };
 			};
 
