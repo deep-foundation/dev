@@ -915,11 +915,11 @@ async (
   if(tinkoffProviderLinkSelectQuery.error) {throw new Error(tinkoffProviderLinkSelectQuery.error.message);}
   const tinkoffProviderLink = tinkoffProviderLinkSelectQuery.data[0];
 
-  const cancellingPaymentLinkelectQuery = await deep.select({
+  const cancellingPaymentLinkSelectQuery = await deep.select({
     object: {value: {_contains: {orderLinkId: req.body.OrderLinkId}}}
   });
-  if(cancellingPaymentLinkelectQuery.error) { throw new Error(cancellingPaymentLinkelectQuery.error.message); }
-  const cancellingPaymentLink = cancellingPaymentLinkelectQuery.data[0];
+  if(cancellingPaymentLinkSelectQuery.error) { throw new Error(cancellingPaymentLinkSelectQuery.error.message); }
+  const cancellingPaymentLink = cancellingPaymentLinkSelectQuery.data[0];
   console.log({cancellingPaymentLink});
   if(!cancellingPaymentLink) { throw new Error("The cancelling payment link associated with the order id " + req.body.OrderLinkId + " is not found."); }
 
