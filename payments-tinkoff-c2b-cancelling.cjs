@@ -1732,9 +1732,10 @@ async (
 
             await sleep(1000);
           }
-
           if (mpUpCancellingPaymentSelectQuery.error) { throw new Error(mpUpCancellingPaymentSelectQuery.error.message); }
-          const payedLink = mpUpCancellingPaymentSelectQuery.data.find(link => link.type_id === Payed);
+          const mpUpCancellingPayment = mpUpCancellingPaymentSelectQuery.data;
+          console.log({mpUpCancellingPayment});
+          const payedLink = mpUpCancellingPayment.find(link => link.type_id === Payed);
           expect(payedLink).to.not.equal(undefined);
           createdLinks.push(payedLink);
 
