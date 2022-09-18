@@ -1624,7 +1624,6 @@ async (
       const testConfirm = async ({ customerKey } = { customerKey: uniqid() }) => {
         console.log('testConfirm-start');
         const { createdLinks } = await testFinishAuthorize({ customerKey });
-        await sleep(7000);
 
         const payLink = createdLinks.find(link => link.type_id === Pay);
         expect(payLink).to.be.not.undefined();
