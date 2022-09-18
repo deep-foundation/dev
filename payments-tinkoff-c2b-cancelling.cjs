@@ -1718,7 +1718,7 @@ async (
           const payLinkInsertQuery = await deep.insert({
             type_id: CancellingPay,
             from_id: deep.linkId,
-            to_id: sumLinkOfCancellingPayment.id,
+            to_id: sumLinkIdOfCancellingPayment.id,
             in: {
               data: [
                 {
@@ -1792,7 +1792,7 @@ async (
             createdLinks.push(cancellingPaymentLinkId);
 
             const {
-              data: [sumLinkOfCancellingPayment]
+              data: [{id:sumLinkIdOfCancellingPayment}]
             } = await deep.insert({
               type_id: Sum,
               from_id: sumProviderLinkId,
@@ -1807,13 +1807,13 @@ async (
                 ],
               },
             });
-            console.log({ sumLinkOfCancellingPayment });
-            createdLinks.push(sumLinkOfCancellingPayment);
+            console.log({ sumLinkIdOfCancellingPayment });
+            createdLinks.push(sumLinkIdOfCancellingPayment);
 
             const cancellingPayLinkInsertQuery = await deep.insert({
               type_id: CancellingPay,
               from_id: deep.linkId,
-              to_id: sumLinkOfCancellingPayment.id,
+              to_id: sumLinkIdOfCancellingPayment,
               in: {
                 data: [
                   {
@@ -1908,7 +1908,7 @@ async (
           const cancellingPayLinkInsertQuery = await deep.insert({
             type_id: CancellingPay,
             from_id: deep.linkId,
-            to_id: sumLinkOfCancellingPayment.id,
+            to_id: sumLinkIdOfCancellingPayment,
             in: {
               data: [
                 {
