@@ -1305,8 +1305,9 @@ async (
       ],
     },
   });
-  console.log({incomeLinkInsertQuery});
   if(incomeLinkInsertQuery.error) {throw new Error(incomeLinkInsertQuery.error.message);}
+  const incomeLinkId = incomeLinkInsertQuery.data[0].id;
+  console.log({incomeLinkId});
   } 
   res.send('ok');
 };
