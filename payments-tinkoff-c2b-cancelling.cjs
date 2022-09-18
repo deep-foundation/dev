@@ -923,17 +923,17 @@ async (
   console.log({cancellingPaymentLink});
   if(!cancellingPaymentLink) { throw new Error("The cancelling payment link associated with the order id " + req.body.OrderLinkId + " is not found."); }
 
-  const {data: mpUpcancellingPaymentLink, error: mpUpcancellingPaymentLinkSelectQueryError} = await deep.select({
+  const {data: mpUpCancellingPaymentLink, error: mpUpcancellingPaymentLinkSelectQueryError} = await deep.select({
     up: {
       parent_id: { _eq: cancellingPaymentLink.id },
       tree_id: { _eq: await deep.id("@deep-foundation/payments-tinkoff-c2b", "paymentTree") }
     }
   });
-  console.log({mpUpcancellingPaymentLink});
+  console.log({mpUpCancellingPaymentLink});
   if(mpUpcancellingPaymentLinkSelectQueryError) { throw new Error(mpUpcancellingPaymentLinkSelectQueryError.message); }
 
   const Pay = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Pay");
-  const payLink = mpUpcancellingPaymentLink.find(link => link.type_id === Pay);
+  const payLink = mpUpCancellingPaymentLink.find(link => link.type_id === Pay);
   console.log({payLink});
   if(!payLink) { throw new Error("The pay link associated with cancelling payment link " + cancellingPaymentLink + " is not found.") }
 
