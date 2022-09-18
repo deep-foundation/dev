@@ -1696,336 +1696,336 @@ async (
 		};
 
 		const callIntegrationTests = async () => {
-			
+
 			const createdLinkIds = [];
 
 			const {
-			  data: [{id: tinkoffProviderLinkId}],
+				data: [{ id: tinkoffProviderLinkId }],
 			} = await deep.insert({
-			  type_id: TinkoffProvider,
-			  in: {
-				 data: [
-					{
-					  type_id: Contain,
-					  from_id: deep.linkId,
-					},
-				 ],
-			  },
+				type_id: TinkoffProvider,
+				in: {
+					data: [
+						{
+							type_id: Contain,
+							from_id: deep.linkId,
+						},
+					],
+				},
 			});
 			console.log({ tinkoffProviderLinkId });
 			createdLinkIds.push(tinkoffProviderLinkId);
- 
+
 			const {
-			  data: [{id: sumProviderLinkId}],
+				data: [{ id: sumProviderLinkId }],
 			} = await deep.insert({
-			  type_id: SumProvider,
-			  in: {
-				 data: [
-					{
-					  type_id: Contain,
-					  from_id: deep.linkId,
-					},
-				 ],
-			  },
+				type_id: SumProvider,
+				in: {
+					data: [
+						{
+							type_id: Contain,
+							from_id: deep.linkId,
+						},
+					],
+				},
 			});
 			console.log({ sumProviderLinkId });
 			createdLinkIds.push(sumProviderLinkId);
- 
+
 			const {
-			  data: [{id: storageBusinessLinkId}],
+				data: [{ id: storageBusinessLinkId }],
 			} = await deep.insert({
-			  type_id: StorageBusiness,
-			  in: {
-				 data: [
-					{
-					  type_id: Contain,
-					  from_id: deep.linkId,
-					},
-				 ],
-			  },
+				type_id: StorageBusiness,
+				in: {
+					data: [
+						{
+							type_id: Contain,
+							from_id: deep.linkId,
+						},
+					],
+				},
 			});
 			console.log({ storageBusinessLinkId });
 			createdLinkIds.push(storageBusinessLinkId);
- 
+
 			const {
-			  data: [{id: tokenLinkId}],
+				data: [{ id: tokenLinkId }],
 			} = await deep.insert({
-			  type_id: Token,
-			  from_id: storageBusinessLinkId,
-			  to_id: storageBusinessLinkId,
-			  string: { data: { value: process.env.PAYMENT_TEST_TERMINAL_KEY } },
-			  in: {
-				 data: [
-					{
-					  type_id: Contain,
-					  from_id: deep.linkId,
-					},
-				 ],
-			  },
+				type_id: Token,
+				from_id: storageBusinessLinkId,
+				to_id: storageBusinessLinkId,
+				string: { data: { value: process.env.PAYMENT_TEST_TERMINAL_KEY } },
+				in: {
+					data: [
+						{
+							type_id: Contain,
+							from_id: deep.linkId,
+						},
+					],
+				},
 			});
 			console.log({ tokenLinkId });
 			createdLinkIds.push(tokenLinkId);
- 
+
 			const {
-			  data: [{ id: Product }],
+				data: [{ id: Product }],
 			} = await deep.insert({
-			  type_id: Type,
-			  from_id: Any,
-			  to_id: Any,
-			  in: {
-				 data: [
-					{
-					  type_id: Contain,
-					  from_id: deep.linkId,
-					},
-				 ],
-			  },
+				type_id: Type,
+				from_id: Any,
+				to_id: Any,
+				in: {
+					data: [
+						{
+							type_id: Contain,
+							from_id: deep.linkId,
+						},
+					],
+				},
 			});
 			console.log({ Product });
 			createdLinkIds.push(Product);
- 
+
 			const {
-			  data: [{id: productLinkId}],
+				data: [{ id: productLinkId }],
 			} = await deep.insert({
-			  type_id: Product,
-			  in: {
-				 data: [
-					{
-					  type_id: Contain,
-					  from_id: deep.linkId,
-					},
-				 ],
-			  },
+				type_id: Product,
+				in: {
+					data: [
+						{
+							type_id: Contain,
+							from_id: deep.linkId,
+						},
+					],
+				},
 			});
 			console.log({ productLinkId });
 			createdLinkIds.push(productLinkId);
 
-				const testInit = async ({ customerKey } = { customerKey: uniqid() }) => {
-					console.log('testInit-start');
-		 
-					const createdLinkIds = [];
-		 
-					const {
-					  data: [{id: paymentLinkId}],
-					} = await deep.insert({
-					  type_id: Payment,
-					  object: { data: { value: { orderId: uniqid() } } },
-					  from_id: deep.linkId,
-					  to_id: storageBusinessLinkId,
-					  in: {
-						 data: [
+			const testInit = async ({ customerKey } = { customerKey: uniqid() }) => {
+				console.log('testInit-start');
+
+				const createdLinkIds = [];
+
+				const {
+					data: [{ id: paymentLinkId }],
+				} = await deep.insert({
+					type_id: Payment,
+					object: { data: { value: { orderId: uniqid() } } },
+					from_id: deep.linkId,
+					to_id: storageBusinessLinkId,
+					in: {
+						data: [
 							{
-							  type_id: Contain,
-							  from_id: deep.linkId,
+								type_id: Contain,
+								from_id: deep.linkId,
 							},
-						 ],
-					  },
-					});
-					console.log({ paymentLinkId });
-					createdLinkIds.push(paymentLinkId);
-		 
-					const {
-					  data: [{id: sumLinkId}],
-					} = await deep.insert({
-					  type_id: Sum,
-					  from_id: sumProviderLinkId,
-					  to_id: paymentLinkId,
-					  number: { data: { value: PRICE } },
-					  in: {
-						 data: [
+						],
+					},
+				});
+				console.log({ paymentLinkId });
+				createdLinkIds.push(paymentLinkId);
+
+				const {
+					data: [{ id: sumLinkId }],
+				} = await deep.insert({
+					type_id: Sum,
+					from_id: sumProviderLinkId,
+					to_id: paymentLinkId,
+					number: { data: { value: PRICE } },
+					in: {
+						data: [
 							{
-							  type_id: Contain,
-							  from_id: deep.linkId,
+								type_id: Contain,
+								from_id: deep.linkId,
 							},
-						 ],
-					  },
-					});
-					console.log({ sumLinkId });
-					createdLinkIds.push(sumLinkId);
-		 
-					const {
-					  data: [{id: objectLinkId}],
-					} = await deep.insert({
-					  type_id: Object,
-					  from_id: paymentLinkId,
-					  to_id: productLinkId,
-					  in: {
-						 data: [
+						],
+					},
+				});
+				console.log({ sumLinkId });
+				createdLinkIds.push(sumLinkId);
+
+				const {
+					data: [{ id: objectLinkId }],
+				} = await deep.insert({
+					type_id: Object,
+					from_id: paymentLinkId,
+					to_id: productLinkId,
+					in: {
+						data: [
 							{
-							  type_id: Contain,
-							  from_id: deep.linkId,
+								type_id: Contain,
+								from_id: deep.linkId,
 							},
-						 ],
-					  },
-					});
-					console.log({ objectLinkId });
-					createdLinkIds.push(objectLinkId);
-		 
-					const {
-					  data: [{id: payLinkId}],
-					} = await deep.insert({
-					  type_id: Pay,
-					  from_id: deep.linkId,
-					  to_id: sumLinkId,
-					  in: {
-						 data: [
+						],
+					},
+				});
+				console.log({ objectLinkId });
+				createdLinkIds.push(objectLinkId);
+
+				const {
+					data: [{ id: payLinkId }],
+				} = await deep.insert({
+					type_id: Pay,
+					from_id: deep.linkId,
+					to_id: sumLinkId,
+					in: {
+						data: [
 							{
-							  type_id: Contain,
-							  from_id: deep.linkId,
+								type_id: Contain,
+								from_id: deep.linkId,
 							},
-						 ],
-					  },
+						],
+					},
+				});
+				console.log({ payLinkId });
+				createdLinkIds.push(payLinkId);
+
+				var urlLinkSelectQuery;
+				for (let i = 0; i < 10; i++) {
+					urlLinkSelectQuery = await deep.select({
+						type_id: Url,
+						to_id: payLinkId,
 					});
-					console.log({ payLinkId });
-					createdLinkIds.push(payLinkId);
-		 
-					var urlLinkSelectQuery;
-					for (let i = 0; i < 10; i++) {
-					  urlLinkSelectQuery = await deep.select({
-						 type_id: Url,
-						 to_id: payLinkId,
-					  });
-		 
-					  if (urlLinkSelectQuery.data.length > 0) {
-						 break;
-					  }
-		 
-					  await sleep(1000);
+
+					if (urlLinkSelectQuery.data.length > 0) {
+						break;
 					}
-		 
-					expect(urlLinkSelectQuery.data.length).to.greaterThan(0);
-		 
-					createdLinkIds.push(urlLinkSelectQuery.data[0].id);
-		 
-					const createdLinks = (await deep.select(createdLinkIds)).data;
-					console.log({createdLinks});
-		 
-					console.log('testInit-end');
-		 
-					return {
-					  createdLinks
-					}
-				 };
-		 
-				 const testFinishAuthorize = async ({ customerKey } = { customerKey: uniqid() }) => {
-					console.log('testFinishAuthorize-start');
-					const { createdLinks } = await testInit({ customerKey });
-		 
-					const urlLink = createdLinks.find(link => link.type_id === Url);
-					expect(urlLink).to.not.be.equal(undefined)
-		 
-					const url = urlLink.value.value;
-					console.log({ url });
-		 
-					const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
-					const page = await browser.newPage();
-					await payInBrowser({
-					  browser,
-					  page,
-					  url,
+
+					await sleep(1000);
+				}
+
+				expect(urlLinkSelectQuery.data.length).to.greaterThan(0);
+
+				createdLinkIds.push(urlLinkSelectQuery.data[0].id);
+
+				const createdLinks = (await deep.select(createdLinkIds)).data;
+				console.log({ createdLinks });
+
+				console.log('testInit-end');
+
+				return {
+					createdLinks
+				}
+			};
+
+			const testFinishAuthorize = async ({ customerKey } = { customerKey: uniqid() }) => {
+				console.log('testFinishAuthorize-start');
+				const { createdLinks } = await testInit({ customerKey });
+
+				const urlLink = createdLinks.find(link => link.type_id === Url);
+				expect(urlLink).to.not.be.equal(undefined)
+
+				const url = urlLink.value.value;
+				console.log({ url });
+
+				const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
+				const page = await browser.newPage();
+				await payInBrowser({
+					browser,
+					page,
+					url,
+				});
+
+				console.log({ createdLinks });
+
+				console.log('testFinishAuthorize-end');
+
+				return {
+					createdLinks
+				}
+			};
+
+			const testConfirm = async ({ customerKey } = { customerKey: uniqid() }) => {
+				console.log('testConfirm-start');
+				const { createdLinks } = await testFinishAuthorize({ customerKey });
+
+				const createdLinkIds = [];
+
+				const payLink = createdLinks.find(link => link.type_id === Pay);
+				expect(payLink).to.not.be.equal(undefined);
+
+				var payedLinkSelectQuery;
+				for (let i = 0; i < 10; i++) {
+					payedLinkSelectQuery = await deep.select({
+						type_id: Payed,
+						to_id: payLink.id
 					});
-		 
-					console.log({createdLinks});
-		 
-					console.log('testFinishAuthorize-end');
-		 
-					return {
-					  createdLinks
+
+					if (payedLinkSelectQuery.data.length > 0) {
+						break;
 					}
-				 };
-		 
-				 const testConfirm = async ({ customerKey } = { customerKey: uniqid() }) => {
-					console.log('testConfirm-start');
-					const { createdLinks } = await testFinishAuthorize({ customerKey });
-		 
-					const createdLinkIds = [];
-		 
-					const payLink = createdLinks.find(link => link.type_id === Pay);
-					expect(payLink).to.not.be.equal(undefined);
-		 
-					var payedLinkSelectQuery;
-					for (let i = 0; i < 10; i++) {
-					  payedLinkSelectQuery = await deep.select({
-						 type_id: Payed,
-						 to_id: payLink.id
-					  });
-		 
-					  if (payedLinkSelectQuery.data.length > 0) {
-						 break;
-					  }
-		 
-					  await sleep(1000);
-					}
-		 
-					expect(payedLinkSelectQuery.data.length).to.greaterThan(0);
-		 
-					createdLinkIds.push(payedLinkSelectQuery.data[0].id);
-		 
-					createdLinks.push(...(await deep.select(createdLinkIds)).data);
-		 
-					console.log({createdLinks});
-		 
-					console.log('testConfirm-end');
-		 
-					return {
-					  createdLinks
-					}
-				 };
+
+					await sleep(1000);
+				}
+
+				expect(payedLinkSelectQuery.data.length).to.greaterThan(0);
+
+				createdLinkIds.push(payedLinkSelectQuery.data[0].id);
+
+				createdLinks.push(...(await deep.select(createdLinkIds)).data);
+
+				console.log({ createdLinks });
+
+				console.log('testConfirm-end');
+
+				return {
+					createdLinks
+				}
+			};
 
 			/*
-      const testGetState = async () => {
-        console.log('testGetState-start');
-        await testFinishAuthorize();
+	  const testGetState = async () => {
+		console.log('testGetState-start');
+		await testFinishAuthorize();
 
-        const {
-          data: [payLink],
-        } = await deep.select({ type_id: Pay });
+		const {
+		  data: [payLink],
+		} = await deep.select({ type_id: Pay });
 
-        const bankPaymentId = await getBankPaymentId(
-          payLink?.value?.value ?? payLink.id
-        );
+		const bankPaymentId = await getBankPaymentId(
+		  payLink?.value?.value ?? payLink.id
+		);
 
-        const getStateOptions = {
-          TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
-          PaymentId: bankPaymentId,
-        };
+		const getStateOptions = {
+		  TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
+		  PaymentId: bankPaymentId,
+		};
 
-        const getStateResult = await getState(getStateOptions);
+		const getStateResult = await getState(getStateOptions);
 
-        expect(getStateResult.error).to.equal(undefined);
-        console.log('testGetState-end');
-      };
+		expect(getStateResult.error).to.equal(undefined);
+		console.log('testGetState-end');
+	  };
 
-      const testGetCardList = async () => {
-        console.log('testGetCardList-end');
-        await testFinishAuthorize();
+	  const testGetCardList = async () => {
+		console.log('testGetCardList-end');
+		await testFinishAuthorize();
 
-        const getCardListOptions = {
-          TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
-          CustomerKey: deep.linkId,
-        };
+		const getCardListOptions = {
+		  TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
+		  CustomerKey: deep.linkId,
+		};
 
-        const getCardListResult = await getCardList(getCardListOptions);
+		const getCardListResult = await getCardList(getCardListOptions);
 
-        expect(getCardListResult.error).to.equal(undefined);
-        console.log('testGetCardList-end');
-      };
-      */
+		expect(getCardListResult.error).to.equal(undefined);
+		console.log('testGetCardList-end');
+	  };
+	  */
 			{
-        const { createdLinks } = await testInit();
-			  await deep.delete(createdLinks.map((link) => link.id));
-      }
+				const { createdLinks } = await testInit();
+				await deep.delete(createdLinks.map((link) => link.id));
+			}
 			{
-        const { createdLinks } = await testFinishAuthorize();
-			  await deep.delete(createdLinks.map((link) => link.id));
-      }
+				const { createdLinks } = await testFinishAuthorize();
+				await deep.delete(createdLinks.map((link) => link.id));
+			}
 			{
-        const { createdLinks } = await testConfirm();
-			  await deep.delete(createdLinks.map((link) => link.id));
-      }
+				const { createdLinks } = await testConfirm();
+				await deep.delete(createdLinks.map((link) => link.id));
+			}
 
 			/*await testGetState();
-      await testGetCardList();*/
+	  await testGetCardList();*/
 		};
 
 		// await callRealizationTests();
