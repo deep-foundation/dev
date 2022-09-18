@@ -1592,6 +1592,8 @@ async (
 
         createdLinks.push(urlLinkSelectQuery.data[0]);
 
+        console.log({createdLinks});
+
         console.log('testInit-end');
 
         return {
@@ -1616,6 +1618,9 @@ async (
           page,
           url,
         });
+
+        console.log({createdLinks});
+
         console.log('testFinishAuthorize-end');
 
         return {
@@ -1647,6 +1652,8 @@ async (
         expect(payedLinkSelectQuery.data.length).to.greaterThan(0);
 
         createdLinks.push(data[0]);
+
+        console.log({createdLinks});
 
         console.log('testConfirm-end');
 
