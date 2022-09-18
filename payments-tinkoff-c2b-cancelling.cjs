@@ -907,6 +907,8 @@ async (
   const reqBody = req.body;
   console.log({reqBody});
 
+  const Contain = await deep.id("@deep-foundation/core", "Contain");
+
   const TinkoffProvider = await deep.id("@deep-foundation/payments-tinkoff-c2b", "TinkoffProvider");
   const tinkoffProviderLinkSelectQuery = await deep.select({
     type_id: TinkoffProvider
