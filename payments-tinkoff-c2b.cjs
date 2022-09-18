@@ -1220,7 +1220,7 @@ async (
 
     if (confirmResult.error) {
       const errorMessage = "Could not confirm the pay. " + confirmResult.error;
-      const {errorLinkInsertError} = await deep.insert({
+      const {error: errorLinkInsertError} = await deep.insert({
         type_id: (await deep.id("@deep-foundation/payments-tinkoff-c2b", "Error")),
         from_id: tinkoffProviderLinkId,
         to_id: payLink.id,
