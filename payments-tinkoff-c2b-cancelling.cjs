@@ -1718,7 +1718,7 @@ async (
           const payLinkInsertQuery = await deep.insert({
             type_id: CancellingPay,
             from_id: deep.linkId,
-            to_id: sumLinkIdOfCancellingPayment.id,
+            to_id: sumLinkIdOfCancellingPayment,
             in: {
               data: [
                 {
