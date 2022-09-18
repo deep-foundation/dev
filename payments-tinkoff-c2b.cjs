@@ -1992,14 +1992,19 @@ async (
         console.log('testGetCardList-end');
       };
       */
-			var createdLinks;
 			const { integratedTestsCreatedLinks } = await setup();
-			const { createdLinks } = await testInit();
-			await deep.delete(createdLinks.map((link) => link.id));
-			const { createdLinks } = await testFinishAuthorize();
-			await deep.delete(createdLinks.map((link) => link.id));
-			const { createdLinks } = await testConfirm();
-			await deep.delete(createdLinks.map((link) => link.id));
+			{
+        const { createdLinks } = await testInit();
+			  await deep.delete(createdLinks.map((link) => link.id));
+      }
+			{
+        const { createdLinks } = await testFinishAuthorize();
+			  await deep.delete(createdLinks.map((link) => link.id));
+      }
+			{
+        const { createdLinks } = await testConfirm();
+			  await deep.delete(createdLinks.map((link) => link.id));
+      }
 			await deep.delete(integratedTestsCreatedLinks);
 
 			/*await testGetState();
