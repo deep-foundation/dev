@@ -512,10 +512,10 @@ const f = async () => {
     }
   };
 
-  const getBankPaymentId = async (orderId) => {
+  const getBankPaymentLinkId = async (orderLinkId) => {
     const checkOrderOptions = {
       TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
-      OrderId: orderId,
+      OrderLinkId: orderLinkId,
     };
 
     const checkOrderResult = await checkOrder(checkOrderOptions);
@@ -523,16 +523,16 @@ const f = async () => {
 
     console.log({ checkOrderResponse: checkOrderResult });
 
-    const { PaymentId: bankPaymentId } = checkOrderResult.response.Payments[0];
+    const { PaymentLinkId: bankPaymentLinkId } = checkOrderResult.response.Payments[0];
 
-    console.log({ paymentId: bankPaymentId });
-    return bankPaymentId;
+    console.log({ paymentLinkId: bankPaymentLinkId });
+    return bankPaymentLinkId;
   };
 
   const guest = await unloginedDeep.guest();
   const guestDeep = new DeepClient({ deep: unloginedDeep, ...guest });
   const admin = await guestDeep.login({
-    linkId: await guestDeep.id('deep', 'admin'),
+    linkLinkId: await guestDeep.id('deep', 'admin'),
   });
   const deep = new DeepClient({ deep: guestDeep, ...admin });
 
@@ -593,10 +593,10 @@ const f = async () => {
     'SelectorFilter'
   );
   const Query = await deep.id('@deep-foundation/core', 'Query');
-  const usersId = await deep.id('deep', 'users');
+  const usersLinkId = await deep.id('deep', 'users');
 
   const {
-    data: [{ id: packageId }],
+    data: [{ id: packageLinkId }],
   } = await deep.insert({
     type_id: Package,
     string: { data: { value: '@deep-foundation/payments-tinkoff-c2b' } },
@@ -622,7 +622,7 @@ const f = async () => {
     },
   });
 
-  console.log({ packageId });
+  console.log({ packageLinkId });
 
   const SumProvider = await deep.id("@deep-foundation/payments-tinkoff-c2b", "SumProvider");
   console.log({ SumProvider: SumProvider });
@@ -651,7 +651,7 @@ const f = async () => {
     in: {
       data: {
         type_id: Contain,
-        from_id: packageId,
+        from_id: packageLinkId,
         string: { data: { value: 'CancellingPay' } },
       },
     },
@@ -667,8 +667,8 @@ const f = async () => {
   const Error = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Error");
   console.log({ Error: Error });
 
-  const paymentTreeId = await deep.id("@deep-foundation/payments-tinkoff-c2b", "paymentTree");
-  console.log({ paymentTreeId });
+  const paymentTreeLinkId = await deep.id("@deep-foundation/payments-tinkoff-c2b", "paymentTree");
+  console.log({ paymentTreeLinkId });
 
   const StorageBusiness = await deep.id("@deep-foundation/payments-tinkoff-c2b", "StorageBusiness");
   console.log({ StorageBusiness });
@@ -692,7 +692,7 @@ const f = async () => {
     in: {
       data: {
         type_id: Contain,
-        from_id: packageId,
+        from_id: packageLinkId,
         string: { data: { value: 'CancellingPayment' } },
       },
     },
@@ -701,7 +701,7 @@ const f = async () => {
 
   await deep.insert({
     type_id: TreeIncludeUp,
-    from_id: paymentTreeId,
+    from_id: paymentTreeLinkId,
     to_id: CancellingPayment,
     in: {
       data: [
@@ -715,7 +715,7 @@ const f = async () => {
 
   await deep.insert({
     type_id: TreeIncludeUp,
-    from_id: paymentTreeId,
+    from_id: paymentTreeLinkId,
     to_id: CancellingPay,
     in: {
       data: [
@@ -802,7 +802,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
 
   const cancelOptions = {
     TerminalKey: "${process.env.PAYMENT_TEST_TERMINAL_KEY}",
-    PaymentId: cancelledPaymentLink.value.value.bankPaymentId,
+    PaymentLinkId: cancelledPaymentLink.value.value.bankPaymentLinkId,
     Amount: sumLink.value.value,
   };
   console.log({ cancelOptions });
@@ -850,14 +850,14 @@ async ({ deep, require, data: { newLink: payLink } }) => {
   console.log({ payInsertHandler });
 
   const {
-    data: [{ id: payInsertHandlerId }],
+    data: [{ id: payInsertHandlerLinkId }],
   } = await deep.insert({
     type_id: SyncTextFile,
     in: {
       data: [
         {
           type_id: Contain,
-          from_id: packageId, // before created package
+          from_id: packageLinkId, // before created package
           string: { data: { value: 'payInsertHandlerFile' } },
         },
         {
@@ -867,7 +867,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
             data: [
               {
                 type_id: Contain,
-                from_id: packageId, // before created package
+                from_id: packageLinkId, // before created package
                 string: { data: { value: 'payInsertHandler' } },
               },
               {
@@ -877,7 +877,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
                   data: [
                     {
                       type_id: Contain,
-                      from_id: packageId, // before created package
+                      from_id: packageLinkId, // before created package
                       string: { data: { value: 'payInsertHandle' } },
                     },
                   ],
@@ -894,7 +894,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
       },
     },
   });
-  console.log({ payInsertHandlerId });
+  console.log({ payInsertHandlerLinkId });
 
   const tinkoffNotificationHandler = `
 async (
@@ -917,12 +917,12 @@ async (
   const tinkoffProviderLink = tinkoffProviderLinkSelectQuery.data[0];
 
   const cancellingPaymentLinkelectQuery = await deep.select({
-    object: {value: {_contains: {orderId: req.body.OrderId}}}
+    object: {value: {_contains: {orderLinkId: req.body.OrderLinkId}}}
   });
   console.log({cancellingPaymentLink});
   if(cancellingPaymentLinkelectQuery.error) { throw new Error(cancellingPaymentLinkelectQuery.error.message); }
   const cancellingPaymentLink = cancellingPaymentLinkelectQuery.data[0];
-  if(!cancellingPaymentLink) { throw new Error("The cancelling payment link associated with the order id " + req.body.OrderId + " is not found."); }
+  if(!cancellingPaymentLink) { throw new Error("The cancelling payment link associated with the order id " + req.body.OrderLinkId + " is not found."); }
 
   const {data: mpUpcancellingPaymentLink, error: mpUpcancellingPaymentLinkSelectQueryError} = await deep.select({
     up: {
@@ -940,7 +940,7 @@ async (
 
 
   if (req.body.Status === 'CANCELLED') {
-  const bankPaymentId = req.body.PaymentId;
+  const bankPaymentLinkId = req.body.PaymentLinkId;
 
   const {data: mpUpPayment, error: mpUpPaymentLinkSelectQueryError} = await deep.select({
     up: {
@@ -1041,7 +1041,7 @@ async (
                                   in: {
                                     data: {
                                       type_id: Contain,
-                                      from_id: packageId,
+                                      from_id: packageLinkId,
                                       string: {
                                         data: {
                                           value: 'tinkoffNotificationHandler',
@@ -1076,7 +1076,7 @@ async (
       const testInit = async () => {
         const initOptions = {
           TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
-          OrderId: uniqid(),
+          OrderLinkId: uniqid(),
           Amount: PRICE,
           Description: 'Test shopping',
           CustomerKey: deep.linkId,
@@ -1116,7 +1116,7 @@ async (
         const initOptions = {
           TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
           Amount: PRICE,
-          OrderId: uniqid(),
+          OrderLinkId: uniqid(),
           CustomerKey: deep.linkId,
           PayType: 'T',
           // Receipt: {
@@ -1145,7 +1145,7 @@ async (
 
         const confirmOptions = {
           TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
-          PaymentId: initResult.response.PaymentId,
+          PaymentLinkId: initResult.response.PaymentLinkId,
         };
 
         const confirmResult = await confirm(confirmOptions);
@@ -1162,7 +1162,7 @@ async (
           console.log('testCanselAfterPayBeforeConfirmFullPrice-start');
           const initOptions = {
             TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
-            OrderId: uniqid(),
+            OrderLinkId: uniqid(),
             CustomerKey: deep.linkId,
             PayType: 'T',
             Amount: PRICE,
@@ -1208,11 +1208,11 @@ async (
             url,
           });
 
-          const bankPaymentId = initResult.response.PaymentId;
+          const bankPaymentLinkId = initResult.response.PaymentLinkId;
 
           const cancelOptions = {
             TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
-            PaymentId: bankPaymentId,
+            PaymentLinkId: bankPaymentLinkId,
             Amount: PRICE,
           };
 
@@ -1231,7 +1231,7 @@ async (
           console.log('testCanselAfterPayBeforeConfirmCustomPriceX2-start');
           const initOptions = {
             TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
-            OrderId: uniqid(),
+            OrderLinkId: uniqid(),
             CustomerKey: deep.linkId,
             PayType: 'T',
             Amount: PRICE,
@@ -1276,11 +1276,11 @@ async (
             url,
           });
 
-          const bankPaymentId = initResult.response.PaymentId;
+          const bankPaymentLinkId = initResult.response.PaymentLinkId;
 
           const cancelOptions = {
             TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
-            PaymentId: bankPaymentId,
+            PaymentLinkId: bankPaymentLinkId,
             Amount: Math.floor(PRICE / 3),
           };
 
@@ -1310,12 +1310,12 @@ async (
           const confirmResult = await testConfirm();
           console.log({ confirmResult });
 
-          const bankPaymentId = confirmResult.response.PaymentId;
-          console.log({ bankPaymentId });
+          const bankPaymentLinkId = confirmResult.response.PaymentLinkId;
+          console.log({ bankPaymentLinkId });
 
           const cancelOptions = {
             TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
-            PaymentId: bankPaymentId,
+            PaymentLinkId: bankPaymentLinkId,
             Amount: PRICE,
           };
           console.log({ cancelOptions });
@@ -1331,11 +1331,11 @@ async (
           console.log('testCancelAfterPayAfterConfirmCustomPriceX2-start');
           const confirmResult = await testConfirm();
 
-          const bankPaymentId = confirmResult.response.PaymentId;
+          const bankPaymentLinkId = confirmResult.response.PaymentLinkId;
 
           const cancelOptions = {
             TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
-            PaymentId: bankPaymentId,
+            PaymentLinkId: bankPaymentLinkId,
             Amount: Math.floor(PRICE / 3),
           };
 
@@ -1360,11 +1360,11 @@ async (
           console.log('testCancelBeforePay-start');
           const initResult = await testInit();
 
-          const bankPaymentId = initResult.response.PaymentId;;
+          const bankPaymentLinkId = initResult.response.PaymentLinkId;;
 
           const cancelOptions = {
             TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
-            PaymentId: bankPaymentId,
+            PaymentLinkId: bankPaymentLinkId,
             Amount: PRICE,
           };
 
@@ -1498,13 +1498,13 @@ async (
       const testInit = async ({ customerKey } = { customerKey: uniqid() }) => {
         console.log('testInit-start');
 
-        const createdLinks = [];
+        const createdLinkIds = [];
 
         const {
-          data: [paymentLink],
+          data: [{id: paymentLinkId}],
         } = await deep.insert({
           type_id: Payment,
-          object: { data: { value: { orderId: uniqid() } } },
+          object: { data: { value: { orderLinkId: uniqid() } } },
           from_id: deep.linkId,
           to_id: storageBusinessLink.id,
           in: {
@@ -1516,15 +1516,15 @@ async (
             ],
           },
         });
-        console.log({ paymentLink });
-        createdLinks.push(paymentLink);
+        console.log({ paymentLinkId });
+        createdLinkIds.push(paymentLinkId);
 
         const {
-          data: [sumLink],
+          data: [{id: sumLinkId}],
         } = await deep.insert({
           type_id: Sum,
           from_id: sumProviderLink.id,
-          to_id: paymentLink.id,
+          to_id: paymentLinkId,
           number: { data: { value: PRICE } },
           in: {
             data: [
@@ -1535,14 +1535,14 @@ async (
             ],
           },
         });
-        console.log({ sumLink });
-        createdLinks.push(sumLink);
+        console.log({ sumLinkId });
+        createdLinkIds.push(sumLinkId);
 
         const {
-          data: [objectLink],
+          data: [{id: objectLinkId}],
         } = await deep.insert({
           type_id: Object,
-          from_id: paymentLink.id,
+          from_id: paymentLinkId,
           to_id: productLink.id,
           in: {
             data: [
@@ -1553,15 +1553,15 @@ async (
             ],
           },
         });
-        console.log({ objectLink });
-        createdLinks.push(objectLink);
+        console.log({ objectLinkId });
+        createdLinkIds.push(objectLinkId);
 
         const {
-          data: [payLink],
+          data: [{id: payLinkId}],
         } = await deep.insert({
           type_id: Pay,
           from_id: deep.linkId,
-          to_id: sumLink.id,
+          to_id: sumLinkId,
           in: {
             data: [
               {
@@ -1571,14 +1571,14 @@ async (
             ],
           },
         });
-        console.log({ payLink });
-        createdLinks.push(payLink);
+        console.log({ payLinkId });
+        createdLinkIds.push(payLinkId);
 
         var urlLinkSelectQuery;
         for (let i = 0; i < 10; i++) {
           urlLinkSelectQuery = await deep.select({
             type_id: Url,
-            to_id: payLink.id,
+            to_id: payLinkId,
           });
 
           if (urlLinkSelectQuery.data.length > 0) {
@@ -1590,14 +1590,15 @@ async (
 
         expect(urlLinkSelectQuery.data.length).to.greaterThan(0);
 
-        createdLinks.push(urlLinkSelectQuery.data[0]);
+        createdLinkIds.push(urlLinkSelectQuery.data[0].id);
 
+        const createdLinks = (await deep.select(createdLinkIds)).data;
         console.log({createdLinks});
 
         console.log('testInit-end');
 
         return {
-          createdLinks: await deep.select(createdLinks.map(link => link.id))
+          createdLinks
         }
       };
 
@@ -1632,6 +1633,8 @@ async (
         console.log('testConfirm-start');
         const { createdLinks } = await testFinishAuthorize({ customerKey });
 
+        const createdLinkIds = [];
+
         const payLink = createdLinks.find(link => link.type_id === Pay);
         expect(payLink).to.be.not.undefined();
 
@@ -1651,15 +1654,16 @@ async (
 
         expect(payedLinkSelectQuery.data.length).to.greaterThan(0);
 
-        createdLinks.push(payedLinkSelectQuery.data[0]);
+        createdLinkIds.push(payedLinkSelectQuery.data[0].id);
 
+        createdLinks.push(...(await deep.select(createdLinkIds)).data);
 
         console.log({createdLinks});
 
         console.log('testConfirm-end');
 
         return {
-          createdLinks: await deep.select(createdLinks.map(link => link.id))
+          createdLinks
         }
       };
 
@@ -1668,6 +1672,8 @@ async (
         const testCancelAfterPayAfterConfirmFullPrice = async ({ customerKey } = { customerKey: uniqid() }) => {
           console.log('testCancelAfterPayAfterConfirmFullPrice-start');
           const { createdLinks } = await testConfirm({ customerKey });
+
+          const createdLinkIds = [];
 
           const paymentLink = createdLinks.find(link => link.type_id === Payment);
           console.log({ paymentLink });
@@ -1687,16 +1693,14 @@ async (
           });
           console.log({ cancellingPaymentLinkInsertQuery });
           if (cancellingPaymentLinkInsertQuery.error) { throw new Error(cancellingPaymentLinkInsertQuery.error.message); }
-          const cancellingPaymentLink = cancellingPaymentLinkInsertQuery.data[0];
-          console.log({ cancellingPaymentLink });
-          createdLinks.push(cancellingPaymentLink);
+          const cancellingPaymentLinkId = cancellingPaymentLinkInsertQuery.data[0].id;
+          console.log({ cancellingPaymentLinkId });
+          createdLinkIds.push(cancellingPaymentLinkId);
 
-          const {
-            data: [sumLinkOfCancellingPayment]
-          } = await deep.insert({
+          const sumLinkOfCancellingPaymentQuery = await deep.insert({
             type_id: Sum,
             from_id: sumProviderLink.id,
-            to_id: cancellingPaymentLink.id,
+            to_id: cancellingPaymentLinkId,
             number: { data: { value: PRICE } },
             in: {
               data: [
@@ -1707,8 +1711,11 @@ async (
               ],
             },
           });
-          console.log({ sumLinkOfCancellingPayment });
-          createdLinks.push(sumLinkOfCancellingPayment);
+          console.log({ sumLinkOfCancellingPaymentQuery });
+          if (sumLinkOfCancellingPaymentQuery.error) { throw new Error(sumLinkOfCancellingPaymentQuery.error.message); }
+          const sumLinkIdOfCancellingPayment = sumLinkOfCancellingPaymentQuery.data[0].id;
+          console.log({ sumLinkIdOfCancellingPayment });
+          createdLinkIds.push(sumLinkIdOfCancellingPayment);
 
           const payLinkInsertQuery = await deep.insert({
             type_id: CancellingPay,
@@ -1725,14 +1732,14 @@ async (
           });
           console.log({ payLinkInsertQuery });
           if (payLinkInsertQuery.error) { throw new Error(payLinkInsertQuery.error.message); }
-          createdLinks.push(payLinkInsertQuery.data[0]);
+          createdLinkIds.push(payLinkInsertQuery.data[0].id);
 
           var mpUpCancellingPaymentSelectQuery;
           for (let i = 0; i < 10; i++) {
             mpUpCancellingPaymentSelectQuery = await deep.select({
               up: {
-                parent_id: { _eq: cancellingPaymentLink.id },
-                tree_id: { _eq: paymentTreeId }
+                parent_id: { _eq: cancellingPaymentLinkId },
+                tree_id: { _eq: paymentTreeLinkId }
               }
             });
 
@@ -1748,16 +1755,20 @@ async (
           expect(payedLink).to.not.equal(undefined);
           createdLinks.push(payedLink);
 
+          createdLinks.push(...(await deep.select(createdLinkIds)).data)
+
           console.log('testCancelAfterPayAfterConfirmFullPrice-end');
 
           return { 
-            createdLinks: await deep.select(createdLinks.map(link => link.id))
+            createdLinks
            };
         };
 
         const testCancelAfterPayAfterConfirmCustomPriceX2 = async ({ customerKey } = { customerKey: uniqid() }) => {
           console.log('testCancelAfterPayAfterConfirmCustomPriceX2-start');
           const { createdLinks } = await testConfirm({ customerKey });
+
+          const createdLinkIds = [];
 
           const paymentLink = createdLinks.find(link => link.type_id === Payment);
           console.log({ paymentLink });
@@ -1778,16 +1789,16 @@ async (
             });
             console.log({ cancellingPaymentLinkInsertQuery });
             if (cancellingPaymentLinkInsertQuery.error) { throw new Error(cancellingPaymentLinkInsertQuery.error.message); }
-            const cancellingPaymentLink = cancellingPaymentLinkInsertQuery.data[0];
-            console.log({ cancellingPaymentLink });
-            createdLinks.push(cancellingPaymentLink);
+            const cancellingPaymentLinkId = cancellingPaymentLinkInsertQuery.data[0].id;
+            console.log({ cancellingPaymentLinkId });
+            createdLinks.push(cancellingPaymentLinkId);
 
             const {
               data: [sumLinkOfCancellingPayment]
             } = await deep.insert({
               type_id: Sum,
               from_id: sumProviderLink.id,
-              to_id: cancellingPaymentLink.id,
+              to_id: cancellingPaymentLinkId,
               number: { data: { value: Math.floor(PRICE / 3) } },
               in: {
                 data: [
@@ -1816,14 +1827,14 @@ async (
             });
             console.log({ cancellingPayLinkInsertQuery });
             if (cancellingPayLinkInsertQuery.error) { throw new Error(cancellingPayLinkInsertQuery.error.message); }
-            createdLinks.push(cancellingPayLinkInsertQuery.data[0]);
+            createdLinks.push(cancellingPayLinkInsertQuery.data[0].id);
 
             var mpUpCancellingPaymentSelectQuery;
             for (let i = 0; i < 10; i++) {
               mpUpCancellingPaymentSelectQuery = await deep.select({
                 up: {
                   parent_id: { _eq: cancellingPaymentLink.id },
-                  tree_id: { _eq: paymentTreeId }
+                  tree_id: { _eq: paymentTreeLinkId }
                 }
               });
 
@@ -1840,16 +1851,20 @@ async (
             createdLinks.push(payedLink);
           }
 
+          createdLinks.push(...(await deep.select(createdLinkIds)).data)
+
           console.log('testCancelAfterPayAfterConfirmCustomPriceX2-end');
 
           return { 
-            createdLinks: await deep.select(createdLinks.map(link => link.id))
+            createdLinks
            }
         };
 
         const testCancelBeforePay = async ({ customerKey } = { customerKey: uniqid() }) => {
           console.log('testCancelBeforePay-start');
           const { createdLinks } = await testInit({ customerKey });
+
+          const createdLinkIds = [];
 
           const paymentLink = createdLinks.find(link => link.type_id === Payment);
           console.log({ paymentLink });
@@ -1869,16 +1884,14 @@ async (
           });
           console.log({ cancellingPaymentLinkInsertQuery });
           if (cancellingPaymentLinkInsertQuery.error) { throw new Error(cancellingPaymentLinkInsertQuery.error.message); }
-          const cancellingPaymentLink = cancellingPaymentLinkInsertQuery.data[0];
-          console.log({ cancellingPaymentLink });
-          createdLinks.push(cancellingPaymentLink);
+          const cancellingPaymentLinkId = cancellingPaymentLinkInsertQuery.data[0];
+          console.log({ cancellingPaymentLinkId });
+          createdLinkIds.push(cancellingPaymentLinkId);
 
-          const {
-            data: [sumLinkOfCancellingPayment]
-          } = await deep.insert({
+          const sumLinkOfCancellingPaymentSelectQuery = await deep.insert({
             type_id: Sum,
             from_id: sumProviderLink.id,
-            to_id: cancellingPaymentLink.id,
+            to_id: cancellingPaymentLinkId,
             number: { data: { value: PRICE } },
             in: {
               data: [
@@ -1889,8 +1902,10 @@ async (
               ],
             },
           });
-          console.log({ sumLinkOfCancellingPayment });
-          createdLinks.push(sumLinkOfCancellingPayment);
+          if(sumLinkOfCancellingPaymentSelectQuery.error) {throw new Error(sumLinkOfCancellingPaymentSelectQuery.error.message);}
+          const sumLinkIdOfCancellingPayment = sumLinkOfCancellingPaymentSelectQuery.data[0].id;
+          console.log({ sumLinkIdOfCancellingPayment });
+          createdLinks.push(sumLinkIdOfCancellingPayment);
 
           const cancellingPayLinkInsertQuery = await deep.insert({
             type_id: CancellingPay,
@@ -1905,16 +1920,16 @@ async (
               ],
             },
           });
-          console.log({ cancellingPayLinkInsertQuery });
           if (cancellingPayLinkInsertQuery.error) { throw new Error(cancellingPayLinkInsertQuery.error.message); }
-          createdLinks.push(cancellingPayLinkInsertQuery.data[0]);
+          const cancellingPayLinkId = cancellingPayLinkInsertQuery.data[0].id;
+          createdLinkIds.push(cancellingPayLinkId);
 
           var mpUpCancellingPaymentSelectQuery;
           for (let i = 0; i < 10; i++) {
             mpUpCancellingPaymentSelectQuery = await deep.select({
               up: {
-                parent_id: { _eq: cancellingPaymentLink.id },
-                tree_id: { _eq: paymentTreeId }
+                parent_id: { _eq: cancellingPaymentLinkId },
+                tree_id: { _eq: paymentTreeLinkId }
               }
             });
 
@@ -1930,10 +1945,12 @@ async (
           expect(payedLink).to.not.equal(undefined);
           createdLinks.push(payedLink);
 
+          createdLinks.push(...(await deep.select(createdLinkIds)).data)
+
           console.log('testCancelBeforePay-end');
 
           return { 
-            createdLinks: await deep.select(createdLinks.map(link => link.id))
+            createdLinks
            }
         };
 
@@ -1953,7 +1970,7 @@ async (
         console.log('testCancel-end');
 
         return { 
-          createdLinks: await deep.select(createdLinks.map(link => link.id))
+          createdLinks
          }
       };
 
