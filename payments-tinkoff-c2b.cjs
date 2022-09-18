@@ -1254,7 +1254,7 @@ async (
       },
     });
   if(payedLinkInsertQuery.error) { throw new Error(payedLinkInsertQuery.error.message); }
-  const payedLinkId = payedLinkInsertQuery.data[0];
+  const payedLinkId = payedLinkInsertQuery.data[0].id;
   console.log({payedLinkId});
 
   const StorageClient = await deep.id("@deep-foundation/payments-tinkoff-c2b", "StorageClient");
