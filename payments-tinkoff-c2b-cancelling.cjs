@@ -532,7 +532,7 @@ const f = async () => {
   const guest = await unloginedDeep.guest();
   const guestDeep = new DeepClient({ deep: unloginedDeep, ...guest });
   const admin = await guestDeep.login({
-    linkLinkId: await guestDeep.id('deep', 'admin'),
+    linkId: await guestDeep.id('deep', 'admin'),
   });
   const deep = new DeepClient({ deep: guestDeep, ...admin });
 
