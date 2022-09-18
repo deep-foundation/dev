@@ -918,9 +918,9 @@ async (
   const cancellingPaymentLinkelectQuery = await deep.select({
     object: {value: {_contains: {orderLinkId: req.body.OrderLinkId}}}
   });
-  console.log({cancellingPaymentLink});
   if(cancellingPaymentLinkelectQuery.error) { throw new Error(cancellingPaymentLinkelectQuery.error.message); }
   const cancellingPaymentLink = cancellingPaymentLinkelectQuery.data[0];
+  console.log({cancellingPaymentLink});
   if(!cancellingPaymentLink) { throw new Error("The cancelling payment link associated with the order id " + req.body.OrderLinkId + " is not found."); }
 
   const {data: mpUpcancellingPaymentLink, error: mpUpcancellingPaymentLinkSelectQueryError} = await deep.select({
@@ -1623,7 +1623,7 @@ async (
         console.log('testFinishAuthorize-end');
 
         return {
-          createdLinks: await deep.select(createdLinks.map(link => link.id))
+          createdLinks
         }
       };
 
