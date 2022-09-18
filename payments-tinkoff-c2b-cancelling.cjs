@@ -1775,7 +1775,7 @@ async (
             if (cancellingPaymentLinkInsertQuery.error) { throw new Error(cancellingPaymentLinkInsertQuery.error.message); }
             const cancellingPaymentLinkId = cancellingPaymentLinkInsertQuery.data[0].id;
             console.log({ cancellingPaymentLinkId });
-            createdLinks.push(cancellingPaymentLinkId);
+            createdLinkIds.push(cancellingPaymentLinkId);
 
             const {
               data: [{id:sumLinkIdOfCancellingPayment}]
@@ -1794,7 +1794,7 @@ async (
               },
             });
             console.log({ sumLinkIdOfCancellingPayment });
-            createdLinks.push(sumLinkIdOfCancellingPayment);
+            createdLinkIds.push(sumLinkIdOfCancellingPayment);
 
             const cancellingPayLinkInsertQuery = await deep.insert({
               type_id: CancellingPay,
@@ -1811,7 +1811,7 @@ async (
             });
             console.log({ cancellingPayLinkInsertQuery });
             if (cancellingPayLinkInsertQuery.error) { throw new Error(cancellingPayLinkInsertQuery.error.message); }
-            createdLinks.push(cancellingPayLinkInsertQuery.data[0].id);
+            createdLinkIds.push(cancellingPayLinkInsertQuery.data[0].id);
 
             var mpUpCancellingPaymentSelectQuery;
             for (let i = 0; i < 10; i++) {
