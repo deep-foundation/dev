@@ -1868,7 +1868,6 @@ async (
               ],
             },
           });
-          console.log({ cancellingPaymentLinkInsertQuery });
           if (cancellingPaymentLinkInsertQuery.error) { throw new Error(cancellingPaymentLinkInsertQuery.error.message); }
           const cancellingPaymentLinkId = cancellingPaymentLinkInsertQuery.data[0].id;
           console.log({ cancellingPaymentLinkId });
