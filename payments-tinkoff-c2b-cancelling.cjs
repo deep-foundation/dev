@@ -1597,7 +1597,7 @@ async (
         console.log('testInit-end');
 
         return {
-          createdLinks
+          createdLinks: await deep.select(createdLinks)
         }
       };
 
@@ -1624,7 +1624,7 @@ async (
         console.log('testFinishAuthorize-end');
 
         return {
-          createdLinks
+          createdLinks: await deep.select(createdLinks)
         }
       };
 
@@ -1653,12 +1653,13 @@ async (
 
         createdLinks.push(payedLinkSelectQuery.data[0]);
 
+
         console.log({createdLinks});
 
         console.log('testConfirm-end');
 
         return {
-          createdLinks
+          createdLinks: await deep.select(createdLinks)
         }
       };
 
@@ -1749,7 +1750,9 @@ async (
 
           console.log('testCancelAfterPayAfterConfirmFullPrice-end');
 
-          return { createdLinks };
+          return { 
+            createdLinks: await deep.select(createdLinks)
+           };
         };
 
         const testCancelAfterPayAfterConfirmCustomPriceX2 = async ({ customerKey } = { customerKey: uniqid() }) => {
@@ -1839,7 +1842,9 @@ async (
 
           console.log('testCancelAfterPayAfterConfirmCustomPriceX2-end');
 
-          return { createdLinks }
+          return { 
+            createdLinks: await deep.select(createdLinks)
+           }
         };
 
         const testCancelBeforePay = async ({ customerKey } = { customerKey: uniqid() }) => {
@@ -1927,7 +1932,9 @@ async (
 
           console.log('testCancelBeforePay-end');
 
-          return { createdLinks }
+          return { 
+            createdLinks: await deep.select(createdLinks)
+           }
         };
 
         {
@@ -1945,7 +1952,9 @@ async (
 
         console.log('testCancel-end');
 
-        return { createdLinks }
+        return { 
+          createdLinks: await deep.select(createdLinks)
+         }
       };
 
       await callCancelTests();
