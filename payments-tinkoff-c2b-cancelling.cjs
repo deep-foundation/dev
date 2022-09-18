@@ -1491,8 +1491,8 @@ async (
         ],
       },
     });
-    console.log({ productId });
-    createdLinks.push(productId);
+    console.log({ productLink });
+    createdLinks.push(productLink);
 
     return {createdLinks}
       }
