@@ -1602,7 +1602,7 @@ async (
         const { createdLinks } = await testInit({ customerKey });
 
         const urlLink = createdLinks.find(link => link.type_id === Url);
-        expect(urlLink).to.not.be.undefined()
+        expect(urlLink).to.not.be.equal(undefined)
 
         const url = urlLink.value.value;
         console.log({ url });
