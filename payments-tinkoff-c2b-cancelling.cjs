@@ -889,6 +889,10 @@ async (
   const reqBody = req.body;
   console.log({reqBody});
 
+  if (req.body.Status !== 'CANCELLED') {
+    return;
+  }
+
   const Contain = await deep.id("@deep-foundation/core", "Contain");
 
   const TinkoffProvider = await deep.id("@deep-foundation/payments-tinkoff-c2b", "TinkoffProvider");
@@ -921,7 +925,6 @@ async (
   if(!payLink) { throw new Error("The pay link associated with cancelling payment link " + cancellingPaymentLink + " is not found.") }
 
 
-  if (req.body.Status === 'CANCELLED') {
   const bankPaymentLinkId = req.body.PaymentLinkId;
 
   const {data: mpUpPayment, error: mpUpPaymentLinkSelectQueryError} = await deep.select({
@@ -950,7 +953,6 @@ async (
     },
   });
   if(payedInsertLinkInsertQuery.error) {throw new Error(payedInsertLinkInsertQuery.error.message);}
-  }
 
   res.send('ok');
 };
