@@ -1877,16 +1877,23 @@ async (
 				console.log({ payLink });
 				createdLinks.push(payLink);
 
-				await sleep(9000);
+				var urlLinkSelectQuery;
+				for (let i = 0; i < 10; i++) {
+					urlLinkSelectQuery = await deep.select({
+						type_id: Url,
+						to_id: payLink.id,
+					});
 
-				const { data } = await deep.select({
-					type_id: Url,
-					to_id: payLink.id,
-				});
+					if(urlLinkSelectQuery.data.length > 0){
+						break;
+					}
 
-				expect(data.length).to.greaterThan(0);
+					await sleep(1000);
+				}
 
-				createdLinks.push(data[0]);
+				expect(urlLinkSelectQuery.data.length).to.greaterThan(0);
+
+				createdLinks.push(urlLinkSelectQuery.data[0]);
 
 				console.log('testInit-end');
 
@@ -1920,18 +1927,26 @@ async (
 			) => {
 				console.log('testConfirm-start');
 				const { createdLinks } = await testFinishAuthorize({ customerKey });
-				await sleep(17000);
 
 				const payLink = createdLinks.find((link) => link.type_id === Pay);
 
-				let { data } = await deep.select({
-					type_id: Payed,
-					to_id: payLink.id,
-				});
+				var payedLinkSelectQuery;
+				for (let i = 0; i < 10; i++) {
+					payedLinkSelectQuery = await deep.select({
+						type_id: Payed,
+						to_id: payLink.id,
+					});
 
-				expect(data.length).to.greaterThan(0);
+					if(payedLinkSelectQuery.data.length > 0){
+						break;
+					}
 
-				createdLinks.push(data[0]);
+					await sleep(1000);
+				}
+
+				expect(payedLinkSelectQuery.data.length).to.greaterThan(0);
+
+				createdLinks.push(payedLinkSelectQuery.data[0]);
 
 				console.log('testConfirm-end');
 
@@ -1977,14 +1992,19 @@ async (
         console.log('testGetCardList-end');
       };
       */
-			var createdLinks;
 			const { integratedTestsCreatedLinks } = await setup();
-			const { createdLinks } = await testInit();
-			await deep.delete(createdLinks.map((link) => link.id));
-			const { createdLinks } = await testFinishAuthorize();
-			await deep.delete(createdLinks.map((link) => link.id));
-			const { createdLinks } = await testConfirm();
-			await deep.delete(createdLinks.map((link) => link.id));
+			{
+        const { createdLinks } = await testInit();
+			  await deep.delete(createdLinks.map((link) => link.id));
+      }
+			{
+        const { createdLinks } = await testFinishAuthorize();
+			  await deep.delete(createdLinks.map((link) => link.id));
+      }
+			{
+        const { createdLinks } = await testConfirm();
+			  await deep.delete(createdLinks.map((link) => link.id));
+      }
 			await deep.delete(integratedTestsCreatedLinks);
 
 			/*await testGetState();
