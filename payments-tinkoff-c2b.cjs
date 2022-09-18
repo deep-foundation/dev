@@ -1691,8 +1691,8 @@ async (
 		};
 
 		const callIntegrationTests = async () => {
-			const setup = async () => {
-				const createdLinks = [];
+			
+      const createdLinks = [];
 
 				const {
 					data: [tinkoffProviderLink],
@@ -1794,9 +1794,6 @@ async (
 				});
 				console.log({ productLink });
 				createdLinks.push(productLink);
-
-				return { integratedTestsCreatedLinks: createdLinks };
-			};
 
 			const testInit = async ({ customerKey } = { customerKey: uniqid() }) => {
 				console.log('testInit-start');
@@ -1992,7 +1989,6 @@ async (
         console.log('testGetCardList-end');
       };
       */
-			const { integratedTestsCreatedLinks } = await setup();
 			{
         const { createdLinks } = await testInit();
 			  await deep.delete(createdLinks.map((link) => link.id));
@@ -2005,7 +2001,7 @@ async (
         const { createdLinks } = await testConfirm();
 			  await deep.delete(createdLinks.map((link) => link.id));
       }
-			await deep.delete(integratedTestsCreatedLinks);
+			await deep.delete(createdLinks.map((link) => link.id));
 
 			/*await testGetState();
       await testGetCardList();*/
