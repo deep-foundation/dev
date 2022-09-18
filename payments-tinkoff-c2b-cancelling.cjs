@@ -1392,10 +1392,10 @@ async (
 
     const callIntegrationTests = async () => {
 
-        const createdLinks = [];
+        const createdLinkIds = [];
 
         const {
-          data: [tinkoffProviderLink],
+          data: [{id: tinkoffProviderLinkId}],
         } = await deep.insert({
           type_id: TinkoffProvider,
           in: {
@@ -1407,11 +1407,11 @@ async (
             ],
           },
         });
-        console.log({ tinkoffProviderLink });
-        createdLinks.push(tinkoffProviderLink);
+        console.log({ tinkoffProviderLinkId });
+        createdLinkIds.push(tinkoffProviderLinkId);
 
         const {
-          data: [sumProviderLink],
+          data: [{id: sumProviderLinkId}],
         } = await deep.insert({
           type_id: SumProvider,
           in: {
@@ -1423,11 +1423,11 @@ async (
             ],
           },
         });
-        console.log({ sumProviderLink });
-        createdLinks.push(sumProviderLink);
+        console.log({ sumProviderLinkId });
+        createdLinkIds.push(sumProviderLinkId);
 
         const {
-          data: [storageBusinessLink],
+          data: [{id: storageBusinessLinkId}],
         } = await deep.insert({
           type_id: StorageBusiness,
           in: {
@@ -1439,15 +1439,15 @@ async (
             ],
           },
         });
-        console.log({ storageBusinessLink });
-        createdLinks.push(storageBusinessLink);
+        console.log({ storageBusinessLinkId });
+        createdLinkIds.push(storageBusinessLinkId);
 
         const {
-          data: [tokenLink],
+          data: [{id: tokenLinkId}],
         } = await deep.insert({
           type_id: Token,
-          from_id: storageBusinessLink.id,
-          to_id: storageBusinessLink.id,
+          from_id: storageBusinessLinkId.id,
+          to_id: storageBusinessLinkId.id,
           string: { data: { value: process.env.PAYMENT_TEST_TERMINAL_KEY } },
           in: {
             data: [
@@ -1458,8 +1458,8 @@ async (
             ],
           },
         });
-        console.log({ tokenLink });
-        createdLinks.push(tokenLink);
+        console.log({ tokenLinkId });
+        createdLinkIds.push(tokenLinkId);
 
         const {
           data: [{ id: Product }],
@@ -1477,10 +1477,10 @@ async (
           },
         });
         console.log({ Product });
-        createdLinks.push(Product);
+        createdLinkIds.push(Product);
 
         const {
-          data: [productLink],
+          data: [{id: productLinkId}],
         } = await deep.insert({
           type_id: Product,
           in: {
@@ -1492,8 +1492,8 @@ async (
             ],
           },
         });
-        console.log({ productLink });
-        createdLinks.push(productLink);
+        console.log({ productLinkId });
+        createdLinkIds.push(productLinkId);
 
       const testInit = async ({ customerKey } = { customerKey: uniqid() }) => {
         console.log('testInit-start');
@@ -1506,7 +1506,7 @@ async (
           type_id: Payment,
           object: { data: { value: { orderLinkId: uniqid() } } },
           from_id: deep.linkId,
-          to_id: storageBusinessLink.id,
+          to_id: storageBusinessLinkId.id,
           in: {
             data: [
               {
@@ -1523,7 +1523,7 @@ async (
           data: [{id: sumLinkId}],
         } = await deep.insert({
           type_id: Sum,
-          from_id: sumProviderLink.id,
+          from_id: sumProviderLinkId.id,
           to_id: paymentLinkId,
           number: { data: { value: PRICE } },
           in: {
@@ -1543,7 +1543,7 @@ async (
         } = await deep.insert({
           type_id: Object,
           from_id: paymentLinkId,
-          to_id: productLink.id,
+          to_id: productLinkId.id,
           in: {
             data: [
               {
@@ -1699,7 +1699,7 @@ async (
 
           const sumLinkOfCancellingPaymentQuery = await deep.insert({
             type_id: Sum,
-            from_id: sumProviderLink.id,
+            from_id: sumProviderLinkId.id,
             to_id: cancellingPaymentLinkId,
             number: { data: { value: PRICE } },
             in: {
@@ -1797,7 +1797,7 @@ async (
               data: [sumLinkOfCancellingPayment]
             } = await deep.insert({
               type_id: Sum,
-              from_id: sumProviderLink.id,
+              from_id: sumProviderLinkId.id,
               to_id: cancellingPaymentLinkId,
               number: { data: { value: Math.floor(PRICE / 3) } },
               in: {
@@ -1890,7 +1890,7 @@ async (
 
           const sumLinkOfCancellingPaymentSelectQuery = await deep.insert({
             type_id: Sum,
-            from_id: sumProviderLink.id,
+            from_id: sumProviderLinkId.id,
             to_id: cancellingPaymentLinkId,
             number: { data: { value: PRICE } },
             in: {
@@ -1970,18 +1970,16 @@ async (
         console.log('testCancel-end');
 
         return { 
-          createdLinks
+          createdLinks: createdLinkIds
          }
       };
 
       await callCancelTests();
-      await deep.delete(createdLinks.map(link => link.id));
+      await deep.delete(createdLinkIds);
     };
 
     // await callRealizationTests();
     await callIntegrationTests();
-
-    await deep.delete(linkIdsToDelete);
   };
 
   await callTests();
