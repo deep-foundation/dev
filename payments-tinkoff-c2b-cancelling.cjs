@@ -1390,7 +1390,6 @@ async (
 
     const callIntegrationTests = async () => {
 
-      const setup = async () => {
         const createdLinks = [];
 
         const {
@@ -1493,9 +1492,6 @@ async (
         });
         console.log({ productLink });
         createdLinks.push(productLink);
-
-        return { createdLinks }
-      }
 
       const testInit = async ({ customerKey } = { customerKey: uniqid() }) => {
         console.log('testInit-start');
@@ -1944,7 +1940,6 @@ async (
         return { createdLinks }
       };
 
-      const { createdLinks } = await setup();
       await callCancelTests();
       await deep.delete(createdLinks.map(link => link.id));
     };
