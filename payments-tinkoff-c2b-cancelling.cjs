@@ -1953,10 +1953,6 @@ async (
         }
 
         console.log('testCancel-end');
-
-        return { 
-          createdLinks: createdLinkIds
-         }
       };
 
       await callCancelTests();
