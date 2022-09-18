@@ -998,7 +998,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
     id: paymentLink.to_id
   });
   if(storageBusinessLinkSelectQuery.error) { throw new Error(storageBusinessLinkSelectQuery.error.message); }
-  const storageBusinessLink = storageBusinessLinkSelectQuery.data[0];
+  const storageBusinessLinkId = storageBusinessLinkSelectQuery.data[0].id;
   console.log({storageBusinessLink});
   
   const init = ${init.toString()};
@@ -1006,8 +1006,8 @@ async ({ deep, require, data: { newLink: payLink } }) => {
   const Token = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Token");
   const tokenLinkSelectQuery = await deep.select({
     type_id: Token,
-    from_id: storageBusinessLink.id,
-    to_id: storageBusinessLink.id
+    from_id: storageBusinessLinkId,
+    to_id: storageBusinessLinkId
   });
   if(tokenLinkSelectQuery.error) {throw new Error(tokenLinkSelectQuery.error.message);}
   const tokenLink = tokenLinkSelectQuery.data[0];
