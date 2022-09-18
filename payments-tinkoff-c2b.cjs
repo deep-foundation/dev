@@ -1799,164 +1799,177 @@ async (
 				console.log({ productLink });
 				createdLinks.push(productLink);
 
-			const testInit = async ({ customerKey } = { customerKey: uniqid() }) => {
-				console.log('testInit-start');
-
-				const createdLinks = [];
-
-				const {
-					data: [paymentLink],
-				} = await deep.insert({
-					type_id: Payment,
-					object: { data: { value: { orderId: uniqid() } } },
-					from_id: deep.linkId,
-					to_id: storageBusinessLink.id,
-					in: {
-						data: [
+				const testInit = async ({ customerKey } = { customerKey: uniqid() }) => {
+					console.log('testInit-start');
+		 
+					const createdLinkIds = [];
+		 
+					const {
+					  data: [{id: paymentLinkId}],
+					} = await deep.insert({
+					  type_id: Payment,
+					  object: { data: { value: { orderLinkId: uniqid() } } },
+					  from_id: deep.linkId,
+					  to_id: storageBusinessLink.id,
+					  in: {
+						 data: [
 							{
-								type_id: Contain,
-								from_id: deep.linkId,
+							  type_id: Contain,
+							  from_id: deep.linkId,
 							},
-						],
-					},
-				});
-				console.log({ paymentLink });
-				createdLinks.push(paymentLink);
-
-				const {
-					data: [sumLink],
-				} = await deep.insert({
-					type_id: Sum,
-					from_id: sumProviderLink.id,
-					to_id: paymentLink.id,
-					number: { data: { value: 150 } },
-					in: {
-						data: [
-							{
-								type_id: Contain,
-								from_id: deep.linkId,
-							},
-						],
-					},
-				});
-				console.log({ sumLink });
-				createdLinks.push(sumLink);
-
-				const {
-					data: [objectLink],
-				} = await deep.insert({
-					type_id: Object,
-					from_id: paymentLink.id,
-					to_id: productLink.id,
-					in: {
-						data: [
-							{
-								type_id: Contain,
-								from_id: deep.linkId,
-							},
-						],
-					},
-				});
-				console.log({ objectLink });
-				createdLinks.push(objectLink);
-
-				const {
-					data: [payLink],
-				} = await deep.insert({
-					type_id: Pay,
-					from_id: deep.linkId,
-					to_id: sumLink.id,
-					in: {
-						data: [
-							{
-								type_id: Contain,
-								from_id: deep.linkId,
-							},
-						],
-					},
-				});
-				console.log({ payLink });
-				createdLinks.push(payLink);
-
-				var urlLinkSelectQuery;
-				for (let i = 0; i < 10; i++) {
-					urlLinkSelectQuery = await deep.select({
-						type_id: Url,
-						to_id: payLink.id,
+						 ],
+					  },
 					});
-
-					if(urlLinkSelectQuery.data.length > 0){
-						break;
-					}
-
-					await sleep(1000);
-				}
-
-				expect(urlLinkSelectQuery.data.length).to.greaterThan(0);
-
-				createdLinks.push(urlLinkSelectQuery.data[0]);
-
-				console.log('testInit-end');
-
-				return {
-					createdLinks: await deep.select(createdLinks.map(link => link.id))
-				};
-			};
-
-			const testFinishAuthorize = async (
-				{ customerKey } = { customerKey: uniqid() }
-			) => {
-				console.log('testFinishAuthorize-start');
-				const { createdLinks } = await testInit({ customerKey });
-				const urlLink = createdLinks.find((link) => link.type_id === Url);
-				const url = urlLink.value.value;
-
-				const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
-				const page = await browser.newPage();
-				await payInBrowser({
-					browser,
-					page,
-					url,
-				});
-				console.log('testFinishAuthorize-end');
-
-				return { 
-          createdLinks: await deep.select(createdLinks.map(link => link.id))
-         };
-			};
-
-			const testConfirm = async (
-				{ customerKey } = { customerKey: uniqid() }
-			) => {
-				console.log('testConfirm-start');
-				const { createdLinks } = await testFinishAuthorize({ customerKey });
-
-				const payLink = createdLinks.find((link) => link.type_id === Pay);
-
-				var payedLinkSelectQuery;
-				for (let i = 0; i < 10; i++) {
-					payedLinkSelectQuery = await deep.select({
-						type_id: Payed,
-						to_id: payLink.id,
+					console.log({ paymentLinkId });
+					createdLinkIds.push(paymentLinkId);
+		 
+					const {
+					  data: [{id: sumLinkId}],
+					} = await deep.insert({
+					  type_id: Sum,
+					  from_id: sumProviderLink.id,
+					  to_id: paymentLinkId,
+					  number: { data: { value: PRICE } },
+					  in: {
+						 data: [
+							{
+							  type_id: Contain,
+							  from_id: deep.linkId,
+							},
+						 ],
+					  },
 					});
-
-					if(payedLinkSelectQuery.data.length > 0){
-						break;
+					console.log({ sumLinkId });
+					createdLinkIds.push(sumLinkId);
+		 
+					const {
+					  data: [{id: objectLinkId}],
+					} = await deep.insert({
+					  type_id: Object,
+					  from_id: paymentLinkId,
+					  to_id: productLink.id,
+					  in: {
+						 data: [
+							{
+							  type_id: Contain,
+							  from_id: deep.linkId,
+							},
+						 ],
+					  },
+					});
+					console.log({ objectLinkId });
+					createdLinkIds.push(objectLinkId);
+		 
+					const {
+					  data: [{id: payLinkId}],
+					} = await deep.insert({
+					  type_id: Pay,
+					  from_id: deep.linkId,
+					  to_id: sumLinkId,
+					  in: {
+						 data: [
+							{
+							  type_id: Contain,
+							  from_id: deep.linkId,
+							},
+						 ],
+					  },
+					});
+					console.log({ payLinkId });
+					createdLinkIds.push(payLinkId);
+		 
+					var urlLinkSelectQuery;
+					for (let i = 0; i < 10; i++) {
+					  urlLinkSelectQuery = await deep.select({
+						 type_id: Url,
+						 to_id: payLinkId,
+					  });
+		 
+					  if (urlLinkSelectQuery.data.length > 0) {
+						 break;
+					  }
+		 
+					  await sleep(1000);
 					}
-
-					await sleep(1000);
-				}
-
-				expect(payedLinkSelectQuery.data.length).to.greaterThan(0);
-
-				createdLinks.push(payedLinkSelectQuery.data[0]);
-
-				console.log('testConfirm-end');
-
-				return { 
-          createdLinks: await deep.select(createdLinks.map(link => link.id))
-         };
-			};
+		 
+					expect(urlLinkSelectQuery.data.length).to.greaterThan(0);
+		 
+					createdLinkIds.push(urlLinkSelectQuery.data[0].id);
+		 
+					const createdLinks = (await deep.select(createdLinkIds)).data;
+					console.log({createdLinks});
+		 
+					console.log('testInit-end');
+		 
+					return {
+					  createdLinks
+					}
+				 };
+		 
+				 const testFinishAuthorize = async ({ customerKey } = { customerKey: uniqid() }) => {
+					console.log('testFinishAuthorize-start');
+					const { createdLinks } = await testInit({ customerKey });
+		 
+					const urlLink = createdLinks.find(link => link.type_id === Url);
+					expect(urlLink).to.not.be.equal(undefined)
+		 
+					const url = urlLink.value.value;
+					console.log({ url });
+		 
+					const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
+					const page = await browser.newPage();
+					await payInBrowser({
+					  browser,
+					  page,
+					  url,
+					});
+		 
+					console.log({createdLinks});
+		 
+					console.log('testFinishAuthorize-end');
+		 
+					return {
+					  createdLinks: await deep.select(createdLinks.map(link => link.id))
+					}
+				 };
+		 
+				 const testConfirm = async ({ customerKey } = { customerKey: uniqid() }) => {
+					console.log('testConfirm-start');
+					const { createdLinks } = await testFinishAuthorize({ customerKey });
+		 
+					const createdLinkIds = [];
+		 
+					const payLink = createdLinks.find(link => link.type_id === Pay);
+					expect(payLink).to.be.not.undefined();
+		 
+					var payedLinkSelectQuery;
+					for (let i = 0; i < 10; i++) {
+					  payedLinkSelectQuery = await deep.select({
+						 type_id: Payed,
+						 to_id: payLink.id
+					  });
+		 
+					  if (payedLinkSelectQuery.data.length > 0) {
+						 break;
+					  }
+		 
+					  await sleep(1000);
+					}
+		 
+					expect(payedLinkSelectQuery.data.length).to.greaterThan(0);
+		 
+					createdLinkIds.push(payedLinkSelectQuery.data[0].id);
+		 
+					createdLinks.push(...(await deep.select(createdLinkIds)).data);
+		 
+					console.log({createdLinks});
+		 
+					console.log('testConfirm-end');
+		 
+					return {
+					  createdLinks
+					}
+				 };
 
 			/*
       const testGetState = async () => {
