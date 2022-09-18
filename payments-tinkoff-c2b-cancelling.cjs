@@ -1651,7 +1651,7 @@ async (
 
         expect(payedLinkSelectQuery.data.length).to.greaterThan(0);
 
-        createdLinks.push(data[0]);
+        createdLinks.push(payedLinkSelectQuery.data[0]);
 
         console.log({createdLinks});
 
