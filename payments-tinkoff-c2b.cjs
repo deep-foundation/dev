@@ -1825,7 +1825,7 @@ async (
 					  data: [{id: sumLinkId}],
 					} = await deep.insert({
 					  type_id: Sum,
-					  from_id: sumProviderLink.id,
+					  from_id: sumProviderLinkId,
 					  to_id: paymentLinkId,
 					  number: { data: { value: PRICE } },
 					  in: {
