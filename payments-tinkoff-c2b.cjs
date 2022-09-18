@@ -1845,7 +1845,7 @@ async (
 					} = await deep.insert({
 					  type_id: Object,
 					  from_id: paymentLinkId,
-					  to_id: productLink.id,
+					  to_id: productLinkId,
 					  in: {
 						 data: [
 							{
