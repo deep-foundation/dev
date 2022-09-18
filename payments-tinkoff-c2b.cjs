@@ -1287,8 +1287,9 @@ async (
       ],
     },
   });
-  console.log({titleLinkInsertQuery});
   if(titleLinkInsertQuery.error) {throw new Error(titleLinkInsertQuery.error.message);}
+  const titleLinkId = titleLinkInsertQuery.data[0].id;
+  console.log({titleLinkId});
 
   const Income = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Income");
   const incomeLinkInsertQuery = await deep.insert({
