@@ -1891,7 +1891,7 @@ async (
           if(sumLinkOfCancellingPaymentSelectQuery.error) {throw new Error(sumLinkOfCancellingPaymentSelectQuery.error.message);}
           const sumLinkIdOfCancellingPayment = sumLinkOfCancellingPaymentSelectQuery.data[0].id;
           console.log({ sumLinkIdOfCancellingPayment });
-          createdLinks.push(sumLinkIdOfCancellingPayment);
+          createdLinkIds.push(sumLinkIdOfCancellingPayment);
 
           const cancellingPayLinkInsertQuery = await deep.insert({
             type_id: CancellingPay,
