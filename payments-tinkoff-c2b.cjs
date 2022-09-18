@@ -1159,7 +1159,7 @@ async (
   console.log({tinkoffProviderLinkSelectQuery});
   if(tinkoffProviderLinkSelectQuery.error) {throw new Error(tinkoffProviderLinkSelectQuery.error.message);}
   const tinkoffProviderLinkId = tinkoffProviderLinkSelectQuery.data[0].id;
-  console.log({tinkoffProviderLink});
+  console.log({tinkoffProviderLinkId});
 
   const paymentLinkSelectQuery = await deep.select({
     object: {value: {_contains: {orderId: req.body.OrderId}}}
