@@ -2024,13 +2024,14 @@ async (
 				await deep.delete(createdLinks.map((link) => link.id));
 			}
 
+			await deep.delete(createdLinkIds);
+
 			/*await testGetState();
 	  await testGetCardList();*/
 		};
 
 		// await callRealizationTests();
 		await callIntegrationTests();
-		await deep.delete(createdLinkIds);
 	};
 
 	await callTests();
