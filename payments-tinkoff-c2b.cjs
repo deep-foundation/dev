@@ -2023,7 +2023,6 @@ async (
         const { createdLinks } = await testConfirm();
 			  await deep.delete(createdLinks.map((link) => link.id));
       }
-			await deep.delete(createdLinks.map((link) => link.id));
 
 			/*await testGetState();
       await testGetCardList();*/
