@@ -724,8 +724,6 @@ const f = async () => {
 async ({ deep, require, data: { newLink: payLink } }) => {
   ${handlersDependencies}
 
-  const Contain = await deep.id("@deep-foundation/core", 'Contain');
-
   const {data: mpDownPay, error: mpDownPaySelectQueryError} = await deep.select({
     down: {
       link_id: { _eq: payLink.id },
@@ -800,14 +798,6 @@ async ({ deep, require, data: { newLink: payLink } }) => {
       from_id: tinkoffProviderLink.id,
       to_id: payLink.id,
       string: { data: { value: errorMessage } },
-      in: {
-        data: [
-          {
-            type_id: Contain,
-            from_id: deep.linkId,
-          },
-        ],
-      },
     });
     if(errorLinkInsertQueryError) { throw new Error(errorLinkInsertQueryError.message); }
     throw new Error(errorMessage);
@@ -817,14 +807,6 @@ async ({ deep, require, data: { newLink: payLink } }) => {
     type_id: await deep.id("@deep-foundation/payments-tinkoff-c2b", "Payed"),
     from_id: tinkoffProviderLink.id,
     to_id: payLink.id,
-    in: {
-      data: [
-        {
-          type_id: Contain,
-          from_id: deep.linkId,
-        },
-      ],
-    },
   });
   if(payedLinkInsertQueryError) {throw new Error(payedLinkInsertQueryError.message); }
   
@@ -894,8 +876,6 @@ async (
     return;
   }
 
-  const Contain = await deep.id("@deep-foundation/core", "Contain");
-
   const TinkoffProvider = await deep.id("@deep-foundation/payments-tinkoff-c2b", "TinkoffProvider");
   const tinkoffProviderLinkSelectQuery = await deep.select({
     type_id: TinkoffProvider
@@ -944,14 +924,6 @@ async (
     type_id: Payed,
     from_id: tinkoffProviderLink.id,
     to_id: sumLink.id,
-    in: {
-      data: [
-        {
-          type_id: Contain,
-          from_id: deep.linkId,
-        },
-      ],
-    },
   });
   if(payedInsertLinkInsertQuery.error) {throw new Error(payedInsertLinkInsertQuery.error.message);}
 
