@@ -963,7 +963,7 @@ async (
     {
       type_id: await deep.id('@deep-foundation/core', 'Port'),
       number: {
-        data: { value: process.env.PAYMENT_EACQ_AND_TEST_NOTIFICATION_PORT },
+        data: { value: /*process.env.PAYMENT_EACQ_AND_TEST_NOTIFICATION_PORT */ 5238 },
       },
       in: {
         data: {
@@ -1701,7 +1701,7 @@ async (
           console.log({ sumLinkIdOfCancellingPayment });
           createdLinkIds.push(sumLinkIdOfCancellingPayment);
 
-          const payLinkInsertQuery = await deep.insert({
+          const cancellingPayLinkInsertQuery = await deep.insert({
             type_id: CancellingPay,
             from_id: deep.linkId,
             to_id: sumLinkIdOfCancellingPayment,
@@ -1714,29 +1714,26 @@ async (
               ],
             },
           });
-          console.log({ payLinkInsertQuery });
-          if (payLinkInsertQuery.error) { throw new Error(payLinkInsertQuery.error.message); }
-          createdLinkIds.push(payLinkInsertQuery.data[0].id);
+          if (cancellingPayLinkInsertQuery.error) { throw new Error(cancellingPayLinkInsertQuery.error.message); }
+          const cancellingPayLinkId = cancellingPayLinkInsertQuery.data[0].id;
+          console.log({ cancellingPayLinkId });
+          createdLinkIds.push(cancellingPayLinkId);
 
-          var mpUpCancellingPaymentSelectQuery;
+          var payedLinkSelectQuery;
           for (let i = 0; i < 10; i++) {
-            mpUpCancellingPaymentSelectQuery = await deep.select({
-              up: {
-                parent_id: { _eq: cancellingPaymentLinkId },
-                tree_id: { _eq: paymentTreeLinkId }
-              }
+            payedLinkSelectQuery = await deep.select({
+              type_id: Payed,
+              to_id: cancellingPayLinkId
             });
 
-            if (mpUpCancellingPaymentSelectQuery.data.length > 0) {
+            if (payedLinkSelectQuery.data.length > 0) {
               break;
             }
 
             await sleep(1000);
           }
-          if (mpUpCancellingPaymentSelectQuery.error) { throw new Error(mpUpCancellingPaymentSelectQuery.error.message); }
-          const mpUpCancellingPayment = mpUpCancellingPaymentSelectQuery.data;
-          console.log({mpUpCancellingPayment});
-          const payedLink = mpUpCancellingPayment.find(link => link.type_id === Payed);
+          if (payedLinkSelectQuery.error) { throw new Error(payedLinkSelectQuery.error.message); }
+          const payedLink = payedLinkSelectQuery.data[0];
           expect(payedLink).to.not.equal(undefined);
           createdLinks.push(payedLink);
 
@@ -1810,28 +1807,26 @@ async (
                 ],
               },
             });
-            console.log({ cancellingPayLinkInsertQuery });
             if (cancellingPayLinkInsertQuery.error) { throw new Error(cancellingPayLinkInsertQuery.error.message); }
-            createdLinkIds.push(cancellingPayLinkInsertQuery.data[0].id);
-
-            var mpUpCancellingPaymentSelectQuery;
+            const cancellingPayLinkId = cancellingPayLinkInsertQuery.data[0].id;
+            console.log({ cancellingPayLinkId });
+            createdLinkIds.push(cancellingPayLinkId);
+  
+            var payedLinkSelectQuery;
             for (let i = 0; i < 10; i++) {
-              mpUpCancellingPaymentSelectQuery = await deep.select({
-                up: {
-                  parent_id: { _eq: cancellingPaymentLinkId },
-                  tree_id: { _eq: paymentTreeLinkId }
-                }
+              payedLinkSelectQuery = await deep.select({
+                type_id: Payed,
+                to_id: cancellingPayLinkId
               });
-
-              if (mpUpCancellingPaymentSelectQuery.data.length > 0) {
+  
+              if (payedLinkSelectQuery.data.length > 0) {
                 break;
               }
-
+  
               await sleep(1000);
             }
-
-            if (mpUpCancellingPaymentSelectQuery.error) { throw new Error(mpUpCancellingPaymentSelectQuery.error.message); }
-            const payedLink = mpUpCancellingPaymentSelectQuery.data.find(link => link.type_id === Payed);
+            if (payedLinkSelectQuery.error) { throw new Error(payedLinkSelectQuery.error.message); }
+            const payedLink = payedLinkSelectQuery.data[0];
             expect(payedLink).to.not.equal(undefined);
             createdLinks.push(payedLink);
           }
@@ -1908,27 +1903,24 @@ async (
           });
           if (cancellingPayLinkInsertQuery.error) { throw new Error(cancellingPayLinkInsertQuery.error.message); }
           const cancellingPayLinkId = cancellingPayLinkInsertQuery.data[0].id;
+          console.log({ cancellingPayLinkId });
           createdLinkIds.push(cancellingPayLinkId);
 
-          var mpUpCancellingPaymentSelectQuery;
+          var payedLinkSelectQuery;
           for (let i = 0; i < 10; i++) {
-            mpUpCancellingPaymentSelectQuery = await deep.select({
-              up: {
-                parent_id: { _eq: cancellingPaymentLinkId },
-                tree_id: { _eq: paymentTreeLinkId }
-              }
+            payedLinkSelectQuery = await deep.select({
+              type_id: Payed,
+              to_id: cancellingPayLinkId
             });
 
-            if (mpUpCancellingPaymentSelectQuery.data.length > 0) {
+            if (payedLinkSelectQuery.data.length > 0) {
               break;
             }
 
             await sleep(1000);
           }
-          if (mpUpCancellingPaymentSelectQuery.error) { throw new Error(mpUpCancellingPaymentSelectQuery.error.message); }
-          const mpUpCancellingPayment = mpUpCancellingPaymentSelectQuery.data;
-          console.log({mpUpCancellingPayment});
-          const payedLink = mpUpCancellingPayment.find(link => link.type_id === Payed);
+          if (payedLinkSelectQuery.error) { throw new Error(payedLinkSelectQuery.error.message); }
+          const payedLink = payedLinkSelectQuery.data[0];
           expect(payedLink).to.not.equal(undefined);
           createdLinks.push(payedLink);
 
