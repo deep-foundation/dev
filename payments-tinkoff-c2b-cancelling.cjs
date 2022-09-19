@@ -889,7 +889,8 @@ async (
   const reqBody = req.body;
   console.log({reqBody});
 
-  if (req.body.Status !== 'CANCELLED') {
+  // Canceled is used instead of Cancelled because tinkoff team is not goos at english 
+  if (req.body.Status !== 'CANCELED') {
     return;
   }
 
