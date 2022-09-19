@@ -738,7 +738,7 @@ const f = async () => {
 	} = await deep.insert({
 		type_id: BasePayed,
 		from_id: TinkoffProvider,
-		to_id: Pay,
+		to_id: Any, 
 		in: {
 			data: {
 				type_id: Contain,
