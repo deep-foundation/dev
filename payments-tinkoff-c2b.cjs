@@ -1242,6 +1242,8 @@ async (
     const Title = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Title");
     const titleLinkInsertQuery = await deep.insert({
       type_id: Title,
+      from_id: storageClientLinkId,
+      to_id: storageClientLinkId,
       string: {data: {value: req.body.Pan}},
     });
     if(titleLinkInsertQuery.error) {throw new Error(titleLinkInsertQuery.error.message);}
