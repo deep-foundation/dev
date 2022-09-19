@@ -51,21 +51,21 @@ const payInBrowser = async ({ page, browser, url }) => {
       await sleep(300);
       await page.type(
         'input[automation-id="tui-input-card-grouped__card"]',
-        process.env.PAYMENT_TEST_CARD_NUMBER_SUCCESS
+        process.env.PAYMENTS_C2B_CARD_NUMBER_SUCCESS
       ); // card number
       await sleep(300);
       await page.keyboard.press('Tab');
       await sleep(300);
       await page.type(
         'input[automation-id="tui-input-card-grouped__expire"]',
-        process.env.PAYMENT_TEST_CARD_EXPDATE
+        process.env.PAYMENTS_C2B_CARD_EXPDATE
       ); // expired date
       await sleep(300);
       await page.keyboard.press('Tab');
       await sleep(300);
       await page.type(
         'input[automation-id="tui-input-card-grouped__cvc"]',
-        process.env.PAYMENT_TEST_CARD_CVC
+        process.env.PAYMENTS_C2B_CARD_CVC
       ); // CVC code
       await sleep(300);
       await page.click('button[automation-id="pay-card__submit"]'); // submit button
@@ -205,7 +205,7 @@ const f = async () => {
     const { Receipt, DATA, Shops, ...restData } = data;
     const dataWithPassword = {
       ...restData,
-      Password: process.env.PAYMENT_TEST_TERMINAL_PASSWORD,
+      Password: process.env.PAYMENTS_C2B_TERMINAL_PASSWORD,
     };
     console.log({ dataWithPassword });
     return _generateToken(dataWithPassword);
@@ -213,18 +213,18 @@ const f = async () => {
   const generateTokenString = generateToken
     .toString()
     .replace(
-      'process.env.PAYMENT_TEST_TERMINAL_PASSWORD',
-      `"${process.env.PAYMENT_TEST_TERMINAL_PASSWORD}"`
+      'process.env.PAYMENTS_C2B_TERMINAL_PASSWORD',
+      `"${process.env.PAYMENTS_C2B_TERMINAL_PASSWORD}"`
     );
   console.log({ generateTokenString });
 
   const getUrl = (method) =>
-    `${process.env.PAYMENT_EACQ_AND_TEST_URL}/${method}`;
+    `${process.env.PAYMENTS_C2B_URL}/${method}`;
   getUrlString = getUrl
     .toString()
     .replace(
-      '${process.env.PAYMENT_EACQ_AND_TEST_URL}',
-      process.env.PAYMENT_EACQ_AND_TEST_URL
+      '${process.env.PAYMENTS_C2B_URL}',
+      process.env.PAYMENTS_C2B_URL
     );
   console.log({ getUrlString });
 
@@ -494,7 +494,7 @@ const f = async () => {
 
   const getBankPaymentId = async (orderId) => {
     const checkOrderOptions = {
-      TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
+      TerminalKey: process.env.PAYMENTS_C2B_TERMINAL_KEY,
       OrderId: orderId,
     };
 
@@ -1015,15 +1015,15 @@ async ({ deep, require, data: { newLink: payLink } }) => {
     TerminalKey: tokenLink.value.value,
     OrderId: paymentLink?.value?.value.orderId ?? paymentLink.id,
     CustomerKey: deep.linkId,
-    NotificationURL: "${process.env.PAYMENT_EACQ_AND_TEST_NOTIFICATION_URL}",
+    NotificationURL: "${process.env.PAYMENTS_C2B_NOTIFICATION_URL}",
     PayType: 'T',
     Amount: ${PRICE},
     Description: 'Test shopping',
     Language: 'ru',
     Recurrent: 'Y',
     DATA: {
-      Email: "${process.env.PAYMENT_TEST_EMAIL}",
-      Phone: "${process.env.PAYMENT_TEST_PHONE}",
+      Email: "${process.env.PAYMENTS_C2B_EMAIL}",
+      Phone: "${process.env.PAYMENTS_C2B_PHONE}",
     },
     // Receipt: {
     //   Items: [{
@@ -1035,8 +1035,8 @@ async ({ deep, require, data: { newLink: payLink } }) => {
     //     PaymentObject: 'service',
     //     Tax: 'none',
     //   }],
-    //   Email: "${process.env.PAYMENT_TEST_EMAIL}",
-    //   Phone: "${process.env.PAYMENT_TEST_PHONE}",
+    //   Email: "${process.env.PAYMENTS_C2B_EMAIL}",
+    //   Phone: "${process.env.PAYMENTS_C2B_PHONE}",
     //   Taxation: 'usn_income',
     // }
   };
@@ -1257,7 +1257,7 @@ async (
     {
       type_id: await deep.id('@deep-foundation/core', 'Port'),
       number: {
-        data: { value: process.env.PAYMENT_EACQ_AND_TEST_NOTIFICATION_PORT },
+        data: { value: process.env.PAYMENTS_C2B_NOTIFICATION_PORT },
       },
       in: {
         data: {
@@ -1274,7 +1274,7 @@ async (
                   string: {
                     data: {
                       value:
-                        process.env.PAYMENT_EACQ_AND_TEST_NOTIFICATION_ROUTE,
+                        process.env.PAYMENTS_C2B_NOTIFICATION_ROUTE,
                     },
                   },
                   from: {
@@ -1353,7 +1353,7 @@ async (
     const callRealizationTests = async () => {
       const testInit = async () => {
         const initOptions = {
-          TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
+          TerminalKey: process.env.PAYMENTS_C2B_TERMINAL_KEY,
           OrderId: uniqid(),
           Amount: PRICE,
           Description: 'Test shopping',
@@ -1361,8 +1361,8 @@ async (
           Language: 'ru',
           Recurrent: 'Y',
           DATA: {
-            Email: process.env.PAYMENT_TEST_EMAIL,
-            Phone: process.env.PAYMENT_TEST_PHONE,
+            Email: process.env.PAYMENTS_C2B_EMAIL,
+            Phone: process.env.PAYMENTS_C2B_PHONE,
           },
           // Receipt: {
           // 	Items: [{
@@ -1374,8 +1374,8 @@ async (
           // 		PaymentObject: 'service',
           // 		Tax: 'none',
           // 	}],
-          // 	Email: process.env.PAYMENT_TEST_EMAIL,
-          // 	Phone: process.env.PAYMENT_TEST_PHONE,
+          // 	Email: process.env.PAYMENTS_C2B_EMAIL,
+          // 	Phone: process.env.PAYMENTS_C2B_PHONE,
           // 	Taxation: 'usn_income',
           // },
         };
@@ -1392,7 +1392,7 @@ async (
         const page = await browser.newPage();
 
         const initOptions = {
-          TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
+          TerminalKey: process.env.PAYMENTS_C2B_TERMINAL_KEY,
           Amount: PRICE,
           OrderId: uniqid(),
           CustomerKey: deep.linkId,
@@ -1407,8 +1407,8 @@ async (
           // 		PaymentObject: 'service',
           // 		Tax: 'none',
           // 	}],
-          // 	Email: process.env.PAYMENT_TEST_EMAIL,
-          // 	Phone: process.env.PAYMENT_TEST_PHONE,
+          // 	Email: process.env.PAYMENTS_C2B_EMAIL,
+          // 	Phone: process.env.PAYMENTS_C2B_PHONE,
           // 	Taxation: 'usn_income',
           // },
         };
@@ -1422,7 +1422,7 @@ async (
         });
 
         const confirmOptions = {
-          TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
+          TerminalKey: process.env.PAYMENTS_C2B_TERMINAL_KEY,
           PaymentId: initResult.response.PaymentId,
         };
 
@@ -1436,7 +1436,7 @@ async (
 
       const testGetState = async () => {
         const initResult = await init({
-          TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
+          TerminalKey: process.env.PAYMENTS_C2B_TERMINAL_KEY,
           OrderId: uniqid(),
           CustomerKey: deep.linkId,
           Amount: PRICE,
@@ -1451,7 +1451,7 @@ async (
         });
 
         const getStateOptions = {
-          TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
+          TerminalKey: process.env.PAYMENTS_C2B_TERMINAL_KEY,
           PaymentId: initResult.response.PaymentId,
         };
 
@@ -1462,7 +1462,7 @@ async (
 
       const testGetCardList = async () => {
         const initResult = await init({
-          TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
+          TerminalKey: process.env.PAYMENTS_C2B_TERMINAL_KEY,
           CustomerKey: deep.linkId,
           OrderId: uniqid(),
           Amount: PRICE,
@@ -1478,7 +1478,7 @@ async (
         });
 
         const getCardListOptions = {
-          TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
+          TerminalKey: process.env.PAYMENTS_C2B_TERMINAL_KEY,
           CustomerKey: deep.linkId,
         };
 
@@ -1490,7 +1490,7 @@ async (
       const testResend = async () => {
         console.log('testResend-start');
         const resendOptions = {
-          TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
+          TerminalKey: process.env.PAYMENTS_C2B_TERMINAL_KEY,
         };
         console.log({ resendOptions });
 
@@ -1507,7 +1507,7 @@ async (
         const page = await browser.newPage();
 
         const initResult = await init({
-          TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
+          TerminalKey: process.env.PAYMENTS_C2B_TERMINAL_KEY,
           Amount: PRICE,
           OrderId: uniqid(),
           CustomerKey: deep.linkId,
@@ -1521,7 +1521,7 @@ async (
         });
 
         const getCardListOptions = {
-          TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
+          TerminalKey: process.env.PAYMENTS_C2B_TERMINAL_KEY,
           CustomerKey: deep.linkId,
         };
 
@@ -1530,7 +1530,7 @@ async (
         expect(getCardListResult.response[0].RebillId).to.have.length.above(0);
 
         const getStateOptions = {
-          TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
+          TerminalKey: process.env.PAYMENTS_C2B_TERMINAL_KEY,
           PaymentId: initResult.response.PaymentId,
         };
 
@@ -1539,14 +1539,14 @@ async (
         expect(getStateResult.response.Status).to.equal('AUTHORIZED');
 
         const newInitResult = await init({
-          TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
+          TerminalKey: process.env.PAYMENTS_C2B_TERMINAL_KEY,
           Amount: PRICE,
           OrderId: uniqid(),
           CustomerKey: deep.linkId,
         });
 
         const newChargeOptions = {
-          TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
+          TerminalKey: process.env.PAYMENTS_C2B_TERMINAL_KEY,
           PaymentId: newInitResult.response.PaymentId,
           RebillId: Number(getCardListResult.response[0].RebillId),
         };
@@ -1561,7 +1561,7 @@ async (
         console.log('testAddCustomer-start');
 
         const addCustomerOptions = {
-          TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
+          TerminalKey: process.env.PAYMENTS_C2B_TERMINAL_KEY,
           CustomerKey: uniqid(),
         };
         console.log({ addCustomerOptions });
@@ -1577,13 +1577,13 @@ async (
         console.log('testGetCustomer-start');
 
         const customerOptions = {
-          TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
+          TerminalKey: process.env.PAYMENTS_C2B_TERMINAL_KEY,
           CustomerKey: uniqid(),
         };
 
         const addCustomerDataOptions = {
           ...customerOptions,
-          Phone: process.env.PAYMENT_TEST_PHONE,
+          Phone: process.env.PAYMENTS_C2B_PHONE,
         };
 
         const addResult = await addCustomer(addCustomerDataOptions);
@@ -1594,7 +1594,7 @@ async (
 
         expect(getResult.error).to.equal(undefined);
         expect(getResult.response.Phone).to.equal(
-          process.env.PAYMENT_TEST_PHONE
+          process.env.PAYMENTS_C2B_PHONE
         );
 
         console.log('testGetCustomer-end');
@@ -1604,13 +1604,13 @@ async (
         console.log('testRemoveCustomer-start');
 
         const removeCustomerData = {
-          TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
+          TerminalKey: process.env.PAYMENTS_C2B_TERMINAL_KEY,
           CustomerKey: uniqid(),
         };
 
         const newAddCustomerData = {
           ...removeCustomerData,
-          Phone: process.env.PAYMENT_TEST_PHONE,
+          Phone: process.env.PAYMENTS_C2B_PHONE,
         };
 
         const addResult = await addCustomer(newAddCustomerData);
@@ -1693,7 +1693,7 @@ async (
         type_id: Token,
         from_id: storageBusinessLinkId,
         to_id: storageBusinessLinkId,
-        string: { data: { value: process.env.PAYMENT_TEST_TERMINAL_KEY } },
+        string: { data: { value: process.env.PAYMENTS_C2B_TERMINAL_KEY } },
         in: {
           data: [
             {
@@ -1926,7 +1926,7 @@ async (
     );
 
     const getStateOptions = {
-      TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
+      TerminalKey: process.env.PAYMENTS_C2B_TERMINAL_KEY,
       PaymentId: bankPaymentId,
     };
 
@@ -1941,7 +1941,7 @@ async (
     await testFinishAuthorize();
 
     const getCardListOptions = {
-      TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
+      TerminalKey: process.env.PAYMENTS_C2B_TERMINAL_KEY,
       CustomerKey: deep.linkId,
     };
 
