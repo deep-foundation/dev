@@ -1238,17 +1238,16 @@ async (
     console.log({storageClientLinkInsertQuery});
     if(storageClientLinkInsertQuery.error) {throw new Error(storageClientLinkInsertQuery.error.message);}
     const storageClientLinkId = storageClientLinkInsertQuery.data[0].id;
-  }
-  
 
-  const Title = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Title");
-  const titleLinkInsertQuery = await deep.insert({
-    type_id: Title,
-    string: {data: {value: req.body.Pan}},
-  });
-  if(titleLinkInsertQuery.error) {throw new Error(titleLinkInsertQuery.error.message);}
-  const titleLinkId = titleLinkInsertQuery.data[0].id;
-  console.log({titleLinkId});
+    const Title = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Title");
+    const titleLinkInsertQuery = await deep.insert({
+      type_id: Title,
+      string: {data: {value: req.body.Pan}},
+    });
+    if(titleLinkInsertQuery.error) {throw new Error(titleLinkInsertQuery.error.message);}
+    const titleLinkId = titleLinkInsertQuery.data[0].id;
+    console.log({titleLinkId});
+  }
 
   const Income = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Income");
   const incomeLinkInsertQuery = await deep.insert({
