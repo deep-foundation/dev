@@ -760,7 +760,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
     id: cancellingPaymentLink.from_id
   });
   if(cancelledPaymentLinkSelectQuery.error) { throw new Error(cancelledPaymentLinkSelectQuery.error.message); }
-  const cancelledPaymentLink = fromLinkOfPaymentQuery.data[0];
+  const cancelledPaymentLink = cancelledPaymentLinkSelectQuery.data[0];
   console.log({cancelledPaymentLink}); 
 
   const Income = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Income");
