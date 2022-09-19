@@ -1376,108 +1376,108 @@ async (
 
     const callIntegrationTests = async () => {
 
-        const createdLinkIds = [];
+      const createdLinkIds = [];
 
-        const {
-          data: [{id: tinkoffProviderLinkId}],
-        } = await deep.insert({
-          type_id: TinkoffProvider,
-          in: {
-            data: [
-              {
-                type_id: Contain,
-                from_id: deep.linkId,
-              },
-            ],
-          },
-        });
-        console.log({ tinkoffProviderLinkId });
-        createdLinkIds.push(tinkoffProviderLinkId);
+      const {
+        data: [{ id: tinkoffProviderLinkId }],
+      } = await deep.insert({
+        type_id: TinkoffProvider,
+        in: {
+          data: [
+            {
+              type_id: Contain,
+              from_id: deep.linkId,
+            },
+          ],
+        },
+      });
+      console.log({ tinkoffProviderLinkId });
+      createdLinkIds.push(tinkoffProviderLinkId);
 
-        const {
-          data: [{id: sumProviderLinkId}],
-        } = await deep.insert({
-          type_id: SumProvider,
-          in: {
-            data: [
-              {
-                type_id: Contain,
-                from_id: deep.linkId,
-              },
-            ],
-          },
-        });
-        console.log({ sumProviderLinkId });
-        createdLinkIds.push(sumProviderLinkId);
+      const {
+        data: [{ id: sumProviderLinkId }],
+      } = await deep.insert({
+        type_id: SumProvider,
+        in: {
+          data: [
+            {
+              type_id: Contain,
+              from_id: deep.linkId,
+            },
+          ],
+        },
+      });
+      console.log({ sumProviderLinkId });
+      createdLinkIds.push(sumProviderLinkId);
 
-        const {
-          data: [{id: storageBusinessLinkId}],
-        } = await deep.insert({
-          type_id: StorageBusiness,
-          in: {
-            data: [
-              {
-                type_id: Contain,
-                from_id: deep.linkId,
-              },
-            ],
-          },
-        });
-        console.log({ storageBusinessLinkId });
-        createdLinkIds.push(storageBusinessLinkId);
+      const {
+        data: [{ id: storageBusinessLinkId }],
+      } = await deep.insert({
+        type_id: StorageBusiness,
+        in: {
+          data: [
+            {
+              type_id: Contain,
+              from_id: deep.linkId,
+            },
+          ],
+        },
+      });
+      console.log({ storageBusinessLinkId });
+      createdLinkIds.push(storageBusinessLinkId);
 
-        const {
-          data: [{id: tokenLinkId}],
-        } = await deep.insert({
-          type_id: Token,
-          from_id: storageBusinessLinkId,
-          to_id: storageBusinessLinkId,
-          string: { data: { value: process.env.PAYMENT_TEST_TERMINAL_KEY } },
-          in: {
-            data: [
-              {
-                type_id: Contain,
-                from_id: deep.linkId,
-              },
-            ],
-          },
-        });
-        console.log({ tokenLinkId });
-        createdLinkIds.push(tokenLinkId);
+      const {
+        data: [{ id: tokenLinkId }],
+      } = await deep.insert({
+        type_id: Token,
+        from_id: storageBusinessLinkId,
+        to_id: storageBusinessLinkId,
+        string: { data: { value: process.env.PAYMENT_TEST_TERMINAL_KEY } },
+        in: {
+          data: [
+            {
+              type_id: Contain,
+              from_id: deep.linkId,
+            },
+          ],
+        },
+      });
+      console.log({ tokenLinkId });
+      createdLinkIds.push(tokenLinkId);
 
-        const {
-          data: [{ id: Product }],
-        } = await deep.insert({
-          type_id: Type,
-          from_id: Any,
-          to_id: Any,
-          in: {
-            data: [
-              {
-                type_id: Contain,
-                from_id: deep.linkId,
-              },
-            ],
-          },
-        });
-        console.log({ Product });
-        createdLinkIds.push(Product);
+      const {
+        data: [{ id: Product }],
+      } = await deep.insert({
+        type_id: Type,
+        from_id: Any,
+        to_id: Any,
+        in: {
+          data: [
+            {
+              type_id: Contain,
+              from_id: deep.linkId,
+            },
+          ],
+        },
+      });
+      console.log({ Product });
+      createdLinkIds.push(Product);
 
-        const {
-          data: [{id: productLinkId}],
-        } = await deep.insert({
-          type_id: Product,
-          in: {
-            data: [
-              {
-                type_id: Contain,
-                from_id: deep.linkId,
-              },
-            ],
-          },
-        });
-        console.log({ productLinkId });
-        createdLinkIds.push(productLinkId);
+      const {
+        data: [{ id: productLinkId }],
+      } = await deep.insert({
+        type_id: Product,
+        in: {
+          data: [
+            {
+              type_id: Contain,
+              from_id: deep.linkId,
+            },
+          ],
+        },
+      });
+      console.log({ productLinkId });
+      createdLinkIds.push(productLinkId);
 
       const testInit = async ({ customerKey } = { customerKey: uniqid() }) => {
         console.log('testInit-start');
@@ -1485,7 +1485,7 @@ async (
         const createdLinkIds = [];
 
         const {
-          data: [{id: paymentLinkId}],
+          data: [{ id: paymentLinkId }],
         } = await deep.insert({
           type_id: Payment,
           object: { data: { value: { orderId: uniqid() } } },
@@ -1504,7 +1504,7 @@ async (
         createdLinkIds.push(paymentLinkId);
 
         const {
-          data: [{id: sumLinkId}],
+          data: [{ id: sumLinkId }],
         } = await deep.insert({
           type_id: Sum,
           from_id: sumProviderLinkId,
@@ -1523,7 +1523,7 @@ async (
         createdLinkIds.push(sumLinkId);
 
         const {
-          data: [{id: objectLinkId}],
+          data: [{ id: objectLinkId }],
         } = await deep.insert({
           type_id: Object,
           from_id: paymentLinkId,
@@ -1541,7 +1541,7 @@ async (
         createdLinkIds.push(objectLinkId);
 
         const {
-          data: [{id: payLinkId}],
+          data: [{ id: payLinkId }],
         } = await deep.insert({
           type_id: Pay,
           from_id: deep.linkId,
@@ -1577,7 +1577,7 @@ async (
         createdLinkIds.push(urlLinkSelectQuery.data[0].id);
 
         const createdLinks = (await deep.select(createdLinkIds)).data;
-        console.log({createdLinks});
+        console.log({ createdLinks });
 
         console.log('testInit-end');
 
@@ -1604,7 +1604,7 @@ async (
           url,
         });
 
-        console.log({createdLinks});
+        console.log({ createdLinks });
 
         console.log('testFinishAuthorize-end');
 
@@ -1642,7 +1642,7 @@ async (
 
         createdLinks.push(...(await deep.select(createdLinkIds)).data);
 
-        console.log({createdLinks});
+        console.log({ createdLinks });
 
         console.log('testConfirm-end');
 
@@ -1741,9 +1741,9 @@ async (
 
           console.log('testCancelAfterPayAfterConfirmFullPrice-end');
 
-          return { 
+          return {
             createdLinks
-           };
+          };
         };
 
         const testCancelAfterPayAfterConfirmCustomPriceX2 = async ({ customerKey } = { customerKey: uniqid() }) => {
@@ -1776,7 +1776,7 @@ async (
             createdLinkIds.push(cancellingPaymentLinkId);
 
             const {
-              data: [{id:sumLinkIdOfCancellingPayment}]
+              data: [{ id: sumLinkIdOfCancellingPayment }]
             } = await deep.insert({
               type_id: Sum,
               from_id: sumProviderLinkId,
@@ -1811,18 +1811,18 @@ async (
             const cancellingPayLinkId = cancellingPayLinkInsertQuery.data[0].id;
             console.log({ cancellingPayLinkId });
             createdLinkIds.push(cancellingPayLinkId);
-  
+
             var payedLinkSelectQuery;
             for (let i = 0; i < 10; i++) {
               payedLinkSelectQuery = await deep.select({
                 type_id: Payed,
                 to_id: cancellingPayLinkId
               });
-  
+
               if (payedLinkSelectQuery.data.length > 0) {
                 break;
               }
-  
+
               await sleep(1000);
             }
             if (payedLinkSelectQuery.error) { throw new Error(payedLinkSelectQuery.error.message); }
@@ -1833,13 +1833,13 @@ async (
 
           createdLinks.push(...(await deep.select(createdLinkIds)).data)
 
-          console.log({createdLinks});
+          console.log({ createdLinks });
 
           console.log('testCancelAfterPayAfterConfirmCustomPriceX2-end');
 
-          return { 
+          return {
             createdLinks
-           }
+          }
         };
 
         const testCancelBeforePay = async ({ customerKey } = { customerKey: uniqid() }) => {
@@ -1883,7 +1883,7 @@ async (
               ],
             },
           });
-          if(sumLinkOfCancellingPaymentSelectQuery.error) {throw new Error(sumLinkOfCancellingPaymentSelectQuery.error.message);}
+          if (sumLinkOfCancellingPaymentSelectQuery.error) { throw new Error(sumLinkOfCancellingPaymentSelectQuery.error.message); }
           const sumLinkIdOfCancellingPayment = sumLinkOfCancellingPaymentSelectQuery.data[0].id;
           console.log({ sumLinkIdOfCancellingPayment });
           createdLinkIds.push(sumLinkIdOfCancellingPayment);
@@ -1928,9 +1928,9 @@ async (
 
           console.log('testCancelBeforePay-end');
 
-          return { 
+          return {
             createdLinks
-           };
+          };
         };
 
         {
