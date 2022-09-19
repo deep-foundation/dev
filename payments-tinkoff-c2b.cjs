@@ -1067,7 +1067,6 @@ async ({ deep, require, data: { newLink: payLink } }) => {
   console.log("paymentLink.value.value", paymentLink.value.value);
   console.log("paymentLink.value.value", paymentLink.value.value);
   const paymentLinkValueUpdateQuery = await deep.update({link_id: {_eq: paymentLink.id}}, {value: {...paymentLink.value.value, bankPaymentId: initResult.response.PaymentId}}, {table: "objects"});
-  console.log({paymentLinkValueUpdateQuery});
   if(paymentLinkValueUpdateQuery.error) { throw new Error(paymentLinkValueUpdateQuery.error.message); }
   
   return initResult;
@@ -1136,7 +1135,6 @@ async (
   const tinkoffProviderLinkSelectQuery = await deep.select({
     type_id: TinkoffProvider
   });
-  console.log({tinkoffProviderLinkSelectQuery});
   if(tinkoffProviderLinkSelectQuery.error) {throw new Error(tinkoffProviderLinkSelectQuery.error.message);}
   const tinkoffProviderLinkId = tinkoffProviderLinkSelectQuery.data[0].id;
   console.log({tinkoffProviderLinkId});
@@ -1144,7 +1142,6 @@ async (
   const paymentLinkSelectQuery = await deep.select({
     object: {value: {_contains: {orderId: req.body.OrderId}}}
   });
-  console.log({paymentLinkSelectQuery});
   if(paymentLinkSelectQuery.error) { throw new Error(paymentLinkSelectQuery.error.message); }
   const paymentLink = paymentLinkSelectQuery.data[0];
   console.log({paymentLink});
@@ -1171,7 +1168,6 @@ async (
   const storageBusinessLinkSelectQuery = await deep.select({
     id: paymentLink.to_id
   });
-  console.log({storageBusinessLinkSelectQuery});
   if(storageBusinessLinkSelectQuery.error) {throw new Error(storageBusinessLinkSelectQuery.error.message);}
   const storageBusinessLinkId = storageBusinessLinkSelectQuery.data[0].id;
   console.log({storageBusinessLinkId});
@@ -1182,7 +1178,6 @@ async (
     from_id: storageBusinessLinkId,
     to_id: storageBusinessLinkId
   });
-  console.log({tokenLinkSelectQuery});
   if(tokenLinkSelectQuery.error) {throw new Error(tokenLinkSelectQuery.error.message);}
   const tokenLink = tokenLinkSelectQuery.data[0];
   console.log({tokenLink});
@@ -1222,22 +1217,34 @@ async (
   console.log({payedLinkId});
 
   const StorageClient = await deep.id("@deep-foundation/payments-tinkoff-c2b", "StorageClient");
-  const storageClientLinkInsertQuery = await deep.insert({
+  const storageClientLinkSelectQuery = await deep.select({
     type_id: StorageClient,
-    number: {data: {value: req.body.CardId}},
+    number: {value: req.body.CardId}
   });
-  console.log({storageClientLinkInsertQuery});
-  if(storageClientLinkInsertQuery.error) {throw new Error(storageClientLinkInsertQuery.error.message);}
-  const storageClientLinkId = storageClientLinkInsertQuery.data[0].id;
+  console.log({storageClientLinkSelectQuery});
+  if(storageClientLinkSelectQuery.error) {throw new Error(storageClientLinkSelectQuery.error.message);}
+  
+  if(storageClientLinkSelectQuery.data.length > 0) {
+    const StorageClient = await deep.id("@deep-foundation/payments-tinkoff-c2b", "StorageClient");
+    const storageClientLinkInsertQuery = await deep.insert({
+      type_id: StorageClient,
+      number: {data: {value: req.body.CardId}},
+    });
+    console.log({storageClientLinkInsertQuery});
+    if(storageClientLinkInsertQuery.error) {throw new Error(storageClientLinkInsertQuery.error.message);}
+    const storageClientLinkId = storageClientLinkInsertQuery.data[0].id;
 
-  const Title = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Title");
-  const titleLinkInsertQuery = await deep.insert({
-    type_id: Title,
-    string: {data: {value: req.body.Pan}},
-  });
-  if(titleLinkInsertQuery.error) {throw new Error(titleLinkInsertQuery.error.message);}
-  const titleLinkId = titleLinkInsertQuery.data[0].id;
-  console.log({titleLinkId});
+    const Title = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Title");
+    const titleLinkInsertQuery = await deep.insert({
+      type_id: Title,
+      from_id: storageClientLinkId,
+      to_id: storageClientLinkId,
+      string: {data: {value: req.body.Pan}},
+    });
+    if(titleLinkInsertQuery.error) {throw new Error(titleLinkInsertQuery.error.message);}
+    const titleLinkId = titleLinkInsertQuery.data[0].id;
+    console.log({titleLinkId});
+  }
 
   const Income = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Income");
   const incomeLinkInsertQuery = await deep.insert({
