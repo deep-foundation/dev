@@ -1648,7 +1648,6 @@ async (
               ],
             },
           });
-          console.log({ cancellingPaymentLinkInsertQuery });
           if (cancellingPaymentLinkInsertQuery.error) { throw new Error(cancellingPaymentLinkInsertQuery.error.message); }
           const cancellingPaymentLinkId = cancellingPaymentLinkInsertQuery.data[0].id;
           console.log({ cancellingPaymentLinkId });
@@ -1668,7 +1667,6 @@ async (
               ],
             },
           });
-          console.log({ sumLinkOfCancellingPaymentQuery });
           if (sumLinkOfCancellingPaymentQuery.error) { throw new Error(sumLinkOfCancellingPaymentQuery.error.message); }
           const sumLinkIdOfCancellingPayment = sumLinkOfCancellingPaymentQuery.data[0].id;
           console.log({ sumLinkIdOfCancellingPayment });
@@ -1742,7 +1740,6 @@ async (
                 ],
               },
             });
-            console.log({ cancellingPaymentLinkInsertQuery });
             if (cancellingPaymentLinkInsertQuery.error) { throw new Error(cancellingPaymentLinkInsertQuery.error.message); }
             const cancellingPaymentLinkId = cancellingPaymentLinkInsertQuery.data[0].id;
             console.log({ cancellingPaymentLinkId });
