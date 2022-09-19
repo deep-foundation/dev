@@ -785,7 +785,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
 
   const cancelOptions = {
     TerminalKey: "${process.env.PAYMENT_TEST_TERMINAL_KEY}",
-    PaymentLinkId: cancelledPaymentLink.value.value.bankPaymentLinkId,
+    PaymentId: cancelledPaymentLink.value.value.bankPaymentId,
     Amount: sumLink.value.value,
   };
   console.log({ cancelOptions });
@@ -925,7 +925,7 @@ async (
   if(!payLink) { throw new Error("The pay link associated with cancelling payment link " + cancellingPaymentLink + " is not found.") }
 
 
-  const bankPaymentLinkId = req.body.PaymentLinkId;
+  const bankPaymentId = req.body.PaymentId;
 
   const {data: mpUpPayment, error: mpUpPaymentLinkSelectQueryError} = await deep.select({
     up: {
@@ -1128,7 +1128,7 @@ async (
 
         const confirmOptions = {
           TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
-          PaymentLinkId: initResult.response.PaymentLinkId,
+          PaymentId: initResult.response.PaymentId,
         };
 
         const confirmResult = await confirm(confirmOptions);
@@ -1191,11 +1191,11 @@ async (
             url,
           });
 
-          const bankPaymentLinkId = initResult.response.PaymentLinkId;
+          const bankPaymentId = initResult.response.PaymentId;
 
           const cancelOptions = {
             TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
-            PaymentLinkId: bankPaymentLinkId,
+            PaymentId: bankPaymentId,
             Amount: PRICE,
           };
 
@@ -1259,11 +1259,11 @@ async (
             url,
           });
 
-          const bankPaymentLinkId = initResult.response.PaymentLinkId;
+          const bankPaymentId = initResult.response.PaymentId;
 
           const cancelOptions = {
             TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
-            PaymentLinkId: bankPaymentLinkId,
+            PaymentId: bankPaymentId,
             Amount: Math.floor(PRICE / 3),
           };
 
@@ -1293,12 +1293,12 @@ async (
           const confirmResult = await testConfirm();
           console.log({ confirmResult });
 
-          const bankPaymentLinkId = confirmResult.response.PaymentLinkId;
-          console.log({ bankPaymentLinkId });
+          const bankPaymentId = confirmResult.response.PaymentId;
+          console.log({ bankPaymentId });
 
           const cancelOptions = {
             TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
-            PaymentLinkId: bankPaymentLinkId,
+            PaymentId: bankPaymentId,
             Amount: PRICE,
           };
           console.log({ cancelOptions });
@@ -1314,11 +1314,11 @@ async (
           console.log('testCancelAfterPayAfterConfirmCustomPriceX2-start');
           const confirmResult = await testConfirm();
 
-          const bankPaymentLinkId = confirmResult.response.PaymentLinkId;
+          const bankPaymentId = confirmResult.response.PaymentId;
 
           const cancelOptions = {
             TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
-            PaymentLinkId: bankPaymentLinkId,
+            PaymentId: bankPaymentId,
             Amount: Math.floor(PRICE / 3),
           };
 
@@ -1343,11 +1343,11 @@ async (
           console.log('testCancelBeforePay-start');
           const initResult = await testInit();
 
-          const bankPaymentLinkId = initResult.response.PaymentLinkId;;
+          const bankPaymentId = initResult.response.PaymentId;;
 
           const cancelOptions = {
             TerminalKey: process.env.PAYMENT_TEST_TERMINAL_KEY,
-            PaymentLinkId: bankPaymentLinkId,
+            PaymentId: bankPaymentId,
             Amount: PRICE,
           };
 
