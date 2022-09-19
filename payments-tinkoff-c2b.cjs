@@ -738,7 +738,7 @@ const f = async () => {
 	} = await deep.insert({
 		type_id: BasePayed,
 		from_id: TinkoffProvider,
-		to_id: Any, 
+		to_id: Any,
 		in: {
 			data: {
 				type_id: Contain,
@@ -1186,26 +1186,26 @@ async (
 
 
   if (req.body.Status === 'AUTHORIZED') {
-  const confirm = ${confirm.toString()};
+	const confirm = ${confirm.toString()};
 
-  const storageBusinessLinkSelectQuery = await deep.select({
-    id: paymentLink.to_id
-  });
-  console.log({storageBusinessLinkSelectQuery});
-  if(storageBusinessLinkSelectQuery.error) {throw new Error(storageBusinessLinkSelectQuery.error.message);}
-  const storageBusinessLinkId = storageBusinessLinkSelectQuery.data[0].id;
-  console.log({storageBusinessLinkId});
+	const storageBusinessLinkSelectQuery = await deep.select({
+		id: paymentLink.to_id
+	});
+	console.log({storageBusinessLinkSelectQuery});
+	if(storageBusinessLinkSelectQuery.error) {throw new Error(storageBusinessLinkSelectQuery.error.message);}
+	const storageBusinessLinkId = storageBusinessLinkSelectQuery.data[0].id;
+	console.log({storageBusinessLinkId});
 
-  const Token = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Token");
-  const tokenLinkSelectQuery = await deep.select({
-    type_id: Token,
-    from_id: storageBusinessLinkId,
-    to_id: storageBusinessLinkId
-  });
-  console.log({tokenLinkSelectQuery});
-  if(tokenLinkSelectQuery.error) {throw new Error(tokenLinkSelectQuery.error.message);}
-  const tokenLink = tokenLinkSelectQuery.data[0];
-  console.log({tokenLink});
+	const Token = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Token");
+	const tokenLinkSelectQuery = await deep.select({
+		type_id: Token,
+		from_id: storageBusinessLinkId,
+		to_id: storageBusinessLinkId
+	});
+	console.log({tokenLinkSelectQuery});
+	if(tokenLinkSelectQuery.error) {throw new Error(tokenLinkSelectQuery.error.message);}
+	const tokenLink = tokenLinkSelectQuery.data[0];
+	console.log({tokenLink});
 
     const confirmOptions = {
       TerminalKey: tokenLink.value.value,
@@ -1213,7 +1213,7 @@ async (
       Amount: req.body.Amount,
       // Receipt: req.body.Receipt,
     };
-  console.log({confirmOptions});
+  	console.log({confirmOptions});
 
     const confirmResult = await confirm(confirmOptions);
     console.log({confirmResult});
