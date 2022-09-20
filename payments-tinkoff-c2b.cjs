@@ -1131,6 +1131,11 @@ async (
   { deep, require, gql }
 ) => {
   ${handlersDependencies}
+
+  if(req.body.Status !== "AUTHORIZED" || req.body.Status !== "CONFIRMED") {
+    return;
+  }
+
   const reqBody = req.body;
   console.log({reqBody});
 
