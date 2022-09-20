@@ -1957,6 +1957,7 @@ async (
 
   } catch (error) {
     await deep.delete(allCreatedLinkIds);
+    throw error;
   }
 };
 
