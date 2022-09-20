@@ -1133,7 +1133,7 @@ async (
   ${handlersDependencies}
 
   if(req.body.Status !== "AUTHORIZED" || req.body.Status !== "CONFIRMED") {
-    return;
+    return next();
   }
 
   const reqBody = req.body;
@@ -2005,7 +2005,8 @@ async (
 
   } catch (error) {
     await deep.delete(allCreatedLinkIds);
-    throw error;
+    console.log(error);
+    process.exit(1);
   }
 };
 
