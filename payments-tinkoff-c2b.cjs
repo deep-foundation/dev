@@ -118,7 +118,9 @@ const payInBrowser = async ({ page, browser, url }) => {
   await browser.close();
 };
 
-const f = async () => {
+const allCreatedLinkIds = [];
+
+const installPackage = async () => {
   const apolloClient = generateApolloClient({
     path: process.env.NEXT_PUBLIC_GQL_PATH || '', // <<= HERE PATH TO UPDATE
     ssl: !!~process.env.NEXT_PUBLIC_GQL_PATH.indexOf('localhost')
@@ -1661,6 +1663,7 @@ async (
       });
       console.log({ tinkoffProviderLinkId });
       createdLinkIds.push(tinkoffProviderLinkId);
+      allCreatedLinkIds.push(tinkoffProviderLinkId);
 
       const {
         data: [{ id: sumProviderLinkId }],
@@ -1677,6 +1680,7 @@ async (
       });
       console.log({ sumProviderLinkId });
       createdLinkIds.push(sumProviderLinkId);
+      allCreatedLinkIds.push(sumProviderLinkId);
 
       const {
         data: [{ id: storageBusinessLinkId }],
@@ -1693,6 +1697,7 @@ async (
       });
       console.log({ storageBusinessLinkId });
       createdLinkIds.push(storageBusinessLinkId);
+      allCreatedLinkIds.push(storageBusinessLinkId);
 
       const {
         data: [{ id: tokenLinkId }],
@@ -1712,6 +1717,7 @@ async (
       });
       console.log({ tokenLinkId });
       createdLinkIds.push(tokenLinkId);
+      allCreatedLinkIds.push(tokenLinkId);
 
       const {
         data: [{ id: Product }],
@@ -1730,6 +1736,7 @@ async (
       });
       console.log({ Product });
       createdLinkIds.push(Product);
+      allCreatedLinkIds.push(Product);
 
       const {
         data: [{ id: productLinkId }],
@@ -1746,6 +1753,7 @@ async (
       });
       console.log({ productLinkId });
       createdLinkIds.push(productLinkId);
+      allCreatedLinkIds.push(productLinkId);
 
       const testInit = async ({ customerKey } = { customerKey: uniqid() }) => {
         console.log('testInit-start');
@@ -1770,6 +1778,7 @@ async (
         });
         console.log({ paymentLinkId });
         createdLinkIds.push(paymentLinkId);
+        allCreatedLinkIds.push(paymentLinkId);
 
         const {
           data: [{ id: sumLinkId }],
@@ -1789,6 +1798,7 @@ async (
         });
         console.log({ sumLinkId });
         createdLinkIds.push(sumLinkId);
+        allCreatedLinkIds.push(sumLinkId);
 
         const {
           data: [{ id: objectLinkId }],
@@ -1807,6 +1817,7 @@ async (
         });
         console.log({ objectLinkId });
         createdLinkIds.push(objectLinkId);
+        allCreatedLinkIds.push(objectLinkId);
 
         const {
           data: [{ id: payLinkId }],
@@ -1825,6 +1836,7 @@ async (
         });
         console.log({ payLinkId });
         createdLinkIds.push(payLinkId);
+        allCreatedLinkIds.push(payLinkId);
 
         var urlLinkSelectQuery;
         for (let i = 0; i < 10; i++) {
@@ -1843,6 +1855,7 @@ async (
         expect(urlLinkSelectQuery.data.length).to.greaterThan(0);
 
         createdLinkIds.push(urlLinkSelectQuery.data[0].id);
+        allCreatedLinkIds.push(urlLinkSelectQuery.data[0].id);
 
         const createdLinks = (await deep.select(createdLinkIds)).data;
         console.log({ createdLinks });
@@ -1907,6 +1920,7 @@ async (
         expect(payedLinkSelectQuery.data.length).to.greaterThan(0);
 
         createdLinkIds.push(payedLinkSelectQuery.data[0].id);
+        allCreatedLinkIds.push(payedLinkSelectQuery.data[0].id);
 
         createdLinks.push(...(await deep.select(createdLinkIds)).data);
 
@@ -1984,4 +1998,12 @@ async (
   await callTests();
 };
 
-f();
+const installPackageWithTryCatch = async () => {
+  try {
+    await installPackage();
+  } catch (error) {
+    await deep.delete(allCreatedLinkIds);
+  }
+}
+
+installPackageWithTryCatch()
