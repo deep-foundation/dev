@@ -653,7 +653,7 @@ const installPackage = async () => {
     const {
       data: [{ id: Payment }],
     } = await deep.insert({
-      type_id: BasePayment,
+      type_id: Type,
       from_id: Any,
       to_id: Any,
       in: {
@@ -670,7 +670,7 @@ const installPackage = async () => {
     const {
       data: [{ id: Object }],
     } = await deep.insert({
-      type_id: BaseObject,
+      type_id: Type,
       from_id: Payment,
       to_id: Any,
       in: {
@@ -687,8 +687,8 @@ const installPackage = async () => {
     const {
       data: [{ id: Sum }],
     } = await deep.insert({
-      type_id: BaseSum,
-      from_id: SumProvider,
+      type_id: Type,
+      from_id: Any,
       to_id: Any,
       in: {
         data: {
@@ -705,7 +705,7 @@ const installPackage = async () => {
     const {
       data: [{ id: Pay }],
     } = await deep.insert({
-      type_id: BasePay,
+      type_id: Type,
       from_id: Any,
       to_id: Any,
       in: {
@@ -722,9 +722,9 @@ const installPackage = async () => {
     const {
       data: [{ id: Url }],
     } = await deep.insert({
-      type_id: BaseUrl,
-      from_id: TinkoffProvider,
-      to_id: Pay,
+      type_id: Type,
+      from_id: Any,
+      to_id: Any,
       in: {
         data: {
           type_id: Contain,
@@ -739,8 +739,8 @@ const installPackage = async () => {
     const {
       data: [{ id: Payed }],
     } = await deep.insert({
-      type_id: BasePayed,
-      from_id: TinkoffProvider,
+      type_id: Type,
+      from_id: Any,
       to_id: Any,
       in: {
         data: {
@@ -756,9 +756,9 @@ const installPackage = async () => {
     const {
       data: [{ id: Error }],
     } = await deep.insert({
-      type_id: BaseError,
-      from_id: TinkoffProvider,
-      to_id: Pay,
+      type_id: Type,
+      from_id: Any,
+      to_id: Any,
       in: {
         data: {
           type_id: Contain,
@@ -874,7 +874,9 @@ const installPackage = async () => {
     const {
       data: [{ id: StorageBusiness }],
     } = await deep.insert({
-      type_id: Storage,
+      type_id: Type,
+      from_id: Any,
+      to_id: Any,
       in: {
         data: {
           type_id: Contain,
@@ -902,8 +904,8 @@ const installPackage = async () => {
     const {
       data: [{ id: StorageClient }],
     } = await deep.insert({
-      type_id: Storage,
-      from_id: Payment,
+      type_id: Type,
+      from_id: Any,
       to_id: Any,
       in: {
         data: {
@@ -918,8 +920,8 @@ const installPackage = async () => {
       data: [{ id: Title }],
     } = await deep.insert({
       type_id: Type,
-      from_id: StorageClient,
-      to_id: SyncTextFile,
+      from_id: Any,
+      to_id: Any,
       in: {
         data: {
           type_id: Contain,
