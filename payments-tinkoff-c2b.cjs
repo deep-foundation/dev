@@ -987,8 +987,6 @@ async ({ deep, require, data: { newLink: payLink } }) => {
   console.log({sumLink});
   if(!sumLink) throw new Error("Sum link associated with the pay link " + payLink.id + " is not found.");
 
-  const Url = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Url");
-
   const fromLinkOfPaymentSelectQuery = await deep.select({
     id: paymentLink.from_id
   });
@@ -1061,6 +1059,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
     throw new Error(errorMessage);
   }
 
+  const Url = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Url");
   const {error: urlLinkInsertQueryError} = await deep.insert({
     type_id: Url,
     from_id: tinkoffProviderLinkId,
