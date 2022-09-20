@@ -129,391 +129,6 @@ const installPackage = async () => {
   });
 
   const unloginedDeep = new DeepClient({ apolloClient });
-
-  const errorsConverter = {
-    7: 'Покупатель не найден',
-    53: 'Обратитесь к продавцу',
-    99: 'Платеж отклонен',
-    100: 'Повторите попытку позже',
-    101: 'Не пройдена идентификация 3DS',
-    102: 'Операция отклонена, пожалуйста обратитесь в интернет-магазин или воспользуйтесь другой картой',
-    103: 'Повторите попытку позже',
-    119: 'Превышено кол-во запросов на авторизацию',
-    191: 'Некорректный статус договора, обратитесь к вашему менеджеру',
-    1001: 'Свяжитесь с банком, выпустившим карту, чтобы провести платеж',
-    1003: 'Неверный merchant ID',
-    1004: 'Карта украдена. Свяжитесь с банком, выпустившим карту',
-    1005: 'Платеж отклонен банком, выпустившим карту',
-    1006: 'Свяжитесь с банком, выпустившим карту, чтобы провести платеж',
-    1007: 'Карта украдена. Свяжитесь с банком, выпустившим карту',
-    1008: 'Платеж отклонен, необходима идентификация',
-    1012: 'Такие операции запрещены для этой карты',
-    1013: 'Повторите попытку позже',
-    1014: 'Карта недействительна. Свяжитесь с банком, выпустившим карту',
-    1015: 'Попробуйте снова или свяжитесь с банком, выпустившим карту',
-    1019: 'Платеж отклонен — попробуйте снова',
-    1030: 'Повторите попытку позже',
-    1033: 'Истек срок действия карты. Свяжитесь с банком, выпустившим карту',
-    1034: 'Попробуйте повторить попытку позже',
-    1038: 'Превышено количество попыток ввода ПИН-кода',
-    1039: 'Платеж отклонен — счет не найден',
-    1041: 'Карта утеряна. Свяжитесь с банком, выпустившим карту',
-    1043: 'Карта украдена. Свяжитесь с банком, выпустившим карту',
-    1051: 'Недостаточно средств на карте',
-    1053: 'Платеж отклонен — счет не найден',
-    1054: 'Истек срок действия карты',
-    1055: 'Неверный ПИН',
-    1057: 'Такие операции запрещены для этой карты',
-    1058: 'Такие операции запрещены для этой карты',
-    1059: 'Подозрение в мошенничестве. Свяжитесь с банком, выпустившим карту',
-    1061: 'Превышен дневной лимит платежей по карте',
-    1062: 'Платежи по карте ограничены',
-    1063: 'Операции по карте ограничены',
-    1064: 'Проверьте сумму',
-    1065: 'Превышен дневной лимит транзакций',
-    1075: 'Превышено число попыток ввода ПИН-кода',
-    1076: 'Платеж отклонен — попробуйте снова',
-    1077: 'Коды не совпадают — попробуйте снова',
-    1080: 'Неверный срок действия',
-    1082: 'Неверный CVV',
-    1086: 'Платеж отклонен — не получилось подтвердить ПИН-код',
-    1088: 'Ошибка шифрования. Попробуйте снова',
-    1089: 'Попробуйте повторить попытку позже',
-    1091: 'Банк, выпустивший карту недоступен для проведения авторизации',
-    1092: 'Платеж отклонен — попробуйте снова',
-    1093: 'Подозрение в мошенничестве. Свяжитесь с банком, выпустившим карту',
-    1094: 'Системная ошибка',
-    1096: 'Повторите попытку позже',
-    9999: 'Внутренняя ошибка системы',
-  };
-
-  const getError = (errorCode) =>
-    errorCode === '0' ? undefined : errorsConverter[errorCode] || 'broken';
-
-  const _generateToken = (dataWithPassword) => {
-    const dataString = Object.keys(dataWithPassword)
-      .sort((a, b) => a.localeCompare(b))
-      .map((key) => dataWithPassword[key])
-      .reduce((acc, item) => `${acc}${item}`, '');
-    console.log({ dataString });
-    const hash = crypto.createHash('sha256').update(dataString).digest('hex');
-    console.log({ hash });
-    return hash;
-  };
-
-  const generateToken = (data) => {
-    const { Receipt, DATA, Shops, ...restData } = data;
-    const dataWithPassword = {
-      ...restData,
-      Password: process.env.PAYMENTS_C2B_TERMINAL_PASSWORD,
-    };
-    console.log({ dataWithPassword });
-    return _generateToken(dataWithPassword);
-  };
-  const generateTokenString = generateToken.toString()
-    .replace(
-      'process.env.PAYMENTS_C2B_TERMINAL_PASSWORD',
-      `"${process.env.PAYMENTS_C2B_TERMINAL_PASSWORD}"`
-    );
-  console.log({ generateTokenString });
-
-  const getUrl = (method) =>
-    `${process.env.PAYMENTS_C2B_URL}/${method}`;
-  getUrlString = getUrl.toString()
-    .replace(
-      '${process.env.PAYMENTS_C2B_URL}',
-      process.env.PAYMENTS_C2B_URL
-    );
-  console.log({ getUrlString });
-
-  const getMarketUrl = (method) =>
-    `${process.env.PAYMENT_TINKOFF_MARKET_URL}/${method}`;
-
-  const getState = async (options) => {
-    try {
-      const response = await axios({
-        method: 'post',
-        url: getUrl('GetState'),
-        data: { ...options, Token: generateToken(options) },
-      });
-
-      const error = getError(response.data.ErrorCode);
-
-      return {
-        error,
-        request: options,
-        response: response.data,
-      };
-    } catch (error) {
-      return {
-        error,
-        request: options,
-        response: null,
-      };
-    }
-  };
-
-  const checkOrder = async (options) => {
-    try {
-      const response = await axios({
-        method: 'post',
-        url: getUrl('CheckOrder'),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        data: { ...options, Token: generateToken(options) },
-      });
-
-      const error = getError(response.data.ErrorCode);
-
-      return {
-        error,
-        request: options,
-        response: response.data,
-      };
-    } catch (error) {
-      return {
-        error,
-        request: options,
-        response: null,
-      };
-    }
-  };
-
-  const getCardList = async (options) => {
-    try {
-      const response = await axios({
-        method: 'post',
-        url: getUrl('GetCardList'),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        data: { ...options, Token: generateToken(options) },
-      });
-
-      const error = getError(response.data.ErrorCode || '0');
-
-      return {
-        error,
-        request: options,
-        response: response.data,
-      };
-    } catch (error) {
-      return {
-        error,
-        request: options,
-        response: null,
-      };
-    }
-  };
-
-  const init = async (options) => {
-    try {
-      const response = await axios({
-        method: 'post',
-        url: getUrl('Init'),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        data: { ...options, Token: generateToken(options) },
-      });
-
-      const error = getError(response.data.ErrorCode);
-
-      return {
-        error,
-        request: options,
-        response: response.data,
-      };
-    } catch (error) {
-      return {
-        error,
-        request: options,
-        response: null,
-      };
-    }
-  };
-
-  const confirm = async (options) => {
-    try {
-      const response = await axios({
-        method: 'post',
-        url: getUrl('Confirm'),
-        data: { ...options, Token: generateToken(options) },
-      });
-
-      const error = getError(response.data.ErrorCode);
-
-      return {
-        error,
-        request: options,
-        response: response.data,
-      };
-    } catch (error) {
-      return {
-        error,
-        request: options,
-        response: null,
-      };
-    }
-  };
-
-  const cancel = async (options) => {
-    try {
-      const response = await axios({
-        method: 'post',
-        url: getUrl('Cancel'),
-        data: { ...options, Token: generateToken(options) },
-      });
-
-      const error = getError(response.data.ErrorCode);
-
-      return {
-        error,
-        request: options,
-        response: response.data,
-      };
-    } catch (error) {
-      return {
-        error,
-        request: options,
-        response: null,
-      };
-    }
-  };
-
-  const resend = async (options) => {
-    try {
-      const response = await axios({
-        method: 'post',
-        url: getUrl('Resend'),
-        data: { ...options, Token: generateToken(options) },
-      });
-
-      const error = getError(response.data.ErrorCode);
-
-      return {
-        error,
-        request: options,
-        response: response.data,
-      };
-    } catch (error) {
-      return {
-        error,
-        request: options,
-        response: null,
-      };
-    }
-  };
-
-  const charge = async (options) => {
-    try {
-      const response = await axios({
-        method: 'post',
-        url: getUrl('Charge'),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        data: { ...options, Token: generateToken(options) },
-      });
-
-      const error = getError(response.data.ErrorCode);
-
-      return {
-        error,
-        request: options,
-        response: response.data,
-      };
-    } catch (error) {
-      return {
-        error,
-        request: options,
-        response: null,
-      };
-    }
-  };
-
-  const addCustomer = async (options) => {
-    try {
-      const response = await axios({
-        method: 'post',
-        url: getUrl('AddCustomer'),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        data: { ...options, Token: generateToken(options) },
-      });
-
-      const error = getError(response.data.ErrorCode);
-
-      return {
-        error,
-        request: options,
-        response: response.data,
-      };
-    } catch (error) {
-      return {
-        error,
-        request: options,
-        response: null,
-      };
-    }
-  };
-
-  const getCustomer = async (options) => {
-    try {
-      const response = await axios({
-        method: 'post',
-        url: getUrl('GetCustomer'),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        data: { ...options, Token: generateToken(options) },
-      });
-
-      const error = getError(response.data.ErrorCode);
-
-      return {
-        error,
-        request: options,
-        response: response.data,
-      };
-    } catch (error) {
-      return {
-        error,
-        request: options,
-        response: null,
-      };
-    }
-  };
-
-  const removeCustomer = async (options) => {
-    try {
-      const response = await axios({
-        method: 'post',
-        url: getUrl('RemoveCustomer'),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        data: { ...options, Token: generateToken(options) },
-      });
-
-      const error = getError(response.data.ErrorCode);
-
-      return {
-        error,
-        request: options,
-        response: response.data,
-      };
-    } catch (error) {
-      return {
-        error,
-        request: options,
-        response: null,
-      };
-    }
-  };
-
   const guest = await unloginedDeep.guest();
   const guestDeep = new DeepClient({ deep: unloginedDeep, ...guest });
   const admin = await guestDeep.login({
@@ -521,198 +136,586 @@ const installPackage = async () => {
   });
   const deep = new DeepClient({ deep: guestDeep, ...admin });
 
-  const User = await deep.id('@deep-foundation/core', 'User');
-  const Type = await deep.id('@deep-foundation/core', 'Type');
-  const Any = await deep.id('@deep-foundation/core', 'Any');
-  const Join = await deep.id('@deep-foundation/core', 'Join');
-  const Contain = await deep.id('@deep-foundation/core', 'Contain');
-  const Value = await deep.id('@deep-foundation/core', 'Value');
-  const String = await deep.id('@deep-foundation/core', 'String');
-  const Package = await deep.id('@deep-foundation/core', 'Package');
+  try {
 
-  const SyncTextFile = await deep.id('@deep-foundation/core', 'SyncTextFile');
-  const dockerSupportsJs = await deep.id(
-    '@deep-foundation/core',
-    'dockerSupportsJs'
-  );
-  const Handler = await deep.id('@deep-foundation/core', 'Handler');
-  const HandleInsert = await deep.id('@deep-foundation/core', 'HandleInsert');
-  const HandleDelete = await deep.id('@deep-foundation/core', 'HandleDelete');
 
-  const Tree = await deep.id('@deep-foundation/core', 'Tree');
-  const TreeIncludeNode = await deep.id(
-    '@deep-foundation/core',
-    'TreeIncludeNode'
-  );
-  const TreeIncludeUp = await deep.id('@deep-foundation/core', 'TreeIncludeUp');
-  const TreeIncludeDown = await deep.id(
-    '@deep-foundation/core',
-    'TreeIncludeDown'
-  );
 
-  const Rule = await deep.id('@deep-foundation/core', 'Rule');
-  const RuleSubject = await deep.id('@deep-foundation/core', 'RuleSubject');
-  const RuleObject = await deep.id('@deep-foundation/core', 'RuleObject');
-  const RuleAction = await deep.id('@deep-foundation/core', 'RuleAction');
-  const Selector = await deep.id('@deep-foundation/core', 'Selector');
-  const SelectorInclude = await deep.id(
-    '@deep-foundation/core',
-    'SelectorInclude'
-  );
-  const SelectorExclude = await deep.id(
-    '@deep-foundation/core',
-    'SelectorExclude'
-  );
-  const SelectorTree = await deep.id('@deep-foundation/core', 'SelectorTree');
-  const containTree = await deep.id('@deep-foundation/core', 'containTree');
-  const AllowInsertType = await deep.id(
-    '@deep-foundation/core',
-    'AllowInsertType'
-  );
-  const AllowDeleteType = await deep.id(
-    '@deep-foundation/core',
-    'AllowDeleteType'
-  );
-  const SelectorFilter = await deep.id(
-    '@deep-foundation/core',
-    'SelectorFilter'
-  );
-  const Query = await deep.id('@deep-foundation/core', 'Query');
-  const usersLinkId = await deep.id('deep', 'users');
+    const errorsConverter = {
+      7: 'Покупатель не найден',
+      53: 'Обратитесь к продавцу',
+      99: 'Платеж отклонен',
+      100: 'Повторите попытку позже',
+      101: 'Не пройдена идентификация 3DS',
+      102: 'Операция отклонена, пожалуйста обратитесь в интернет-магазин или воспользуйтесь другой картой',
+      103: 'Повторите попытку позже',
+      119: 'Превышено кол-во запросов на авторизацию',
+      191: 'Некорректный статус договора, обратитесь к вашему менеджеру',
+      1001: 'Свяжитесь с банком, выпустившим карту, чтобы провести платеж',
+      1003: 'Неверный merchant ID',
+      1004: 'Карта украдена. Свяжитесь с банком, выпустившим карту',
+      1005: 'Платеж отклонен банком, выпустившим карту',
+      1006: 'Свяжитесь с банком, выпустившим карту, чтобы провести платеж',
+      1007: 'Карта украдена. Свяжитесь с банком, выпустившим карту',
+      1008: 'Платеж отклонен, необходима идентификация',
+      1012: 'Такие операции запрещены для этой карты',
+      1013: 'Повторите попытку позже',
+      1014: 'Карта недействительна. Свяжитесь с банком, выпустившим карту',
+      1015: 'Попробуйте снова или свяжитесь с банком, выпустившим карту',
+      1019: 'Платеж отклонен — попробуйте снова',
+      1030: 'Повторите попытку позже',
+      1033: 'Истек срок действия карты. Свяжитесь с банком, выпустившим карту',
+      1034: 'Попробуйте повторить попытку позже',
+      1038: 'Превышено количество попыток ввода ПИН-кода',
+      1039: 'Платеж отклонен — счет не найден',
+      1041: 'Карта утеряна. Свяжитесь с банком, выпустившим карту',
+      1043: 'Карта украдена. Свяжитесь с банком, выпустившим карту',
+      1051: 'Недостаточно средств на карте',
+      1053: 'Платеж отклонен — счет не найден',
+      1054: 'Истек срок действия карты',
+      1055: 'Неверный ПИН',
+      1057: 'Такие операции запрещены для этой карты',
+      1058: 'Такие операции запрещены для этой карты',
+      1059: 'Подозрение в мошенничестве. Свяжитесь с банком, выпустившим карту',
+      1061: 'Превышен дневной лимит платежей по карте',
+      1062: 'Платежи по карте ограничены',
+      1063: 'Операции по карте ограничены',
+      1064: 'Проверьте сумму',
+      1065: 'Превышен дневной лимит транзакций',
+      1075: 'Превышено число попыток ввода ПИН-кода',
+      1076: 'Платеж отклонен — попробуйте снова',
+      1077: 'Коды не совпадают — попробуйте снова',
+      1080: 'Неверный срок действия',
+      1082: 'Неверный CVV',
+      1086: 'Платеж отклонен — не получилось подтвердить ПИН-код',
+      1088: 'Ошибка шифрования. Попробуйте снова',
+      1089: 'Попробуйте повторить попытку позже',
+      1091: 'Банк, выпустивший карту недоступен для проведения авторизации',
+      1092: 'Платеж отклонен — попробуйте снова',
+      1093: 'Подозрение в мошенничестве. Свяжитесь с банком, выпустившим карту',
+      1094: 'Системная ошибка',
+      1096: 'Повторите попытку позже',
+      9999: 'Внутренняя ошибка системы',
+    };
 
-  const {
-    data: [{ id: packageLinkId }],
-  } = await deep.insert({
-    type_id: Package,
-    string: { data: { value: '@deep-foundation/payments-tinkoff-c2b' } },
-    in: {
-      data: [
-        {
-          type_id: Contain,
-          from_id: deep.linkId,
-        },
-      ],
-    },
-    out: {
-      data: [
-        {
-          type_id: Join,
-          to_id: await deep.id('deep', 'users', 'packages'),
-        },
-        {
-          type_id: Join,
-          to_id: await deep.id('deep', 'admin'),
-        },
-      ],
-    },
-  });
+    const getError = (errorCode) =>
+      errorCode === '0' ? undefined : errorsConverter[errorCode] || 'broken';
 
-  console.log({ packageLinkId });
+    const _generateToken = (dataWithPassword) => {
+      const dataString = Object.keys(dataWithPassword)
+        .sort((a, b) => a.localeCompare(b))
+        .map((key) => dataWithPassword[key])
+        .reduce((acc, item) => `${acc}${item}`, '');
+      console.log({ dataString });
+      const hash = crypto.createHash('sha256').update(dataString).digest('hex');
+      console.log({ hash });
+      return hash;
+    };
 
-  const SumProvider = await deep.id("@deep-foundation/payments-tinkoff-c2b", "SumProvider");
-  console.log({ SumProvider: SumProvider });
+    const generateToken = (data) => {
+      const { Receipt, DATA, Shops, ...restData } = data;
+      const dataWithPassword = {
+        ...restData,
+        Password: process.env.PAYMENTS_C2B_TERMINAL_PASSWORD,
+      };
+      console.log({ dataWithPassword });
+      return _generateToken(dataWithPassword);
+    };
+    const generateTokenString = generateToken.toString()
+      .replace(
+        'process.env.PAYMENTS_C2B_TERMINAL_PASSWORD',
+        `"${process.env.PAYMENTS_C2B_TERMINAL_PASSWORD}"`
+      );
+    console.log({ generateTokenString });
 
-  const TinkoffProvider = await deep.id("@deep-foundation/payments-tinkoff-c2b", "TinkoffProvider");
-  console.log({ TinkoffProvider });
+    const getUrl = (method) =>
+      `${process.env.PAYMENTS_C2B_URL}/${method}`;
+    getUrlString = getUrl.toString()
+      .replace(
+        '${process.env.PAYMENTS_C2B_URL}',
+        process.env.PAYMENTS_C2B_URL
+      );
+    console.log({ getUrlString });
 
-  const Payment = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Payment");
-  console.log({ Payment: Payment });
+    const getMarketUrl = (method) =>
+      `${process.env.PAYMENT_TINKOFF_MARKET_URL}/${method}`;
 
-  const Object = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Object");
-  console.log({ Object: Object });
+    const getState = async (options) => {
+      try {
+        const response = await axios({
+          method: 'post',
+          url: getUrl('GetState'),
+          data: { ...options, Token: generateToken(options) },
+        });
 
-  const Sum = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Sum");
-  console.log({ Sum: Sum });
+        const error = getError(response.data.ErrorCode);
 
-  const Pay = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Pay");
-  console.log({ Pay });
+        return {
+          error,
+          request: options,
+          response: response.data,
+        };
+      } catch (error) {
+        return {
+          error,
+          request: options,
+          response: null,
+        };
+      }
+    };
 
-  const {
-    data: [{ id: CancellingPay }],
-  } = await deep.insert({
-    type_id: /* Pay */ Type,
-    from_id: User,
-    to_id: Sum,
-    in: {
-      data: {
-        type_id: Contain,
-        from_id: packageLinkId,
-        string: { data: { value: 'CancellingPay' } },
+    const checkOrder = async (options) => {
+      try {
+        const response = await axios({
+          method: 'post',
+          url: getUrl('CheckOrder'),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          data: { ...options, Token: generateToken(options) },
+        });
+
+        const error = getError(response.data.ErrorCode);
+
+        return {
+          error,
+          request: options,
+          response: response.data,
+        };
+      } catch (error) {
+        return {
+          error,
+          request: options,
+          response: null,
+        };
+      }
+    };
+
+    const getCardList = async (options) => {
+      try {
+        const response = await axios({
+          method: 'post',
+          url: getUrl('GetCardList'),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          data: { ...options, Token: generateToken(options) },
+        });
+
+        const error = getError(response.data.ErrorCode || '0');
+
+        return {
+          error,
+          request: options,
+          response: response.data,
+        };
+      } catch (error) {
+        return {
+          error,
+          request: options,
+          response: null,
+        };
+      }
+    };
+
+    const init = async (options) => {
+      try {
+        const response = await axios({
+          method: 'post',
+          url: getUrl('Init'),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          data: { ...options, Token: generateToken(options) },
+        });
+
+        const error = getError(response.data.ErrorCode);
+
+        return {
+          error,
+          request: options,
+          response: response.data,
+        };
+      } catch (error) {
+        return {
+          error,
+          request: options,
+          response: null,
+        };
+      }
+    };
+
+    const confirm = async (options) => {
+      try {
+        const response = await axios({
+          method: 'post',
+          url: getUrl('Confirm'),
+          data: { ...options, Token: generateToken(options) },
+        });
+
+        const error = getError(response.data.ErrorCode);
+
+        return {
+          error,
+          request: options,
+          response: response.data,
+        };
+      } catch (error) {
+        return {
+          error,
+          request: options,
+          response: null,
+        };
+      }
+    };
+
+    const cancel = async (options) => {
+      try {
+        const response = await axios({
+          method: 'post',
+          url: getUrl('Cancel'),
+          data: { ...options, Token: generateToken(options) },
+        });
+
+        const error = getError(response.data.ErrorCode);
+
+        return {
+          error,
+          request: options,
+          response: response.data,
+        };
+      } catch (error) {
+        return {
+          error,
+          request: options,
+          response: null,
+        };
+      }
+    };
+
+    const resend = async (options) => {
+      try {
+        const response = await axios({
+          method: 'post',
+          url: getUrl('Resend'),
+          data: { ...options, Token: generateToken(options) },
+        });
+
+        const error = getError(response.data.ErrorCode);
+
+        return {
+          error,
+          request: options,
+          response: response.data,
+        };
+      } catch (error) {
+        return {
+          error,
+          request: options,
+          response: null,
+        };
+      }
+    };
+
+    const charge = async (options) => {
+      try {
+        const response = await axios({
+          method: 'post',
+          url: getUrl('Charge'),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          data: { ...options, Token: generateToken(options) },
+        });
+
+        const error = getError(response.data.ErrorCode);
+
+        return {
+          error,
+          request: options,
+          response: response.data,
+        };
+      } catch (error) {
+        return {
+          error,
+          request: options,
+          response: null,
+        };
+      }
+    };
+
+    const addCustomer = async (options) => {
+      try {
+        const response = await axios({
+          method: 'post',
+          url: getUrl('AddCustomer'),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          data: { ...options, Token: generateToken(options) },
+        });
+
+        const error = getError(response.data.ErrorCode);
+
+        return {
+          error,
+          request: options,
+          response: response.data,
+        };
+      } catch (error) {
+        return {
+          error,
+          request: options,
+          response: null,
+        };
+      }
+    };
+
+    const getCustomer = async (options) => {
+      try {
+        const response = await axios({
+          method: 'post',
+          url: getUrl('GetCustomer'),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          data: { ...options, Token: generateToken(options) },
+        });
+
+        const error = getError(response.data.ErrorCode);
+
+        return {
+          error,
+          request: options,
+          response: response.data,
+        };
+      } catch (error) {
+        return {
+          error,
+          request: options,
+          response: null,
+        };
+      }
+    };
+
+    const removeCustomer = async (options) => {
+      try {
+        const response = await axios({
+          method: 'post',
+          url: getUrl('RemoveCustomer'),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          data: { ...options, Token: generateToken(options) },
+        });
+
+        const error = getError(response.data.ErrorCode);
+
+        return {
+          error,
+          request: options,
+          response: response.data,
+        };
+      } catch (error) {
+        return {
+          error,
+          request: options,
+          response: null,
+        };
+      }
+    };
+
+    const User = await deep.id('@deep-foundation/core', 'User');
+    const Type = await deep.id('@deep-foundation/core', 'Type');
+    const Any = await deep.id('@deep-foundation/core', 'Any');
+    const Join = await deep.id('@deep-foundation/core', 'Join');
+    const Contain = await deep.id('@deep-foundation/core', 'Contain');
+    const Value = await deep.id('@deep-foundation/core', 'Value');
+    const String = await deep.id('@deep-foundation/core', 'String');
+    const Package = await deep.id('@deep-foundation/core', 'Package');
+
+    const SyncTextFile = await deep.id('@deep-foundation/core', 'SyncTextFile');
+    const dockerSupportsJs = await deep.id(
+      '@deep-foundation/core',
+      'dockerSupportsJs'
+    );
+    const Handler = await deep.id('@deep-foundation/core', 'Handler');
+    const HandleInsert = await deep.id('@deep-foundation/core', 'HandleInsert');
+    const HandleDelete = await deep.id('@deep-foundation/core', 'HandleDelete');
+
+    const Tree = await deep.id('@deep-foundation/core', 'Tree');
+    const TreeIncludeNode = await deep.id(
+      '@deep-foundation/core',
+      'TreeIncludeNode'
+    );
+    const TreeIncludeUp = await deep.id('@deep-foundation/core', 'TreeIncludeUp');
+    const TreeIncludeDown = await deep.id(
+      '@deep-foundation/core',
+      'TreeIncludeDown'
+    );
+
+    const Rule = await deep.id('@deep-foundation/core', 'Rule');
+    const RuleSubject = await deep.id('@deep-foundation/core', 'RuleSubject');
+    const RuleObject = await deep.id('@deep-foundation/core', 'RuleObject');
+    const RuleAction = await deep.id('@deep-foundation/core', 'RuleAction');
+    const Selector = await deep.id('@deep-foundation/core', 'Selector');
+    const SelectorInclude = await deep.id(
+      '@deep-foundation/core',
+      'SelectorInclude'
+    );
+    const SelectorExclude = await deep.id(
+      '@deep-foundation/core',
+      'SelectorExclude'
+    );
+    const SelectorTree = await deep.id('@deep-foundation/core', 'SelectorTree');
+    const containTree = await deep.id('@deep-foundation/core', 'containTree');
+    const AllowInsertType = await deep.id(
+      '@deep-foundation/core',
+      'AllowInsertType'
+    );
+    const AllowDeleteType = await deep.id(
+      '@deep-foundation/core',
+      'AllowDeleteType'
+    );
+    const SelectorFilter = await deep.id(
+      '@deep-foundation/core',
+      'SelectorFilter'
+    );
+    const Query = await deep.id('@deep-foundation/core', 'Query');
+    const usersLinkId = await deep.id('deep', 'users');
+
+    const {
+      data: [{ id: packageLinkId }],
+    } = await deep.insert({
+      type_id: Package,
+      string: { data: { value: '@deep-foundation/payments-tinkoff-c2b' } },
+      in: {
+        data: [
+          {
+            type_id: Contain,
+            from_id: deep.linkId,
+          },
+        ],
       },
-    },
-  });
-  console.log({ CancellingPay });
-
-  const Url = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Url");
-  console.log({ Url: Url });
-
-  const Payed = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Payed");
-  console.log({ Payed: Payed });
-
-  const Error = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Error");
-  console.log({ Error: Error });
-
-  const paymentTreeLinkId = await deep.id("@deep-foundation/payments-tinkoff-c2b", "paymentTree");
-  console.log({ paymentTreeLinkId });
-
-  const StorageBusiness = await deep.id("@deep-foundation/payments-tinkoff-c2b", "StorageBusiness");
-  console.log({ StorageBusiness });
-
-
-  const Token = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Token");
-  console.log({ Token });
-
-  const StorageClient = await deep.id("@deep-foundation/payments-tinkoff-c2b", "StorageClient");
-  console.log({ StorageClient });
-
-  const Title = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Title");
-  console.log({ Title });
-
-  const {
-    data: [{ id: CancellingPayment }],
-  } = await deep.insert({
-    type_id: Type,
-    from_id: Payment,
-    to_id: User,
-    in: {
-      data: {
-        type_id: Contain,
-        from_id: packageLinkId,
-        string: { data: { value: 'CancellingPayment' } },
+      out: {
+        data: [
+          {
+            type_id: Join,
+            to_id: await deep.id('deep', 'users', 'packages'),
+          },
+          {
+            type_id: Join,
+            to_id: await deep.id('deep', 'admin'),
+          },
+        ],
       },
-    },
-  });
-  console.log({ CancellingPayment });
+    });
 
-  await deep.insert({
-    type_id: TreeIncludeUp,
-    from_id: paymentTreeLinkId,
-    to_id: CancellingPayment,
-    in: {
-      data: [
-        {
+    console.log({ packageLinkId });
+
+    const SumProvider = await deep.id("@deep-foundation/payments-tinkoff-c2b", "SumProvider");
+    console.log({ SumProvider: SumProvider });
+
+    const TinkoffProvider = await deep.id("@deep-foundation/payments-tinkoff-c2b", "TinkoffProvider");
+    console.log({ TinkoffProvider });
+
+    const Payment = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Payment");
+    console.log({ Payment: Payment });
+
+    const Object = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Object");
+    console.log({ Object: Object });
+
+    const Sum = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Sum");
+    console.log({ Sum: Sum });
+
+    const Pay = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Pay");
+    console.log({ Pay });
+
+    const {
+      data: [{ id: CancellingPay }],
+    } = await deep.insert({
+      type_id: /* Pay */ Type,
+      from_id: User,
+      to_id: Sum,
+      in: {
+        data: {
           type_id: Contain,
-          from_id: deep.linkId,
+          from_id: packageLinkId,
+          string: { data: { value: 'CancellingPay' } },
         },
-      ],
-    },
-  });
+      },
+    });
+    console.log({ CancellingPay });
 
-  await deep.insert({
-    type_id: TreeIncludeUp,
-    from_id: paymentTreeLinkId,
-    to_id: CancellingPay,
-    in: {
-      data: [
-        {
+    const Url = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Url");
+    console.log({ Url: Url });
+
+    const Payed = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Payed");
+    console.log({ Payed: Payed });
+
+    const Error = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Error");
+    console.log({ Error: Error });
+
+    const paymentTreeLinkId = await deep.id("@deep-foundation/payments-tinkoff-c2b", "paymentTree");
+    console.log({ paymentTreeLinkId });
+
+    const StorageBusiness = await deep.id("@deep-foundation/payments-tinkoff-c2b", "StorageBusiness");
+    console.log({ StorageBusiness });
+
+
+    const Token = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Token");
+    console.log({ Token });
+
+    const StorageClient = await deep.id("@deep-foundation/payments-tinkoff-c2b", "StorageClient");
+    console.log({ StorageClient });
+
+    const Title = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Title");
+    console.log({ Title });
+
+    const {
+      data: [{ id: CancellingPayment }],
+    } = await deep.insert({
+      type_id: Type,
+      from_id: Payment,
+      to_id: User,
+      in: {
+        data: {
           type_id: Contain,
-          from_id: deep.linkId,
+          from_id: packageLinkId,
+          string: { data: { value: 'CancellingPayment' } },
         },
-      ],
-    },
-  });
+      },
+    });
+    console.log({ CancellingPayment });
 
-  const handlersDependencies = `
+    await deep.insert({
+      type_id: TreeIncludeUp,
+      from_id: paymentTreeLinkId,
+      to_id: CancellingPayment,
+      in: {
+        data: [
+          {
+            type_id: Contain,
+            from_id: deep.linkId,
+          },
+        ],
+      },
+    });
+
+    await deep.insert({
+      type_id: TreeIncludeUp,
+      from_id: paymentTreeLinkId,
+      to_id: CancellingPay,
+      in: {
+        data: [
+          {
+            type_id: Contain,
+            from_id: deep.linkId,
+          },
+        ],
+      },
+    });
+
+    const handlersDependencies = `
   const crypto = require('crypto');
   const axios = require('axios');
   const errorsConverter = ${JSON.stringify(errorsConverter)};
@@ -721,8 +724,8 @@ const installPackage = async () => {
   const _generateToken = ${_generateToken.toString()};
   const generateToken = ${generateTokenString};
   `;
-  console.log({ handlersDependencies });
-  const payInsertHandler = `
+    console.log({ handlersDependencies });
+    const payInsertHandler = `
 async ({ deep, require, data: { newLink: payLink } }) => {
   ${handlersDependencies}
 
@@ -816,54 +819,54 @@ async ({ deep, require, data: { newLink: payLink } }) => {
 };
 `;
 
-  const {
-    data: [{ id: payInsertHandlerLinkId }],
-  } = await deep.insert({
-    type_id: SyncTextFile,
-    in: {
-      data: [
-        {
-          type_id: Contain,
-          from_id: packageLinkId, // before created package
-          string: { data: { value: 'payInsertHandlerFile' } },
-        },
-        {
-          from_id: dockerSupportsJs,
-          type_id: Handler,
-          in: {
-            data: [
-              {
-                type_id: Contain,
-                from_id: packageLinkId, // before created package
-                string: { data: { value: 'payInsertHandler' } },
-              },
-              {
-                type_id: HandleInsert,
-                from_id: CancellingPay,
-                in: {
-                  data: [
-                    {
-                      type_id: Contain,
-                      from_id: packageLinkId, // before created package
-                      string: { data: { value: 'payInsertHandle' } },
-                    },
-                  ],
-                },
-              },
-            ],
+    const {
+      data: [{ id: payInsertHandlerLinkId }],
+    } = await deep.insert({
+      type_id: SyncTextFile,
+      in: {
+        data: [
+          {
+            type_id: Contain,
+            from_id: packageLinkId, // before created package
+            string: { data: { value: 'payInsertHandlerFile' } },
           },
-        },
-      ],
-    },
-    string: {
-      data: {
-        value: payInsertHandler,
+          {
+            from_id: dockerSupportsJs,
+            type_id: Handler,
+            in: {
+              data: [
+                {
+                  type_id: Contain,
+                  from_id: packageLinkId, // before created package
+                  string: { data: { value: 'payInsertHandler' } },
+                },
+                {
+                  type_id: HandleInsert,
+                  from_id: CancellingPay,
+                  in: {
+                    data: [
+                      {
+                        type_id: Contain,
+                        from_id: packageLinkId, // before created package
+                        string: { data: { value: 'payInsertHandle' } },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
       },
-    },
-  });
-  console.log({ payInsertHandlerLinkId });
+      string: {
+        data: {
+          value: payInsertHandler,
+        },
+      },
+    });
+    console.log({ payInsertHandlerLinkId });
 
-  const tinkoffNotificationHandler = `
+    const tinkoffNotificationHandler = `
 async (
   req,
   res,
@@ -934,76 +937,77 @@ async (
 };
 `;
 
-  await deep.insert(
-    {
-      type_id: await deep.id('@deep-foundation/core', 'Port'),
-      number: {
-        data: { value: process.env.PAYMENTS_C2B_CANCELLING_NOTIFICATION_PORT  },
-      },
-      in: {
-        data: {
-          type_id: await deep.id('@deep-foundation/core', 'RouterListening'),
-          from: {
-            data: {
-              type_id: await deep.id('@deep-foundation/core', 'Router'),
-              in: {
-                data: {
-                  type_id: await deep.id(
-                    '@deep-foundation/core',
-                    'RouterStringUse'
-                  ),
-                  string: {
-                    data: {
-                      value:
-                        process.env.PAYMENTS_C2B_NOTIFICATION_ROUTE,
+    await deep.insert(
+      {
+        type_id: await deep.id('@deep-foundation/core', 'Port'),
+        number: {
+          data: { value: process.env.PAYMENTS_C2B_CANCELLING_NOTIFICATION_PORT },
+        },
+        in: {
+          data: {
+            type_id: await deep.id('@deep-foundation/core', 'RouterListening'),
+            from: {
+              data: {
+                type_id: await deep.id('@deep-foundation/core', 'Router'),
+                in: {
+                  data: {
+                    type_id: await deep.id(
+                      '@deep-foundation/core',
+                      'RouterStringUse'
+                    ),
+                    string: {
+                      data: {
+                        value:
+                          process.env.PAYMENTS_C2B_NOTIFICATION_ROUTE,
+                      },
                     },
-                  },
-                  from: {
-                    data: {
-                      type_id: await deep.id('@deep-foundation/core', 'Route'),
-                      out: {
-                        data: {
-                          type_id: await deep.id(
-                            '@deep-foundation/core',
-                            'HandleRoute'
-                          ),
-                          to: {
-                            data: {
-                              type_id: await deep.id(
-                                '@deep-foundation/core',
-                                'Handler'
-                              ),
-                              from_id: await deep.id(
-                                '@deep-foundation/core',
-                                'dockerSupportsJs'
-                              ),
-                              in: {
-                                data: {
-                                  type_id: Contain,
-                                  // from_id: deep.linkId,
-                                  from_id: await deep.id('deep', 'admin'),
-                                  string: {
-                                    data: {
-                                      value: 'tinkoffNotificationHandler',
+                    from: {
+                      data: {
+                        type_id: await deep.id('@deep-foundation/core', 'Route'),
+                        out: {
+                          data: {
+                            type_id: await deep.id(
+                              '@deep-foundation/core',
+                              'HandleRoute'
+                            ),
+                            to: {
+                              data: {
+                                type_id: await deep.id(
+                                  '@deep-foundation/core',
+                                  'Handler'
+                                ),
+                                from_id: await deep.id(
+                                  '@deep-foundation/core',
+                                  'dockerSupportsJs'
+                                ),
+                                in: {
+                                  data: {
+                                    type_id: Contain,
+                                    // from_id: deep.linkId,
+                                    from_id: await deep.id('deep', 'admin'),
+                                    string: {
+                                      data: {
+                                        value: 'tinkoffNotificationHandler',
+                                      },
                                     },
                                   },
                                 },
-                              },
-                              to: {
-                                data: {
-                                  type_id: SyncTextFile,
-                                  string: {
-                                    data: {
-                                      value: tinkoffNotificationHandler,
+                                to: {
+                                  data: {
+                                    type_id: SyncTextFile,
+                                    string: {
+                                      data: {
+                                        value: tinkoffNotificationHandler,
+                                      },
                                     },
-                                  },
-                                  in: {
-                                    data: {
-                                      type_id: Contain,
-                                      from_id: packageLinkId,
-                                      string: {
-                                        data: {
-                                          value: 'tinkoffNotificationHandler',
+                                    in: {
+                                      data: {
+                                        type_id: Contain,
+                                        from_id: packageLinkId,
+                                        string: {
+                                          data: {
+                                            value: 'tinkoffNotificationHandler',
+                                          },
                                         },
                                       },
                                     },
@@ -1022,110 +1026,22 @@ async (
           },
         },
       },
-    },
-    {
-      name: 'INSERT_HANDLE_ROUTE_HIERARCHICAL',
-    }
-  );
+      {
+        name: 'INSERT_HANDLE_ROUTE_HIERARCHICAL',
+      }
+    );
 
-  const callTests = async () => {
-    console.log('callTests-start');
+    const callTests = async () => {
+      console.log('callTests-start');
 
-    const callRealizationTests = async () => {
-      const testInit = async () => {
-        const initOptions = {
-          TerminalKey: process.env.PAYMENTS_C2B_TERMINAL_KEY,
-          OrderId: uniqid(),
-          Amount: PRICE,
-          Description: 'Test shopping',
-          CustomerKey: deep.linkId,
-          Language: 'ru',
-          Recurrent: 'Y',
-          DATA: {
-            Email: process.env.PAYMENTS_C2B_EMAIL,
-            Phone: process.env.PAYMENTS_C2B_PHONE,
-          },
-          // Receipt: {
-          // 	Items: [{
-          // 		Name: 'Test item',
-          // 		Price: PRICE,
-          // 		Quantity: 1,
-          // 		Amount: PRICE,
-          // 		PaymentMethod: 'prepayment',
-          // 		PaymentObject: 'service',
-          // 		Tax: 'none',
-          // 	}],
-          // 	Email: process.env.PAYMENTS_C2B_EMAIL,
-          // 	Phone: process.env.PAYMENTS_C2B_PHONE,
-          // 	Taxation: 'usn_income',
-          // },
-        };
-
-        const initResult = await init(initOptions);
-
-        expect(initResult.error).to.equal(undefined);
-
-        return initResult;
-      };
-
-      const testConfirm = async () => {
-        const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
-        const page = await browser.newPage();
-
-        const initOptions = {
-          TerminalKey: process.env.PAYMENTS_C2B_TERMINAL_KEY,
-          Amount: PRICE,
-          OrderId: uniqid(),
-          CustomerKey: deep.linkId,
-          PayType: 'T',
-          // Receipt: {
-          // 	Items: [{
-          // 		Name: 'Test item',
-          // 		Price: PRICE,
-          // 		Quantity: 1,
-          // 		Amount: PRICE,
-          // 		PaymentMethod: 'prepayment',
-          // 		PaymentObject: 'service',
-          // 		Tax: 'none',
-          // 	}],
-          // 	Email: process.env.PAYMENTS_C2B_EMAIL,
-          // 	Phone: process.env.PAYMENTS_C2B_PHONE,
-          // 	Taxation: 'usn_income',
-          // },
-        };
-
-        const initResult = await init(initOptions);
-
-        await payInBrowser({
-          browser,
-          page,
-          url: initResult.response.PaymentURL,
-        });
-
-        const confirmOptions = {
-          TerminalKey: process.env.PAYMENTS_C2B_TERMINAL_KEY,
-          PaymentId: initResult.response.PaymentId,
-        };
-
-        const confirmResult = await confirm(confirmOptions);
-
-        expect(confirmResult.error).to.equal(undefined);
-        expect(confirmResult.response.Status).to.equal('CONFIRMED');
-
-        return confirmResult;
-      };
-
-      const testCancel = async () => {
-        console.log('testCancel-start');
-        const testCancelAfterPayBeforeConfirmFullPrice = async () => {
-          console.log('testCanselAfterPayBeforeConfirmFullPrice-start');
+      const callRealizationTests = async () => {
+        const testInit = async () => {
           const initOptions = {
             TerminalKey: process.env.PAYMENTS_C2B_TERMINAL_KEY,
             OrderId: uniqid(),
-            CustomerKey: deep.linkId,
-            PayType: 'T',
             Amount: PRICE,
             Description: 'Test shopping',
+            CustomerKey: deep.linkId,
             Language: 'ru',
             Recurrent: 'Y',
             DATA: {
@@ -1135,7 +1051,7 @@ async (
             // Receipt: {
             // 	Items: [{
             // 		Name: 'Test item',
-            // 		Price: sum,
+            // 		Price: PRICE,
             // 		Quantity: 1,
             // 		Amount: PRICE,
             // 		PaymentMethod: 'prepayment',
@@ -1145,66 +1061,30 @@ async (
             // 	Email: process.env.PAYMENTS_C2B_EMAIL,
             // 	Phone: process.env.PAYMENTS_C2B_PHONE,
             // 	Taxation: 'usn_income',
-            // }
+            // },
           };
 
-          console.log({ options: initOptions });
-
-          let initResult = await init(initOptions);
-
-          console.log({ initResult });
+          const initResult = await init(initOptions);
 
           expect(initResult.error).to.equal(undefined);
 
-          const url = initResult.response.PaymentURL;
+          return initResult;
+        };
 
+        const testConfirm = async () => {
           const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
           const page = await browser.newPage();
 
-          await payInBrowser({
-            browser,
-            page,
-            url,
-          });
-
-          const bankPaymentId = initResult.response.PaymentId;
-
-          const cancelOptions = {
-            TerminalKey: process.env.PAYMENTS_C2B_TERMINAL_KEY,
-            PaymentId: bankPaymentId,
-            Amount: PRICE,
-          };
-
-          console.log({ cancelOptions });
-
-          const cancelResult = await cancel(cancelOptions);
-
-          console.log({ cancelResponse: cancelResult });
-
-          expect(cancelResult.error).to.equal(undefined);
-          expect(cancelResult.response.Status).to.equal('REVERSED');
-          console.log('testCanselAfterPayBeforeConfirmFullPrice-end');
-        };
-
-        const testCancelAfterPayBeforeConfirmCustomPriceX2 = async () => {
-          console.log('testCanselAfterPayBeforeConfirmCustomPriceX2-start');
           const initOptions = {
             TerminalKey: process.env.PAYMENTS_C2B_TERMINAL_KEY,
+            Amount: PRICE,
             OrderId: uniqid(),
             CustomerKey: deep.linkId,
             PayType: 'T',
-            Amount: PRICE,
-            Description: 'Test shopping',
-            Language: 'ru',
-            Recurrent: 'Y',
-            DATA: {
-              Email: process.env.PAYMENTS_C2B_EMAIL,
-              Phone: process.env.PAYMENTS_C2B_PHONE,
-            },
             // Receipt: {
             // 	Items: [{
             // 		Name: 'Test item',
-            // 		Price: sum,
+            // 		Price: PRICE,
             // 		Quantity: 1,
             // 		Amount: PRICE,
             // 		PaymentMethod: 'prepayment',
@@ -1214,264 +1094,326 @@ async (
             // 	Email: process.env.PAYMENTS_C2B_EMAIL,
             // 	Phone: process.env.PAYMENTS_C2B_PHONE,
             // 	Taxation: 'usn_income',
-            // }
+            // },
           };
 
-          console.log({ options: initOptions });
+          const initResult = await init(initOptions);
 
-          let initResult = await init(initOptions);
-
-          console.log({ initResult });
-
-          expect(initResult.error).to.equal(undefined);
-
-          const url = initResult.response.PaymentURL;
-
-          const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
-          const page = await browser.newPage();
           await payInBrowser({
             browser,
             page,
-            url,
+            url: initResult.response.PaymentURL,
           });
 
-          const bankPaymentId = initResult.response.PaymentId;
-
-          const cancelOptions = {
+          const confirmOptions = {
             TerminalKey: process.env.PAYMENTS_C2B_TERMINAL_KEY,
-            PaymentId: bankPaymentId,
-            Amount: Math.floor(PRICE / 3),
+            PaymentId: initResult.response.PaymentId,
           };
 
-          console.log({ cancelOptions });
+          const confirmResult = await confirm(confirmOptions);
 
-          {
+          expect(confirmResult.error).to.equal(undefined);
+          expect(confirmResult.response.Status).to.equal('CONFIRMED');
+
+          return confirmResult;
+        };
+
+        const testCancel = async () => {
+          console.log('testCancel-start');
+          const testCancelAfterPayBeforeConfirmFullPrice = async () => {
+            console.log('testCanselAfterPayBeforeConfirmFullPrice-start');
+            const initOptions = {
+              TerminalKey: process.env.PAYMENTS_C2B_TERMINAL_KEY,
+              OrderId: uniqid(),
+              CustomerKey: deep.linkId,
+              PayType: 'T',
+              Amount: PRICE,
+              Description: 'Test shopping',
+              Language: 'ru',
+              Recurrent: 'Y',
+              DATA: {
+                Email: process.env.PAYMENTS_C2B_EMAIL,
+                Phone: process.env.PAYMENTS_C2B_PHONE,
+              },
+              // Receipt: {
+              // 	Items: [{
+              // 		Name: 'Test item',
+              // 		Price: sum,
+              // 		Quantity: 1,
+              // 		Amount: PRICE,
+              // 		PaymentMethod: 'prepayment',
+              // 		PaymentObject: 'service',
+              // 		Tax: 'none',
+              // 	}],
+              // 	Email: process.env.PAYMENTS_C2B_EMAIL,
+              // 	Phone: process.env.PAYMENTS_C2B_PHONE,
+              // 	Taxation: 'usn_income',
+              // }
+            };
+
+            console.log({ options: initOptions });
+
+            let initResult = await init(initOptions);
+
+            console.log({ initResult });
+
+            expect(initResult.error).to.equal(undefined);
+
+            const url = initResult.response.PaymentURL;
+
+            const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
+            const page = await browser.newPage();
+
+            await payInBrowser({
+              browser,
+              page,
+              url,
+            });
+
+            const bankPaymentId = initResult.response.PaymentId;
+
+            const cancelOptions = {
+              TerminalKey: process.env.PAYMENTS_C2B_TERMINAL_KEY,
+              PaymentId: bankPaymentId,
+              Amount: PRICE,
+            };
+
+            console.log({ cancelOptions });
+
             const cancelResult = await cancel(cancelOptions);
 
             console.log({ cancelResponse: cancelResult });
 
             expect(cancelResult.error).to.equal(undefined);
-            expect(cancelResult.response.Status).to.equal('PARTIAL_REVERSED');
-          }
-          {
-            const cancelResult = await cancel(cancelOptions);
-
-            console.log({ cancelResponse: cancelResult });
-
-            expect(cancelResult.error).to.equal(undefined);
-            expect(cancelResult.response.Status).to.equal('PARTIAL_REVERSED');
-          }
-          console.log('testCanselAfterPayBeforeConfirmCustomPriceX2-end');
-        };
-
-        const testCancelAfterPayAfterConfirmFullPrice = async () => {
-          console.log('testCancelAfterPayAfterConfirmFullPrice-start');
-          const confirmResult = await testConfirm();
-          console.log({ confirmResult });
-
-          const bankPaymentId = confirmResult.response.PaymentId;
-          console.log({ bankPaymentId });
-
-          const cancelOptions = {
-            TerminalKey: process.env.PAYMENTS_C2B_TERMINAL_KEY,
-            PaymentId: bankPaymentId,
-            Amount: PRICE,
-          };
-          console.log({ cancelOptions });
-
-          const cancelResult = await cancel(cancelOptions);
-
-          expect(cancelResult.error).to.equal(undefined);
-          expect(cancelResult.response.Status).to.equal('REFUNDED');
-          console.log('testCancelAfterPayAfterConfirmFullPrice-end');
-        };
-
-        const testCancelAfterPayAfterConfirmCustomPriceX2 = async () => {
-          console.log('testCancelAfterPayAfterConfirmCustomPriceX2-start');
-          const confirmResult = await testConfirm();
-
-          const bankPaymentId = confirmResult.response.PaymentId;
-
-          const cancelOptions = {
-            TerminalKey: process.env.PAYMENTS_C2B_TERMINAL_KEY,
-            PaymentId: bankPaymentId,
-            Amount: Math.floor(PRICE / 3),
+            expect(cancelResult.response.Status).to.equal('REVERSED');
+            console.log('testCanselAfterPayBeforeConfirmFullPrice-end');
           };
 
-          console.log({ cancelOptions });
+          const testCancelAfterPayBeforeConfirmCustomPriceX2 = async () => {
+            console.log('testCanselAfterPayBeforeConfirmCustomPriceX2-start');
+            const initOptions = {
+              TerminalKey: process.env.PAYMENTS_C2B_TERMINAL_KEY,
+              OrderId: uniqid(),
+              CustomerKey: deep.linkId,
+              PayType: 'T',
+              Amount: PRICE,
+              Description: 'Test shopping',
+              Language: 'ru',
+              Recurrent: 'Y',
+              DATA: {
+                Email: process.env.PAYMENTS_C2B_EMAIL,
+                Phone: process.env.PAYMENTS_C2B_PHONE,
+              },
+              // Receipt: {
+              // 	Items: [{
+              // 		Name: 'Test item',
+              // 		Price: sum,
+              // 		Quantity: 1,
+              // 		Amount: PRICE,
+              // 		PaymentMethod: 'prepayment',
+              // 		PaymentObject: 'service',
+              // 		Tax: 'none',
+              // 	}],
+              // 	Email: process.env.PAYMENTS_C2B_EMAIL,
+              // 	Phone: process.env.PAYMENTS_C2B_PHONE,
+              // 	Taxation: 'usn_income',
+              // }
+            };
 
-          {
-            const cancelResult = await cancel(cancelOptions);
+            console.log({ options: initOptions });
 
-            expect(cancelResult.error).to.equal(undefined);
-            expect(cancelResult.response.Status).to.equal('PARTIAL_REFUNDED');
-          }
-          {
-            const cancelResult = await cancel(cancelOptions);
+            let initResult = await init(initOptions);
 
-            expect(cancelResult.error).to.equal(undefined);
-            expect(cancelResult.response.Status).to.equal('PARTIAL_REFUNDED');
-          }
-          console.log('testCancelAfterPayAfterConfirmCustomPriceX2-end');
-        };
+            console.log({ initResult });
 
-        const testCancelBeforePay = async () => {
-          console.log('testCancelBeforePay-start');
-          const initResult = await testInit();
+            expect(initResult.error).to.equal(undefined);
 
-          const bankPaymentId = initResult.response.PaymentId;;
+            const url = initResult.response.PaymentURL;
 
-          const cancelOptions = {
-            TerminalKey: process.env.PAYMENTS_C2B_TERMINAL_KEY,
-            PaymentId: bankPaymentId,
-            Amount: PRICE,
+            const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
+            const page = await browser.newPage();
+            await payInBrowser({
+              browser,
+              page,
+              url,
+            });
+
+            const bankPaymentId = initResult.response.PaymentId;
+
+            const cancelOptions = {
+              TerminalKey: process.env.PAYMENTS_C2B_TERMINAL_KEY,
+              PaymentId: bankPaymentId,
+              Amount: Math.floor(PRICE / 3),
+            };
+
+            console.log({ cancelOptions });
+
+            {
+              const cancelResult = await cancel(cancelOptions);
+
+              console.log({ cancelResponse: cancelResult });
+
+              expect(cancelResult.error).to.equal(undefined);
+              expect(cancelResult.response.Status).to.equal('PARTIAL_REVERSED');
+            }
+            {
+              const cancelResult = await cancel(cancelOptions);
+
+              console.log({ cancelResponse: cancelResult });
+
+              expect(cancelResult.error).to.equal(undefined);
+              expect(cancelResult.response.Status).to.equal('PARTIAL_REVERSED');
+            }
+            console.log('testCanselAfterPayBeforeConfirmCustomPriceX2-end');
           };
 
-          console.log({ cancelOptions });
+          const testCancelAfterPayAfterConfirmFullPrice = async () => {
+            console.log('testCancelAfterPayAfterConfirmFullPrice-start');
+            const confirmResult = await testConfirm();
+            console.log({ confirmResult });
 
-          const cancelResult = await cancel(cancelOptions);
+            const bankPaymentId = confirmResult.response.PaymentId;
+            console.log({ bankPaymentId });
 
-          expect(cancelResult.error).to.equal(undefined);
-          expect(cancelResult.response.Status).to.equal('CANCELED');
-          console.log('testCancelBeforePay-end');
+            const cancelOptions = {
+              TerminalKey: process.env.PAYMENTS_C2B_TERMINAL_KEY,
+              PaymentId: bankPaymentId,
+              Amount: PRICE,
+            };
+            console.log({ cancelOptions });
+
+            const cancelResult = await cancel(cancelOptions);
+
+            expect(cancelResult.error).to.equal(undefined);
+            expect(cancelResult.response.Status).to.equal('REFUNDED');
+            console.log('testCancelAfterPayAfterConfirmFullPrice-end');
+          };
+
+          const testCancelAfterPayAfterConfirmCustomPriceX2 = async () => {
+            console.log('testCancelAfterPayAfterConfirmCustomPriceX2-start');
+            const confirmResult = await testConfirm();
+
+            const bankPaymentId = confirmResult.response.PaymentId;
+
+            const cancelOptions = {
+              TerminalKey: process.env.PAYMENTS_C2B_TERMINAL_KEY,
+              PaymentId: bankPaymentId,
+              Amount: Math.floor(PRICE / 3),
+            };
+
+            console.log({ cancelOptions });
+
+            {
+              const cancelResult = await cancel(cancelOptions);
+
+              expect(cancelResult.error).to.equal(undefined);
+              expect(cancelResult.response.Status).to.equal('PARTIAL_REFUNDED');
+            }
+            {
+              const cancelResult = await cancel(cancelOptions);
+
+              expect(cancelResult.error).to.equal(undefined);
+              expect(cancelResult.response.Status).to.equal('PARTIAL_REFUNDED');
+            }
+            console.log('testCancelAfterPayAfterConfirmCustomPriceX2-end');
+          };
+
+          const testCancelBeforePay = async () => {
+            console.log('testCancelBeforePay-start');
+            const initResult = await testInit();
+
+            const bankPaymentId = initResult.response.PaymentId;;
+
+            const cancelOptions = {
+              TerminalKey: process.env.PAYMENTS_C2B_TERMINAL_KEY,
+              PaymentId: bankPaymentId,
+              Amount: PRICE,
+            };
+
+            console.log({ cancelOptions });
+
+            const cancelResult = await cancel(cancelOptions);
+
+            expect(cancelResult.error).to.equal(undefined);
+            expect(cancelResult.response.Status).to.equal('CANCELED');
+            console.log('testCancelBeforePay-end');
+          };
+          await testCancelAfterPayBeforeConfirmFullPrice();
+          await testCancelAfterPayBeforeConfirmCustomPriceX2();
+          await testCancelAfterPayAfterConfirmFullPrice();
+          await testCancelAfterPayAfterConfirmCustomPriceX2();
+          await testCancelBeforePay();
+
+          console.log('testCancel-end');
         };
-        await testCancelAfterPayBeforeConfirmFullPrice();
-        await testCancelAfterPayBeforeConfirmCustomPriceX2();
-        await testCancelAfterPayAfterConfirmFullPrice();
-        await testCancelAfterPayAfterConfirmCustomPriceX2();
-        await testCancelBeforePay();
 
-        console.log('testCancel-end');
+        await testInit();
+        await testConfirm();
+        await testCancel();
       };
 
-      await testInit();
-      await testConfirm();
-      await testCancel();
-    };
-
-    const callIntegrationTests = async () => {
-
-      const createdLinkIds = [];
-
-      const {
-        data: [{ id: tinkoffProviderLinkId }],
-      } = await deep.insert({
-        type_id: TinkoffProvider,
-        in: {
-          data: [
-            {
-              type_id: Contain,
-              from_id: deep.linkId,
-            },
-          ],
-        },
-      });
-      console.log({ tinkoffProviderLinkId });
-      createdLinkIds.push(tinkoffProviderLinkId);
-      allCreatedLinkIds.push(tinkoffProviderLinkId);
-
-      const {
-        data: [{ id: sumProviderLinkId }],
-      } = await deep.insert({
-        type_id: SumProvider,
-        in: {
-          data: [
-            {
-              type_id: Contain,
-              from_id: deep.linkId,
-            },
-          ],
-        },
-      });
-      console.log({ sumProviderLinkId });
-      createdLinkIds.push(sumProviderLinkId);
-      allCreatedLinkIds.push(sumProviderLinkId);
-
-      const {
-        data: [{ id: storageBusinessLinkId }],
-      } = await deep.insert({
-        type_id: StorageBusiness,
-        in: {
-          data: [
-            {
-              type_id: Contain,
-              from_id: deep.linkId,
-            },
-          ],
-        },
-      });
-      console.log({ storageBusinessLinkId });
-      createdLinkIds.push(storageBusinessLinkId);
-      allCreatedLinkIds.push(storageBusinessLinkId);
-
-      const {
-        data: [{ id: tokenLinkId }],
-      } = await deep.insert({
-        type_id: Token,
-        from_id: storageBusinessLinkId,
-        to_id: storageBusinessLinkId,
-        string: { data: { value: process.env.PAYMENTS_C2B_TERMINAL_KEY } },
-        in: {
-          data: [
-            {
-              type_id: Contain,
-              from_id: deep.linkId,
-            },
-          ],
-        },
-      });
-      console.log({ tokenLinkId });
-      createdLinkIds.push(tokenLinkId);
-      allCreatedLinkIds.push(tokenLinkId);
-
-      const {
-        data: [{ id: Product }],
-      } = await deep.insert({
-        type_id: Type,
-        from_id: Any,
-        to_id: Any,
-        in: {
-          data: [
-            {
-              type_id: Contain,
-              from_id: deep.linkId,
-            },
-          ],
-        },
-      });
-      console.log({ Product });
-      createdLinkIds.push(Product);
-      allCreatedLinkIds.push(Product);
-
-      const {
-        data: [{ id: productLinkId }],
-      } = await deep.insert({
-        type_id: Product,
-        in: {
-          data: [
-            {
-              type_id: Contain,
-              from_id: deep.linkId,
-            },
-          ],
-        },
-      });
-      console.log({ productLinkId });
-      createdLinkIds.push(productLinkId);
-      allCreatedLinkIds.push(productLinkId);
-
-      const testInit = async ({ customerKey } = { customerKey: uniqid() }) => {
-        console.log('testInit-start');
+      const callIntegrationTests = async () => {
 
         const createdLinkIds = [];
 
         const {
-          data: [{ id: paymentLinkId }],
+          data: [{ id: tinkoffProviderLinkId }],
         } = await deep.insert({
-          type_id: Payment,
-          object: { data: { value: { orderId: uniqid() } } },
-          from_id: deep.linkId,
+          type_id: TinkoffProvider,
+          in: {
+            data: [
+              {
+                type_id: Contain,
+                from_id: deep.linkId,
+              },
+            ],
+          },
+        });
+        console.log({ tinkoffProviderLinkId });
+        createdLinkIds.push(tinkoffProviderLinkId);
+        allCreatedLinkIds.push(tinkoffProviderLinkId);
+
+        const {
+          data: [{ id: sumProviderLinkId }],
+        } = await deep.insert({
+          type_id: SumProvider,
+          in: {
+            data: [
+              {
+                type_id: Contain,
+                from_id: deep.linkId,
+              },
+            ],
+          },
+        });
+        console.log({ sumProviderLinkId });
+        createdLinkIds.push(sumProviderLinkId);
+        allCreatedLinkIds.push(sumProviderLinkId);
+
+        const {
+          data: [{ id: storageBusinessLinkId }],
+        } = await deep.insert({
+          type_id: StorageBusiness,
+          in: {
+            data: [
+              {
+                type_id: Contain,
+                from_id: deep.linkId,
+              },
+            ],
+          },
+        });
+        console.log({ storageBusinessLinkId });
+        createdLinkIds.push(storageBusinessLinkId);
+        allCreatedLinkIds.push(storageBusinessLinkId);
+
+        const {
+          data: [{ id: tokenLinkId }],
+        } = await deep.insert({
+          type_id: Token,
+          from_id: storageBusinessLinkId,
           to_id: storageBusinessLinkId,
+          string: { data: { value: process.env.PAYMENTS_C2B_TERMINAL_KEY } },
           in: {
             data: [
               {
@@ -1481,17 +1423,16 @@ async (
             ],
           },
         });
-        console.log({ paymentLinkId });
-        createdLinkIds.push(paymentLinkId);
-        allCreatedLinkIds.push(paymentLinkId);
+        console.log({ tokenLinkId });
+        createdLinkIds.push(tokenLinkId);
+        allCreatedLinkIds.push(tokenLinkId);
 
         const {
-          data: [{ id: sumLinkId }],
+          data: [{ id: Product }],
         } = await deep.insert({
-          type_id: Sum,
-          from_id: sumProviderLinkId,
-          to_id: paymentLinkId,
-          number: { data: { value: PRICE } },
+          type_id: Type,
+          from_id: Any,
+          to_id: Any,
           in: {
             data: [
               {
@@ -1501,16 +1442,14 @@ async (
             ],
           },
         });
-        console.log({ sumLinkId });
-        createdLinkIds.push(sumLinkId);
-        allCreatedLinkIds.push(sumLinkId);
+        console.log({ Product });
+        createdLinkIds.push(Product);
+        allCreatedLinkIds.push(Product);
 
         const {
-          data: [{ id: objectLinkId }],
+          data: [{ id: productLinkId }],
         } = await deep.insert({
-          type_id: Object,
-          from_id: paymentLinkId,
-          to_id: productLinkId,
+          type_id: Product,
           in: {
             data: [
               {
@@ -1520,139 +1459,22 @@ async (
             ],
           },
         });
-        console.log({ objectLinkId });
-        createdLinkIds.push(objectLinkId);
-        allCreatedLinkIds.push(objectLinkId);
+        console.log({ productLinkId });
+        createdLinkIds.push(productLinkId);
+        allCreatedLinkIds.push(productLinkId);
 
-        const {
-          data: [{ id: payLinkId }],
-        } = await deep.insert({
-          type_id: Pay,
-          from_id: deep.linkId,
-          to_id: sumLinkId,
-          in: {
-            data: [
-              {
-                type_id: Contain,
-                from_id: deep.linkId,
-              },
-            ],
-          },
-        });
-        console.log({ payLinkId });
-        createdLinkIds.push(payLinkId);
-        allCreatedLinkIds.push(payLinkId);
-
-        var urlLinkSelectQuery;
-        for (let i = 0; i < 10; i++) {
-          urlLinkSelectQuery = await deep.select({
-            type_id: Url,
-            to_id: payLinkId,
-          });
-
-          if (urlLinkSelectQuery.data.length > 0) {
-            break;
-          }
-
-          await sleep(1000);
-        }
-
-        expect(urlLinkSelectQuery.data.length).to.greaterThan(0);
-
-        createdLinkIds.push(urlLinkSelectQuery.data[0].id);
-        allCreatedLinkIds.push(urlLinkSelectQuery.data[0].id);
-
-        const createdLinks = (await deep.select(createdLinkIds)).data;
-        console.log({ createdLinks });
-
-        console.log('testInit-end');
-
-        return {
-          createdLinks
-        }
-      };
-
-      const testFinishAuthorize = async ({ customerKey } = { customerKey: uniqid() }) => {
-        console.log('testFinishAuthorize-start');
-        const { createdLinks } = await testInit({ customerKey });
-
-        const urlLink = createdLinks.find(link => link.type_id === Url);
-        expect(urlLink).to.not.be.equal(undefined)
-
-        const url = urlLink.value.value;
-        console.log({ url });
-
-        const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
-        const page = await browser.newPage();
-        await payInBrowser({
-          browser,
-          page,
-          url,
-        });
-
-        console.log({ createdLinks });
-
-        console.log('testFinishAuthorize-end');
-
-        return {
-          createdLinks
-        }
-      };
-
-      const testConfirm = async ({ customerKey } = { customerKey: uniqid() }) => {
-        console.log('testConfirm-start');
-        const { createdLinks } = await testFinishAuthorize({ customerKey });
-
-        const createdLinkIds = [];
-
-        const payLink = createdLinks.find(link => link.type_id === Pay);
-        expect(payLink).to.not.equal(undefined);
-
-        var payedLinkSelectQuery;
-        for (let i = 0; i < 10; i++) {
-          payedLinkSelectQuery = await deep.select({
-            type_id: Payed,
-            to_id: payLink.id
-          });
-
-          if (payedLinkSelectQuery.data.length > 0) {
-            break;
-          }
-
-          await sleep(1000);
-        }
-
-        expect(payedLinkSelectQuery.data.length).to.greaterThan(0);
-
-        createdLinkIds.push(payedLinkSelectQuery.data[0].id);
-        allCreatedLinkIds.push(payedLinkSelectQuery.data[0].id);
-
-        createdLinks.push(...(await deep.select(createdLinkIds)).data);
-
-        console.log({ createdLinks });
-
-        console.log('testConfirm-end');
-
-        return {
-          createdLinks
-        }
-      };
-
-      const callCancelTests = async () => {
-        console.log('testCancel-start');
-        const testCancelAfterPayAfterConfirmFullPrice = async ({ customerKey } = { customerKey: uniqid() }) => {
-          console.log('testCancelAfterPayAfterConfirmFullPrice-start');
-          const { createdLinks } = await testConfirm({ customerKey });
+        const testInit = async ({ customerKey } = { customerKey: uniqid() }) => {
+          console.log('testInit-start');
 
           const createdLinkIds = [];
 
-          const paymentLink = createdLinks.find(link => link.type_id === Payment);
-          console.log({ paymentLink });
-
-          const cancellingPaymentLinkInsertQuery = await deep.insert({
-            type_id: CancellingPayment,
-            from_id: paymentLink.id,
-            to_id: deep.linkId,
+          const {
+            data: [{ id: paymentLinkId }],
+          } = await deep.insert({
+            type_id: Payment,
+            object: { data: { value: { orderId: uniqid() } } },
+            from_id: deep.linkId,
+            to_id: storageBusinessLinkId,
             in: {
               data: [
                 {
@@ -1662,16 +1484,16 @@ async (
               ],
             },
           });
-          if (cancellingPaymentLinkInsertQuery.error) { throw new Error(cancellingPaymentLinkInsertQuery.error.message); }
-          const cancellingPaymentLinkId = cancellingPaymentLinkInsertQuery.data[0].id;
-          console.log({ cancellingPaymentLinkId });
-          createdLinkIds.push(cancellingPaymentLinkId);
-          allCreatedLinkIds.push(cancellingPaymentLinkId);
+          console.log({ paymentLinkId });
+          createdLinkIds.push(paymentLinkId);
+          allCreatedLinkIds.push(paymentLinkId);
 
-          const sumLinkOfCancellingPaymentQuery = await deep.insert({
+          const {
+            data: [{ id: sumLinkId }],
+          } = await deep.insert({
             type_id: Sum,
             from_id: sumProviderLinkId,
-            to_id: cancellingPaymentLinkId,
+            to_id: paymentLinkId,
             number: { data: { value: PRICE } },
             in: {
               data: [
@@ -1682,16 +1504,16 @@ async (
               ],
             },
           });
-          if (sumLinkOfCancellingPaymentQuery.error) { throw new Error(sumLinkOfCancellingPaymentQuery.error.message); }
-          const sumLinkIdOfCancellingPayment = sumLinkOfCancellingPaymentQuery.data[0].id;
-          console.log({ sumLinkIdOfCancellingPayment });
-          createdLinkIds.push(sumLinkIdOfCancellingPayment);
-          allCreatedLinkIds.push(sumLinkIdOfCancellingPayment);
+          console.log({ sumLinkId });
+          createdLinkIds.push(sumLinkId);
+          allCreatedLinkIds.push(sumLinkId);
 
-          const cancellingPayLinkInsertQuery = await deep.insert({
-            type_id: CancellingPay,
-            from_id: deep.linkId,
-            to_id: sumLinkIdOfCancellingPayment,
+          const {
+            data: [{ id: objectLinkId }],
+          } = await deep.insert({
+            type_id: Object,
+            from_id: paymentLinkId,
+            to_id: productLinkId,
             in: {
               data: [
                 {
@@ -1701,17 +1523,99 @@ async (
               ],
             },
           });
-          if (cancellingPayLinkInsertQuery.error) { throw new Error(cancellingPayLinkInsertQuery.error.message); }
-          const cancellingPayLinkId = cancellingPayLinkInsertQuery.data[0].id;
-          console.log({ cancellingPayLinkId });
-          createdLinkIds.push(cancellingPayLinkId);
-          allCreatedLinkIds.push(cancellingPayLinkId);
+          console.log({ objectLinkId });
+          createdLinkIds.push(objectLinkId);
+          allCreatedLinkIds.push(objectLinkId);
+
+          const {
+            data: [{ id: payLinkId }],
+          } = await deep.insert({
+            type_id: Pay,
+            from_id: deep.linkId,
+            to_id: sumLinkId,
+            in: {
+              data: [
+                {
+                  type_id: Contain,
+                  from_id: deep.linkId,
+                },
+              ],
+            },
+          });
+          console.log({ payLinkId });
+          createdLinkIds.push(payLinkId);
+          allCreatedLinkIds.push(payLinkId);
+
+          var urlLinkSelectQuery;
+          for (let i = 0; i < 10; i++) {
+            urlLinkSelectQuery = await deep.select({
+              type_id: Url,
+              to_id: payLinkId,
+            });
+
+            if (urlLinkSelectQuery.data.length > 0) {
+              break;
+            }
+
+            await sleep(1000);
+          }
+
+          expect(urlLinkSelectQuery.data.length).to.greaterThan(0);
+
+          createdLinkIds.push(urlLinkSelectQuery.data[0].id);
+          allCreatedLinkIds.push(urlLinkSelectQuery.data[0].id);
+
+          const createdLinks = (await deep.select(createdLinkIds)).data;
+          console.log({ createdLinks });
+
+          console.log('testInit-end');
+
+          return {
+            createdLinks
+          }
+        };
+
+        const testFinishAuthorize = async ({ customerKey } = { customerKey: uniqid() }) => {
+          console.log('testFinishAuthorize-start');
+          const { createdLinks } = await testInit({ customerKey });
+
+          const urlLink = createdLinks.find(link => link.type_id === Url);
+          expect(urlLink).to.not.be.equal(undefined)
+
+          const url = urlLink.value.value;
+          console.log({ url });
+
+          const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
+          const page = await browser.newPage();
+          await payInBrowser({
+            browser,
+            page,
+            url,
+          });
+
+          console.log({ createdLinks });
+
+          console.log('testFinishAuthorize-end');
+
+          return {
+            createdLinks
+          }
+        };
+
+        const testConfirm = async ({ customerKey } = { customerKey: uniqid() }) => {
+          console.log('testConfirm-start');
+          const { createdLinks } = await testFinishAuthorize({ customerKey });
+
+          const createdLinkIds = [];
+
+          const payLink = createdLinks.find(link => link.type_id === Pay);
+          expect(payLink).to.not.equal(undefined);
 
           var payedLinkSelectQuery;
           for (let i = 0; i < 10; i++) {
             payedLinkSelectQuery = await deep.select({
               type_id: Payed,
-              to_id: cancellingPayLinkId
+              to_id: payLink.id
             });
 
             if (payedLinkSelectQuery.data.length > 0) {
@@ -1720,30 +1624,34 @@ async (
 
             await sleep(1000);
           }
-          if (payedLinkSelectQuery.error) { throw new Error(payedLinkSelectQuery.error.message); }
-          const payedLink = payedLinkSelectQuery.data[0];
-          expect(payedLink).to.not.equal(undefined);
-          createdLinks.push(payedLink);
 
-          createdLinks.push(...(await deep.select(createdLinkIds)).data)
+          expect(payedLinkSelectQuery.data.length).to.greaterThan(0);
 
-          console.log('testCancelAfterPayAfterConfirmFullPrice-end');
+          createdLinkIds.push(payedLinkSelectQuery.data[0].id);
+          allCreatedLinkIds.push(payedLinkSelectQuery.data[0].id);
+
+          createdLinks.push(...(await deep.select(createdLinkIds)).data);
+
+          console.log({ createdLinks });
+
+          console.log('testConfirm-end');
 
           return {
             createdLinks
-          };
+          }
         };
 
-        const testCancelAfterPayAfterConfirmCustomPriceX2 = async ({ customerKey } = { customerKey: uniqid() }) => {
-          console.log('testCancelAfterPayAfterConfirmCustomPriceX2-start');
-          const { createdLinks } = await testConfirm({ customerKey });
+        const callCancelTests = async () => {
+          console.log('testCancel-start');
+          const testCancelAfterPayAfterConfirmFullPrice = async ({ customerKey } = { customerKey: uniqid() }) => {
+            console.log('testCancelAfterPayAfterConfirmFullPrice-start');
+            const { createdLinks } = await testConfirm({ customerKey });
 
-          const createdLinkIds = [];
+            const createdLinkIds = [];
 
-          const paymentLink = createdLinks.find(link => link.type_id === Payment);
-          console.log({ paymentLink });
+            const paymentLink = createdLinks.find(link => link.type_id === Payment);
+            console.log({ paymentLink });
 
-          for (let i = 0; i < 2; i++) {
             const cancellingPaymentLinkInsertQuery = await deep.insert({
               type_id: CancellingPayment,
               from_id: paymentLink.id,
@@ -1763,13 +1671,11 @@ async (
             createdLinkIds.push(cancellingPaymentLinkId);
             allCreatedLinkIds.push(cancellingPaymentLinkId);
 
-            const {
-              data: [{ id: sumLinkIdOfCancellingPayment }]
-            } = await deep.insert({
+            const sumLinkOfCancellingPaymentQuery = await deep.insert({
               type_id: Sum,
               from_id: sumProviderLinkId,
               to_id: cancellingPaymentLinkId,
-              number: { data: { value: Math.floor(PRICE / 3) } },
+              number: { data: { value: PRICE } },
               in: {
                 data: [
                   {
@@ -1779,6 +1685,8 @@ async (
                 ],
               },
             });
+            if (sumLinkOfCancellingPaymentQuery.error) { throw new Error(sumLinkOfCancellingPaymentQuery.error.message); }
+            const sumLinkIdOfCancellingPayment = sumLinkOfCancellingPaymentQuery.data[0].id;
             console.log({ sumLinkIdOfCancellingPayment });
             createdLinkIds.push(sumLinkIdOfCancellingPayment);
             allCreatedLinkIds.push(sumLinkIdOfCancellingPayment);
@@ -1819,146 +1727,237 @@ async (
             const payedLink = payedLinkSelectQuery.data[0];
             expect(payedLink).to.not.equal(undefined);
             createdLinks.push(payedLink);
-          }
 
-          createdLinks.push(...(await deep.select(createdLinkIds)).data)
+            createdLinks.push(...(await deep.select(createdLinkIds)).data)
 
-          console.log({ createdLinks });
+            console.log('testCancelAfterPayAfterConfirmFullPrice-end');
 
-          console.log('testCancelAfterPayAfterConfirmCustomPriceX2-end');
+            return {
+              createdLinks
+            };
+          };
 
-          return {
-            createdLinks
-          }
-        };
+          const testCancelAfterPayAfterConfirmCustomPriceX2 = async ({ customerKey } = { customerKey: uniqid() }) => {
+            console.log('testCancelAfterPayAfterConfirmCustomPriceX2-start');
+            const { createdLinks } = await testConfirm({ customerKey });
 
-        const testCancelBeforePay = async ({ customerKey } = { customerKey: uniqid() }) => {
-          console.log('testCancelBeforePay-start');
-          const { createdLinks } = await testInit({ customerKey });
+            const createdLinkIds = [];
 
-          const createdLinkIds = [];
+            const paymentLink = createdLinks.find(link => link.type_id === Payment);
+            console.log({ paymentLink });
 
-          const paymentLink = createdLinks.find(link => link.type_id === Payment);
-          console.log({ paymentLink });
-
-          const cancellingPaymentLinkInsertQuery = await deep.insert({
-            type_id: CancellingPayment,
-            from_id: paymentLink.id,
-            to_id: deep.linkId,
-            in: {
-              data: [
-                {
-                  type_id: Contain,
-                  from_id: deep.linkId,
+            for (let i = 0; i < 2; i++) {
+              const cancellingPaymentLinkInsertQuery = await deep.insert({
+                type_id: CancellingPayment,
+                from_id: paymentLink.id,
+                to_id: deep.linkId,
+                in: {
+                  data: [
+                    {
+                      type_id: Contain,
+                      from_id: deep.linkId,
+                    },
+                  ],
                 },
-              ],
-            },
-          });
-          if (cancellingPaymentLinkInsertQuery.error) { throw new Error(cancellingPaymentLinkInsertQuery.error.message); }
-          const cancellingPaymentLinkId = cancellingPaymentLinkInsertQuery.data[0].id;
-          console.log({ cancellingPaymentLinkId });
-          createdLinkIds.push(cancellingPaymentLinkId);
-          allCreatedLinkIds.push(cancellingPaymentLinkId);
+              });
+              if (cancellingPaymentLinkInsertQuery.error) { throw new Error(cancellingPaymentLinkInsertQuery.error.message); }
+              const cancellingPaymentLinkId = cancellingPaymentLinkInsertQuery.data[0].id;
+              console.log({ cancellingPaymentLinkId });
+              createdLinkIds.push(cancellingPaymentLinkId);
+              allCreatedLinkIds.push(cancellingPaymentLinkId);
 
-          const sumLinkOfCancellingPaymentSelectQuery = await deep.insert({
-            type_id: Sum,
-            from_id: sumProviderLinkId,
-            to_id: cancellingPaymentLinkId,
-            number: { data: { value: PRICE } },
-            in: {
-              data: [
-                {
-                  type_id: Contain,
-                  from_id: deep.linkId,
+              const {
+                data: [{ id: sumLinkIdOfCancellingPayment }]
+              } = await deep.insert({
+                type_id: Sum,
+                from_id: sumProviderLinkId,
+                to_id: cancellingPaymentLinkId,
+                number: { data: { value: Math.floor(PRICE / 3) } },
+                in: {
+                  data: [
+                    {
+                      type_id: Contain,
+                      from_id: deep.linkId,
+                    },
+                  ],
                 },
-              ],
-            },
-          });
-          if (sumLinkOfCancellingPaymentSelectQuery.error) { throw new Error(sumLinkOfCancellingPaymentSelectQuery.error.message); }
-          const sumLinkIdOfCancellingPayment = sumLinkOfCancellingPaymentSelectQuery.data[0].id;
-          console.log({ sumLinkIdOfCancellingPayment });
-          createdLinkIds.push(sumLinkIdOfCancellingPayment);
-          allCreatedLinkIds.push(sumLinkIdOfCancellingPayment);
+              });
+              console.log({ sumLinkIdOfCancellingPayment });
+              createdLinkIds.push(sumLinkIdOfCancellingPayment);
+              allCreatedLinkIds.push(sumLinkIdOfCancellingPayment);
 
-          const cancellingPayLinkInsertQuery = await deep.insert({
-            type_id: CancellingPay,
-            from_id: deep.linkId,
-            to_id: sumLinkIdOfCancellingPayment,
-            in: {
-              data: [
-                {
-                  type_id: Contain,
-                  from_id: deep.linkId,
+              const cancellingPayLinkInsertQuery = await deep.insert({
+                type_id: CancellingPay,
+                from_id: deep.linkId,
+                to_id: sumLinkIdOfCancellingPayment,
+                in: {
+                  data: [
+                    {
+                      type_id: Contain,
+                      from_id: deep.linkId,
+                    },
+                  ],
                 },
-              ],
-            },
-          });
-          if (cancellingPayLinkInsertQuery.error) { throw new Error(cancellingPayLinkInsertQuery.error.message); }
-          const cancellingPayLinkId = cancellingPayLinkInsertQuery.data[0].id;
-          console.log({ cancellingPayLinkId });
-          createdLinkIds.push(cancellingPayLinkId);
-          allCreatedLinkIds.push(cancellingPayLinkId);
+              });
+              if (cancellingPayLinkInsertQuery.error) { throw new Error(cancellingPayLinkInsertQuery.error.message); }
+              const cancellingPayLinkId = cancellingPayLinkInsertQuery.data[0].id;
+              console.log({ cancellingPayLinkId });
+              createdLinkIds.push(cancellingPayLinkId);
+              allCreatedLinkIds.push(cancellingPayLinkId);
 
-          var payedLinkSelectQuery;
-          for (let i = 0; i < 10; i++) {
-            payedLinkSelectQuery = await deep.select({
-              type_id: Payed,
-              to_id: cancellingPayLinkId
-            });
+              var payedLinkSelectQuery;
+              for (let i = 0; i < 10; i++) {
+                payedLinkSelectQuery = await deep.select({
+                  type_id: Payed,
+                  to_id: cancellingPayLinkId
+                });
 
-            if (payedLinkSelectQuery.data.length > 0) {
-              break;
+                if (payedLinkSelectQuery.data.length > 0) {
+                  break;
+                }
+
+                await sleep(1000);
+              }
+              if (payedLinkSelectQuery.error) { throw new Error(payedLinkSelectQuery.error.message); }
+              const payedLink = payedLinkSelectQuery.data[0];
+              expect(payedLink).to.not.equal(undefined);
+              createdLinks.push(payedLink);
             }
 
-            await sleep(1000);
-          }
-          if (payedLinkSelectQuery.error) { throw new Error(payedLinkSelectQuery.error.message); }
-          const payedLink = payedLinkSelectQuery.data[0];
-          expect(payedLink).to.not.equal(undefined);
-          createdLinks.push(payedLink);
+            createdLinks.push(...(await deep.select(createdLinkIds)).data)
 
-          createdLinks.push(...(await deep.select(createdLinkIds)).data)
+            console.log({ createdLinks });
 
-          console.log('testCancelBeforePay-end');
+            console.log('testCancelAfterPayAfterConfirmCustomPriceX2-end');
 
-          return {
-            createdLinks
+            return {
+              createdLinks
+            }
           };
+
+          const testCancelBeforePay = async ({ customerKey } = { customerKey: uniqid() }) => {
+            console.log('testCancelBeforePay-start');
+            const { createdLinks } = await testInit({ customerKey });
+
+            const createdLinkIds = [];
+
+            const paymentLink = createdLinks.find(link => link.type_id === Payment);
+            console.log({ paymentLink });
+
+            const cancellingPaymentLinkInsertQuery = await deep.insert({
+              type_id: CancellingPayment,
+              from_id: paymentLink.id,
+              to_id: deep.linkId,
+              in: {
+                data: [
+                  {
+                    type_id: Contain,
+                    from_id: deep.linkId,
+                  },
+                ],
+              },
+            });
+            if (cancellingPaymentLinkInsertQuery.error) { throw new Error(cancellingPaymentLinkInsertQuery.error.message); }
+            const cancellingPaymentLinkId = cancellingPaymentLinkInsertQuery.data[0].id;
+            console.log({ cancellingPaymentLinkId });
+            createdLinkIds.push(cancellingPaymentLinkId);
+            allCreatedLinkIds.push(cancellingPaymentLinkId);
+
+            const sumLinkOfCancellingPaymentSelectQuery = await deep.insert({
+              type_id: Sum,
+              from_id: sumProviderLinkId,
+              to_id: cancellingPaymentLinkId,
+              number: { data: { value: PRICE } },
+              in: {
+                data: [
+                  {
+                    type_id: Contain,
+                    from_id: deep.linkId,
+                  },
+                ],
+              },
+            });
+            if (sumLinkOfCancellingPaymentSelectQuery.error) { throw new Error(sumLinkOfCancellingPaymentSelectQuery.error.message); }
+            const sumLinkIdOfCancellingPayment = sumLinkOfCancellingPaymentSelectQuery.data[0].id;
+            console.log({ sumLinkIdOfCancellingPayment });
+            createdLinkIds.push(sumLinkIdOfCancellingPayment);
+            allCreatedLinkIds.push(sumLinkIdOfCancellingPayment);
+
+            const cancellingPayLinkInsertQuery = await deep.insert({
+              type_id: CancellingPay,
+              from_id: deep.linkId,
+              to_id: sumLinkIdOfCancellingPayment,
+              in: {
+                data: [
+                  {
+                    type_id: Contain,
+                    from_id: deep.linkId,
+                  },
+                ],
+              },
+            });
+            if (cancellingPayLinkInsertQuery.error) { throw new Error(cancellingPayLinkInsertQuery.error.message); }
+            const cancellingPayLinkId = cancellingPayLinkInsertQuery.data[0].id;
+            console.log({ cancellingPayLinkId });
+            createdLinkIds.push(cancellingPayLinkId);
+            allCreatedLinkIds.push(cancellingPayLinkId);
+
+            var payedLinkSelectQuery;
+            for (let i = 0; i < 10; i++) {
+              payedLinkSelectQuery = await deep.select({
+                type_id: Payed,
+                to_id: cancellingPayLinkId
+              });
+
+              if (payedLinkSelectQuery.data.length > 0) {
+                break;
+              }
+
+              await sleep(1000);
+            }
+            if (payedLinkSelectQuery.error) { throw new Error(payedLinkSelectQuery.error.message); }
+            const payedLink = payedLinkSelectQuery.data[0];
+            expect(payedLink).to.not.equal(undefined);
+            createdLinks.push(payedLink);
+
+            createdLinks.push(...(await deep.select(createdLinkIds)).data)
+
+            console.log('testCancelBeforePay-end');
+
+            return {
+              createdLinks
+            };
+          };
+
+          {
+            const { createdLinks } = await testCancelAfterPayAfterConfirmFullPrice();
+            await deep.delete(createdLinks.map(link => link.id));
+          }
+          {
+            const { createdLinks } = await testCancelAfterPayAfterConfirmCustomPriceX2();
+            await deep.delete(createdLinks.map(link => link.id));
+          }
+          {
+            const { createdLinks } = await testCancelBeforePay();
+            await deep.delete(createdLinks.map(link => link.id));
+          }
+
+          console.log('testCancel-end');
         };
 
-        {
-          const { createdLinks } = await testCancelAfterPayAfterConfirmFullPrice();
-          await deep.delete(createdLinks.map(link => link.id));
-        }
-        {
-          const { createdLinks } = await testCancelAfterPayAfterConfirmCustomPriceX2();
-          await deep.delete(createdLinks.map(link => link.id));
-        }
-        {
-          const { createdLinks } = await testCancelBeforePay();
-          await deep.delete(createdLinks.map(link => link.id));
-        }
-
-        console.log('testCancel-end');
+        await callCancelTests();
+        await deep.delete(createdLinkIds);
       };
 
-      await callCancelTests();
-      await deep.delete(createdLinkIds);
+      // await callRealizationTests();
+      await callIntegrationTests();
     };
 
-    // await callRealizationTests();
-    await callIntegrationTests();
-  };
+    await callTests();
 
-  await callTests();
-};
-
-const installPackageWithTryCatch = async () => {
-  try {
-    await installPackage();
   } catch (error) {
     await deep.delete(allCreatedLinkIds);
   }
-}
+};
 
-installPackageWithTryCatch()
+installPackage();
