@@ -790,7 +790,6 @@ async ({ deep, require, data: { newLink: payLink } }) => {
     TerminalKey: "${process.env.PAYMENTS_C2B_TERMINAL_KEY}",
     PaymentId: cancelledPaymentLink.value.value.bankPaymentId,
     Amount: sumLink.value.value,
-    NotificationURL: "${process.env.PAYMENTS_C2B_CANCELLING_NOTIFICATION_URL}",
   };
   console.log({ cancelOptions });
 
@@ -879,7 +878,7 @@ async (
 
   // Canceled is used instead of Cancelled because tinkoff team is not goos at english 
   if (req.body.Status !== 'CANCELED') {
-    return;
+    return next();
   }
 
   const TinkoffProvider = await deep.id("@deep-foundation/payments-tinkoff-c2b", "TinkoffProvider");
@@ -941,7 +940,7 @@ async (
       {
         type_id: await deep.id('@deep-foundation/core', 'Port'),
         number: {
-          data: { value: process.env.PAYMENTS_C2B_CANCELLING_NOTIFICATION_PORT },
+          data: { value: process.env.PAYMENTS_C2B_NOTIFICATION_PORT },
         },
         in: {
           data: {
@@ -1612,7 +1611,7 @@ async (
           expect(payLink).to.not.equal(undefined);
 
           var payedLinkSelectQuery;
-          for (let i = 0; i < 10; i++) {
+          for (let i = 0; i < 30; i++) {
             payedLinkSelectQuery = await deep.select({
               type_id: Payed,
               to_id: payLink.id
@@ -1957,7 +1956,8 @@ async (
 
   } catch (error) {
     await deep.delete(allCreatedLinkIds);
-    throw error;
+    console.log(error);
+    process.exit(1);
   }
 };
 
