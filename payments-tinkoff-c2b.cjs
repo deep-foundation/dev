@@ -1015,6 +1015,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
   const tokenLink = tokenLinkSelectQuery.data[0];
   console.log({tokenLink});
 
+  // TODO Add default card
   const options = {
     TerminalKey: tokenLink.value.value,
     OrderId: paymentLink?.value?.value.orderId ?? paymentLink.id,
