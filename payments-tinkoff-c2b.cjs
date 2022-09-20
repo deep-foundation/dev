@@ -1986,22 +1986,28 @@ async (
       console.log('testGetCardList-end');
       };
       */
-        {
-          const { createdLinks } = await testInit();
-          await deep.delete(createdLinks.map((link) => link.id));
-        }
-        {
-          const { createdLinks } = await testFinishAuthorize();
-          await deep.delete(createdLinks.map((link) => link.id));
-        }
-        {
-          const { createdLinks } = await testConfirm();
-          await deep.delete(createdLinks.map((link) => link.id));
-        }
 
-        await deep.delete(createdLinkIds);
+      const callTest = async (testFunction) => {
+        const { createdLinks } = await testFunction();
+        for (const createdLink of createdLinks) {
+          if(createdLink.type_id === Pay) {
+            const errorLinkSelectQuery = await deep.select({
+              type_id: Error,
+              to_id: createdLink.id
+            });
+            createdLinks.push(...errorLinkSelectQuery.data);
+          }
+        }
+        await deep.delete(createdLinks.map((link) => link.id));
+      }
 
-        /*await testGetState();
+      await callTest(testInit);
+      await callTest(testFinishAuthorize);
+      await callTest(testConfirm);
+
+      await deep.delete(createdLinkIds);
+
+      /*await testGetState();
       await testGetCardList();*/
       };
 
