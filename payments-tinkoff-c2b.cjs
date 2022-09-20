@@ -24,7 +24,6 @@ var myEnv = dotenv.config();
 dotenvExpand.expand(myEnv);
 
 console.log('Installing payments-tinkoff-c2b package');
-const PRICE = 5500;
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -653,7 +652,7 @@ const installPackage = async () => {
     const {
       data: [{ id: Payment }],
     } = await deep.insert({
-      type_id: BasePayment,
+      type_id: Type,
       from_id: Any,
       to_id: Any,
       in: {
@@ -670,7 +669,7 @@ const installPackage = async () => {
     const {
       data: [{ id: Object }],
     } = await deep.insert({
-      type_id: BaseObject,
+      type_id: Type,
       from_id: Payment,
       to_id: Any,
       in: {
@@ -687,8 +686,8 @@ const installPackage = async () => {
     const {
       data: [{ id: Sum }],
     } = await deep.insert({
-      type_id: BaseSum,
-      from_id: SumProvider,
+      type_id: Type,
+      from_id: Any,
       to_id: Any,
       in: {
         data: {
@@ -705,7 +704,7 @@ const installPackage = async () => {
     const {
       data: [{ id: Pay }],
     } = await deep.insert({
-      type_id: BasePay,
+      type_id: Type,
       from_id: Any,
       to_id: Any,
       in: {
@@ -722,9 +721,9 @@ const installPackage = async () => {
     const {
       data: [{ id: Url }],
     } = await deep.insert({
-      type_id: BaseUrl,
-      from_id: TinkoffProvider,
-      to_id: Pay,
+      type_id: Type,
+      from_id: Any,
+      to_id: Any,
       in: {
         data: {
           type_id: Contain,
@@ -739,8 +738,8 @@ const installPackage = async () => {
     const {
       data: [{ id: Payed }],
     } = await deep.insert({
-      type_id: BasePayed,
-      from_id: TinkoffProvider,
+      type_id: Type,
+      from_id: Any,
       to_id: Any,
       in: {
         data: {
@@ -756,9 +755,9 @@ const installPackage = async () => {
     const {
       data: [{ id: Error }],
     } = await deep.insert({
-      type_id: BaseError,
-      from_id: TinkoffProvider,
-      to_id: Pay,
+      type_id: Type,
+      from_id: Any,
+      to_id: Any,
       in: {
         data: {
           type_id: Contain,
@@ -874,7 +873,9 @@ const installPackage = async () => {
     const {
       data: [{ id: StorageBusiness }],
     } = await deep.insert({
-      type_id: Storage,
+      type_id: Type,
+      from_id: Any,
+      to_id: Any,
       in: {
         data: {
           type_id: Contain,
@@ -902,8 +903,8 @@ const installPackage = async () => {
     const {
       data: [{ id: StorageClient }],
     } = await deep.insert({
-      type_id: Storage,
-      from_id: Payment,
+      type_id: Type,
+      from_id: Any,
       to_id: Any,
       in: {
         data: {
@@ -918,8 +919,8 @@ const installPackage = async () => {
       data: [{ id: Title }],
     } = await deep.insert({
       type_id: Type,
-      from_id: StorageClient,
-      to_id: SyncTextFile,
+      from_id: Any,
+      to_id: Any,
       in: {
         data: {
           type_id: Contain,
@@ -986,8 +987,6 @@ async ({ deep, require, data: { newLink: payLink } }) => {
   console.log({sumLink});
   if(!sumLink) throw new Error("Sum link associated with the pay link " + payLink.id + " is not found.");
 
-  const Url = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Url");
-
   const fromLinkOfPaymentSelectQuery = await deep.select({
     id: paymentLink.from_id
   });
@@ -1014,13 +1013,14 @@ async ({ deep, require, data: { newLink: payLink } }) => {
   const tokenLink = tokenLinkSelectQuery.data[0];
   console.log({tokenLink});
 
+  // TODO Add default card
   const options = {
     TerminalKey: tokenLink.value.value,
     OrderId: paymentLink?.value?.value.orderId ?? paymentLink.id,
     CustomerKey: deep.linkId,
     NotificationURL: "${process.env.PAYMENTS_C2B_NOTIFICATION_URL}",
     PayType: 'T',
-    Amount: ${PRICE},
+    Amount: sumLink.value.value,
     Description: 'Test shopping',
     Language: 'ru',
     Recurrent: 'Y',
@@ -1033,7 +1033,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
     //     Name: 'Test item',
     //     Price: sum,
     //     Quantity: 1,
-    //     Amount: ${PRICE},
+    //     Amount: sumLink.value.value,
     //     PaymentMethod: 'prepayment',
     //     PaymentObject: 'service',
     //     Tax: 'none',
@@ -1059,6 +1059,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
     throw new Error(errorMessage);
   }
 
+  const Url = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Url");
   const {error: urlLinkInsertQueryError} = await deep.insert({
     type_id: Url,
     from_id: tinkoffProviderLinkId,
@@ -1220,49 +1221,54 @@ async (
     from_id: tinkoffProviderLinkId,
       to_id: payLink.id,
     });
-  if(payedLinkInsertQuery.error) { throw new Error(payedLinkInsertQuery.error.message); }
-  const payedLinkId = payedLinkInsertQuery.data[0].id;
-  console.log({payedLinkId});
+    if(payedLinkInsertQuery.error) { throw new Error(payedLinkInsertQuery.error.message); }
+    const payedLinkId = payedLinkInsertQuery.data[0].id;
+    console.log({payedLinkId});
 
-  const StorageClient = await deep.id("@deep-foundation/payments-tinkoff-c2b", "StorageClient");
-  const storageClientLinkSelectQuery = await deep.select({
-    type_id: StorageClient,
-    number: {value: req.body.CardId}
-  });
-  console.log({storageClientLinkSelectQuery});
-  if(storageClientLinkSelectQuery.error) {throw new Error(storageClientLinkSelectQuery.error.message);}
-  
-  if(storageClientLinkSelectQuery.data.length > 0) {
     const StorageClient = await deep.id("@deep-foundation/payments-tinkoff-c2b", "StorageClient");
-    const storageClientLinkInsertQuery = await deep.insert({
+    const storageClientLinkSelectQuery = await deep.select({
       type_id: StorageClient,
-      number: {data: {value: req.body.CardId}},
+      number: {value: req.body.CardId}
     });
-    console.log({storageClientLinkInsertQuery});
-    if(storageClientLinkInsertQuery.error) {throw new Error(storageClientLinkInsertQuery.error.message);}
-    const storageClientLinkId = storageClientLinkInsertQuery.data[0].id;
-
-    const Title = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Title");
-    const titleLinkInsertQuery = await deep.insert({
-      type_id: Title,
-      from_id: storageClientLinkId,
-      to_id: storageClientLinkId,
-      string: {data: {value: req.body.Pan}},
-    });
-    if(titleLinkInsertQuery.error) {throw new Error(titleLinkInsertQuery.error.message);}
-    const titleLinkId = titleLinkInsertQuery.data[0].id;
-    console.log({titleLinkId});
-  }
-
-  const Income = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Income");
-  const incomeLinkInsertQuery = await deep.insert({
-    type_id: Income,
-    from_id: paymentLink.id,
-    to_id: storageClientLinkId,
-  });
-  if(incomeLinkInsertQuery.error) {throw new Error(incomeLinkInsertQuery.error.message);}
-  const incomeLinkId = incomeLinkInsertQuery.data[0].id;
-  console.log({incomeLinkId});
+    console.log({storageClientLinkSelectQuery});
+    if(storageClientLinkSelectQuery.error) {throw new Error(storageClientLinkSelectQuery.error.message);}
+    
+    if(fromLinkOfPayment.type_id !== StorageClient) {
+      var storageClientLinkId;
+      if(storageClientLinkSelectQuery.data.length === 0) {
+        const StorageClient = await deep.id("@deep-foundation/payments-tinkoff-c2b", "StorageClient");
+        const storageClientLinkInsertQuery = await deep.insert({
+          type_id: StorageClient,
+          number: {data: {value: req.body.CardId}},
+        });
+        console.log({storageClientLinkInsertQuery});
+        if(storageClientLinkInsertQuery.error) {throw new Error(storageClientLinkInsertQuery.error.message);}
+        storageClientLinkId = storageClientLinkInsertQuery.data[0].id;
+    
+        const Title = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Title");
+        const titleLinkInsertQuery = await deep.insert({
+          type_id: Title,
+          from_id: storageClientLinkId,
+          to_id: storageClientLinkId,
+          string: {data: {value: req.body.Pan}},
+        });
+        if(titleLinkInsertQuery.error) {throw new Error(titleLinkInsertQuery.error.message);}
+        const titleLinkId = titleLinkInsertQuery.data[0].id;
+        console.log({titleLinkId});
+      } else {
+        storageClientLinkId = storageClientLinkSelectQuery.data[0];
+      }
+      const Income = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Income");
+      const incomeLinkInsertQuery = await deep.insert({
+        type_id: Income,
+        from_id: paymentLink.id,
+        to_id: storageClientLinkId,
+      });
+      if(incomeLinkInsertQuery.error) {throw new Error(incomeLinkInsertQuery.error.message);}
+      const incomeLinkId = incomeLinkInsertQuery.data[0].id;
+      console.log({incomeLinkId});
+      
+    }
   } 
   res.send('ok');
 };
@@ -1364,6 +1370,8 @@ async (
 
     const callTests = async () => {
       console.log('callTests-start');
+
+      const PRICE = 5500;
 
       const callRealizationTests = async () => {
         const testInit = async () => {
@@ -1978,22 +1986,28 @@ async (
       console.log('testGetCardList-end');
       };
       */
-        {
-          const { createdLinks } = await testInit();
-          await deep.delete(createdLinks.map((link) => link.id));
-        }
-        {
-          const { createdLinks } = await testFinishAuthorize();
-          await deep.delete(createdLinks.map((link) => link.id));
-        }
-        {
-          const { createdLinks } = await testConfirm();
-          await deep.delete(createdLinks.map((link) => link.id));
-        }
 
-        await deep.delete(createdLinkIds);
+      const callTest = async (testFunction) => {
+        const { createdLinks } = await testFunction();
+        for (const createdLink of createdLinks) {
+          if(createdLink.type_id === Pay) {
+            const errorLinkSelectQuery = await deep.select({
+              type_id: Error,
+              to_id: createdLink.id
+            });
+            createdLinks.push(...errorLinkSelectQuery.data);
+          }
+        }
+        await deep.delete(createdLinks.map((link) => link.id));
+      }
 
-        /*await testGetState();
+      await callTest(testInit);
+      await callTest(testFinishAuthorize);
+      await callTest(testConfirm);
+
+      await deep.delete(createdLinkIds);
+
+      /*await testGetState();
       await testGetCardList();*/
       };
 
