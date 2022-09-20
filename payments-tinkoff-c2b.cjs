@@ -24,7 +24,6 @@ var myEnv = dotenv.config();
 dotenvExpand.expand(myEnv);
 
 console.log('Installing payments-tinkoff-c2b package');
-const PRICE = 5500;
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -1022,7 +1021,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
     CustomerKey: deep.linkId,
     NotificationURL: "${process.env.PAYMENTS_C2B_NOTIFICATION_URL}",
     PayType: 'T',
-    Amount: ${PRICE},
+    Amount: sumLink.value.value,
     Description: 'Test shopping',
     Language: 'ru',
     Recurrent: 'Y',
@@ -1035,7 +1034,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
     //     Name: 'Test item',
     //     Price: sum,
     //     Quantity: 1,
-    //     Amount: ${PRICE},
+    //     Amount: sumLink.value.value,
     //     PaymentMethod: 'prepayment',
     //     PaymentObject: 'service',
     //     Tax: 'none',
@@ -1366,6 +1365,8 @@ async (
 
     const callTests = async () => {
       console.log('callTests-start');
+
+      const PRICE = 5500;
 
       const callRealizationTests = async () => {
         const testInit = async () => {
