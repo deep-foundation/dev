@@ -19,6 +19,19 @@ const { get } = require('lodash');
 const {
   default: links,
 } = require('@deep-foundation/deeplinks/imports/router/links');
+const {payInBrowser} = require("./deep-packges/payments/tinkoff/payInBrowser.cjs");
+import {getError} from "./deep-packges/payments/tinkoff/getError.cjs";
+import { generateToken, generateTokenStringWithInsertedTerminalPassword } from "./deep-packges/payments/tinkoff/generateToken.cjs";
+import { getUrl } from "./deep-packges/payments/tinkoff/getUrl.cjs";
+import { getState } from "./deep-packges/payments/tinkoff/getState.cjs";
+import { checkOrder } from "./deep-packges/payments/tinkoff/checkOrder.cjs";
+import { getCardList } from "./deep-packges/payments/tinkoff/getCardList.cjs";
+import { init } from "./deep-packges/payments/tinkoff/init.cjs";
+import { charge } from "./deep-packges/payments/tinkoff/charge.cjs";
+import { addCustomer } from "./deep-packges/payments/tinkoff/addCustomer.cjs";
+import { getCustomer } from "./deep-packges/payments/tinkoff/getCustomer.cjs";
+import { removeCustomer } from "./deep-packges/payments/tinkoff/removeCustomer.cjs";
+import { handlersDependencies } from "./deep-packges/payments/tinkoff/handlersDependencies.cjs";
 
 var myEnv = dotenv.config();
 dotenvExpand.expand(myEnv);
@@ -26,96 +39,6 @@ dotenvExpand.expand(myEnv);
 console.log('Installing payments-tinkoff-c2b package');
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-
-const payInBrowser = async ({ page, browser, url }) => {
-  await page.goto(url, { waitUntil: 'networkidle2' });
-  await sleep(5000);
-  const oldForm = await page.evaluate(() => {
-    return !!document.querySelector(
-      'input[automation-id="tui-input-card-grouped__card"]'
-    );
-  });
-  if (oldForm) {
-    console.log('OLD FORM!!!!!!!');
-    // Старая форма используется на тестовом сервере
-    const cvc1 = await page.evaluate(() => {
-      return !!document.querySelector(
-        'button[automation-id="pay-card__submit"]'
-      );
-    });
-    if (cvc1) {
-      await page.waitForSelector(
-        'input[automation-id="tui-input-card-grouped__card"]'
-      );
-      await sleep(300);
-      await page.type(
-        'input[automation-id="tui-input-card-grouped__card"]',
-        process.env.PAYMENTS_C2B_CARD_NUMBER_SUCCESS
-      ); // card number
-      await sleep(300);
-      await page.keyboard.press('Tab');
-      await sleep(300);
-      await page.type(
-        'input[automation-id="tui-input-card-grouped__expire"]',
-        process.env.PAYMENTS_C2B_CARD_EXPDATE
-      ); // expired date
-      await sleep(300);
-      await page.keyboard.press('Tab');
-      await sleep(300);
-      await page.type(
-        'input[automation-id="tui-input-card-grouped__cvc"]',
-        process.env.PAYMENTS_C2B_CARD_CVC
-      ); // CVC code
-      await sleep(300);
-      await page.click('button[automation-id="pay-card__submit"]'); // submit button
-    } else {
-      await page.waitForSelector(
-        'input[automation-id="tui-input-card-grouped__card"]'
-      );
-      await sleep(300);
-      await page.type(
-        'input[automation-id="tui-input-card-grouped__card"]',
-        process.env.PAYMENT_E2C_CARD_NUMBER_SUCCESS
-      ); // card number
-      await sleep(300);
-      await page.keyboard.press('Tab');
-      await sleep(300);
-      await page.type(
-        'input[automation-id="tui-input-card-grouped__expire"]',
-        process.env.PAYMENT_E2C_CARD_EXPDATE
-      ); // expired date
-      await sleep(300);
-      await page.keyboard.press('Tab');
-      await sleep(300);
-      await page.type(
-        'input[automation-id="tui-input-card-grouped__cvc"]',
-        process.env.PAYMENT_E2C_CARD_CVC
-      ); // CVC code
-      await sleep(300);
-      await page.click('button[automation-id="pay-wallet__submit"]'); // submit button
-      await sleep(300);
-      await page.waitForSelector('input[name="password"]');
-      const code = prompt('enter code ');
-      console.log('code', code);
-      await page.type('input[name="password"]', code);
-      await sleep(1000);
-    }
-    // TODO: пока старая форма вызывалась только на тестовой карте, где ввод смс кода не нужен
-    await sleep(1000);
-  } else {
-    console.log('NEW FORM!!!!!!!');
-    await page.type('#pan', process.env.PAYMENT_E2C_CARD_NUMBER_SUCCESS); // card number
-    await page.type('#expDate', process.env.PAYMENT_E2C_CARD_EXPDATE); // expired date
-    await page.type('#card_cvc', process.env.PAYMENT_E2C_CARD_CVC); // CVC code
-    await page.click('button[type=submit]'); // submit button
-    await page.waitForSelector('input[name="password"]');
-    const code = prompt('enter code ');
-    console.log('code', code);
-    await page.type('input[name="password"]', code);
-    await sleep(3000);
-  }
-  await browser.close();
-};
 
 const allCreatedLinkIds = [];
 
@@ -138,386 +61,6 @@ const installPackage = async () => {
   const deep = new DeepClient({ deep: guestDeep, ...admin });
 
   try {
-
-    const errorsConverter = {
-      7: 'Покупатель не найден',
-      53: 'Обратитесь к продавцу',
-      99: 'Платеж отклонен',
-      100: 'Повторите попытку позже',
-      101: 'Не пройдена идентификация 3DS',
-      102: 'Операция отклонена, пожалуйста обратитесь в интернет-магазин или воспользуйтесь другой картой',
-      103: 'Повторите попытку позже',
-      119: 'Превышено кол-во запросов на авторизацию',
-      191: 'Некорректный статус договора, обратитесь к вашему менеджеру',
-      1001: 'Свяжитесь с банком, выпустившим карту, чтобы провести платеж',
-      1003: 'Неверный merchant ID',
-      1004: 'Карта украдена. Свяжитесь с банком, выпустившим карту',
-      1005: 'Платеж отклонен банком, выпустившим карту',
-      1006: 'Свяжитесь с банком, выпустившим карту, чтобы провести платеж',
-      1007: 'Карта украдена. Свяжитесь с банком, выпустившим карту',
-      1008: 'Платеж отклонен, необходима идентификация',
-      1012: 'Такие операции запрещены для этой карты',
-      1013: 'Повторите попытку позже',
-      1014: 'Карта недействительна. Свяжитесь с банком, выпустившим карту',
-      1015: 'Попробуйте снова или свяжитесь с банком, выпустившим карту',
-      1019: 'Платеж отклонен — попробуйте снова',
-      1030: 'Повторите попытку позже',
-      1033: 'Истек срок действия карты. Свяжитесь с банком, выпустившим карту',
-      1034: 'Попробуйте повторить попытку позже',
-      1038: 'Превышено количество попыток ввода ПИН-кода',
-      1039: 'Платеж отклонен — счет не найден',
-      1041: 'Карта утеряна. Свяжитесь с банком, выпустившим карту',
-      1043: 'Карта украдена. Свяжитесь с банком, выпустившим карту',
-      1051: 'Недостаточно средств на карте',
-      1053: 'Платеж отклонен — счет не найден',
-      1054: 'Истек срок действия карты',
-      1055: 'Неверный ПИН',
-      1057: 'Такие операции запрещены для этой карты',
-      1058: 'Такие операции запрещены для этой карты',
-      1059: 'Подозрение в мошенничестве. Свяжитесь с банком, выпустившим карту',
-      1061: 'Превышен дневной лимит платежей по карте',
-      1062: 'Платежи по карте ограничены',
-      1063: 'Операции по карте ограничены',
-      1064: 'Проверьте сумму',
-      1065: 'Превышен дневной лимит транзакций',
-      1075: 'Превышено число попыток ввода ПИН-кода',
-      1076: 'Платеж отклонен — попробуйте снова',
-      1077: 'Коды не совпадают — попробуйте снова',
-      1080: 'Неверный срок действия',
-      1082: 'Неверный CVV',
-      1086: 'Платеж отклонен — не получилось подтвердить ПИН-код',
-      1088: 'Ошибка шифрования. Попробуйте снова',
-      1089: 'Попробуйте повторить попытку позже',
-      1091: 'Банк, выпустивший карту недоступен для проведения авторизации',
-      1092: 'Платеж отклонен — попробуйте снова',
-      1093: 'Подозрение в мошенничестве. Свяжитесь с банком, выпустившим карту',
-      1094: 'Системная ошибка',
-      1096: 'Повторите попытку позже',
-      9999: 'Внутренняя ошибка системы',
-    };
-
-    const getError = (errorCode) =>
-      errorCode === '0' ? undefined : errorsConverter[errorCode] || 'broken';
-
-    const _generateToken = (dataWithPassword) => {
-      const dataString = Object.keys(dataWithPassword)
-        .sort((a, b) => a.localeCompare(b))
-        .map((key) => dataWithPassword[key])
-        .reduce((acc, item) => `${acc}${item}`, '');
-      console.log({ dataString });
-      const hash = crypto.createHash('sha256').update(dataString).digest('hex');
-      console.log({ hash });
-      return hash;
-    };
-
-    const generateToken = (data) => {
-      const { Receipt, DATA, Shops, ...restData } = data;
-      const dataWithPassword = {
-        ...restData,
-        Password: process.env.PAYMENTS_C2B_TERMINAL_PASSWORD,
-      };
-      console.log({ dataWithPassword });
-      return _generateToken(dataWithPassword);
-    };
-    const generateTokenString = generateToken
-      .toString()
-      .replace(
-        'process.env.PAYMENTS_C2B_TERMINAL_PASSWORD',
-        `"${process.env.PAYMENTS_C2B_TERMINAL_PASSWORD}"`
-      );
-    console.log({ generateTokenString });
-
-    const getUrl = (method) =>
-      `${process.env.PAYMENTS_C2B_URL}/${method}`;
-    getUrlString = getUrl
-      .toString()
-      .replace(
-        '${process.env.PAYMENTS_C2B_URL}',
-        process.env.PAYMENTS_C2B_URL
-      );
-    console.log({ getUrlString });
-
-    const getMarketUrl = (method) =>
-      `${process.env.PAYMENT_TINKOFF_MARKET_URL}/${method}`;
-
-    const getState = async (options) => {
-      try {
-        const response = await axios({
-          method: 'post',
-          url: getUrl('GetState'),
-          data: { ...options, Token: generateToken(options) },
-        });
-
-        const error = getError(response.data.ErrorCode);
-
-        return {
-          error,
-          request: options,
-          response: response.data,
-        };
-      } catch (error) {
-        return {
-          error,
-          request: options,
-          response: null,
-        };
-      }
-    };
-
-    const checkOrder = async (options) => {
-      try {
-        const response = await axios({
-          method: 'post',
-          url: getUrl('CheckOrder'),
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          data: { ...options, Token: generateToken(options) },
-        });
-
-        const error = getError(response.data.ErrorCode);
-
-        return {
-          error,
-          request: options,
-          response: response.data,
-        };
-      } catch (error) {
-        return {
-          error,
-          request: options,
-          response: null,
-        };
-      }
-    };
-
-    const getCardList = async (options) => {
-      try {
-        const response = await axios({
-          method: 'post',
-          url: getUrl('GetCardList'),
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          data: { ...options, Token: generateToken(options) },
-        });
-
-        const error = getError(response.data.ErrorCode || '0');
-
-        return {
-          error,
-          request: options,
-          response: response.data,
-        };
-      } catch (error) {
-        return {
-          error,
-          request: options,
-          response: null,
-        };
-      }
-    };
-
-    const init = async (options) => {
-      try {
-        const response = await axios({
-          method: 'post',
-          url: getUrl('Init'),
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          data: { ...options, Token: generateToken(options) },
-        });
-
-        const error = getError(response.data.ErrorCode);
-
-        return {
-          error,
-          request: options,
-          response: response.data,
-        };
-      } catch (error) {
-        return {
-          error,
-          request: options,
-          response: null,
-        };
-      }
-    };
-
-    const confirm = async (options) => {
-      try {
-        const response = await axios({
-          method: 'post',
-          url: getUrl('Confirm'),
-          data: { ...options, Token: generateToken(options) },
-        });
-
-        const error = getError(response.data.ErrorCode);
-
-        return {
-          error,
-          request: options,
-          response: response.data,
-        };
-      } catch (error) {
-        return {
-          error,
-          request: options,
-          response: null,
-        };
-      }
-    };
-
-    const resend = async (options) => {
-      try {
-        const response = await axios({
-          method: 'post',
-          url: getUrl('Resend'),
-          data: { ...options, Token: generateToken(options) },
-        });
-
-        const error = getError(response.data.ErrorCode);
-
-        return {
-          error,
-          request: options,
-          response: response.data,
-        };
-      } catch (error) {
-        return {
-          error,
-          request: options,
-          response: null,
-        };
-      }
-    };
-
-    const charge = async (options) => {
-      try {
-        const response = await axios({
-          method: 'post',
-          url: getUrl('Charge'),
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          data: { ...options, Token: generateToken(options) },
-        });
-
-        const error = getError(response.data.ErrorCode);
-
-        return {
-          error,
-          request: options,
-          response: response.data,
-        };
-      } catch (error) {
-        return {
-          error,
-          request: options,
-          response: null,
-        };
-      }
-    };
-
-    const addCustomer = async (options) => {
-      try {
-        const response = await axios({
-          method: 'post',
-          url: getUrl('AddCustomer'),
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          data: { ...options, Token: generateToken(options) },
-        });
-
-        const error = getError(response.data.ErrorCode);
-
-        return {
-          error,
-          request: options,
-          response: response.data,
-        };
-      } catch (error) {
-        return {
-          error,
-          request: options,
-          response: null,
-        };
-      }
-    };
-
-    const getCustomer = async (options) => {
-      try {
-        const response = await axios({
-          method: 'post',
-          url: getUrl('GetCustomer'),
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          data: { ...options, Token: generateToken(options) },
-        });
-
-        const error = getError(response.data.ErrorCode);
-
-        return {
-          error,
-          request: options,
-          response: response.data,
-        };
-      } catch (error) {
-        return {
-          error,
-          request: options,
-          response: null,
-        };
-      }
-    };
-
-    const removeCustomer = async (options) => {
-      try {
-        const response = await axios({
-          method: 'post',
-          url: getUrl('RemoveCustomer'),
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          data: { ...options, Token: generateToken(options) },
-        });
-
-        const error = getError(response.data.ErrorCode);
-
-        return {
-          error,
-          request: options,
-          response: response.data,
-        };
-      } catch (error) {
-        return {
-          error,
-          request: options,
-          response: null,
-        };
-      }
-    };
-
-    const getBankPaymentId = async (orderId) => {
-      const checkOrderOptions = {
-        TerminalKey: process.env.PAYMENTS_C2B_TERMINAL_KEY,
-        OrderId: orderId,
-      };
-
-      const checkOrderResult = await checkOrder(checkOrderOptions);
-      expect(checkOrderResult.error).to.equal(undefined);
-
-      console.log({ checkOrderResponse: checkOrderResult });
-
-      const { PaymentId: bankPaymentId } = checkOrderResult.response.Payments[0];
-
-      console.log({ bankPaymentId });
-      return bankPaymentId;
-    };
-
     const User = await deep.id('@deep-foundation/core', 'User');
     const Type = await deep.id('@deep-foundation/core', 'Type');
     const Any = await deep.id('@deep-foundation/core', 'Any');
@@ -534,7 +77,6 @@ const installPackage = async () => {
     );
     const Handler = await deep.id('@deep-foundation/core', 'Handler');
     const HandleInsert = await deep.id('@deep-foundation/core', 'HandleInsert');
-    const HandleDelete = await deep.id('@deep-foundation/core', 'HandleDelete');
 
     const Tree = await deep.id('@deep-foundation/core', 'Tree');
     const TreeIncludeNode = await deep.id(
@@ -947,15 +489,7 @@ const installPackage = async () => {
     });
     console.log({ Income });
 
-    const handlersDependencies = `
-  const crypto = require('crypto');
-  const axios = require('axios');
-  const errorsConverter = ${JSON.stringify(errorsConverter)};
-  const getError = ${getError.toString()};
-  const getUrl = ${getUrlString};
-  const _generateToken = ${_generateToken.toString()};
-  const generateToken = ${generateTokenString};
-  `;
+
     console.log({ handlersDependencies });
     const payInsertHandler = `
 async ({ deep, require, data: { newLink: payLink } }) => {
@@ -1000,8 +534,6 @@ async ({ deep, require, data: { newLink: payLink } }) => {
   if(storageBusinessLinkSelectQuery.error) { throw new Error(storageBusinessLinkSelectQuery.error.message); }
   const storageBusinessLinkId = storageBusinessLinkSelectQuery.data[0].id;
   console.log({storageBusinessLinkId});
-  
-  const init = ${init.toString()};
 
   const Token = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Token");
   const tokenLinkSelectQuery = await deep.select({
@@ -1012,6 +544,8 @@ async ({ deep, require, data: { newLink: payLink } }) => {
   if(tokenLinkSelectQuery.error) {throw new Error(tokenLinkSelectQuery.error.message);}
   const tokenLink = tokenLinkSelectQuery.data[0];
   console.log({tokenLink});
+
+  const init = ${init.toString()};
 
   // TODO Add default card
   const options = {
