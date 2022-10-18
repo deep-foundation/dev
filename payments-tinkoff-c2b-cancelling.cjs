@@ -27,8 +27,6 @@ dotenvExpand.expand(myEnv);
 
 console.log("Installing @deep-foundation/payments-tinkoff-c2b-cancelling package");
 
-const PRICE = 5500;
-
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const allCreatedLinkIds = [];
@@ -551,6 +549,8 @@ async (
 
     const callTests = async () => {
       console.log('callTests-start');
+
+      const PRICE = 5500;
 
       const callRealizationTests = async () => {
         const testInit = async () => {
