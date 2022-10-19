@@ -44,7 +44,7 @@ const f = async () => {
       },
     ] },
   });
-  await delay(1000);
+  await delay(7000);
   await deep.insert({
     type_id: deep.idSync('@deep-foundation/core', 'Join'),
     from_id: await deep.id('@deep-foundation/tsx'),
