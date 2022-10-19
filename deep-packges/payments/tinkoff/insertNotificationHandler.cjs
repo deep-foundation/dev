@@ -151,7 +151,7 @@ async (
 };
 `;
 
-await baseInsertNotificationHandler({adminId, containTypeId, deep, fileTypeId, handlerName: "tinkoffNotificationHandler", handleRouteTypeId,handlerTypeId,notificationPort,notificationRoute,portTypeId,routerListeningTypeId,routerStringUseTypeId,routerTypeId,routeTypeId,supportsId, code});
+return await baseInsertNotificationHandler({adminId, containTypeId, deep, fileTypeId, handlerName: "tinkoffNotificationHandler", handleRouteTypeId,handlerTypeId,notificationPort,notificationRoute,portTypeId,routerListeningTypeId,routerStringUseTypeId,routerTypeId,routeTypeId,supportsId, code});
 }
 
 exports.insertNotificationHandler = insertNotificationHandler;

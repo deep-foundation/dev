@@ -1,8 +1,9 @@
+const { insertHandler } = require("../../insertHandler.cjs");
 const {handlersDependencies} = require("./handlersDependencies.cjs");
 const {init} = require("./init.cjs");
 
-const insertPayInsertHandler = async ({deep, notificationUrl, userEmail, userPhone, fileTypeId, containTypeId, packageId, supportsId, handlerTypeId, handlerInsertTypeId, containTypeId}) => {
-    const payInsertHandlerCode = `
+const insertPayInsertHandler = async ({deep, notificationUrl, userEmail, userPhone, fileTypeId, containTypeId, packageId, supportsId, handlerInsertTypeId, containTypeId}) => {
+    const code = `
 async ({ deep, require, data: { newLink: payLink } }) => {
   ${handlersDependencies}
 
@@ -121,53 +122,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
 };
 `;
 
-const {
-    data: [{ id: payInsertHandlerId }],
-  } = await deep.insert({
-    type_id: fileTypeId,
-    in: {
-      data: [
-        {
-          type_id: containTypeId,
-          from_id: packageId, // before created package
-          string: { data: { value: 'payInsertHandlerFile' } },
-        },
-        {
-          from_id: supportsId,
-          type_id: handlerTypeId,
-          in: {
-            data: [
-              {
-                type_id: containTypeId,
-                from_id: packageId, // before created package
-                string: { data: { value: 'payInsertHandler' } },
-              },
-              {
-                type_id: handlerInsertTypeId,
-                from_id: payTypeId,
-                in: {
-                  data: [
-                    {
-                      type_id: containTypeId,
-                      from_id: packageId, // before created package
-                      string: { data: { value: 'payInsertHandle' } },
-                    },
-                  ],
-                },
-              },
-            ],
-          },
-        },
-      ],
-    },
-    string: {
-      data: {
-        value: payInsertHandlerCode,
-      },
-    },
-  });
-
-  return payInsertHandlerId;
+return await insertHandler({deep, fileTypeId, fileName: 'payInsertHandlerFile', handlerName: 'payInsertHandler', handleName: 'payInsertHandle', triggerTypeId, code, supportsId, handleOperationTypeId, containTypeId, packageId, handlerTypeId: handlerInsertTypeId, code});
 }
 
 exports.insertPayInsertHandler = insertPayInsertHandler;
