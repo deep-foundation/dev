@@ -53,6 +53,8 @@ const installPackage = async () => {
 		'dockerSupportsJs'
 	);
 	const handleInsertTypeId = await deep.id('@deep-foundation/core', 'HandleInsert');
+	const handleUpdateTypeId = await deep.id('@deep-foundation/core', 'HandleUpdate');
+	const handleDeleteTypeId = await deep.id('@deep-foundation/core', 'HandleDelete');
 	const portTypeId = await deep.id('@deep-foundation/core', 'Port');
 	const routerListeningTypeId = await deep.id('@deep-foundation/core', 'RouterListening');
 	const routerTypeId = await deep.id('@deep-foundation/core', 'Router');
@@ -253,7 +255,7 @@ const installPackage = async () => {
 			fileName: "updateHandlerFile",
 			handlerName: "updateHandler",
 			handleName: "updateHandle",
-			handleOperationTypeId: HandleUpdate,
+			handleOperationTypeId: handleUpdateTypeId,
 			supportsId: plv8SupportsJsId,
 			triggerTypeId: anyTypeId,
 			containTypeId,
@@ -285,7 +287,7 @@ const installPackage = async () => {
 			fileName: "deleteHandlerFile",
 			handlerName: "deleteHandler",
 			handleName: "deleteHandle",
-			handleOperationTypeId: HandleDelete,
+			handleOperationTypeId: handleDeleteTypeId,
 			supportsId: plv8SupportsJsId,
 			triggerTypeId: anyTypeId,
 			containTypeId,
@@ -296,6 +298,10 @@ const installPackage = async () => {
 		}
 	);
 	console.log({ deleteHandlerId });
+
+	const callTests = async () => {
+		callTests
+	}
 };
 
 installPackage();
