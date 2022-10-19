@@ -59,7 +59,7 @@ const installPackage = async () => {
 	const {
 		data: [{ id: logInsertTypeId }],
 	} = await deep.insert({
-		type_id: TypeTypeId,
+		type_id: Type,
 		from_id: Any,
 		to_id: Any,
 		in: {
@@ -75,7 +75,7 @@ const installPackage = async () => {
 	const {
 		data: [{ id: logUpdateTypeId }],
 	} = await deep.insert({
-		type_id: TypeTypeId,
+		type_id: Type,
 		from_id: Any,
 		to_id: Any,
 		in: {
@@ -91,7 +91,7 @@ const installPackage = async () => {
 	const {
 		data: [{ id: logDeleteTypeId }],
 	} = await deep.insert({
-		type_id: TypeTypeId,
+		type_id: Type,
 		from_id: Any,
 		to_id: Any,
 		in: {
@@ -107,7 +107,7 @@ const installPackage = async () => {
 	const {
 		data: [{ id: logTypeTypeId }],
 	} = await deep.insert({
-		type_id: TypeTypeId,
+		type_id: Type,
 		from_id: Any,
 		to_id: Any,
 		in: {
@@ -123,7 +123,7 @@ const installPackage = async () => {
 	const {
 		data: [{ id: logObjectTypeId }],
 	} = await deep.insert({
-		type_id: TypeTypeId,
+		type_id: Type,
 		from_id: Any,
 		to_id: Any,
 		in: {
