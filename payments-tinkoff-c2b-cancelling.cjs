@@ -21,6 +21,7 @@ const { init } = require("./deep-packges/payments/tinkoff/init.cjs");
 const { cancel } = require("./deep-packges/payments/tinkoff/cancel.cjs");
 const { handlersDependencies } = require("./deep-packges/payments/tinkoff/handlersDependencies.cjs");
 const { insertPayInsertHandler } = require("./deep-packges/payments/tinkoff/cancelling/insertPayInsertHandler.cjs");
+const { insertNotificationHandler } = require("./deep-packges/payments/tinkoff/cancelling/insertNotificationHandler.cjs");
 
 var myEnv = dotenv.config();
 dotenvExpand.expand(myEnv);
@@ -60,14 +61,33 @@ const installPackage = async () => {
     const String = await deep.id('@deep-foundation/core', 'String');
     const packageTypeId = await deep.id('@deep-foundation/core', 'Package');
 
+    const HandleDelete = await deep.id('@deep-foundation/core', 'HandleDelete');
     const syncTextFileTypeId = await deep.id('@deep-foundation/core', 'SyncTextFile');
+    const dockerSupportsJs = await deep.id(
+      '@deep-foundation/core',
+      'dockerSupportsJs'
+    );
+    const handleInsertTypeId = await deep.id('@deep-foundation/core', 'HandleInsert');
+    const portTypeId = await deep.id('@deep-foundation/core', 'Port');
+    const routerListeningTypeId = await deep.id('@deep-foundation/core', 'RouterListening');
+    const routerTypeId = await deep.id('@deep-foundation/core', 'Router');
+    const routerStringUseTypeId = await deep.id(
+      '@deep-foundation/core',
+      'RouterStringUse'
+    );
+    const routeTypeId = await deep.id('@deep-foundation/core', 'Route');
+    const handleRouteTypeId = await deep.id(
+      '@deep-foundation/core',
+      'HandleRoute'
+    );
+    const handlerTypeId = await deep.id(
+      '@deep-foundation/core',
+      'Handler'
+    );
     const dockerSupportsJsId = await deep.id(
       '@deep-foundation/core',
       'dockerSupportsJs'
     );
-    const handlerTypeId = await deep.id('@deep-foundation/core', 'Handler');
-    const handleInsertTypeId = await deep.id('@deep-foundation/core', 'HandleInsert');
-    const HandleDelete = await deep.id('@deep-foundation/core', 'HandleDelete');
 
     const Tree = await deep.id('@deep-foundation/core', 'Tree');
     const TreeIncludeNode = await deep.id(
@@ -245,77 +265,7 @@ const installPackage = async () => {
     
 
     await insertPayInsertHandler({containTypeId, deep, dockerSupportsJsId, handleInsertTypeId, handlerTypeId, packageId, syncTextFileTypeId, terminayKey: process.env.PAYMENTS_C2B_TERMINAL_KEY});
-
-    const tinkoffNotificationHandler = `
-async (
-  req,
-  res,
-  next,
-  { deep, require, gql }
-) => {
-  ${handlersDependencies}
-  const reqBody = req.body;
-  console.log({reqBody});
-
-  // Canceled is used instead of Cancelled because tinkoff team is not goos at english 
-  if (req.body.Status !== 'CANCELED') {
-    return next();
-  }
-
-  const TinkoffProvider = await deep.id("@deep-foundation/payments-tinkoff-c2b", "TinkoffProvider");
-  const tinkoffProviderLinkSelectQuery = await deep.select({
-    type_id: TinkoffProvider
-  });
-  if(tinkoffProviderLinkSelectQuery.error) {throw new Error(tinkoffProviderLinkSelectQuery.error.message);}
-  const tinkoffProviderLink = tinkoffProviderLinkSelectQuery.data[0];
-
-  const cancellingPaymentLinkSelectQuery = await deep.select({
-    object: {value: {_contains: {orderId: req.body.OrderId}}}
-  });
-  if(cancellingPaymentLinkSelectQuery.error) { throw new Error(cancellingPaymentLinkSelectQuery.error.message); }
-  const cancellingPaymentLink = cancellingPaymentLinkSelectQuery.data[0];
-  console.log({cancellingPaymentLink});
-  if(!cancellingPaymentLink) { throw new Error("The cancelling payment link associated with the order id " + req.body.OrderId + " is not found."); }
-
-  const {data: mpUpCancellingPaymentLink, error: mpUpcancellingPaymentLinkSelectQueryError} = await deep.select({
-    up: {
-      parent_id: { _eq: cancellingPaymentLink.id },
-      tree_id: { _eq: await deep.id("@deep-foundation/payments-tinkoff-c2b", "paymentTree") }
-    }
-  });
-  console.log({mpUpCancellingPaymentLink});
-  if(mpUpcancellingPaymentLinkSelectQueryError) { throw new Error(mpUpcancellingPaymentLinkSelectQueryError.message); }
-
-  const Pay = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Pay");
-  const payLink = mpUpCancellingPaymentLink.find(link => link.type_id === Pay);
-  console.log({payLink});
-  if(!payLink) { throw new Error("The pay link associated with cancelling payment link " + cancellingPaymentLink + " is not found.") }
-
-
-  const bankPaymentId = req.body.PaymentId;
-
-  const {data: mpUpPayment, error: mpUpPaymentLinkSelectQueryError} = await deep.select({
-    up: {
-      parent_id: { _eq: cancellingPaymentLink.id },
-      tree_id: { _eq: await deep.id("@deep-foundation/payments-tinkoff-c2b", "paymentTree") }
-    }
-  });
-
-  const Sum = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Sum")
-  const sumLink = mpUpPayment.find(link => link.type_id === Sum);
-  if(!sumLink) {throw new Error("Could not find sum link associated with the cancelling payment " + cancellingPaymentLink);}
-  
-  const Payed = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Payed")
-  const payedInsertLinkInsertQuery = await deep.insert({
-    type_id: Payed,
-    from_id: tinkoffProviderLink.id,
-    to_id: sumLink.id,
-  });
-  if(payedInsertLinkInsertQuery.error) {throw new Error(payedInsertLinkInsertQuery.error.message);}
-
-  res.send('ok');
-};
-`;
+    await insertNotificationHandler({deep, adminId: await deep.id('deep', 'admin'), containTypeId, fileTypeId: syncTextFileTypeId, handleRouteTypeId, handlerTypeId, notificationPort: process.env.PAYMENTS_C2B_NOTIFICATION_PORT, notificationRoute: process.env.PAYMENTS_C2B_NOTIFICATION_ROUTE, portTypeId, routerListeningTypeId, routerStringUseTypeId, routerTypeId, routeTypeId, supportsId});
 
     await deep.insert(
       {
