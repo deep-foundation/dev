@@ -244,7 +244,7 @@ const installPackage = async () => {
 
     
 
-    await insertPayInsertHandler({});
+    await insertPayInsertHandler({containTypeId, deep, dockerSupportsJsId, handleInsertTypeId, handlerTypeId, packageId, syncTextFileTypeId, terminayKey: process.env.PAYMENTS_C2B_TERMINAL_KEY});
 
     const tinkoffNotificationHandler = `
 async (
