@@ -16,19 +16,15 @@ const axios = require('axios');
 const uniqid = require('uniqid');
 const { expect } = require('chai');
 const { get } = require('lodash');
-const {
-	default: links,
-} = require('@deep-foundation/deeplinks/imports/router/links');
-const {
-	insertHandler,
-} = require('@deep-foundation/deeplinks/imports/handlers');
+const {default: links} = require('@deep-foundation/deeplinks/imports/router/links');
+const {insertHandler} = require('./deep-packages/insertHandler.cjs');
+const {sleep} = require('./deep-packages/sleep.cjs');
 
 var myEnv = dotenv.config();
 dotenvExpand.expand(myEnv);
 
 console.log('Installing payments-tinkoff-c2b package');
 
-const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const allCreatedLinkIds = [];
 
@@ -57,7 +53,7 @@ const installPackage = async () => {
 	const plv8SupportsJsId = await deep.id(
 		'@deep-foundation/core',
 		'plv8SupportsJs'
-	  );
+	);
 
 
 	const {
@@ -108,60 +104,7 @@ const installPackage = async () => {
 	});
 	console.log({ LogDelete });
 
-	const insertHandler = async ({fileName, handlerName, handleName, triggerTypeId, code, supportsId, handleOperationTypeId}) => {
-		const {
-			data: [{ id: handlerId }],
-		  } = await deep.insert({
-			type_id: syncTextFileTypeId,
-			in: {
-			  data: [
-				{
-				  type_id: Contain,
-				  from_id: packageLinkId, // before created package
-				  string: { data: { value: fileName } },
-				},
-				{
-				  from_id: supportsId,
-				  type_id: Handler,
-				  in: {
-					data: [
-					  {
-						type_id: Contain,
-						from_id: packageLinkId, // before created package
-						string: { data: { value: handlerName } },
-					  },
-					  {
-						type_id: handleOperationTypeId,
-						from_id: triggerTypeId,
-						in: {
-						  data: [
-							{
-							  type_id: Contain,
-							  from_id: packageLinkId, // before created package
-							  string: { data: { value: handleName } },
-							},
-						  ],
-						},
-					  },
-					],
-				  },
-				},
-			  ],
-			},
-			string: {
-			  data: {
-				value: code,
-			  },
-			},
-		  });
-
-		  return handlerId;
-	  };
-
-
-
-
-	  const insertHandlerId = await insertHandler(
+	const insertHandlerId = await insertHandler(
 		{
 			code: `({deep, data: {newLink}}) => { 
 				const timestamp = Date.now();
@@ -183,15 +126,20 @@ const installPackage = async () => {
 					}
 				})
 			 }`,
-			 fileName: "insertHandlerFile",
-			 handlerName: "insertHandler",
-			 handleName: "insertHandle",
-			 handleOperationTypeId: HandleInsert,
-			 supportsId: plv8SupportsJsId,
-			 triggerTypeId: anyTypeId
+			fileName: "insertHandlerFile",
+			handlerName: "insertHandler",
+			handleName: "insertHandle",
+			handleOperationTypeId: HandleInsert,
+			supportsId: plv8SupportsJsId,
+			triggerTypeId: anyTypeId,
+			containTypeId,
+			deep,
+			fileTypeId: syncTextFileTypeId,
+			handlerTypeId,
+			packageId
 		}
 	);
-	console.log({insertHandlerId});
+	console.log({ insertHandlerId });
 
 	const updateHandlerId = await insertHandler(
 		{
@@ -210,15 +158,20 @@ const installPackage = async () => {
 				   number: {data: {value: timestamp}}
 				})
 			 }`,
-			 fileName: "updateHandlerFile",
-			 handlerName: "updateHandler",
-			 handleName: "updateHandle",
-			 handleOperationTypeId: HandleUpdate,
-			 supportsId: plv8SupportsJsId,
-			 triggerTypeId: anyTypeId
+			fileName: "updateHandlerFile",
+			handlerName: "updateHandler",
+			handleName: "updateHandle",
+			handleOperationTypeId: HandleUpdate,
+			supportsId: plv8SupportsJsId,
+			triggerTypeId: anyTypeId,
+			containTypeId,
+			deep,
+			fileTypeId: syncTextFileTypeId,
+			handlerTypeId,
+			packageId,
 		}
 	);
-	console.log({updateHandlerId});
+	console.log({ updateHandlerId });
 
 	const deleteHandlerId = await insertHandler(
 		{
@@ -237,15 +190,20 @@ const installPackage = async () => {
 				   number: {data: {value: timestamp}}
 				})
 			 }`,
-			 fileName: "deleteHandlerFile",
-			 handlerName: "deleteHandler",
-			 handleName: "deleteHandle",
-			 handleOperationTypeId: HandleDelete,
-			 supportsId: plv8SupportsJsId,
-			 triggerTypeId: anyTypeId
+			fileName: "deleteHandlerFile",
+			handlerName: "deleteHandler",
+			handleName: "deleteHandle",
+			handleOperationTypeId: HandleDelete,
+			supportsId: plv8SupportsJsId,
+			triggerTypeId: anyTypeId,
+			containTypeId,
+			deep,
+			fileTypeId: syncTextFileTypeId,
+			handlerTypeId,
+			packageId
 		}
 	);
-	console.log({deleteHandlerId});
+	console.log({ deleteHandlerId });
 };
 
 installPackage();
