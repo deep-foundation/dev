@@ -48,6 +48,7 @@ const installPackage = async () => {
 	});
 	const deep = new DeepClient({ deep: guestDeep, ...admin });
 
+	const containTypeId = await deep.id('@deep-foundation/core', 'Contain');
 	const typeTypeId = await deep.id('@deep-foundation/core', 'Type');
 	const anyTypeId = await deep.id('@deep-foundation/core', 'Any');
 	const syncTextFileTypeId = await deep.id('@deep-foundation/core', 'SyncTextFile');
@@ -56,6 +57,28 @@ const installPackage = async () => {
 		'plv8SupportsJs'
 	);
 
+	const { data: [{ id: packageId }] } = await deep.insert({
+    type_id: Package,
+    string: { data: { value: `@deep-foundation/payments` } },
+    in: { data: [
+      {
+        type_id: Contain,
+        from_id: deep.linkId
+      },
+    ] },
+    out: { data: [
+      {
+        type_id: Join,
+        to_id: await deep.id('deep', 'users', 'packages'),
+      },
+      {
+        type_id: Join,
+        to_id: await deep.id('deep', 'admin'),
+      },
+    ] },
+  });
+
+  console.log({ packageId });
 
 	const {
 		data: [{ id: logInsertTypeId }],
@@ -65,7 +88,7 @@ const installPackage = async () => {
 		to_id: anyTypeId,
 		in: {
 			data: {
-				type_id: Contain,
+				type_id: containTypeId,
 				from_id: packageId, // before created package
 				string: { data: { value: 'LogInsert' } },
 			},
@@ -81,7 +104,7 @@ const installPackage = async () => {
 		to_id: anyTypeId,
 		in: {
 			data: {
-				type_id: Contain,
+				type_id: containTypeId,
 				from_id: packageId, // before created package
 				string: { data: { value: 'LogUpdate' } },
 			},
@@ -97,7 +120,7 @@ const installPackage = async () => {
 		to_id: anyTypeId,
 		in: {
 			data: {
-				type_id: Contain,
+				type_id: containTypeId,
 				from_id: packageId, // before created package
 				string: { data: { value: 'LogDelete' } },
 			},
@@ -113,7 +136,7 @@ const installPackage = async () => {
 		to_id: anyTypeId,
 		in: {
 			data: {
-				type_id: Contain,
+				type_id: containTypeId,
 				from_id: packageId, // before created package
 				string: { data: { value: 'LogType' } },
 			},
@@ -129,7 +152,7 @@ const installPackage = async () => {
 		to_id: anyTypeId,
 		in: {
 			data: {
-				type_id: Contain,
+				type_id: containTypeId,
 				from_id: packageId, // before created package
 				string: { data: { value: 'LogObject' } },
 			},
