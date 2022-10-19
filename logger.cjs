@@ -23,7 +23,7 @@ const {sleep} = require('./deep-packages/sleep.cjs');
 var myEnv = dotenv.config();
 dotenvExpand.expand(myEnv);
 
-console.log('Installing payments-tinkoff-c2b package');
+console.log('Installing logger package');
 
 
 const allCreatedLinkIds = [];
