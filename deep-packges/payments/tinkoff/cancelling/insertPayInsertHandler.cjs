@@ -142,3 +142,5 @@ const {
 
   return payInsertHandlerLinkId;
 }
+
+exports.insertPayInsertHandler = insertPayInsertHandler;
