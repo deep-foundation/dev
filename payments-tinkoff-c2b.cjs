@@ -20,27 +20,26 @@ const {
   default: links,
 } = require('@deep-foundation/deeplinks/imports/router/links');
 const {payInBrowser} = require("./deep-packges/payments/tinkoff/payInBrowser.cjs");
-import {getError} from "./deep-packges/payments/tinkoff/getError.cjs";
-import { generateToken, generateTokenStringWithInsertedTerminalPassword } from "./deep-packges/payments/tinkoff/generateToken.cjs";
-import { getUrl } from "./deep-packges/payments/tinkoff/getUrl.cjs";
-import { getState } from "./deep-packges/payments/tinkoff/getState.cjs";
-import { checkOrder } from "./deep-packges/payments/tinkoff/checkOrder.cjs";
-import { getCardList } from "./deep-packges/payments/tinkoff/getCardList.cjs";
-import { init } from "./deep-packges/payments/tinkoff/init.cjs";
-import { charge } from "./deep-packges/payments/tinkoff/charge.cjs";
-import { addCustomer } from "./deep-packges/payments/tinkoff/addCustomer.cjs";
-import { getCustomer } from "./deep-packges/payments/tinkoff/getCustomer.cjs";
-import { removeCustomer } from "./deep-packges/payments/tinkoff/removeCustomer.cjs";
-import { handlersDependencies } from "./deep-packges/payments/tinkoff/handlersDependencies.cjs";
-import { insertPayInsertHandler } from "./deep-packges/payments/tinkoff/insertPayInsertHandler.cjs";
-import { insertNotificationHandler } from "./deep-packges/payments/tinkoff/insertNotificationHandler.cjs";
+const {getError} = ("./deep-packges/payments/tinkoff/getError.cjs");
+const { generateToken, generateTokenStringWithInsertedTerminalPassword } = ("./deep-packges/payments/tinkoff/generateToken.cjs");
+const { getUrl } = ("./deep-packges/payments/tinkoff/getUrl.cjs");
+const { getState } = ("./deep-packges/payments/tinkoff/getState.cjs");
+const { checkOrder } = ("./deep-packges/payments/tinkoff/checkOrder.cjs");
+const { getCardList } = ("./deep-packges/payments/tinkoff/getCardList.cjs");
+const { init } = ("./deep-packges/payments/tinkoff/init.cjs");
+const { charge } = ("./deep-packges/payments/tinkoff/charge.cjs");
+const { addCustomer } = ("./deep-packges/payments/tinkoff/addCustomer.cjs");
+const { getCustomer } = ("./deep-packges/payments/tinkoff/getCustomer.cjs");
+const { removeCustomer } = ("./deep-packges/payments/tinkoff/removeCustomer.cjs");
+const { handlersDependencies } = ("./deep-packges/payments/tinkoff/handlersDependencies.cjs");
+const { insertPayInsertHandler } = ("./deep-packges/payments/tinkoff/insertPayInsertHandler.cjs");
+const { insertNotificationHandler } = ("./deep-packges/payments/tinkoff/insertNotificationHandler.cjs");
+const {sleep} = require("./deep-packges/sleep.cjs");
 
 var myEnv = dotenv.config();
 dotenvExpand.expand(myEnv);
 
 console.log('Installing payments-tinkoff-c2b package');
-
-const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const allCreatedLinkIds = [];
 
