@@ -53,10 +53,8 @@ const installPackage = async () => {
 	const packageTypeId = await deep.id('@deep-foundation/core', 'Package');
 	const anyTypeId = await deep.id('@deep-foundation/core', 'Any');
 	const syncTextFileTypeId = await deep.id('@deep-foundation/core', 'SyncTextFile');
-	const plv8SupportsJsId = await deep.id(
-		'@deep-foundation/core',
-		'plv8SupportsJs'
-	);
+	const joinTypeId = await deep.id('@deep-foundation/core', 'Join');
+	const plv8SupportsJsId = await deep.id('@deep-foundation/core','plv8SupportsJs');
 
 	const { data: [{ id: packageId }] } = await deep.insert({
     type_id: packageTypeId,
