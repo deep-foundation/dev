@@ -48,6 +48,7 @@ const installPackage = async () => {
 	});
 	const deep = new DeepClient({ deep: guestDeep, ...admin });
 
+	const anyTypeId = await deep.id('@deep-foundation/core', 'Type');
 	const anyTypeId = await deep.id('@deep-foundation/core', 'Any');
 	const syncTextFileTypeId = await deep.id('@deep-foundation/core', 'SyncTextFile');
 	const plv8SupportsJsId = await deep.id(
