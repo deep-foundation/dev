@@ -1,4 +1,4 @@
-const insertNotificationHandler = async ({deep, notificationPort, notificationRoute, portTypeId, routerListeningTypeId, routerTypeId, routerStringUseTypeId, routeTypeId, handleRouteTypeId, handlerTypeId, supportsId, containTypeId,  adminId, fileTypeId, handlerName}) => {
+const insertNotificationHandler = async ({deep, notificationPort, notificationRoute, portTypeId, routerListeningTypeId, routerTypeId, routerStringUseTypeId, routeTypeId, handleRouteTypeId, handlerTypeId, supportsId, containTypeId,  adminId, fileTypeId, handlerName, code}) => {
 return await deep.insert(
     {
       type_id: portTypeId,
@@ -47,7 +47,7 @@ return await deep.insert(
                                   type_id: fileTypeId,
                                   string: {
                                     data: {
-                                      value: tinkoffNotificationHandlerCode,
+                                      value: code,
                                     },
                                   },
                                   in: {
@@ -80,10 +80,6 @@ return await deep.insert(
       name: 'INSERT_HANDLE_ROUTE_HIERARCHICAL',
     }
   )
-
-  if(error) {
-    throw new Error(error.message);
-  }
 }
 
 exports.insertNotificationHandler = insertNotificationHandler;
