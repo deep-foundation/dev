@@ -15,8 +15,8 @@ const crypto = require('crypto');
 const axios = require('axios');
 const uniqid = require('uniqid');
 const { expect } = require('chai');
-const {payInBrowser} = require("./deep-packges/payments/tinkoff/payInBrowser.cjs");
-const {getError} = require("./deep-packges/payments/tinkoff/getError.cjs");
+const { payInBrowser } = require("./deep-packges/payments/tinkoff/payInBrowser.cjs");
+const { getError } = require("./deep-packges/payments/tinkoff/getError.cjs");
 const { init } = require("./deep-packges/payments/tinkoff/init.cjs");
 const { cancel } = require("./deep-packges/payments/tinkoff/cancel.cjs");
 const { handlersDependencies } = require("./deep-packges/payments/tinkoff/handlersDependencies.cjs");
@@ -262,12 +262,12 @@ const installPackage = async () => {
       },
     });
 
-    
 
-    await insertPayInsertHandler({containTypeId, deep, dockerSupportsJsId, handleInsertTypeId, handlerTypeId, packageId, syncTextFileTypeId, terminayKey: process.env.PAYMENTS_C2B_TERMINAL_KEY});
-    await insertNotificationHandler({deep, adminId: await deep.id('deep', 'admin'), containTypeId, fileTypeId: syncTextFileTypeId, handleRouteTypeId, handlerTypeId, notificationPort: process.env.PAYMENTS_C2B_NOTIFICATION_PORT, notificationRoute: process.env.PAYMENTS_C2B_NOTIFICATION_ROUTE, portTypeId, routerListeningTypeId, routerStringUseTypeId, routerTypeId, routeTypeId, supportsId});
 
-        const callTests = async () => {
+    await insertPayInsertHandler({ containTypeId, deep, dockerSupportsJsId, handleInsertTypeId, handlerTypeId, packageId, syncTextFileTypeId, terminayKey: process.env.PAYMENTS_C2B_TERMINAL_KEY });
+    await insertNotificationHandler({ deep, adminId: await deep.id('deep', 'admin'), containTypeId, fileTypeId: syncTextFileTypeId, handleRouteTypeId, handlerTypeId, notificationPort: process.env.PAYMENTS_C2B_NOTIFICATION_PORT, notificationRoute: process.env.PAYMENTS_C2B_NOTIFICATION_ROUTE, portTypeId, routerListeningTypeId, routerStringUseTypeId, routerTypeId, routeTypeId, supportsId });
+
+    const callTests = async () => {
       console.log('callTests-start');
 
       const PRICE = 5500;
