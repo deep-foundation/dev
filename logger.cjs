@@ -52,7 +52,7 @@ const installPackage = async () => {
 		'@deep-foundation/core',
 		'dockerSupportsJs'
 	);
-	const handleInsertTypeId = await deep.id('@deep-foundation/core', 'handleInsertTypeId');
+	const handleInsertTypeId = await deep.id('@deep-foundation/core', 'HandleInsert');
 	const portTypeId = await deep.id('@deep-foundation/core', 'Port');
 	const routerListeningTypeId = await deep.id('@deep-foundation/core', 'RouterListening');
 	const routerTypeId = await deep.id('@deep-foundation/core', 'Router');
