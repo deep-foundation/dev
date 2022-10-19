@@ -63,22 +63,22 @@ const installPackage = async () => {
     string: { data: { value: `@deep-foundation/payments` } },
     in: { data: [
       {
-        type_id: Contain,
+        type_id: containTypeId,
         from_id: deep.linkId
       },
     ] },
     out: { data: [
       {
-        type_id: Join,
+        type_id: joinTypeId,
         to_id: await deep.id('deep', 'users', 'packages'),
       },
       {
-        type_id: Join,
+        type_id: joinTypeId,
         to_id: await deep.id('deep', 'admin'),
       },
     ] },
   });
-
+	
   console.log({ packageId });
 
 	const {
