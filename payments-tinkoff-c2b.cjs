@@ -158,7 +158,7 @@ const installPackage = async () => {
     console.log({ packageId });
 
     const {
-      data: [{ id: SumProvider }],
+      data: [{ id: sumProviderTypeId }],
     } = await deep.insert({
       type_id: Type,
       from_id: Any,
@@ -172,10 +172,10 @@ const installPackage = async () => {
       },
     });
 
-    console.log({ SumProvider: SumProvider });
+    console.log({ sumProviderTypeId });
 
     const {
-      data: [{ id: TinkoffProvider }],
+      data: [{ id: tinkoffProviderTypeId }],
     } = await deep.insert({
       type_id: Type,
       from_id: Any,
@@ -189,10 +189,10 @@ const installPackage = async () => {
       },
     });
 
-    console.log({ TinkoffProvider });
+    console.log({ tinkoffProviderTypeId });
 
     const {
-      data: [{ id: Payment }],
+      data: [{ id: paymentTypeId }],
     } = await deep.insert({
       type_id: Type,
       from_id: Any,
@@ -206,13 +206,13 @@ const installPackage = async () => {
       },
     });
 
-    console.log({ Payment: Payment });
+    console.log({ paymentTypeId });
 
     const {
-      data: [{ id: Object }],
+      data: [{ id: objectTypeId }],
     } = await deep.insert({
       type_id: Type,
-      from_id: Payment,
+      from_id: paymentTypeId,
       to_id: Any,
       in: {
         data: {
@@ -223,10 +223,10 @@ const installPackage = async () => {
       },
     });
 
-    console.log({ Object: Object });
+    console.log({ objectTypeId });
 
     const {
-      data: [{ id: Sum }],
+      data: [{ id: sumTypeId }],
     } = await deep.insert({
       type_id: Type,
       from_id: Any,
@@ -240,11 +240,11 @@ const installPackage = async () => {
       },
     });
 
-    console.log({ Sum: Sum });
+    console.log({ sumTypeId });
 
     // TODO Rest restrictions
     const {
-      data: [{ id: Pay }],
+      data: [{ id: payTypeId }],
     } = await deep.insert({
       type_id: Type,
       from_id: Any,
@@ -258,10 +258,10 @@ const installPackage = async () => {
       },
     });
 
-    console.log({ Pay: Pay });
+    console.log({ payTypeId });
 
     const {
-      data: [{ id: Url }],
+      data: [{ id: urlTypeId }],
     } = await deep.insert({
       type_id: Type,
       from_id: Any,
@@ -275,10 +275,10 @@ const installPackage = async () => {
       },
     });
 
-    console.log({ Url: Url });
+    console.log({ urlTypeId });
 
     const {
-      data: [{ id: Payed }],
+      data: [{ id: payedTypeId }],
     } = await deep.insert({
       type_id: Type,
       from_id: Any,
@@ -292,10 +292,10 @@ const installPackage = async () => {
       },
     });
 
-    console.log({ Payed: Payed });
+    console.log({ payedTypeId });
 
     const {
-      data: [{ id: Error }],
+      data: [{ id: errorTypeId }],
     } = await deep.insert({
       type_id: Type,
       from_id: Any,
@@ -309,7 +309,7 @@ const installPackage = async () => {
       },
     });
 
-    console.log({ Error: Error });
+    console.log({ errorTypeId });
 
     const {
       data: [{ id: paymentTreeId }],
@@ -326,7 +326,7 @@ const installPackage = async () => {
         data: [
           {
             type_id: TreeIncludeNode,
-            to_id: Payment,
+            to_id: paymentTypeId,
             in: {
               data: [
                 {
@@ -338,7 +338,7 @@ const installPackage = async () => {
           },
           {
             type_id: TreeIncludeUp,
-            to_id: Sum,
+            to_id: sumTypeId,
             in: {
               data: [
                 {
@@ -350,7 +350,7 @@ const installPackage = async () => {
           },
           {
             type_id: TreeIncludeDown,
-            to_id: Object,
+            to_id: objectTypeId,
             in: {
               data: [
                 {
@@ -362,7 +362,7 @@ const installPackage = async () => {
           },
           {
             type_id: TreeIncludeUp,
-            to_id: Error,
+            to_id: errorTypeId,
             in: {
               data: [
                 {
@@ -374,7 +374,7 @@ const installPackage = async () => {
           },
           {
             type_id: TreeIncludeUp,
-            to_id: Payed,
+            to_id: payedTypeId,
             in: {
               data: [
                 {
@@ -386,7 +386,7 @@ const installPackage = async () => {
           },
           {
             type_id: TreeIncludeUp,
-            to_id: Pay,
+            to_id: payTypeId,
             in: {
               data: [
                 {
@@ -398,7 +398,7 @@ const installPackage = async () => {
           },
           {
             type_id: TreeIncludeUp,
-            to_id: Url,
+            to_id: urlTypeId,
             in: {
               data: [
                 {
@@ -413,7 +413,7 @@ const installPackage = async () => {
     });
 
     const {
-      data: [{ id: StorageBusiness }],
+      data: [{ id: storageBusinessTypeId }],
     } = await deep.insert({
       type_id: Type,
       from_id: Any,
@@ -426,9 +426,10 @@ const installPackage = async () => {
         },
       },
     });
+    console.log({storageBusinessTypeId});
 
     const {
-      data: [{ id: Token }],
+      data: [{ id: tokenTypeId }],
     } = await deep.insert({
       type_id: Type,
       from_id: Any,
@@ -441,9 +442,11 @@ const installPackage = async () => {
         },
       },
     });
+    console.log({tokenTypeId});
+
 
     const {
-      data: [{ id: StorageClient }],
+      data: [{ id: storageClientTypeId }],
     } = await deep.insert({
       type_id: Type,
       from_id: Any,
@@ -456,9 +459,10 @@ const installPackage = async () => {
         },
       },
     });
+    console.log({storageClientTypeId});
 
     const {
-      data: [{ id: Title }],
+      data: [{ id: titleTypeId }],
     } = await deep.insert({
       type_id: Type,
       from_id: Any,
@@ -471,10 +475,10 @@ const installPackage = async () => {
         },
       },
     });
-    console.log({ Title });
+    console.log({ Title: titleTypeId });
 
     const {
-      data: [{ id: Income }],
+      data: [{ id: incomeTypeId }],
     } = await deep.insert({
       type_id: Type,
       from_id: Any,
@@ -487,7 +491,7 @@ const installPackage = async () => {
         },
       },
     });
-    console.log({ Income });
+    console.log({ Income: incomeTypeId });
 
 
     console.log({ handlersDependencies });
@@ -634,7 +638,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
                 },
                 {
                   type_id: HandleInsert,
-                  from_id: Pay,
+                  from_id: payTypeId,
                   in: {
                     data: [
                       {
@@ -658,7 +662,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
     });
     console.log({ payInsertHandlerId });
 
-    const tinkoffNotificationHandler = `
+    const tinkoffNotificationHandlerCode = `
 async (
   req,
   res,
@@ -868,7 +872,7 @@ async (
                                     type_id: SyncTextFile,
                                     string: {
                                       data: {
-                                        value: tinkoffNotificationHandler,
+                                        value: tinkoffNotificationHandlerCode,
                                       },
                                     },
                                     in: {
@@ -1199,7 +1203,7 @@ async (
         const {
           data: [{ id: tinkoffProviderLinkId }],
         } = await deep.insert({
-          type_id: TinkoffProvider,
+          type_id: tinkoffProviderTypeId,
           in: {
             data: [
               {
@@ -1216,7 +1220,7 @@ async (
         const {
           data: [{ id: sumProviderLinkId }],
         } = await deep.insert({
-          type_id: SumProvider,
+          type_id: sumProviderTypeId,
           in: {
             data: [
               {
@@ -1233,7 +1237,7 @@ async (
         const {
           data: [{ id: storageBusinessLinkId }],
         } = await deep.insert({
-          type_id: StorageBusiness,
+          type_id: storageBusinessTypeId,
           in: {
             data: [
               {
@@ -1250,7 +1254,7 @@ async (
         const {
           data: [{ id: tokenLinkId }],
         } = await deep.insert({
-          type_id: Token,
+          type_id: tokenTypeId,
           from_id: storageBusinessLinkId,
           to_id: storageBusinessLinkId,
           string: { data: { value: process.env.PAYMENTS_C2B_TERMINAL_KEY } },
@@ -1311,7 +1315,7 @@ async (
           const {
             data: [{ id: paymentLinkId }],
           } = await deep.insert({
-            type_id: Payment,
+            type_id: paymentTypeId,
             object: { data: { value: { orderId: uniqid() } } },
             from_id: deep.linkId,
             to_id: storageBusinessLinkId,
@@ -1331,7 +1335,7 @@ async (
           const {
             data: [{ id: sumLinkId }],
           } = await deep.insert({
-            type_id: Sum,
+            type_id: sumTypeId,
             from_id: sumProviderLinkId,
             to_id: paymentLinkId,
             number: { data: { value: PRICE } },
@@ -1351,7 +1355,7 @@ async (
           const {
             data: [{ id: objectLinkId }],
           } = await deep.insert({
-            type_id: Object,
+            type_id: objectTypeId,
             from_id: paymentLinkId,
             to_id: productLinkId,
             in: {
@@ -1370,7 +1374,7 @@ async (
           const {
             data: [{ id: payLinkId }],
           } = await deep.insert({
-            type_id: Pay,
+            type_id: payTypeId,
             from_id: deep.linkId,
             to_id: sumLinkId,
             in: {
@@ -1389,7 +1393,7 @@ async (
           var urlLinkSelectQuery;
           for (let i = 0; i < 10; i++) {
             urlLinkSelectQuery = await deep.select({
-              type_id: Url,
+              type_id: urlTypeId,
               to_id: payLinkId,
             });
 
@@ -1419,7 +1423,7 @@ async (
           console.log('testFinishAuthorize-start');
           const { createdLinks } = await testInit({ customerKey });
 
-          const urlLink = createdLinks.find(link => link.type_id === Url);
+          const urlLink = createdLinks.find(link => link.type_id === urlTypeId);
           expect(urlLink).to.not.be.equal(undefined)
 
           const url = urlLink.value.value;
@@ -1448,13 +1452,13 @@ async (
 
           const createdLinkIds = [];
 
-          const payLink = createdLinks.find(link => link.type_id === Pay);
+          const payLink = createdLinks.find(link => link.type_id === payTypeId);
           expect(payLink).to.not.be.equal(undefined);
 
           var payedLinkSelectQuery;
           for (let i = 0; i < 10; i++) {
             payedLinkSelectQuery = await deep.select({
-              type_id: Payed,
+              type_id: payedTypeId,
               to_id: payLink.id
             });
 
@@ -1524,9 +1528,9 @@ async (
       const callTest = async (testFunction) => {
         const { createdLinks } = await testFunction();
         for (const createdLink of createdLinks) {
-          if(createdLink.type_id === Pay) {
+          if(createdLink.type_id === payTypeId) {
             const errorLinkSelectQuery = await deep.select({
-              type_id: Error,
+              type_id: errorTypeId,
               to_id: createdLink.id
             });
             createdLinks.push(...errorLinkSelectQuery.data);
