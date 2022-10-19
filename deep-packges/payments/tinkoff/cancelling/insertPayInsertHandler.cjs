@@ -1,7 +1,8 @@
+const { insertHandler } = require("../../../insertHandler.cjs");
 const {cancel} = require("./cancel.cjs");
 
 const insertPayInsertHandler = async ({deep, syncTextFileTypeId, terminayKey, containTypeId, packageId, dockerSupportsJsId, handlerTypeId, handleInsertTypeId}) => {
-    const payInsertHandler = `
+    const code = `
 async ({ deep, require, data: { newLink: payLink } }) => {
   ${handlersDependencies}
 
@@ -94,53 +95,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
 };
 `;
 
-const {
-    data: [{ id: payInsertHandlerLinkId }],
-  } = await deep.insert({
-    type_id: syncTextFileTypeId,
-    in: {
-      data: [
-        {
-          type_id: containTypeId,
-          from_id: packageId, // before created package
-          string: { data: { value: 'payInsertHandlerFile' } },
-        },
-        {
-          from_id: dockerSupportsJsId,
-          type_id: handlerTypeId,
-          in: {
-            data: [
-              {
-                type_id: containTypeId,
-                from_id: packageId, // before created package
-                string: { data: { value: 'payInsertHandler' } },
-              },
-              {
-                type_id: handleInsertTypeId,
-                from_id: cancellingPayTypeId,
-                in: {
-                  data: [
-                    {
-                      type_id: containTypeId,
-                      from_id: packageId, // before created package
-                      string: { data: { value: 'payInsertHandle' } },
-                    },
-                  ],
-                },
-              },
-            ],
-          },
-        },
-      ],
-    },
-    string: {
-      data: {
-        value: payInsertHandler,
-      },
-    },
-  });
-
-  return payInsertHandlerLinkId;
+return await insertHandler({deep,fileTypeId: syncTextFileTypeId, fileName: 'payInsertHandlerFile', handlerName: 'payInsertHandler', handleName: 'payInsertHandle', triggerTypeId, code, supportsId: dockerSupportsJsId, handleOperationTypeId: handleInsertTypeId, containTypeId, packageId, handlerTypeId, code});
 }
 
 exports.insertPayInsertHandler = insertPayInsertHandler;
