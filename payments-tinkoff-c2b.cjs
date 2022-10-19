@@ -32,6 +32,8 @@ import { addCustomer } from "./deep-packges/payments/tinkoff/addCustomer.cjs";
 import { getCustomer } from "./deep-packges/payments/tinkoff/getCustomer.cjs";
 import { removeCustomer } from "./deep-packges/payments/tinkoff/removeCustomer.cjs";
 import { handlersDependencies } from "./deep-packges/payments/tinkoff/handlersDependencies.cjs";
+import { insertPayInsertHandler } from "./deep-packges/payments/tinkoff/insertPayInsertHandler.cjs";
+import { insertNotificationHandler } from "./deep-packges/payments/tinkoff/insertNotificationHandler.cjs";
 
 var myEnv = dotenv.config();
 dotenvExpand.expand(myEnv);
@@ -69,14 +71,34 @@ const installPackage = async () => {
     const Value = await deep.id('@deep-foundation/core', 'Value');
     const String = await deep.id('@deep-foundation/core', 'String');
     const Package = await deep.id('@deep-foundation/core', 'Package');
+  
 
-    const SyncTextFile = await deep.id('@deep-foundation/core', 'SyncTextFile');
+    const syncTextFileTypeId = await deep.id('@deep-foundation/core', 'SyncTextFile');
     const dockerSupportsJs = await deep.id(
       '@deep-foundation/core',
       'dockerSupportsJs'
     );
-    const Handler = await deep.id('@deep-foundation/core', 'Handler');
-    const HandleInsert = await deep.id('@deep-foundation/core', 'HandleInsert');
+    const handleInsertTypeId = await deep.id('@deep-foundation/core', 'HandleInsert');
+    const portTypeId = await deep.id('@deep-foundation/core', 'Port');
+    const routerListeningTypeId = await deep.id('@deep-foundation/core', 'RouterListening');
+    const routerTypeId = await deep.id('@deep-foundation/core', 'Router');
+    const routerStringUseTypeId = await deep.id(
+      '@deep-foundation/core',
+      'RouterStringUse'
+    );
+    const routeTypeId = await deep.id('@deep-foundation/core', 'Route');
+    const handleRouteTypeId = await deep.id(
+      '@deep-foundation/core',
+      'HandleRoute'
+    );
+    const handlerTypeId = await deep.id(
+      '@deep-foundation/core',
+      'Handler'
+    );
+    const dockerSupportsJsId = await deep.id(
+      '@deep-foundation/core',
+      'dockerSupportsJs'
+    );
 
     const Tree = await deep.id('@deep-foundation/core', 'Tree');
     const TreeIncludeNode = await deep.id(
@@ -494,417 +516,9 @@ const installPackage = async () => {
     console.log({ Income: incomeTypeId });
 
 
-    console.log({ handlersDependencies });
-    const payInsertHandler = `
-async ({ deep, require, data: { newLink: payLink } }) => {
-  ${handlersDependencies}
+    await insertPayInsertHandler({deep, containTypeId, fileTypeId: syncTextFileTypeId, handlerInsertTypeId, handlerTypeId, notificationUrl: process.env.PAYMENTS_C2B_NOTIFICATION_URL, packageId, supportsId: dockerSupportsJs, userEmail: process.env.PAYMENTS_C2B_EMAIL, userPhone: process.env.PAYMENTS_C2B_PHONE});
 
-  const TinkoffProvider = await deep.id("@deep-foundation/payments-tinkoff-c2b", "TinkoffProvider");
-  const tinkoffProviderLinkSelectQuery = await deep.select({
-    type_id: TinkoffProvider
-  });
-  if(tinkoffProviderLinkSelectQuery.error) {throw new Error(tinkoffProviderLinkSelectQuery.error.message);}
-  const tinkoffProviderLinkId = tinkoffProviderLinkSelectQuery.data[0].id;
-
-  const {data: mpDownPay, error: mpDownPaySelectQueryError} = await deep.select({
-    down: {
-      link_id: { _eq: payLink.id },
-      tree_id: { _eq: await deep.id("@deep-foundation/payments-tinkoff-c2b", "paymentTree") },
-    },
-  });
-  console.log({mpDownPay});
-  if(mpDownPaySelectQueryError) { throw new Error(mpDownPaySelectQueryError.message); }
-
-  const Payment = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Payment");
-  const paymentLink = mpDownPay.find(link => link.type_id === Payment);
-  console.log({paymentLink});
-  if(!paymentLink) throw new Error("Payment link associated with the pay link " + payLink.id + " is not found.");
-
-  const Sum = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Sum");
-  const sumLink = mpDownPay.find(link => link.type_id === Sum); 
-  console.log({sumLink});
-  if(!sumLink) throw new Error("Sum link associated with the pay link " + payLink.id + " is not found.");
-
-  const fromLinkOfPaymentSelectQuery = await deep.select({
-    id: paymentLink.from_id
-  });
-  if(fromLinkOfPaymentSelectQuery.error) { throw new Error(fromLinkOfPaymentSelectQuery.error.message); }
-  const fromLinkOfPayment = fromLinkOfPaymentSelectQuery.data[0];
-  console.log({fromLinkOfPayment});
-
-  const storageBusinessLinkSelectQuery = await deep.select({
-    id: paymentLink.to_id
-  });
-  if(storageBusinessLinkSelectQuery.error) { throw new Error(storageBusinessLinkSelectQuery.error.message); }
-  const storageBusinessLinkId = storageBusinessLinkSelectQuery.data[0].id;
-  console.log({storageBusinessLinkId});
-
-  const Token = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Token");
-  const tokenLinkSelectQuery = await deep.select({
-    type_id: Token,
-    from_id: storageBusinessLinkId,
-    to_id: storageBusinessLinkId
-  });
-  if(tokenLinkSelectQuery.error) {throw new Error(tokenLinkSelectQuery.error.message);}
-  const tokenLink = tokenLinkSelectQuery.data[0];
-  console.log({tokenLink});
-
-  const init = ${init.toString()};
-
-  // TODO Add default card
-  const options = {
-    TerminalKey: tokenLink.value.value,
-    OrderId: paymentLink?.value?.value.orderId ?? paymentLink.id,
-    CustomerKey: deep.linkId,
-    NotificationURL: "${process.env.PAYMENTS_C2B_NOTIFICATION_URL}",
-    PayType: 'T',
-    Amount: sumLink.value.value,
-    Description: 'Test shopping',
-    Language: 'ru',
-    Recurrent: 'Y',
-    DATA: {
-      Email: "${process.env.PAYMENTS_C2B_EMAIL}",
-      Phone: "${process.env.PAYMENTS_C2B_PHONE}",
-    },
-    // Receipt: {
-    //   Items: [{
-    //     Name: 'Test item',
-    //     Price: sum,
-    //     Quantity: 1,
-    //     Amount: sumLink.value.value,
-    //     PaymentMethod: 'prepayment',
-    //     PaymentObject: 'service',
-    //     Tax: 'none',
-    //   }],
-    //   Email: "${process.env.PAYMENTS_C2B_EMAIL}",
-    //   Phone: "${process.env.PAYMENTS_C2B_PHONE}",
-    //   Taxation: 'usn_income',
-    // }
-  };
-  console.log({options});
-
-  let initResult = await init(options);
-  console.log({initResult});
-  if (initResult.error) {
-    const errorMessage = "Could not initialize the order. " + initResult.error;
-    const {error: errorLinkInsertQueryError} = await deep.insert({
-      type_id: (await deep.id("@deep-foundation/payments-tinkoff-c2b", "Error")),
-      from_id: tinkoffProviderLinkId,
-      to_id: payLink.id,
-      string: { data: { value: errorMessage } },
-    });
-    if(errorLinkInsertQueryError) { throw new Error(errorLinkInsertQueryError.message); }
-    throw new Error(errorMessage);
-  }
-
-  const Url = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Url");
-  const {error: urlLinkInsertQueryError} = await deep.insert({
-    type_id: Url,
-    from_id: tinkoffProviderLinkId,
-    to_id: payLink.id,
-    string: { data: { value: initResult.response.PaymentURL } },
-  });
-  if(urlLinkInsertQueryError) { throw new Error(urlLinkInsertQueryError.message); }
-
-  console.log("paymentLink.value.value", paymentLink.value.value);
-  console.log("paymentLink.value.value", paymentLink.value.value);
-  const paymentLinkValueUpdateQuery = await deep.update({link_id: {_eq: paymentLink.id}}, {value: {...paymentLink.value.value, bankPaymentId: initResult.response.PaymentId}}, {table: "objects"});
-  if(paymentLinkValueUpdateQuery.error) { throw new Error(paymentLinkValueUpdateQuery.error.message); }
-  
-  return initResult;
-};
-`;
-
-    const {
-      data: [{ id: payInsertHandlerId }],
-    } = await deep.insert({
-      type_id: SyncTextFile,
-      in: {
-        data: [
-          {
-            type_id: Contain,
-            from_id: packageId, // before created package
-            string: { data: { value: 'payInsertHandlerFile' } },
-          },
-          {
-            from_id: dockerSupportsJs,
-            type_id: Handler,
-            in: {
-              data: [
-                {
-                  type_id: Contain,
-                  from_id: packageId, // before created package
-                  string: { data: { value: 'payInsertHandler' } },
-                },
-                {
-                  type_id: HandleInsert,
-                  from_id: payTypeId,
-                  in: {
-                    data: [
-                      {
-                        type_id: Contain,
-                        from_id: packageId, // before created package
-                        string: { data: { value: 'payInsertHandle' } },
-                      },
-                    ],
-                  },
-                },
-              ],
-            },
-          },
-        ],
-      },
-      string: {
-        data: {
-          value: payInsertHandler,
-        },
-      },
-    });
-    console.log({ payInsertHandlerId });
-
-    const tinkoffNotificationHandlerCode = `
-async (
-  req,
-  res,
-  next,
-  { deep, require, gql }
-) => {
-  ${handlersDependencies}
-
-  if(req.body.Status !== "AUTHORIZED" || req.body.Status !== "CONFIRMED") {
-    return next();
-  }
-
-  const reqBody = req.body;
-  console.log({reqBody});
-
-  const TinkoffProvider = await deep.id("@deep-foundation/payments-tinkoff-c2b", "TinkoffProvider");
-  const tinkoffProviderLinkSelectQuery = await deep.select({
-    type_id: TinkoffProvider
-  });
-  if(tinkoffProviderLinkSelectQuery.error) {throw new Error(tinkoffProviderLinkSelectQuery.error.message);}
-  const tinkoffProviderLinkId = tinkoffProviderLinkSelectQuery.data[0].id;
-  console.log({tinkoffProviderLinkId});
-
-  const paymentLinkSelectQuery = await deep.select({
-    object: {value: {_contains: {orderId: req.body.OrderId}}}
-  });
-  if(paymentLinkSelectQuery.error) { throw new Error(paymentLinkSelectQuery.error.message); }
-  const paymentLink = paymentLinkSelectQuery.data[0];
-  console.log({paymentLink});
-  if(!paymentLink) { throw new Error("The payment link associated with the order id " + req.body.OrderId + " is not found."); }
-
-  const {data: mpUpPayment, error: mpUpPaymentSelectQueryError} = await deep.select({
-    up: {
-      parent_id: { _eq: paymentLink.id },
-      tree_id: { _eq: await deep.id("@deep-foundation/payments-tinkoff-c2b", "paymentTree") }
-    }
-  });
-  console.log({mpUpPayment});
-  if(mpUpPaymentSelectQueryError) { throw new Error(mpUpPaymentSelectQueryError.message); }
-
-  const Pay = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Pay");
-  const payLink = mpUpPayment.find(link => link.type_id === Pay);
-  console.log({payLink});
-  if(!payLink) { throw new Error("The pay link associated with payment link " + paymentLink + " is not found.") }
-
-
-  if (req.body.Status === 'AUTHORIZED') {
-  const confirm = ${confirm.toString()};
-
-  const storageBusinessLinkSelectQuery = await deep.select({
-    id: paymentLink.to_id
-  });
-  if(storageBusinessLinkSelectQuery.error) {throw new Error(storageBusinessLinkSelectQuery.error.message);}
-  const storageBusinessLinkId = storageBusinessLinkSelectQuery.data[0].id;
-  console.log({storageBusinessLinkId});
-
-  const Token = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Token");
-  const tokenLinkSelectQuery = await deep.select({
-    type_id: Token,
-    from_id: storageBusinessLinkId,
-    to_id: storageBusinessLinkId
-  });
-  if(tokenLinkSelectQuery.error) {throw new Error(tokenLinkSelectQuery.error.message);}
-  const tokenLink = tokenLinkSelectQuery.data[0];
-  console.log({tokenLink});
-
-    const confirmOptions = {
-      TerminalKey: tokenLink.value.value,
-      PaymentId: req.body.PaymentId,
-      Amount: req.body.Amount,
-      // Receipt: req.body.Receipt,
-    };
-    console.log({confirmOptions});
-
-    const confirmResult = await confirm(confirmOptions);
-    console.log({confirmResult});
-
-    if (confirmResult.error) {
-      const errorMessage = "Could not confirm the pay. " + confirmResult.error;
-      const {error: errorLinkInsertError} = await deep.insert({
-        type_id: (await deep.id("@deep-foundation/payments-tinkoff-c2b", "Error")),
-        from_id: tinkoffProviderLinkId,
-        to_id: payLink.id,
-        string: { data: { value: errorMessage } },
-      });
-      if(errorLinkInsertError) { throw new Error(errorLinkInsertError); }
-      throw new Error(errorMessage);
-    }
-
-    return confirmResult;
-  } else if (req.body.Status === 'CONFIRMED') {
-    const payedLinkInsertQuery = await deep.insert({
-      type_id: await deep.id("@deep-foundation/payments-tinkoff-c2b", "Payed"),
-    from_id: tinkoffProviderLinkId,
-      to_id: payLink.id,
-    });
-    if(payedLinkInsertQuery.error) { throw new Error(payedLinkInsertQuery.error.message); }
-    const payedLinkId = payedLinkInsertQuery.data[0].id;
-    console.log({payedLinkId});
-
-    const StorageClient = await deep.id("@deep-foundation/payments-tinkoff-c2b", "StorageClient");
-    const storageClientLinkSelectQuery = await deep.select({
-      type_id: StorageClient,
-      number: {value: req.body.CardId}
-    });
-    console.log({storageClientLinkSelectQuery});
-    if(storageClientLinkSelectQuery.error) {throw new Error(storageClientLinkSelectQuery.error.message);}
-    
-    if(fromLinkOfPayment.type_id !== StorageClient) {
-      var storageClientLinkId;
-      if(storageClientLinkSelectQuery.data.length === 0) {
-        const StorageClient = await deep.id("@deep-foundation/payments-tinkoff-c2b", "StorageClient");
-        const storageClientLinkInsertQuery = await deep.insert({
-          type_id: StorageClient,
-          number: {data: {value: req.body.CardId}},
-        });
-        console.log({storageClientLinkInsertQuery});
-        if(storageClientLinkInsertQuery.error) {throw new Error(storageClientLinkInsertQuery.error.message);}
-        storageClientLinkId = storageClientLinkInsertQuery.data[0].id;
-    
-        const Title = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Title");
-        const titleLinkInsertQuery = await deep.insert({
-          type_id: Title,
-          from_id: storageClientLinkId,
-          to_id: storageClientLinkId,
-          string: {data: {value: req.body.Pan}},
-        });
-        if(titleLinkInsertQuery.error) {throw new Error(titleLinkInsertQuery.error.message);}
-        const titleLinkId = titleLinkInsertQuery.data[0].id;
-        console.log({titleLinkId});
-      } else {
-        storageClientLinkId = storageClientLinkSelectQuery.data[0];
-      }
-      const Income = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Income");
-      const incomeLinkInsertQuery = await deep.insert({
-        type_id: Income,
-        from_id: paymentLink.id,
-        to_id: storageClientLinkId,
-      });
-      if(incomeLinkInsertQuery.error) {throw new Error(incomeLinkInsertQuery.error.message);}
-      const incomeLinkId = incomeLinkInsertQuery.data[0].id;
-      console.log({incomeLinkId});
-      
-    }
-  } 
-  res.send('ok');
-};
-`;
-
-    await deep.insert(
-      {
-        type_id: await deep.id('@deep-foundation/core', 'Port'),
-        number: {
-          data: { value: process.env.PAYMENTS_C2B_NOTIFICATION_PORT },
-        },
-        in: {
-          data: {
-            type_id: await deep.id('@deep-foundation/core', 'RouterListening'),
-            from: {
-              data: {
-                type_id: await deep.id('@deep-foundation/core', 'Router'),
-                in: {
-                  data: {
-                    type_id: await deep.id(
-                      '@deep-foundation/core',
-                      'RouterStringUse'
-                    ),
-                    string: {
-                      data: {
-                        value:
-                          process.env.PAYMENTS_C2B_NOTIFICATION_ROUTE,
-                      },
-                    },
-                    from: {
-                      data: {
-                        type_id: await deep.id('@deep-foundation/core', 'Route'),
-                        out: {
-                          data: {
-                            type_id: await deep.id(
-                              '@deep-foundation/core',
-                              'HandleRoute'
-                            ),
-                            to: {
-                              data: {
-                                type_id: await deep.id(
-                                  '@deep-foundation/core',
-                                  'Handler'
-                                ),
-                                from_id: await deep.id(
-                                  '@deep-foundation/core',
-                                  'dockerSupportsJs'
-                                ),
-                                in: {
-                                  data: {
-                                    type_id: Contain,
-                                    // from_id: deep.linkId,
-                                    from_id: await deep.id('deep', 'admin'),
-                                    string: {
-                                      data: {
-                                        value: 'tinkoffNotificationHandler',
-                                      },
-                                    },
-                                  },
-                                },
-                                to: {
-                                  data: {
-                                    type_id: SyncTextFile,
-                                    string: {
-                                      data: {
-                                        value: tinkoffNotificationHandlerCode,
-                                      },
-                                    },
-                                    in: {
-                                      data: {
-                                        type_id: Contain,
-                                        from_id: packageId,
-                                        string: {
-                                          data: {
-                                            value: 'tinkoffNotificationHandler',
-                                          },
-                                        },
-                                      },
-                                    },
-                                  },
-                                },
-                              },
-                            },
-                          },
-                        },
-                      },
-                    },
-                  },
-                },
-              },
-            },
-          },
-        },
-      },
-      {
-        name: 'INSERT_HANDLE_ROUTE_HIERARCHICAL',
-      }
-    );
+    await insertNotificationHandler({deep, adminId: await deep.id('deep', 'admin'), containTypeId, fileTypeId: syncTextFileTypeId, handleRouteTypeId, handlerTypeId, notificationPort: process.env.PAYMENTS_C2B_NOTIFICATION_PORT, notificationRoute: process.env.PAYMENTS_C2B_NOTIFICATION_ROUTE, portTypeId, routerListeningTypeId, routerStringUseTypeId, routerTypeId, routeTypeId, supportsId});
 
     const callTests = async () => {
       console.log('callTests-start');
