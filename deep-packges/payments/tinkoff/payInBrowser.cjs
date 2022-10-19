@@ -1,4 +1,4 @@
-
+const {sleep} = require('./deep-packges/sleep.cjs');
 
 const payInBrowser = async ({ page, browser, url }) => {
     await page.goto(url, { waitUntil: 'networkidle2' });
@@ -16,11 +16,19 @@ const payInBrowser = async ({ page, browser, url }) => {
           'button[automation-id="pay-card__submit"]'
         );
       });
+
+      await page.evaluate(() => {
+        const saveCardTextDiv = [...document.querySelectorAll("div.t-content")].find(element => element.innerText == "Сохранить карту ");
+        if(saveCardTextDiv) {
+          const saveCardInput = saveCardTextDiv.parentElement.querySelector("input");
+          if(saveCardInput.checked) {saveCardInput.click()}
+        }
+      })
       if (cvc1) {
         await page.waitForSelector(
           'input[automation-id="tui-input-card-grouped__card"]'
         );
-        await sleep(300);
+        await dela(300);
         await page.type(
           'input[automation-id="tui-input-card-grouped__card"]',
           process.env.PAYMENTS_C2B_CARD_NUMBER_SUCCESS
