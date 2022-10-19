@@ -497,7 +497,7 @@ const installPackage = async () => {
         },
       },
     });
-    console.log({ Title: titleTypeId });
+    console.log({ titleTypeId });
 
     const {
       data: [{ id: incomeTypeId }],
@@ -513,7 +513,7 @@ const installPackage = async () => {
         },
       },
     });
-    console.log({ Income: incomeTypeId });
+    console.log({ incomeTypeId });
 
 
     await insertPayInsertHandler({deep, containTypeId, fileTypeId: syncTextFileTypeId, handlerInsertTypeId, handlerTypeId, notificationUrl: process.env.PAYMENTS_C2B_NOTIFICATION_URL, packageId, supportsId: dockerSupportsJs, userEmail: process.env.PAYMENTS_C2B_EMAIL, userPhone: process.env.PAYMENTS_C2B_PHONE});
