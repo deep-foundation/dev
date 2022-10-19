@@ -16,11 +16,11 @@ const axios = require('axios');
 const uniqid = require('uniqid');
 const { expect } = require('chai');
 const {payInBrowser} = require("./deep-packges/payments/tinkoff/payInBrowser.cjs");
-import {getError} from "./deep-packges/payments/tinkoff/getError.cjs";
-
-import { init } from "./deep-packges/payments/tinkoff/init.cjs";
-import { cancel } from "./deep-packges/payments/tinkoff/cancel.cjs";
-import { handlersDependencies } from "./deep-packges/payments/tinkoff/handlersDependencies.cjs";
+const {getError} = require("./deep-packges/payments/tinkoff/getError.cjs");
+const { init } = require("./deep-packges/payments/tinkoff/init.cjs");
+const { cancel } = require("./deep-packges/payments/tinkoff/cancel.cjs");
+const { handlersDependencies } = require("./deep-packges/payments/tinkoff/handlersDependencies.cjs");
+const { insertPayInsertHandler } = require("./deep-packges/payments/tinkoff/cancelling/insertPayInsertHandler.cjs");
 
 var myEnv = dotenv.config();
 dotenvExpand.expand(myEnv);
