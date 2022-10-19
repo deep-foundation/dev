@@ -48,8 +48,8 @@ const installPackage = async () => {
 	});
 	const deep = new DeepClient({ deep: guestDeep, ...admin });
 
-	const anyTypeId = await deep.id('@deep-foundation/core', 'Type');
-	const anyTypeId = await deep.id('@deep-foundation/core', 'Any');
+	const typeTypeId = await deep.id('@deep-foundation/core', 'Type');
+	const anyTypeId = await deep.id('@deep-foundation/core', 'anyTypeId');
 	const syncTextFileTypeId = await deep.id('@deep-foundation/core', 'SyncTextFile');
 	const plv8SupportsJsId = await deep.id(
 		'@deep-foundation/core',
@@ -61,8 +61,8 @@ const installPackage = async () => {
 		data: [{ id: logInsertTypeId }],
 	} = await deep.insert({
 		type_id: typeTypeId,
-		from_id: Any,
-		to_id: Any,
+		from_id: anyTypeId,
+		to_id: anyTypeId,
 		in: {
 			data: {
 				type_id: Contain,
@@ -77,8 +77,8 @@ const installPackage = async () => {
 		data: [{ id: logUpdateTypeId }],
 	} = await deep.insert({
 		type_id: typeTypeId,
-		from_id: Any,
-		to_id: Any,
+		from_id: anyTypeId,
+		to_id: anyTypeId,
 		in: {
 			data: {
 				type_id: Contain,
@@ -93,8 +93,8 @@ const installPackage = async () => {
 		data: [{ id: logDeleteTypeId }],
 	} = await deep.insert({
 		type_id: typeTypeId,
-		from_id: Any,
-		to_id: Any,
+		from_id: anyTypeId,
+		to_id: anyTypeId,
 		in: {
 			data: {
 				type_id: Contain,
@@ -109,8 +109,8 @@ const installPackage = async () => {
 		data: [{ id: logTypeTypeId }],
 	} = await deep.insert({
 		type_id: typeTypeId,
-		from_id: Any,
-		to_id: Any,
+		from_id: anyTypeId,
+		to_id: anyTypeId,
 		in: {
 			data: {
 				type_id: Contain,
@@ -125,8 +125,8 @@ const installPackage = async () => {
 		data: [{ id: logObjectTypeId }],
 	} = await deep.insert({
 		type_id: typeTypeId,
-		from_id: Any,
-		to_id: Any,
+		from_id: anyTypeId,
+		to_id: anyTypeId,
 		in: {
 			data: {
 				type_id: Contain,
