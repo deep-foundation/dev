@@ -104,6 +104,38 @@ const installPackage = async () => {
 	});
 	console.log({ LogDelete });
 
+	const {
+		data: [{ id: LogType }],
+	} = await deep.insert({
+		type_id: Type,
+		from_id: Any,
+		to_id: Any,
+		in: {
+			data: {
+				type_id: Contain,
+				from_id: packageId, // before created package
+				string: { data: { value: 'LogType' } },
+			},
+		},
+	});
+	console.log({ LogType });
+
+	const {
+		data: [{ id: LogObject }],
+	} = await deep.insert({
+		type_id: Type,
+		from_id: Any,
+		to_id: Any,
+		in: {
+			data: {
+				type_id: Contain,
+				from_id: packageId, // before created package
+				string: { data: { value: 'LogObject' } },
+			},
+		},
+	});
+	console.log({ LogObject });
+
 	const insertHandlerId = await insertHandler(
 		{
 			code: `({deep, data: {newLink}}) => { 
