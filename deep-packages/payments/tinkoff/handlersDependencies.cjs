@@ -1,7 +1,7 @@
-import { errors } from "./errors.cjs";
-import { getError } from "./getError.cjs";
-import { getUrlString } from "./getUrl.cjs";
-import { generateTokenStringWithInsertedTerminalPassword } from "./generateToken.cjs";
+const { errors } = require("./errors.cjs");
+const { getError } = require("./getError.cjs");
+const { getUrlString } = require("./getUrl.cjs");
+const { generateTokenStringWithInsertedTerminalPassword } = require("./generateToken.cjs");
 
 
 const handlersDependencies = `

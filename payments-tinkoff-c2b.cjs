@@ -19,27 +19,40 @@ const { get } = require('lodash');
 const {
   default: links,
 } = require('@deep-foundation/deeplinks/imports/router/links');
-const {payInBrowser} = require("./deep-packages/payments/tinkoff/payInBrowser.cjs");
-const {getError} = ("./deep-packages/payments/tinkoff/getError.cjs");
-const { generateToken, generateTokenStringWithInsertedTerminalPassword } = ("./deep-packages/payments/tinkoff/generateToken.cjs");
-const { getUrl } = ("./deep-packages/payments/tinkoff/getUrl.cjs");
-const { getState } = ("./deep-packages/payments/tinkoff/getState.cjs");
-const { checkOrder } = ("./deep-packages/payments/tinkoff/checkOrder.cjs");
-const { getCardList } = ("./deep-packages/payments/tinkoff/getCardList.cjs");
-const { init } = ("./deep-packages/payments/tinkoff/init.cjs");
-const { charge } = ("./deep-packages/payments/tinkoff/charge.cjs");
-const { addCustomer } = ("./deep-packages/payments/tinkoff/addCustomer.cjs");
-const { getCustomer } = ("./deep-packages/payments/tinkoff/getCustomer.cjs");
-const { removeCustomer } = ("./deep-packages/payments/tinkoff/removeCustomer.cjs");
-const { handlersDependencies } = ("./deep-packages/payments/tinkoff/handlersDependencies.cjs");
-const { insertPayInsertHandler } = ("./deep-packages/payments/tinkoff/insertPayInsertHandler.cjs");
-const { insertNotificationHandler } = ("./deep-packages/payments/tinkoff/insertNotificationHandler.cjs");
-const {sleep} = require("./deep-packages/sleep.cjs");
-
 var myEnv = dotenv.config();
 dotenvExpand.expand(myEnv);
+const {payInBrowser} = require("./deep-packages/payments/tinkoff/payInBrowser.cjs");
+const {getError} = require("./deep-packages/payments/tinkoff/getError.cjs");
+const { generateToken, generateTokenStringWithInsertedTerminalPassword } = require("./deep-packages/payments/tinkoff/generateToken.cjs");
+const { getUrl } = require("./deep-packages/payments/tinkoff/getUrl.cjs");
+const { getState } = require("./deep-packages/payments/tinkoff/getState.cjs");
+const { checkOrder } = require("./deep-packages/payments/tinkoff/checkOrder.cjs");
+const { getCardList } = require("./deep-packages/payments/tinkoff/getCardList.cjs");
+const { init } = require("./deep-packages/payments/tinkoff/init.cjs");
+const { charge } = require("./deep-packages/payments/tinkoff/charge.cjs");
+const { addCustomer } = require("./deep-packages/payments/tinkoff/addCustomer.cjs");
+const { getCustomer } = require("./deep-packages/payments/tinkoff/getCustomer.cjs");
+const { removeCustomer } = require("./deep-packages/payments/tinkoff/removeCustomer.cjs");
+const { handlersDependencies } = require("./deep-packages/payments/tinkoff/handlersDependencies.cjs");
+const { insertPayInsertHandler } = require("./deep-packages/payments/tinkoff/insertPayInsertHandler.cjs");
+const { insertNotificationHandler } = require("./deep-packages/payments/tinkoff/insertNotificationHandler.cjs");
+const {sleep} = require("./deep-packages/sleep.cjs");
 
 console.log('Installing payments-tinkoff-c2b package');
+
+expect(process.env.PAYMENTS_C2B_TERMINAL_KEY).to.not.be.equal(undefined)
+expect(process.env.PAYMENTS_C2B_TERMINAL_PASSWORD).to.not.be.equal(undefined)
+expect(process.env.PAYMENTS_C2B_URL).to.not.be.equal(undefined)
+expect(process.env.PAYMENTS_C2B_NOTIFICATION_ROUTE).to.not.be.equal(undefined)
+expect(process.env.PAYMENTS_C2B_NOTIFICATION_PORT).to.not.be.equal(undefined)
+expect(process.env.PAYMENTS_C2B_NOTIFICATION_URL).to.not.be.equal(undefined)
+expect(process.env.PAYMENTS_C2B_CANCELLING_NOTIFICATION_PORT).to.not.be.equal(undefined)
+expect(process.env.PAYMENTS_C2B_CANCELLING_NOTIFICATION_URL).to.not.be.equal(undefined)
+expect(process.env.PAYMENTS_C2B_CARD_NUMBER_SUCCESS).to.not.be.equal(undefined)
+expect(process.env.PAYMENTS_C2B_CARD_EXPDATE).to.not.be.equal(undefined)
+expect(process.env.PAYMENTS_C2B_CARD_CVC).to.not.be.equal(undefined)
+expect(process.env.PAYMENTS_C2B_PHONE).to.not.be.equal(undefined)
+expect(process.env.PAYMENTS_C2B_EMAIL).to.not.be.equal(undefined)
 
 const allCreatedLinkIds = [];
 
@@ -513,11 +526,10 @@ const installPackage = async () => {
       },
     });
     console.log({ incomeTypeId });
+    debugger;
 
-
-    await insertPayInsertHandler({deep, containTypeId, fileTypeId: syncTextFileTypeId, handlerInsertTypeId, handlerTypeId, notificationUrl: process.env.PAYMENTS_C2B_NOTIFICATION_URL, packageId, supportsId: dockerSupportsJs, userEmail: process.env.PAYMENTS_C2B_EMAIL, userPhone: process.env.PAYMENTS_C2B_PHONE});
-
-    await insertNotificationHandler({deep, adminId: await deep.id('deep', 'admin'), containTypeId, fileTypeId: syncTextFileTypeId, handleRouteTypeId, handlerTypeId, notificationPort: process.env.PAYMENTS_C2B_NOTIFICATION_PORT, notificationRoute: process.env.PAYMENTS_C2B_NOTIFICATION_ROUTE, portTypeId, routerListeningTypeId, routerStringUseTypeId, routerTypeId, routeTypeId, supportsId});
+    await insertPayInsertHandler({deep, containTypeId, fileTypeId: syncTextFileTypeId, handleInsertTypeId, handlerTypeId, notificationUrl: process.env.PAYMENTS_C2B_NOTIFICATION_URL, packageId, supportsId: dockerSupportsJs, userEmail: process.env.PAYMENTS_C2B_EMAIL, userPhone: process.env.PAYMENTS_C2B_PHONE, dockerSupportsJsId, payTypeId});
+    await insertNotificationHandler({packageId,deep, adminId: await deep.id('deep', 'admin'), containTypeId, fileTypeId: syncTextFileTypeId, handleRouteTypeId, handlerTypeId, notificationPort: process.env.PAYMENTS_C2B_NOTIFICATION_PORT, notificationRoute: process.env.PAYMENTS_C2B_NOTIFICATION_ROUTE, portTypeId, routerListeningTypeId, routerStringUseTypeId, routerTypeId, routeTypeId, supportsId: dockerSupportsJsId});
 
     const callTests = async () => {
       console.log('callTests-start');

@@ -1,6 +1,8 @@
 const {insertNotificationHandler: baseInsertNotificationHandler} = require("./../../insertNotificationHandler.cjs");
+const {handlersDependencies} = require("./handlersDependencies.cjs");
+const {confirm} = require("./confirm.cjs");
 
-const insertNotificationHandler = async ({deep, notificationPort, notificationRoute, portTypeId, routerListeningTypeId, routerTypeId, routerStringUseTypeId, routeTypeId, handleRouteTypeId, handlerTypeId, supportsId, containTypeId,  adminId, fileTypeId}) => {
+const insertNotificationHandler = async ({packageId, deep, notificationPort, notificationRoute, portTypeId, routerListeningTypeId, routerTypeId, routerStringUseTypeId, routeTypeId, handleRouteTypeId, handlerTypeId, supportsId, containTypeId,  adminId, fileTypeId}) => {
     const code = `
 async (
   req,
@@ -151,7 +153,7 @@ async (
 };
 `;
 
-return await baseInsertNotificationHandler({adminId, containTypeId, deep, fileTypeId, handlerName: "tinkoffNotificationHandler", handleRouteTypeId,handlerTypeId,notificationPort,notificationRoute,portTypeId,routerListeningTypeId,routerStringUseTypeId,routerTypeId,routeTypeId,supportsId, code});
+return await baseInsertNotificationHandler({packageId, adminId, containTypeId, deep, fileTypeId, handlerName: "tinkoffNotificationHandler", handleRouteTypeId,handlerTypeId,notificationPort,notificationRoute,portTypeId,routerListeningTypeId,routerStringUseTypeId,routerTypeId,routeTypeId,supportsId, code});
 }
 
 exports.insertNotificationHandler = insertNotificationHandler;
