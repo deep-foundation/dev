@@ -202,13 +202,8 @@ const installPackage = async () => {
 		{
 			code: `({deep, data: {newLink}}) => { 
 				const timestamp = Date.now();
-				deep.insert({
-				   type_id: {_id: ["@deep-foundation/logger", "LogInsert"]},
-				   from_id: deep.linkId,
-				   to_id: newLink.id,
-				   number: {data: {value: timestamp}}
-				});
-				deep.insert({
+
+				const {data: [{logObjectId}]} = deep.insert({
 					type_id: {_id: ["@deep-foundation/logger", "LogObject"]},
 					from_id: newLink.from_id,
 					to_id: newLink.to_id,
@@ -218,7 +213,14 @@ const installPackage = async () => {
 							to_id: newLink.type_id
 						}]
 					}
-				})
+				});
+
+				const {data: [{logInsertId}]} = deep.insert({
+					type_id: {_id: ["@deep-foundation/logger", "LogInsert"]},
+					from_id: logObjectId,
+					to_id: newLink.id,
+					number: {data: {value: timestamp}}
+			 	});
 			 }`,
 			fileName: "insertHandlerFile",
 			handlerName: "insertHandler",
@@ -240,7 +242,7 @@ const installPackage = async () => {
 			code: `({deep, data: {newLink}}) => { 
 				const timestamp = Date.now();
 	   
-				const {data: [{id: logInsertId}]} = await deep.select({
+				const {data: [{id: logInsertId}]} = deep.select({
 				   type_id: {_id: ["@deep-foundation/logger", "LogInsert"]},
 				   to_id: newLink.id
 				})
@@ -272,7 +274,7 @@ const installPackage = async () => {
 			code: `({deep, data: {newLink}}) => { 
 				const timestamp = Date.now();
 	   
-				const {data: [{id: logInsertId}]} = await deep.select({
+				const {data: [{id: logInsertId}]} = deep.select({
 				   type_id: {_id: ["@deep-foundation/logger", "LogInsert"]},
 				   to_id: newLink.id
 				})
@@ -300,8 +302,100 @@ const installPackage = async () => {
 	console.log({ deleteHandlerId });
 
 	const callTests = async () => {
-		callTests
+		const {data: [{id: customTypeId}]} = await deep.insert({
+			type_id: typeTypeId,
+			from_id: anyTypeId,
+			to_id: anyTypeId
+		});
+
+		const {data: [{id: linkId}]} = await deep.insert({
+			type_id: typeTypeId,
+			from_id: anyTypeId,
+			to_id: anyTypeId
+		});
+
+		var logInsertId;
+		for (let i = 0; i < 10; i++) {
+			const {data}= await deep.select({
+				type_id: logInsertTypeId,
+				to_id: linkId
+			});
+			if(data.length > 0) {
+				logInsertId = data[0].id;
+				break;
+			}
+			await sleep(1000);
+		}
+		expect(logInsertId).to.not.be.equal(undefined);
+
+		var logObjectId;
+		for (let i = 0; i < 10; i++) {
+			const {data} = await deep.select({
+				type_id: logObjectTypeId,
+				from_id: linkId.from_id,
+				to_id: linkId.to_id
+			});
+			if(data.length > 0) {
+				logObjectId = data[0].id;
+				break;
+			}
+			await sleep(1000);
+		}
+		expect(logObjectId).to.not.be.equal(undefined);
+
+		var logTypeId;
+		for (let i = 0; i < 10; i++) {
+			const {data} = await deep.select({
+				type_id: logTypeTypeId,
+				from_id: logObjectId,
+				to_id: customTypeId
+			});
+			if(data.length > 0) {
+				logTypeId = data[0].id;
+				break;
+			}
+			await sleep(1000);
+		}
+		expect(logTypeId).to.not.be.equal(undefined);
+
+		await deep.insert({link_id: linkId, value: "string"}, {table: "strings"});
+
+		var logUpdateId;
+		for (let i = 0; i < 10; i++) {
+			const {data} = await deep.select({
+				type_id: logUpdateTypeId,
+				from_id: deep.linkId,
+				to_id: logInsertId
+			});
+			if(data.length > 0) {
+				logUpdateId = data[0].id;
+				break;
+			}
+			await sleep(1000);
+		}
+		expect(logUpdateId).to.not.be.equal(undefined);
+
+		await deep.delete({
+			id: linkId
+		});
+
+		var logDeleteId;
+		for (let i = 0; i < 10; i++) {
+			const {data} = await deep.select({
+				type_id: logDeleteTypeId,
+				from_id: deep.linkId,
+				to_id: logInsertId
+			});
+			if(data.length > 0) {
+				logDeleteId = data[0].id;
+				break;
+			}
+			await sleep(1000);
+		}
+		expect(logDeleteId).to.not.be.equal(undefined);
 	}
+	
+	await callTests();
 };
 
 installPackage();
