@@ -19,22 +19,22 @@ const { get } = require('lodash');
 const {
   default: links,
 } = require('@deep-foundation/deeplinks/imports/router/links');
-const {payInBrowser} = require("./deep-packges/payments/tinkoff/payInBrowser.cjs");
-const {getError} = ("./deep-packges/payments/tinkoff/getError.cjs");
-const { generateToken, generateTokenStringWithInsertedTerminalPassword } = ("./deep-packges/payments/tinkoff/generateToken.cjs");
-const { getUrl } = ("./deep-packges/payments/tinkoff/getUrl.cjs");
-const { getState } = ("./deep-packges/payments/tinkoff/getState.cjs");
-const { checkOrder } = ("./deep-packges/payments/tinkoff/checkOrder.cjs");
-const { getCardList } = ("./deep-packges/payments/tinkoff/getCardList.cjs");
-const { init } = ("./deep-packges/payments/tinkoff/init.cjs");
-const { charge } = ("./deep-packges/payments/tinkoff/charge.cjs");
-const { addCustomer } = ("./deep-packges/payments/tinkoff/addCustomer.cjs");
-const { getCustomer } = ("./deep-packges/payments/tinkoff/getCustomer.cjs");
-const { removeCustomer } = ("./deep-packges/payments/tinkoff/removeCustomer.cjs");
-const { handlersDependencies } = ("./deep-packges/payments/tinkoff/handlersDependencies.cjs");
-const { insertPayInsertHandler } = ("./deep-packges/payments/tinkoff/insertPayInsertHandler.cjs");
-const { insertNotificationHandler } = ("./deep-packges/payments/tinkoff/insertNotificationHandler.cjs");
-const {sleep} = require("./deep-packges/sleep.cjs");
+const {payInBrowser} = require("./deep-packages/payments/tinkoff/payInBrowser.cjs");
+const {getError} = ("./deep-packages/payments/tinkoff/getError.cjs");
+const { generateToken, generateTokenStringWithInsertedTerminalPassword } = ("./deep-packages/payments/tinkoff/generateToken.cjs");
+const { getUrl } = ("./deep-packages/payments/tinkoff/getUrl.cjs");
+const { getState } = ("./deep-packages/payments/tinkoff/getState.cjs");
+const { checkOrder } = ("./deep-packages/payments/tinkoff/checkOrder.cjs");
+const { getCardList } = ("./deep-packages/payments/tinkoff/getCardList.cjs");
+const { init } = ("./deep-packages/payments/tinkoff/init.cjs");
+const { charge } = ("./deep-packages/payments/tinkoff/charge.cjs");
+const { addCustomer } = ("./deep-packages/payments/tinkoff/addCustomer.cjs");
+const { getCustomer } = ("./deep-packages/payments/tinkoff/getCustomer.cjs");
+const { removeCustomer } = ("./deep-packages/payments/tinkoff/removeCustomer.cjs");
+const { handlersDependencies } = ("./deep-packages/payments/tinkoff/handlersDependencies.cjs");
+const { insertPayInsertHandler } = ("./deep-packages/payments/tinkoff/insertPayInsertHandler.cjs");
+const { insertNotificationHandler } = ("./deep-packages/payments/tinkoff/insertNotificationHandler.cjs");
+const {sleep} = require("./deep-packages/sleep.cjs");
 
 var myEnv = dotenv.config();
 dotenvExpand.expand(myEnv);
