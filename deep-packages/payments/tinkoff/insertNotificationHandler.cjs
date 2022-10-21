@@ -2,7 +2,7 @@ const {insertNotificationHandler: baseInsertNotificationHandler} = require("./..
 const {handlersDependencies} = require("./handlersDependencies.cjs");
 const {confirm} = require("./confirm.cjs");
 
-const insertNotificationHandler = async ({packageId, deep, notificationPort, notificationRoute, portTypeId, routerListeningTypeId, routerTypeId, routerStringUseTypeId, routeTypeId, handleRouteTypeId, handlerTypeId, supportsId, containTypeId,  adminId, fileTypeId}) => {
+const insertNotificationHandler = async ({packageName, packageId, deep, notificationPort, notificationRoute, portTypeId, routerListeningTypeId, routerTypeId, routerStringUseTypeId, routeTypeId, handleRouteTypeId, handlerTypeId, supportsId, containTypeId,  adminId, fileTypeId}) => {
     const code = `
 async (
   req,
@@ -19,7 +19,7 @@ async (
   const reqBody = req.body;
   console.log({reqBody});
 
-  const TinkoffProvider = await deep.id("@deep-foundation/payments-tinkoff-c2b", "TinkoffProvider");
+  const TinkoffProvider = await deep.id(${packageName}, "TinkoffProvider");
   const tinkoffProviderLinkSelectQuery = await deep.select({
     type_id: TinkoffProvider
   });
@@ -38,13 +38,13 @@ async (
   const {data: mpUpPayment, error: mpUpPaymentSelectQueryError} = await deep.select({
     up: {
       parent_id: { _eq: paymentLink.id },
-      tree_id: { _eq: await deep.id("@deep-foundation/payments-tinkoff-c2b", "paymentTree") }
+      tree_id: { _eq: await deep.id(${packageName}, "paymentTree") }
     }
   });
   console.log({mpUpPayment});
   if(mpUpPaymentSelectQueryError) { throw new Error(mpUpPaymentSelectQueryError.message); }
 
-  const Pay = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Pay");
+  const Pay = await deep.id(${packageName}, "Pay");
   const payLink = mpUpPayment.find(link => link.type_id === Pay);
   console.log({payLink});
   if(!payLink) { throw new Error("The pay link associated with payment link " + paymentLink + " is not found.") }
@@ -60,7 +60,7 @@ async (
   const storageBusinessLinkId = storageBusinessLinkSelectQuery.data[0].id;
   console.log({storageBusinessLinkId});
 
-  const Token = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Token");
+  const Token = await deep.id(${packageName}, "Token");
   const tokenLinkSelectQuery = await deep.select({
     type_id: Token,
     from_id: storageBusinessLinkId,
@@ -84,7 +84,7 @@ async (
     if (confirmResult.error) {
       const errorMessage = "Could not confirm the pay. " + confirmResult.error;
       const {error: errorLinkInsertError} = await deep.insert({
-        type_id: (await deep.id("@deep-foundation/payments-tinkoff-c2b", "Error")),
+        type_id: (await deep.id(${packageName}, "Error")),
         from_id: tinkoffProviderLinkId,
         to_id: payLink.id,
         string: { data: { value: errorMessage } },
@@ -96,7 +96,7 @@ async (
     return confirmResult;
   } else if (req.body.Status === 'CONFIRMED') {
     const payedLinkInsertQuery = await deep.insert({
-      type_id: await deep.id("@deep-foundation/payments-tinkoff-c2b", "Payed"),
+      type_id: await deep.id(${packageName}, "Payed"),
     from_id: tinkoffProviderLinkId,
       to_id: payLink.id,
     });
@@ -104,7 +104,7 @@ async (
     const payedLinkId = payedLinkInsertQuery.data[0].id;
     console.log({payedLinkId});
 
-    const StorageClient = await deep.id("@deep-foundation/payments-tinkoff-c2b", "StorageClient");
+    const StorageClient = await deep.id(${packageName}, "StorageClient");
     const storageClientLinkSelectQuery = await deep.select({
       type_id: StorageClient,
       number: {value: req.body.CardId}
@@ -115,7 +115,7 @@ async (
     if(fromLinkOfPayment.type_id !== StorageClient) {
       var storageClientLinkId;
       if(storageClientLinkSelectQuery.data.length === 0) {
-        const StorageClient = await deep.id("@deep-foundation/payments-tinkoff-c2b", "StorageClient");
+        const StorageClient = await deep.id(${packageName}, "StorageClient");
         const storageClientLinkInsertQuery = await deep.insert({
           type_id: StorageClient,
           number: {data: {value: req.body.CardId}},
@@ -124,7 +124,7 @@ async (
         if(storageClientLinkInsertQuery.error) {throw new Error(storageClientLinkInsertQuery.error.message);}
         storageClientLinkId = storageClientLinkInsertQuery.data[0].id;
     
-        const Title = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Title");
+        const Title = await deep.id(${packageName}, "Title");
         const titleLinkInsertQuery = await deep.insert({
           type_id: Title,
           from_id: storageClientLinkId,
@@ -137,7 +137,7 @@ async (
       } else {
         storageClientLinkId = storageClientLinkSelectQuery.data[0];
       }
-      const Income = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Income");
+      const Income = await deep.id(${packageName}, "Income");
       const incomeLinkInsertQuery = await deep.insert({
         type_id: Income,
         from_id: paymentLink.id,

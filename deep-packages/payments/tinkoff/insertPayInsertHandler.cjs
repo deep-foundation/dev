@@ -2,12 +2,12 @@ const { insertHandler } = require("../../insertHandler.cjs");
 const {handlersDependencies} = require("./handlersDependencies.cjs");
 const {init} = require("./init.cjs");
 
-const insertPayInsertHandler = async ({deep, notificationUrl, userEmail, userPhone, fileTypeId, containTypeId, packageId, dockerSupportsJsId,  handleInsertTypeId, handlerTypeId, payTypeId}) => {
+const insertPayInsertHandler = async ({packageName, deep, notificationUrl, userEmail, userPhone, fileTypeId, containTypeId, packageId, dockerSupportsJsId,  handleInsertTypeId, handlerTypeId, payTypeId}) => {
     const code = `
 async ({ deep, require, data: { newLink: payLink } }) => {
   ${handlersDependencies}
 
-  const TinkoffProvider = await deep.id("@deep-foundation/payments-tinkoff-c2b", "TinkoffProvider");
+  const TinkoffProvider = await deep.id(${packageName}, "TinkoffProvider");
   const tinkoffProviderLinkSelectQuery = await deep.select({
     type_id: TinkoffProvider
   });
@@ -17,18 +17,18 @@ async ({ deep, require, data: { newLink: payLink } }) => {
   const {data: mpDownPay, error: mpDownPaySelectQueryError} = await deep.select({
     down: {
       link_id: { _eq: payLink.id },
-      tree_id: { _eq: await deep.id("@deep-foundation/payments-tinkoff-c2b", "paymentTree") },
+      tree_id: { _eq: await deep.id(${packageName}, "paymentTree") },
     },
   });
   console.log({mpDownPay});
   if(mpDownPaySelectQueryError) { throw new Error(mpDownPaySelectQueryError.message); }
 
-  const Payment = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Payment");
+  const Payment = await deep.id(${packageName}, "Payment");
   const paymentLink = mpDownPay.find(link => link.type_id === Payment);
   console.log({paymentLink});
   if(!paymentLink) throw new Error("Payment link associated with the pay link " + payLink.id + " is not found.");
 
-  const Sum = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Sum");
+  const Sum = await deep.id(${packageName}, "Sum");
   const sumLink = mpDownPay.find(link => link.type_id === Sum); 
   console.log({sumLink});
   if(!sumLink) throw new Error("Sum link associated with the pay link " + payLink.id + " is not found.");
@@ -47,7 +47,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
   const storageBusinessLinkId = storageBusinessLinkSelectQuery.data[0].id;
   console.log({storageBusinessLinkId});
 
-  const Token = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Token");
+  const Token = await deep.id(${packageName}, "Token");
   const tokenLinkSelectQuery = await deep.select({
     type_id: Token,
     from_id: storageBusinessLinkId,
@@ -95,7 +95,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
   if (initResult.error) {
     const errorMessage = "Could not initialize the order. " + initResult.error;
     const {error: errorLinkInsertQueryError} = await deep.insert({
-      type_id: (await deep.id("@deep-foundation/payments-tinkoff-c2b", "Error")),
+      type_id: (await deep.id(${packageName}, "Error")),
       from_id: tinkoffProviderLinkId,
       to_id: payLink.id,
       string: { data: { value: errorMessage } },
@@ -104,7 +104,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
     throw new Error(errorMessage);
   }
 
-  const Url = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Url");
+  const Url = await deep.id(${packageName}, "Url");
   const {error: urlLinkInsertQueryError} = await deep.insert({
     type_id: Url,
     from_id: tinkoffProviderLinkId,
