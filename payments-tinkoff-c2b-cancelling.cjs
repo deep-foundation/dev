@@ -128,10 +128,10 @@ const installPackage = async () => {
       'SelectorFilter'
     );
     const Query = await deep.id('@deep-foundation/core', 'Query');
-    const usersLinkId = await deep.id('deep', 'users');
+    const usersId = await deep.id('deep', 'users');
 
     const {
-      data: [{ id: packageLinkId }],
+      data: [{ id: packageId }],
     } = await deep.insert({
       type_id: packageTypeId,
       string: { data: { value: '@deep-foundation/payments-tinkoff-c2b' } },
@@ -157,7 +157,7 @@ const installPackage = async () => {
       },
     });
 
-    console.log({ packageLinkId });
+    console.log({ packageId });
 
     const sumProviderTypeId = await deep.id("@deep-foundation/payments-tinkoff-c2b", "SumProvider");
     console.log({ sumProviderTypeId });
@@ -186,7 +186,7 @@ const installPackage = async () => {
       in: {
         data: {
           type_id: containTypeId,
-          from_id: packageLinkId,
+          from_id: packageId,
           string: { data: { value: 'CancellingPay' } },
         },
       },
@@ -202,8 +202,8 @@ const installPackage = async () => {
     const errorTypeId = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Error");
     console.log({ errorTypeId });
 
-    const paymentTreeLinkId = await deep.id("@deep-foundation/payments-tinkoff-c2b", "paymentTree");
-    console.log({ paymentTreeLinkId });
+    const paymentTreeId = await deep.id("@deep-foundation/payments-tinkoff-c2b", "paymentTree");
+    console.log({ paymentTreeId });
 
     const storageBusinessTypeId = await deep.id("@deep-foundation/payments-tinkoff-c2b", "StorageBusiness");
     console.log({ storageBusinessTypeId });
@@ -227,7 +227,7 @@ const installPackage = async () => {
       in: {
         data: {
           type_id: containTypeId,
-          from_id: packageLinkId,
+          from_id: packageId,
           string: { data: { value: 'CancellingPayment' } },
         },
       },
@@ -236,7 +236,7 @@ const installPackage = async () => {
 
     await deep.insert({
       type_id: treeIncludeUpTypeId,
-      from_id: paymentTreeLinkId,
+      from_id: paymentTreeId,
       to_id: cancellingPaymentTypeId,
       in: {
         data: [
@@ -250,7 +250,7 @@ const installPackage = async () => {
 
     await deep.insert({
       type_id: treeIncludeUpTypeId,
-      from_id: paymentTreeLinkId,
+      from_id: paymentTreeId,
       to_id: cancellingPayTypeId,
       in: {
         data: [
@@ -595,7 +595,7 @@ const installPackage = async () => {
         const createdLinkIds = [];
 
         const {
-          data: [{ id: tinkoffProviderLinkId }],
+          data: [{ id: tinkoffProviderId }],
         } = await deep.insert({
           type_id: tinkoffProviderTypeId,
           in: {
@@ -607,12 +607,12 @@ const installPackage = async () => {
             ],
           },
         });
-        console.log({ tinkoffProviderLinkId });
-        createdLinkIds.push(tinkoffProviderLinkId);
-        allCreatedLinkIds.push(tinkoffProviderLinkId);
+        console.log({ tinkoffProviderId });
+        createdLinkIds.push(tinkoffProviderId);
+        allCreatedLinkIds.push(tinkoffProviderId);
 
         const {
-          data: [{ id: sumProviderLinkId }],
+          data: [{ id: sumProviderId }],
         } = await deep.insert({
           type_id: sumProviderTypeId,
           in: {
@@ -624,12 +624,12 @@ const installPackage = async () => {
             ],
           },
         });
-        console.log({ sumProviderLinkId });
-        createdLinkIds.push(sumProviderLinkId);
-        allCreatedLinkIds.push(sumProviderLinkId);
+        console.log({ sumProviderId });
+        createdLinkIds.push(sumProviderId);
+        allCreatedLinkIds.push(sumProviderId);
 
         const {
-          data: [{ id: storageBusinessLinkId }],
+          data: [{ id: storageBusinessId }],
         } = await deep.insert({
           type_id: storageBusinessTypeId,
           in: {
@@ -641,16 +641,16 @@ const installPackage = async () => {
             ],
           },
         });
-        console.log({ storageBusinessLinkId });
-        createdLinkIds.push(storageBusinessLinkId);
-        allCreatedLinkIds.push(storageBusinessLinkId);
+        console.log({ storageBusinessId });
+        createdLinkIds.push(storageBusinessId);
+        allCreatedLinkIds.push(storageBusinessId);
 
         const {
-          data: [{ id: tokenLinkId }],
+          data: [{ id: tokenId }],
         } = await deep.insert({
           type_id: tokenTypeId,
-          from_id: storageBusinessLinkId,
-          to_id: storageBusinessLinkId,
+          from_id: storageBusinessId,
+          to_id: storageBusinessId,
           string: { data: { value: process.env.PAYMENTS_C2B_TERMINAL_KEY } },
           in: {
             data: [
@@ -661,9 +661,9 @@ const installPackage = async () => {
             ],
           },
         });
-        console.log({ tokenLinkId });
-        createdLinkIds.push(tokenLinkId);
-        allCreatedLinkIds.push(tokenLinkId);
+        console.log({ tokenId });
+        createdLinkIds.push(tokenId);
+        allCreatedLinkIds.push(tokenId);
 
         const {
           data: [{ id: Product }],
@@ -685,7 +685,7 @@ const installPackage = async () => {
         allCreatedLinkIds.push(Product);
 
         const {
-          data: [{ id: productLinkId }],
+          data: [{ id: productId }],
         } = await deep.insert({
           type_id: Product,
           in: {
@@ -697,9 +697,9 @@ const installPackage = async () => {
             ],
           },
         });
-        console.log({ productLinkId });
-        createdLinkIds.push(productLinkId);
-        allCreatedLinkIds.push(productLinkId);
+        console.log({ productId });
+        createdLinkIds.push(productId);
+        allCreatedLinkIds.push(productId);
 
         const testInit = async ({ customerKey } = { customerKey: uniqid() }) => {
           console.log('testInit-start');
@@ -707,12 +707,12 @@ const installPackage = async () => {
           const createdLinkIds = [];
 
           const {
-            data: [{ id: paymentLinkId }],
+            data: [{ id: paymentId }],
           } = await deep.insert({
             type_id: paymentTypeId,
             object: { data: { value: { orderId: uniqid() } } },
             from_id: deep.linkId,
-            to_id: storageBusinessLinkId,
+            to_id: storageBusinessId,
             in: {
               data: [
                 {
@@ -722,16 +722,16 @@ const installPackage = async () => {
               ],
             },
           });
-          console.log({ paymentLinkId });
-          createdLinkIds.push(paymentLinkId);
-          allCreatedLinkIds.push(paymentLinkId);
+          console.log({ paymentId });
+          createdLinkIds.push(paymentId);
+          allCreatedLinkIds.push(paymentId);
 
           const {
-            data: [{ id: sumLinkId }],
+            data: [{ id: sumId }],
           } = await deep.insert({
             type_id: sumTypeid,
-            from_id: sumProviderLinkId,
-            to_id: paymentLinkId,
+            from_id: sumProviderId,
+            to_id: paymentId,
             number: { data: { value: PRICE } },
             in: {
               data: [
@@ -742,16 +742,16 @@ const installPackage = async () => {
               ],
             },
           });
-          console.log({ sumLinkId });
-          createdLinkIds.push(sumLinkId);
-          allCreatedLinkIds.push(sumLinkId);
+          console.log({ sumId });
+          createdLinkIds.push(sumId);
+          allCreatedLinkIds.push(sumId);
 
           const {
-            data: [{ id: objectLinkId }],
+            data: [{ id: objectId }],
           } = await deep.insert({
             type_id: objectTypeId,
-            from_id: paymentLinkId,
-            to_id: productLinkId,
+            from_id: paymentId,
+            to_id: productId,
             in: {
               data: [
                 {
@@ -761,16 +761,16 @@ const installPackage = async () => {
               ],
             },
           });
-          console.log({ objectLinkId });
-          createdLinkIds.push(objectLinkId);
-          allCreatedLinkIds.push(objectLinkId);
+          console.log({ objectId });
+          createdLinkIds.push(objectId);
+          allCreatedLinkIds.push(objectId);
 
           const {
-            data: [{ id: payLinkId }],
+            data: [{ id: payId }],
           } = await deep.insert({
             type_id: payTypeId,
             from_id: deep.linkId,
-            to_id: sumLinkId,
+            to_id: sumId,
             in: {
               data: [
                 {
@@ -780,15 +780,15 @@ const installPackage = async () => {
               ],
             },
           });
-          console.log({ payLinkId });
-          createdLinkIds.push(payLinkId);
-          allCreatedLinkIds.push(payLinkId);
+          console.log({ payId });
+          createdLinkIds.push(payId);
+          allCreatedLinkIds.push(payId);
 
           var urlLinkSelectQuery;
           for (let i = 0; i < 10; i++) {
             urlLinkSelectQuery = await deep.select({
               type_id: urlTypeId,
-              to_id: payLinkId,
+              to_id: payId,
             });
 
             if (urlLinkSelectQuery.data.length > 0) {
@@ -904,15 +904,15 @@ const installPackage = async () => {
               },
             });
             if (cancellingPaymentLinkInsertQuery.error) { throw new errorTypeId(cancellingPaymentLinkInsertQuery.error.message); }
-            const cancellingPaymentLinkId = cancellingPaymentLinkInsertQuery.data[0].id;
-            console.log({ cancellingPaymentLinkId });
-            createdLinkIds.push(cancellingPaymentLinkId);
-            allCreatedLinkIds.push(cancellingPaymentLinkId);
+            const cancellingPaymentId = cancellingPaymentLinkInsertQuery.data[0].id;
+            console.log({ cancellingPaymentId });
+            createdLinkIds.push(cancellingPaymentId);
+            allCreatedLinkIds.push(cancellingPaymentId);
 
             const sumLinkOfCancellingPaymentQuery = await deep.insert({
               type_id: sumTypeid,
-              from_id: sumProviderLinkId,
-              to_id: cancellingPaymentLinkId,
+              from_id: sumProviderId,
+              to_id: cancellingPaymentId,
               number: { data: { value: PRICE } },
               in: {
                 data: [
@@ -943,16 +943,16 @@ const installPackage = async () => {
               },
             });
             if (cancellingPayLinkInsertQuery.error) { throw new errorTypeId(cancellingPayLinkInsertQuery.error.message); }
-            const cancellingPayLinkId = cancellingPayLinkInsertQuery.data[0].id;
-            console.log({ cancellingPayLinkId });
-            createdLinkIds.push(cancellingPayLinkId);
-            allCreatedLinkIds.push(cancellingPayLinkId);
+            const cancellingPayId = cancellingPayLinkInsertQuery.data[0].id;
+            console.log({ cancellingPayId });
+            createdLinkIds.push(cancellingPayId);
+            allCreatedLinkIds.push(cancellingPayId);
 
             var payedLinkSelectQuery;
             for (let i = 0; i < 10; i++) {
               payedLinkSelectQuery = await deep.select({
                 type_id: payedTypeId,
-                to_id: cancellingPayLinkId
+                to_id: cancellingPayId
               });
 
               if (payedLinkSelectQuery.data.length > 0) {
@@ -999,17 +999,17 @@ const installPackage = async () => {
                 },
               });
               if (cancellingPaymentLinkInsertQuery.error) { throw new errorTypeId(cancellingPaymentLinkInsertQuery.error.message); }
-              const cancellingPaymentLinkId = cancellingPaymentLinkInsertQuery.data[0].id;
-              console.log({ cancellingPaymentLinkId });
-              createdLinkIds.push(cancellingPaymentLinkId);
-              allCreatedLinkIds.push(cancellingPaymentLinkId);
+              const cancellingPaymentId = cancellingPaymentLinkInsertQuery.data[0].id;
+              console.log({ cancellingPaymentId });
+              createdLinkIds.push(cancellingPaymentId);
+              allCreatedLinkIds.push(cancellingPaymentId);
 
               const {
                 data: [{ id: sumLinkIdOfCancellingPayment }]
               } = await deep.insert({
                 type_id: sumTypeid,
-                from_id: sumProviderLinkId,
-                to_id: cancellingPaymentLinkId,
+                from_id: sumProviderId,
+                to_id: cancellingPaymentId,
                 number: { data: { value: Math.floor(PRICE / 3) } },
                 in: {
                   data: [
@@ -1038,16 +1038,16 @@ const installPackage = async () => {
                 },
               });
               if (cancellingPayLinkInsertQuery.error) { throw new errorTypeId(cancellingPayLinkInsertQuery.error.message); }
-              const cancellingPayLinkId = cancellingPayLinkInsertQuery.data[0].id;
-              console.log({ cancellingPayLinkId });
-              createdLinkIds.push(cancellingPayLinkId);
-              allCreatedLinkIds.push(cancellingPayLinkId);
+              const cancellingPayId = cancellingPayLinkInsertQuery.data[0].id;
+              console.log({ cancellingPayId });
+              createdLinkIds.push(cancellingPayId);
+              allCreatedLinkIds.push(cancellingPayId);
 
               var payedLinkSelectQuery;
               for (let i = 0; i < 10; i++) {
                 payedLinkSelectQuery = await deep.select({
                   type_id: payedTypeId,
-                  to_id: cancellingPayLinkId
+                  to_id: cancellingPayId
                 });
 
                 if (payedLinkSelectQuery.data.length > 0) {
@@ -1096,15 +1096,15 @@ const installPackage = async () => {
               },
             });
             if (cancellingPaymentLinkInsertQuery.error) { throw new errorTypeId(cancellingPaymentLinkInsertQuery.error.message); }
-            const cancellingPaymentLinkId = cancellingPaymentLinkInsertQuery.data[0].id;
-            console.log({ cancellingPaymentLinkId });
-            createdLinkIds.push(cancellingPaymentLinkId);
-            allCreatedLinkIds.push(cancellingPaymentLinkId);
+            const cancellingPaymentId = cancellingPaymentLinkInsertQuery.data[0].id;
+            console.log({ cancellingPaymentId });
+            createdLinkIds.push(cancellingPaymentId);
+            allCreatedLinkIds.push(cancellingPaymentId);
 
             const sumLinkOfCancellingPaymentSelectQuery = await deep.insert({
               type_id: sumTypeid,
-              from_id: sumProviderLinkId,
-              to_id: cancellingPaymentLinkId,
+              from_id: sumProviderId,
+              to_id: cancellingPaymentId,
               number: { data: { value: PRICE } },
               in: {
                 data: [
@@ -1135,16 +1135,16 @@ const installPackage = async () => {
               },
             });
             if (cancellingPayLinkInsertQuery.error) { throw new errorTypeId(cancellingPayLinkInsertQuery.error.message); }
-            const cancellingPayLinkId = cancellingPayLinkInsertQuery.data[0].id;
-            console.log({ cancellingPayLinkId });
-            createdLinkIds.push(cancellingPayLinkId);
-            allCreatedLinkIds.push(cancellingPayLinkId);
+            const cancellingPayId = cancellingPayLinkInsertQuery.data[0].id;
+            console.log({ cancellingPayId });
+            createdLinkIds.push(cancellingPayId);
+            allCreatedLinkIds.push(cancellingPayId);
 
             var payedLinkSelectQuery;
             for (let i = 0; i < 10; i++) {
               payedLinkSelectQuery = await deep.select({
                 type_id: payedTypeId,
-                to_id: cancellingPayLinkId
+                to_id: cancellingPayId
               });
 
               if (payedLinkSelectQuery.data.length > 0) {
