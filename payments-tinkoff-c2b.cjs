@@ -34,8 +34,8 @@ const { addCustomer } = require("./deep-packages/payments/tinkoff/addCustomer.cj
 const { getCustomer } = require("./deep-packages/payments/tinkoff/getCustomer.cjs");
 const { removeCustomer } = require("./deep-packages/payments/tinkoff/removeCustomer.cjs");
 const { handlersDependencies } = require("./deep-packages/payments/tinkoff/handlersDependencies.cjs");
-const { insertPayInsertHandler } = require("./deep-packages/payments/tinkoff/insertPayInsertHandler.cjs");
-const { insertNotificationHandler } = require("./deep-packages/payments/tinkoff/insertNotificationHandler.cjs");
+const { insertPayInsertHandler: insertTinkoffPayInsertHandler } = require("./deep-packages/payments/tinkoff/insertTinkoffPayInsertHandler.cjs");
+const { insertTinkoffNotificationHandler } = require("./deep-packages/payments/tinkoff/insertTinkoffNotificationHandler.cjs");
 const {sleep} = require("./deep-packages/sleep.cjs");
 const {confirm} = require("./deep-packages/payments/tinkoff/confirm.cjs");
 
@@ -529,7 +529,7 @@ const installPackage = async () => {
     console.log({ incomeTypeId });
     debugger;
 
-    await insertPayInsertHandler({packageName: "@deep-foundation/payments-tinkoff-c2b",deep, containTypeId, fileTypeId: syncTextFileTypeId, handleInsertTypeId, handlerTypeId, notificationUrl: process.env.PAYMENTS_C2B_NOTIFICATION_URL, packageId, supportsId: dockerSupportsJs, userEmail: process.env.PAYMENTS_C2B_EMAIL, userPhone: process.env.PAYMENTS_C2B_PHONE, dockerSupportsJsId, payTypeId});
+    await insertTinkoffPayInsertHandler({packageName: "@deep-foundation/payments-tinkoff-c2b",deep, containTypeId, fileTypeId: syncTextFileTypeId, handleInsertTypeId, handlerTypeId, notificationUrl: process.env.PAYMENTS_C2B_NOTIFICATION_URL, packageId, supportsId: dockerSupportsJs, userEmail: process.env.PAYMENTS_C2B_EMAIL, userPhone: process.env.PAYMENTS_C2B_PHONE, dockerSupportsJsId, payTypeId});
 
     const tinkoffNotificationOnConfirmedCode = `
     
@@ -587,7 +587,7 @@ const installPackage = async () => {
       
     }
   `;
-    await insertNotificationHandler({packageName: "@deep-foundation/payments-tinkoff-c2b",packageId,deep, adminId: await deep.id('deep', 'admin'), containTypeId, fileTypeId: syncTextFileTypeId, handleRouteTypeId, handlerTypeId, notificationPort: process.env.PAYMENTS_C2B_NOTIFICATION_PORT, notificationRoute: process.env.PAYMENTS_C2B_NOTIFICATION_ROUTE, portTypeId, routerListeningTypeId, routerStringUseTypeId, routerTypeId, routeTypeId, supportsId: dockerSupportsJsId, onCofirmedCode: tinkoffNotificationOnConfirmedCode});
+    await insertTinkoffNotificationHandler({packageName: "@deep-foundation/payments-tinkoff-c2b",packageId,deep, adminId: await deep.id('deep', 'admin'), containTypeId, fileTypeId: syncTextFileTypeId, handleRouteTypeId, handlerTypeId, notificationPort: process.env.PAYMENTS_C2B_NOTIFICATION_PORT, notificationRoute: process.env.PAYMENTS_C2B_NOTIFICATION_ROUTE, portTypeId, routerListeningTypeId, routerStringUseTypeId, routerTypeId, routeTypeId, supportsId: dockerSupportsJsId, onCofirmedCode: tinkoffNotificationOnConfirmedCode});
 
     const callTests = async () => {
       console.log('callTests-start');
