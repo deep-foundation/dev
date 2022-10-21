@@ -1,6 +1,7 @@
-const {insertNotificationHandler: baseInsertNotificationHandler} = require("./../insertNotificationHandler.cjs");
+const { handlersDependencies } = require("../handlersDependencies.cjs");
+const {insertNotificationHandler: baseInsertNotificationHandler} = require("../insertNotificationHandler.cjs");
 
-const insertNotificationHandler = async ({paymentsPackageName,deep, notificationPort, notificationRoute, portTypeId, routerListeningTypeId, routerTypeId, routerStringUseTypeId, routeTypeId, handleRouteTypeId, handlerTypeId, supportsId, containTypeId,  adminId, fileTypeId}) => {
+const insertTinkoffCancellingNotificationHandler = async ({paymentsPackageName,deep, notificationPort, notificationRoute, portTypeId, routerListeningTypeId, routerTypeId, routerStringUseTypeId, routeTypeId, handleRouteTypeId, handlerTypeId, supportsId, containTypeId,  adminId, fileTypeId}) => {
     const code = `
 async (
   req,
@@ -75,4 +76,4 @@ async (
 return await baseInsertNotificationHandler({adminId, containTypeId, deep, fileTypeId, handlerName: "tinkoffNotificationHandler", handleRouteTypeId,handlerTypeId,notificationPort,notificationRoute,portTypeId,routerListeningTypeId,routerStringUseTypeId,routerTypeId,routeTypeId,supportsId, code});
 }
 
-exports.insertNotificationHandler = insertNotificationHandler;
+exports.insertTinkoffCancellingNotificationHandler = insertTinkoffCancellingNotificationHandler;
