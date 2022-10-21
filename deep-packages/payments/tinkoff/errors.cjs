@@ -1,8 +1,3 @@
-const axios = require('axios');
-const { generateToken } = require("./generateToken.cjs");
-const { getError } = require("./getError.cjs");
-const { getUrl } = require("./getUrl.cjs");
-
 const errors = {
     7: 'Покупатель не найден',
     53: 'Обратитесь к продавцу',

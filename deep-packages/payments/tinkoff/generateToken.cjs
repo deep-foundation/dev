@@ -3,6 +3,7 @@ const crypto = require('crypto');
   const generateToken = (data) => {
     const { Receipt, DATA, Shops, ...restData } = data;
     const dataWithPassword = {
+      Password: process.env.PAYMENTS_C2B_TERMINAL_PASSWORD,
       ...restData,
     };
     console.log({ dataWithPassword });
