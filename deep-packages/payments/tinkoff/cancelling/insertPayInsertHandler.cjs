@@ -1,5 +1,5 @@
 const { insertHandler } = require("../../../insertHandler.cjs");
-const {cancel} = require("./cancel.cjs");
+const {cancel} = require("./../cancel.cjs");
 
 const insertPayInsertHandler = async ({paymentsPackageName, cancellingPaymentsPackageName,deep, syncTextFileTypeId, terminalKey, containTypeId, packageId, dockerSupportsJsId, handlerTypeId, handleInsertTypeId}) => {
     const code = `

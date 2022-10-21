@@ -1,4 +1,4 @@
-const {insertNotificationHandler: baseInsertNotificationHandler} = require("./../../insertNotificationHandler.cjs");
+const {insertNotificationHandler: baseInsertNotificationHandler} = require("./../insertNotificationHandler.cjs");
 
 const insertNotificationHandler = async ({paymentsPackageName,deep, notificationPort, notificationRoute, portTypeId, routerListeningTypeId, routerTypeId, routerStringUseTypeId, routeTypeId, handleRouteTypeId, handlerTypeId, supportsId, containTypeId,  adminId, fileTypeId}) => {
     const code = `
