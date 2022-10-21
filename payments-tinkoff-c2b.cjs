@@ -530,7 +530,64 @@ const installPackage = async () => {
     debugger;
 
     await insertPayInsertHandler({packageName: "@deep-foundation/payments-tinkoff-c2b",deep, containTypeId, fileTypeId: syncTextFileTypeId, handleInsertTypeId, handlerTypeId, notificationUrl: process.env.PAYMENTS_C2B_NOTIFICATION_URL, packageId, supportsId: dockerSupportsJs, userEmail: process.env.PAYMENTS_C2B_EMAIL, userPhone: process.env.PAYMENTS_C2B_PHONE, dockerSupportsJsId, payTypeId});
-    await insertNotificationHandler({packageName: "@deep-foundation/payments-tinkoff-c2b",packageId,deep, adminId: await deep.id('deep', 'admin'), containTypeId, fileTypeId: syncTextFileTypeId, handleRouteTypeId, handlerTypeId, notificationPort: process.env.PAYMENTS_C2B_NOTIFICATION_PORT, notificationRoute: process.env.PAYMENTS_C2B_NOTIFICATION_ROUTE, portTypeId, routerListeningTypeId, routerStringUseTypeId, routerTypeId, routeTypeId, supportsId: dockerSupportsJsId});
+
+    const tinkoffNotificationOnConfirmedCode = `
+    
+    const payedLinkInsertQuery = await deep.insert({
+      type_id: await deep.id(${packageName}, "Payed"),
+    from_id: tinkoffProviderLinkId,
+      to_id: payLink.id,
+    });
+    if(payedLinkInsertQuery.error) { throw new Error(payedLinkInsertQuery.error.message); }
+    const payedLinkId = payedLinkInsertQuery.data[0].id;
+    console.log({payedLinkId});
+
+    const StorageClient = await deep.id(${packageName}, "StorageClient");
+    const storageClientLinkSelectQuery = await deep.select({
+      type_id: StorageClient,
+      number: {value: req.body.CardId}
+    });
+    console.log({storageClientLinkSelectQuery});
+    if(storageClientLinkSelectQuery.error) {throw new Error(storageClientLinkSelectQuery.error.message);}
+    
+    if(fromLinkOfPayment.type_id !== StorageClient) {
+      var storageClientLinkId;
+      if(storageClientLinkSelectQuery.data.length === 0) {
+        const StorageClient = await deep.id(${packageName}, "StorageClient");
+        const storageClientLinkInsertQuery = await deep.insert({
+          type_id: StorageClient,
+          number: {data: {value: req.body.CardId}},
+        });
+        console.log({storageClientLinkInsertQuery});
+        if(storageClientLinkInsertQuery.error) {throw new Error(storageClientLinkInsertQuery.error.message);}
+        storageClientLinkId = storageClientLinkInsertQuery.data[0].id;
+    
+        const Title = await deep.id(${packageName}, "Title");
+        const titleLinkInsertQuery = await deep.insert({
+          type_id: Title,
+          from_id: storageClientLinkId,
+          to_id: storageClientLinkId,
+          string: {data: {value: req.body.Pan}},
+        });
+        if(titleLinkInsertQuery.error) {throw new Error(titleLinkInsertQuery.error.message);}
+        const titleLinkId = titleLinkInsertQuery.data[0].id;
+        console.log({titleLinkId});
+      } else {
+        storageClientLinkId = storageClientLinkSelectQuery.data[0];
+      }
+      const Income = await deep.id(${packageName}, "Income");
+      const incomeLinkInsertQuery = await deep.insert({
+        type_id: Income,
+        from_id: paymentLink.id,
+        to_id: storageClientLinkId,
+      });
+      if(incomeLinkInsertQuery.error) {throw new Error(incomeLinkInsertQuery.error.message);}
+      const incomeLinkId = incomeLinkInsertQuery.data[0].id;
+      console.log({incomeLinkId});
+      
+    }
+  `;
+    await insertNotificationHandler({packageName: "@deep-foundation/payments-tinkoff-c2b",packageId,deep, adminId: await deep.id('deep', 'admin'), containTypeId, fileTypeId: syncTextFileTypeId, handleRouteTypeId, handlerTypeId, notificationPort: process.env.PAYMENTS_C2B_NOTIFICATION_PORT, notificationRoute: process.env.PAYMENTS_C2B_NOTIFICATION_ROUTE, portTypeId, routerListeningTypeId, routerStringUseTypeId, routerTypeId, routeTypeId, supportsId: dockerSupportsJsId, onCofirmedCode: tinkoffNotificationOnConfirmedCode});
 
     const callTests = async () => {
       console.log('callTests-start');
