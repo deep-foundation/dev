@@ -12,14 +12,14 @@ async (
 ) => {
   ${handlersDependencies}
 
-  if(req.body.Status !== "AUTHORIZED" || req.body.Status !== "CONFIRMED") {
+  if(!(req.body.Status === "AUTHORIZED" || req.body.Status === "CONFIRMED")) {
     return next();
   }
 
   const reqBody = req.body;
   console.log({reqBody});
 
-  const TinkoffProvider = await deep.id(${packageName}, "TinkoffProvider");
+  const TinkoffProvider = await deep.id("${packageName}", "TinkoffProvider");
   const tinkoffProviderLinkSelectQuery = await deep.select({
     type_id: TinkoffProvider
   });
@@ -38,13 +38,13 @@ async (
   const {data: mpUpPayment, error: mpUpPaymentSelectQueryError} = await deep.select({
     up: {
       parent_id: { _eq: paymentLink.id },
-      tree_id: { _eq: await deep.id(${packageName}, "paymentTree") }
+      tree_id: { _eq: await deep.id("${packageName}", "paymentTree") }
     }
   });
   console.log({mpUpPayment});
   if(mpUpPaymentSelectQueryError) { throw new Error(mpUpPaymentSelectQueryError.message); }
 
-  const Pay = await deep.id(${packageName}, "Pay");
+  const Pay = await deep.id("${packageName}", "Pay");
   const payLink = mpUpPayment.find(link => link.type_id === Pay);
   console.log({payLink});
   if(!payLink) { throw new Error("The pay link associated with payment link " + paymentLink + " is not found.") }
@@ -60,7 +60,7 @@ async (
   const storageBusinessLinkId = storageBusinessLinkSelectQuery.data[0].id;
   console.log({storageBusinessLinkId});
 
-  const Token = await deep.id(${packageName}, "Token");
+  const Token = await deep.id("${packageName}", "Token");
   const tokenLinkSelectQuery = await deep.select({
     type_id: Token,
     from_id: storageBusinessLinkId,
@@ -84,7 +84,7 @@ async (
     if (confirmResult.error) {
       const errorMessage = "Could not confirm the pay. " + confirmResult.error;
       const {error: errorLinkInsertError} = await deep.insert({
-        type_id: (await deep.id(${packageName}, "Error")),
+        type_id: (await deep.id("${packageName}", "Error")),
         from_id: tinkoffProviderLinkId,
         to_id: payLink.id,
         string: { data: { value: errorMessage } },

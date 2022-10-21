@@ -534,7 +534,7 @@ const installPackage = async () => {
     const tinkoffNotificationOnConfirmedCode = `
     
     const payedLinkInsertQuery = await deep.insert({
-      type_id: await deep.id(${packageName}, "Payed"),
+      type_id: await deep.id("@deep-foundation/payments-tinkoff-c2b", "Payed"),
     from_id: tinkoffProviderLinkId,
       to_id: payLink.id,
     });
@@ -542,7 +542,7 @@ const installPackage = async () => {
     const payedLinkId = payedLinkInsertQuery.data[0].id;
     console.log({payedLinkId});
 
-    const StorageClient = await deep.id(${packageName}, "StorageClient");
+    const StorageClient = await deep.id("@deep-foundation/payments-tinkoff-c2b", "StorageClient");
     const storageClientLinkSelectQuery = await deep.select({
       type_id: StorageClient,
       number: {value: req.body.CardId}
@@ -553,7 +553,7 @@ const installPackage = async () => {
     if(fromLinkOfPayment.type_id !== StorageClient) {
       var storageClientLinkId;
       if(storageClientLinkSelectQuery.data.length === 0) {
-        const StorageClient = await deep.id(${packageName}, "StorageClient");
+        const StorageClient = await deep.id("@deep-foundation/payments-tinkoff-c2b", "StorageClient");
         const storageClientLinkInsertQuery = await deep.insert({
           type_id: StorageClient,
           number: {data: {value: req.body.CardId}},
@@ -562,7 +562,7 @@ const installPackage = async () => {
         if(storageClientLinkInsertQuery.error) {throw new Error(storageClientLinkInsertQuery.error.message);}
         storageClientLinkId = storageClientLinkInsertQuery.data[0].id;
     
-        const Title = await deep.id(${packageName}, "Title");
+        const Title = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Title");
         const titleLinkInsertQuery = await deep.insert({
           type_id: Title,
           from_id: storageClientLinkId,
@@ -575,7 +575,7 @@ const installPackage = async () => {
       } else {
         storageClientLinkId = storageClientLinkSelectQuery.data[0];
       }
-      const Income = await deep.id(${packageName}, "Income");
+      const Income = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Income");
       const incomeLinkInsertQuery = await deep.insert({
         type_id: Income,
         from_id: paymentLink.id,
