@@ -1,7 +1,7 @@
 const { handlersDependencies } = require("../handlersDependencies.cjs");
-const {insertNotificationHandler: baseInsertNotificationHandler} = require("../insertTinkoffNotificationHandler.cjs");
+const {insertNotificationHandler: baseInsertNotificationHandler} = require("../../../insertNotificationHandler.cjs");
 
-const insertTinkoffCancellingNotificationHandler = async ({paymentsPackageName,deep, notificationPort, notificationRoute, portTypeId, routerListeningTypeId, routerTypeId, routerStringUseTypeId, routeTypeId, handleRouteTypeId, handlerTypeId, supportsId, containTypeId,  adminId, fileTypeId}) => {
+const insertTinkoffCancellingNotificationHandler = async ({packageId,paymentsPackageName,deep, notificationPort, notificationRoute, portTypeId, routerListeningTypeId, routerTypeId, routerStringUseTypeId, routeTypeId, handleRouteTypeId, handlerTypeId, supportsId, containTypeId,  adminId, fileTypeId}) => {
     const code = `
 async (
   req,
@@ -9,6 +9,7 @@ async (
   next,
   { deep, require, gql }
 ) => {
+  res.send('ok');
   ${handlersDependencies}
   const reqBody = req.body;
   console.log({reqBody});
@@ -68,12 +69,10 @@ async (
     to_id: sumLink.id,
   });
   if(payedInsertLinkInsertQuery.error) {throw new Error(payedInsertLinkInsertQuery.error.message);}
-
-  res.send('ok');
 };
 `;
 
-return await baseInsertNotificationHandler({adminId, containTypeId, deep, fileTypeId, handlerName: "tinkoffNotificationHandler", handleRouteTypeId,handlerTypeId,notificationPort,notificationRoute,portTypeId,routerListeningTypeId,routerStringUseTypeId,routerTypeId,routeTypeId,supportsId, code});
+return await baseInsertNotificationHandler({packageId,adminId, containTypeId, deep, fileTypeId, handlerName: "tinkoffNotificationHandler", handleRouteTypeId,handlerTypeId,notificationPort,notificationRoute,portTypeId,routerListeningTypeId,routerStringUseTypeId,routerTypeId,routeTypeId,supportsId, code});
 }
 
 exports.insertTinkoffCancellingNotificationHandler = insertTinkoffCancellingNotificationHandler;
