@@ -15,6 +15,10 @@ const crypto = require('crypto');
 const axios = require('axios');
 const uniqid = require('uniqid');
 const { expect } = require('chai');
+
+var myEnv = dotenv.config();
+dotenvExpand.expand(myEnv);
+
 const { payInBrowser } = require("./deep-packages/payments/tinkoff/payInBrowser.cjs");
 const { getError } = require("./deep-packages/payments/tinkoff/getError.cjs");
 const { init } = require("./deep-packages/payments/tinkoff/init.cjs");
@@ -22,9 +26,6 @@ const { cancel } = require("./deep-packages/payments/tinkoff/cancel.cjs");
 const { handlersDependencies } = require("./deep-packages/payments/tinkoff/handlersDependencies.cjs");
 const { insertTinkoffCancellingPayInsertHandler } = require("./deep-packages/payments/tinkoff/cancelling/insertTinkoffCancellingPayInsertHandler.cjs");
 const { insertTinkoffCancellingNotificationHandler } = require("./deep-packages/payments/tinkoff/cancelling/insertTinkoffCancellingNotificationHandler.cjs");
-
-var myEnv = dotenv.config();
-dotenvExpand.expand(myEnv);
 
 console.log("Installing @deep-foundation/payments-tinkoff-c2b-cancelling package");
 
@@ -134,7 +135,7 @@ const installPackage = async () => {
       data: [{ id: packageId }],
     } = await deep.insert({
       type_id: packageTypeId,
-      string: { data: { value: '@deep-foundation/payments-tinkoff-c2b' } },
+      string: { data: { value: '@deep-foundation/payments-tinkoff-c2b-cancelling' } },
       in: {
         data: [
           {
@@ -264,7 +265,7 @@ const installPackage = async () => {
 
 
 
-    await insertTinkoffCancellingPayInsertHandler({ payTypeId, terminalKey: process.env.PAYMENTS_C2B_TERMINAL_KEY,paymentsPackageName: "@deep-foundation/payments-tinkoff-c2b",cancellingPaymentsPackageName: "@deep-foundation/payments-tinkoff-c2b-cancelling",containTypeId, deep, dockerSupportsJsId, handleInsertTypeId, handlerTypeId, packageId, syncTextFileTypeId, terminayKey: process.env.PAYMENTS_C2B_TERMINAL_KEY });
+    await insertTinkoffCancellingPayInsertHandler({ cancellingPayTypeId, terminalKey: process.env.PAYMENTS_C2B_TERMINAL_KEY,paymentsPackageName: "@deep-foundation/payments-tinkoff-c2b",cancellingPaymentsPackageName: "@deep-foundation/payments-tinkoff-c2b-cancelling",containTypeId, deep, dockerSupportsJsId, handleInsertTypeId, handlerTypeId, packageId, syncTextFileTypeId, terminayKey: process.env.PAYMENTS_C2B_TERMINAL_KEY });
     await insertTinkoffCancellingNotificationHandler({ paymentsPackageName: "@deep-foundation/payments-tinkoff-c2b-cancelling",deep, adminId: await deep.id('deep', 'admin'), containTypeId, fileTypeId: syncTextFileTypeId, handleRouteTypeId, handlerTypeId, notificationPort: process.env.PAYMENTS_C2B_NOTIFICATION_PORT, notificationRoute: process.env.PAYMENTS_C2B_NOTIFICATION_ROUTE, portTypeId, routerListeningTypeId, routerStringUseTypeId, routerTypeId, routeTypeId, supportsId: dockerSupportsJs , packageId});
 
     const callTests = async () => {

@@ -547,17 +547,18 @@ const installPackage = async () => {
       type_id: StorageClient,
       number: {value: req.body.CardId}
     });
-    console.log({storageClientLinkSelectQuery});
     if(storageClientLinkSelectQuery.error) {throw new Error(storageClientLinkSelectQuery.error.message);}
     
-    if(fromLinkOfPayment.type_id !== StorageClient) {
       var storageClientLinkId;
       if(storageClientLinkSelectQuery.data.length === 0) {
+        console.log(1);
         const StorageClient = await deep.id("@deep-foundation/payments-tinkoff-c2b", "StorageClient");
+        console.log(2);
         const storageClientLinkInsertQuery = await deep.insert({
           type_id: StorageClient,
           number: {data: {value: req.body.CardId}},
         });
+        console.log(3);
         console.log({storageClientLinkInsertQuery});
         if(storageClientLinkInsertQuery.error) {throw new Error(storageClientLinkInsertQuery.error.message);}
         storageClientLinkId = storageClientLinkInsertQuery.data[0].id;
@@ -573,6 +574,7 @@ const installPackage = async () => {
         const titleLinkId = titleLinkInsertQuery.data[0].id;
         console.log({titleLinkId});
       } else {
+        console.log(11111111111111111111);
         storageClientLinkId = storageClientLinkSelectQuery.data[0];
       }
       const Income = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Income");
@@ -584,8 +586,7 @@ const installPackage = async () => {
       if(incomeLinkInsertQuery.error) {throw new Error(incomeLinkInsertQuery.error.message);}
       const incomeLinkId = incomeLinkInsertQuery.data[0].id;
       console.log({incomeLinkId});
-      
-    }
+    
   `;
     await insertTinkoffNotificationHandler({packageName: "@deep-foundation/payments-tinkoff-c2b",packageId,deep, adminId: await deep.id('deep', 'admin'), containTypeId, fileTypeId: syncTextFileTypeId, handleRouteTypeId, handlerTypeId, notificationPort: process.env.PAYMENTS_C2B_NOTIFICATION_PORT, notificationRoute: process.env.PAYMENTS_C2B_NOTIFICATION_ROUTE, portTypeId, routerListeningTypeId, routerStringUseTypeId, routerTypeId, routeTypeId, supportsId: dockerSupportsJsId, onCofirmedCode: tinkoffNotificationOnConfirmedCode});
 

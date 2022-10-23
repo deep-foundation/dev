@@ -2,7 +2,7 @@ const { insertHandler } = require("../../../insertHandler.cjs");
 const { handlersDependencies } = require("../handlersDependencies.cjs");
 const {cancel} = require("../cancel.cjs");
 
-const insertTinkoffCancellingPayInsertHandler = async ({paymentsPackageName, cancellingPaymentsPackageName,deep, syncTextFileTypeId, terminalKey, containTypeId, packageId, dockerSupportsJsId, handlerTypeId, handleInsertTypeId, payTypeId}) => {
+const insertTinkoffCancellingPayInsertHandler = async ({paymentsPackageName, cancellingPaymentsPackageName,deep, syncTextFileTypeId, terminalKey, containTypeId, packageId, dockerSupportsJsId, handlerTypeId, handleInsertTypeId, cancellingPayTypeId}) => {
     const code = `
 async ({ deep, require, data: { newLink: payLink } }) => {
   ${handlersDependencies}
@@ -96,7 +96,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
 };
 `;
 
-return await insertHandler({deep,fileTypeId: syncTextFileTypeId, fileName: 'payInsertHandlerFile', handlerName: 'payInsertHandler', handleName: 'payInsertHandle', triggerTypeId: payTypeId, code, supportsId: dockerSupportsJsId, handleOperationTypeId: handleInsertTypeId, containTypeId, packageId, handlerTypeId, code});
+return await insertHandler({deep,fileTypeId: syncTextFileTypeId, fileName: 'payInsertHandlerFile', handlerName: 'payInsertHandler', handleName: 'payInsertHandle', triggerTypeId: cancellingPayTypeId, code, supportsId: dockerSupportsJsId, handleOperationTypeId: handleInsertTypeId, containTypeId, packageId, handlerTypeId, code});
 }
 
 exports.insertTinkoffCancellingPayInsertHandler = insertTinkoffCancellingPayInsertHandler;
