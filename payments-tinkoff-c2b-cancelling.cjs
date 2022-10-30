@@ -31,6 +31,28 @@ console.log("Installing @deep-foundation/payments-tinkoff-c2b-cancelling package
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
+const requiredEnvVariableNames = [
+  "PAYMENTS_C2B_TERMINAL_KEY",
+  "PAYMENTS_C2B_TERMINAL_PASSWORD",
+  "PAYMENTS_C2B_URL",
+  "PAYMENTS_C2B_NOTIFICATION_ROUTE",
+  "PAYMENTS_C2B_NOTIFICATION_PORT",
+  "PAYMENTS_C2B_NOTIFICATION_URL",
+  "PAYMENTS_C2B_CANCELLING_NOTIFICATION_PORT",
+  "PAYMENTS_C2B_CANCELLING_NOTIFICATION_URL",
+  "PAYMENTS_C2B_CARD_NUMBER_SUCCESS",
+  "PAYMENTS_C2B_CARD_EXPDATE",
+  "PAYMENTS_C2B_CARD_CVC",
+  "PAYMENTS_C2B_PHONE",
+  "PAYMENTS_C2B_EMAIL",
+  ];
+  
+  for (const requiredEnvVariableName of requiredEnvVariableNames) {
+    if(!process.env[requiredEnvVariableName]) {
+      throw new Error(`The environment variable ${requiredEnvVariableName} is required. All the required environment variables: \n${requiredEnvVariableNames.join("\n")}`);
+    }
+  }
+
 const allCreatedLinkIds = [];
 
 const installPackage = async () => {
