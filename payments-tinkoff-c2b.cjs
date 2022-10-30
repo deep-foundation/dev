@@ -41,19 +41,35 @@ const {confirm} = require("./deep-packages/payments/tinkoff/confirm.cjs");
 
 console.log('Installing payments-tinkoff-c2b package');
 
-expect(process.env.PAYMENTS_C2B_TERMINAL_KEY).to.not.be.equal(undefined)
-expect(process.env.PAYMENTS_C2B_TERMINAL_PASSWORD).to.not.be.equal(undefined)
-expect(process.env.PAYMENTS_C2B_URL).to.not.be.equal(undefined)
-expect(process.env.PAYMENTS_C2B_NOTIFICATION_ROUTE).to.not.be.equal(undefined)
-expect(process.env.PAYMENTS_C2B_NOTIFICATION_PORT).to.not.be.equal(undefined)
-expect(process.env.PAYMENTS_C2B_NOTIFICATION_URL).to.not.be.equal(undefined)
-expect(process.env.PAYMENTS_C2B_CANCELLING_NOTIFICATION_PORT).to.not.be.equal(undefined)
-expect(process.env.PAYMENTS_C2B_CANCELLING_NOTIFICATION_URL).to.not.be.equal(undefined)
-expect(process.env.PAYMENTS_C2B_CARD_NUMBER_SUCCESS).to.not.be.equal(undefined)
-expect(process.env.PAYMENTS_C2B_CARD_EXPDATE).to.not.be.equal(undefined)
-expect(process.env.PAYMENTS_C2B_CARD_CVC).to.not.be.equal(undefined)
-expect(process.env.PAYMENTS_C2B_PHONE).to.not.be.equal(undefined)
-expect(process.env.PAYMENTS_C2B_EMAIL).to.not.be.equal(undefined)
+const requiredEnvVariableNames = [
+"PAYMENTS_C2B_TERMINAL_KEY",
+"PAYMENTS_C2B_TERMINAL_PASSWORD",
+"PAYMENTS_C2B_URL",
+"PAYMENTS_C2B_NOTIFICATION_ROUTE",
+"PAYMENTS_C2B_NOTIFICATION_PORT",
+"PAYMENTS_C2B_NOTIFICATION_URL",
+"PAYMENTS_C2B_CANCELLING_NOTIFICATION_PORT",
+"PAYMENTS_C2B_CANCELLING_NOTIFICATION_URL",
+"PAYMENTS_C2B_CARD_NUMBER_SUCCESS",
+"PAYMENTS_C2B_CARD_EXPDATE",
+"PAYMENTS_C2B_CARD_CVC",
+"PAYMENTS_C2B_PHONE",
+"PAYMENTS_C2B_EMAIL",
+];
+
+for (const requiredEnvVariableName of requiredEnvVariableNames) {
+  if(!process.env[requiredEnvVariableName]) {
+    throw new Error(`The environment variable ${requiredEnvVariableName} is required. All the required environment variables: \n${requiredEnvVariableNames.join("\n")}`);
+  }
+}
+
+for (let i = 0; i < requiredEnvVariableNames.length; i++) {
+  const envItem = envi[i];
+  if(envItem) {
+    throw new Error(``)
+  }
+}
+
 
 const allCreatedLinkIds = [];
 
