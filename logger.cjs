@@ -97,7 +97,7 @@ const installPackage = async () => {
 
   const { data: [{ id: packageId }] } = await deep.insert({
     type_id: packageTypeId,
-    string: { data: { value: `@deep-foundation/payments` } },
+    string: { data: { value: `@deep-foundation/logger` } },
     in: { data: [
       {
         type_id: containTypeId,
@@ -133,6 +133,22 @@ const installPackage = async () => {
     },
   });
   console.log({  logInsertTypeId });
+
+  const {
+    data: [{ id: debugLogTypeId }],
+  } = await deep.insert({
+    type_id: typeTypeId,
+    from_id: anyTypeId,
+    to_id: anyTypeId,
+    in: {
+      data: {
+        type_id: containTypeId,
+        from_id: packageId, // before created package
+        string: { data: { value: 'DebugLog' } },
+      },
+    },
+  });
+  console.log({  debugLog: debugLogTypeId });
 
   const {
     data: [{ id: logUpdateTypeId }],
@@ -198,36 +214,17 @@ const installPackage = async () => {
   });
   console.log({  logObjectTypeId });
 
-  const insertHandlerId = await insertHandler(
+  const insertHandlerId1 = await insertHandler(
     {
-      code: `({deep, data: {newLink}}) => { 
-        const timestamp = Date.now();
-
-        const {data: [{logObjectId}]} = deep.insert({
-          type_id: {_id: ["@deep-foundation/logger", "LogObject"]},
-          from_id: newLink.from_id,
-          to_id: newLink.to_id,
-          out: {
-            data: [{
-              type_id: {_id: ["@deep-foundation/logger", "LogType"]},
-              to_id: newLink.type_id
-            }]
-          }
-        });
-
-        const {data: [{logInsertId}]} = deep.insert({
-          type_id: {_id: ["@deep-foundation/logger", "LogInsert"]},
-          from_id: logObjectId,
-          to_id: newLink.id,
-          number: {data: {value: timestamp}}
-         });
+      code: `({deep, data: {newLink}}) => {
+        await deep.insert({type_id: {_id :["@deep-foundation/logger", "LogInsert"] } });
        }`,
-      fileName: "insertHandlerFile",
-      handlerName: "insertHandler",
-      handleName: "insertHandle",
+      fileName: "insertHandlerFile1",
+      handlerName: "insertHandler1",
+      handleName: "insertHandle1",
       handleOperationTypeId: handleInsertTypeId,
       supportsId: plv8SupportsJsId,
-      triggerTypeId: anyTypeId,
+      triggerTypeId: debugLogTypeId,
       containTypeId,
       deep,
       fileTypeId: syncTextFileTypeId,
@@ -235,167 +232,221 @@ const installPackage = async () => {
       packageId
     }
   );
-  console.log({ insertHandlerId });
+  console.log({ insertHandlerId1 });
 
-  const updateHandlerId = await insertHandler(
-    {
-      code: `({deep, data: {newLink}}) => { 
-        const timestamp = Date.now();
+  await deep.insert({
+    type_id: debugLogTypeId
+  });
+
+  await sleep(3000);
+
+  const {data: [link]} =await deep.select({
+    type_id: debugLogTypeId
+  });
+
+  console.log(link);
+
+  // const insertHandlerId = await insertHandler(
+  //   {
+  //     code: `({deep, data: {newLink}}) => {
+  //       deep.insert({
+  //         type_id: {_id: ["@deep-foundation/logger", "DebugLog"]},
+  //       })
+  //       const timestamp = Date.now();
+
+  //       const {data: [{logObjectId}]} = deep.insert({
+  //         type_id: {_id: ["@deep-foundation/logger", "LogObject"]},
+  //         from_id: newLink.from_id,
+  //         to_id: newLink.to_id,
+  //         out: {
+  //           data: [{
+  //             type_id: {_id: ["@deep-foundation/logger", "LogType"]},
+  //             to_id: newLink.type_id
+  //           }]
+  //         }
+  //       });
+
+  //       const {data: [{logInsertId}]} = deep.insert({
+  //         type_id: {_id: ["@deep-foundation/logger", "LogInsert"]},
+  //         from_id: logObjectId,
+  //         to_id: newLink.id,
+  //         number: {data: {value: timestamp}}
+  //        });
+  //      }`,
+  //     fileName: "insertHandlerFile",
+  //     handlerName: "insertHandler",
+  //     handleName: "insertHandle",
+  //     handleOperationTypeId: handleInsertTypeId,
+  //     supportsId: plv8SupportsJsId,
+  //     triggerTypeId: anyTypeId,
+  //     containTypeId,
+  //     deep,
+  //     fileTypeId: syncTextFileTypeId,
+  //     handlerTypeId,
+  //     packageId
+  //   }
+  // );
+  // console.log({ insertHandlerId });
+
+  // const updateHandlerId = await insertHandler(
+  //   {
+  //     code: `({deep, data: {newLink}}) => { 
+  //       const timestamp = Date.now();
      
-        const {data: [{id: logInsertId}]} = deep.select({
-           type_id: {_id: ["@deep-foundation/logger", "LogInsert"]},
-           to_id: newLink.id
-        })
+  //       const {data: [{id: logInsertId}]} = deep.select({
+  //          type_id: {_id: ["@deep-foundation/logger", "LogInsert"]},
+  //          to_id: newLink.id
+  //       })
      
-        deep.update({
-           type_id: {_id: ["@deep-foundation/logger", "LogUpdate"]},
-           from_id: deep.linkId,
-           to_id: logInsertId,
-           number: {data: {value: timestamp}}
-        })
-       }`,
-      fileName: "updateHandlerFile",
-      handlerName: "updateHandler",
-      handleName: "updateHandle",
-      handleOperationTypeId: handleUpdateTypeId,
-      supportsId: plv8SupportsJsId,
-      triggerTypeId: anyTypeId,
-      containTypeId,
-      deep,
-      fileTypeId: syncTextFileTypeId,
-      handlerTypeId,
-      packageId,
-    }
-  );
-  console.log({ updateHandlerId });
+  //       deep.update({
+  //          type_id: {_id: ["@deep-foundation/logger", "LogUpdate"]},
+  //          from_id: deep.linkId,
+  //          to_id: logInsertId,
+  //          number: {data: {value: timestamp}}
+  //       })
+  //      }`,
+  //     fileName: "updateHandlerFile",
+  //     handlerName: "updateHandler",
+  //     handleName: "updateHandle",
+  //     handleOperationTypeId: handleUpdateTypeId,
+  //     supportsId: plv8SupportsJsId,
+  //     triggerTypeId: anyTypeId,
+  //     containTypeId,
+  //     deep,
+  //     fileTypeId: syncTextFileTypeId,
+  //     handlerTypeId,
+  //     packageId,
+  //   }
+  // );
+  // console.log({ updateHandlerId });
 
-  const deleteHandlerId = await insertHandler(
-    {
-      code: `({deep, data: {newLink}}) => { 
-        const timestamp = Date.now();
+  // const deleteHandlerId = await insertHandler(
+  //   {
+  //     code: `({deep, data: {newLink}}) => { 
+  //       const timestamp = Date.now();
      
-        const {data: [{id: logInsertId}]} = deep.select({
-           type_id: {_id: ["@deep-foundation/logger", "LogInsert"]},
-           to_id: newLink.id
-        })
+  //       const {data: [{id: logInsertId}]} = deep.select({
+  //          type_id: {_id: ["@deep-foundation/logger", "LogInsert"]},
+  //          to_id: newLink.id
+  //       })
      
-        deep.delete({
-           type_id: {_id: ["@deep-foundation/logger", "LogDelete"]},
-           from_id: deep.linkId,
-           to_id: logInsertId,
-           number: {data: {value: timestamp}}
-        })
-       }`,
-      fileName: "deleteHandlerFile",
-      handlerName: "deleteHandler",
-      handleName: "deleteHandle",
-      handleOperationTypeId: handleDeleteTypeId,
-      supportsId: plv8SupportsJsId,
-      triggerTypeId: anyTypeId,
-      containTypeId,
-      deep,
-      fileTypeId: syncTextFileTypeId,
-      handlerTypeId,
-      packageId
-    }
-  );
-  console.log({ deleteHandlerId });
+  //       deep.delete({
+  //          type_id: {_id: ["@deep-foundation/logger", "LogDelete"]},
+  //          from_id: deep.linkId,
+  //          to_id: logInsertId,
+  //          number: {data: {value: timestamp}}
+  //       })
+  //      }`,
+  //     fileName: "deleteHandlerFile",
+  //     handlerName: "deleteHandler",
+  //     handleName: "deleteHandle",
+  //     handleOperationTypeId: handleDeleteTypeId,
+  //     supportsId: plv8SupportsJsId,
+  //     triggerTypeId: anyTypeId,
+  //     containTypeId,
+  //     deep,
+  //     fileTypeId: syncTextFileTypeId,
+  //     handlerTypeId,
+  //     packageId
+  //   }
+  // );
+  // console.log({ deleteHandlerId });
 
-  const callTests = async () => {
-    const {data: [{id: customTypeId}]} = await deep.insert({
-      type_id: typeTypeId,
-      from_id: anyTypeId,
-      to_id: anyTypeId
-    });
+  // const callTests = async () => {
+  //   const {data: [{id: customTypeId}]} = await deep.insert({
+  //     type_id: typeTypeId,
+  //     from_id: anyTypeId,
+  //     to_id: anyTypeId
+  //   });
 
-    const {data: [{id: linkId}]} = await deep.insert({
-      type_id: typeTypeId,
-      from_id: anyTypeId,
-      to_id: anyTypeId
-    });
+  //   const {data: [{id: linkId}]} = await deep.insert({
+  //     type_id: typeTypeId,
+  //     from_id: anyTypeId,
+  //     to_id: anyTypeId
+  //   });
 
-    var logInsertId;
-    for (let i = 0; i < 10; i++) {
-      const {data}= await deep.select({
-        type_id: logInsertTypeId,
-        to_id: linkId
-      });
-      if(data.length > 0) {
-        logInsertId = data[0].id;
-        break;
-      }
-      await sleep(1000);
-    }
-    expect(logInsertId).to.not.be.equal(undefined);
+  //   var logInsertId;
+  //   for (let i = 0; i < 10; i++) {
+  //     const {data}= await deep.select({
+  //       type_id: logInsertTypeId,
+  //       to_id: linkId
+  //     });
+  //     if(data.length > 0) {
+  //       logInsertId = data[0].id;
+  //       break;
+  //     }
+  //     await sleep(1000);
+  //   }
+  //   expect(logInsertId).to.not.be.equal(undefined);
 
-    var logObjectId;
-    for (let i = 0; i < 10; i++) {
-      const {data} = await deep.select({
-        type_id: logObjectTypeId,
-        from_id: linkId.from_id,
-        to_id: linkId.to_id
-      });
-      if(data.length > 0) {
-        logObjectId = data[0].id;
-        break;
-      }
-      await sleep(1000);
-    }
-    expect(logObjectId).to.not.be.equal(undefined);
+  //   var logObjectId;
+  //   for (let i = 0; i < 10; i++) {
+  //     const {data} = await deep.select({
+  //       type_id: logObjectTypeId,
+  //       from_id: linkId.from_id,
+  //       to_id: linkId.to_id
+  //     });
+  //     if(data.length > 0) {
+  //       logObjectId = data[0].id;
+  //       break;
+  //     }
+  //     await sleep(1000);
+  //   }
+  //   expect(logObjectId).to.not.be.equal(undefined);
 
-    var logTypeId;
-    for (let i = 0; i < 10; i++) {
-      const {data} = await deep.select({
-        type_id: logTypeTypeId,
-        from_id: logObjectId,
-        to_id: customTypeId
-      });
-      if(data.length > 0) {
-        logTypeId = data[0].id;
-        break;
-      }
-      await sleep(1000);
-    }
-    expect(logTypeId).to.not.be.equal(undefined);
+  //   var logTypeId;
+  //   for (let i = 0; i < 10; i++) {
+  //     const {data} = await deep.select({
+  //       type_id: logTypeTypeId,
+  //       from_id: logObjectId,
+  //       to_id: customTypeId
+  //     });
+  //     if(data.length > 0) {
+  //       logTypeId = data[0].id;
+  //       break;
+  //     }
+  //     await sleep(1000);
+  //   }
+  //   expect(logTypeId).to.not.be.equal(undefined);
 
-    await deep.insert({link_id: linkId, value: "string"}, {table: "strings"});
+  //   await deep.insert({link_id: linkId, value: "string"}, {table: "strings"});
 
-    var logUpdateId;
-    for (let i = 0; i < 10; i++) {
-      const {data} = await deep.select({
-        type_id: logUpdateTypeId,
-        from_id: deep.linkId,
-        to_id: logInsertId
-      });
-      if(data.length > 0) {
-        logUpdateId = data[0].id;
-        break;
-      }
-      await sleep(1000);
-    }
-    expect(logUpdateId).to.not.be.equal(undefined);
+  //   var logUpdateId;
+  //   for (let i = 0; i < 10; i++) {
+  //     const {data} = await deep.select({
+  //       type_id: logUpdateTypeId,
+  //       from_id: deep.linkId,
+  //       to_id: logInsertId
+  //     });
+  //     if(data.length > 0) {
+  //       logUpdateId = data[0].id;
+  //       break;
+  //     }
+  //     await sleep(1000);
+  //   }
+  //   expect(logUpdateId).to.not.be.equal(undefined);
 
-    await deep.delete({
-      id: linkId
-    });
+  //   await deep.delete({
+  //     id: linkId
+  //   });
 
-    var logDeleteId;
-    for (let i = 0; i < 10; i++) {
-      const {data} = await deep.select({
-        type_id: logDeleteTypeId,
-        from_id: deep.linkId,
-        to_id: logInsertId
-      });
-      if(data.length > 0) {
-        logDeleteId = data[0].id;
-        break;
-      }
-      await sleep(1000);
-    }
-    expect(logDeleteId).to.not.be.equal(undefined);
-  }
+  //   var logDeleteId;
+  //   for (let i = 0; i < 10; i++) {
+  //     const {data} = await deep.select({
+  //       type_id: logDeleteTypeId,
+  //       from_id: deep.linkId,
+  //       to_id: logInsertId
+  //     });
+  //     if(data.length > 0) {
+  //       logDeleteId = data[0].id;
+  //       break;
+  //     }
+  //     await sleep(1000);
+  //   }
+  //   expect(logDeleteId).to.not.be.equal(undefined);
+  // }
   
-  await callTests();
+  // await callTests();
 };
 
 installPackage();
