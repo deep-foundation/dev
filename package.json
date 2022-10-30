@@ -1,6 +1,6 @@
 {
   "name": "@deep-foundation/dev",
-  "version": "0.0.20",
+  "version": "0.0.21",
   "author": "ivansglazunov",
   "license": "ISC",
   "bugs": {
@@ -62,7 +62,9 @@
     "pull-ci-apply": "(cd packages/hasura; git pull; npm ci); (cd packages/deeplinks; git pull; npm ci); (cd packages/deepcase; git pull; npm ci); (cd packages/deepcase/electron; npm ci); git pull && npm run apply-deeplinks && npm run apply-hasura",
     "nextjs": "(cd packages/nextjs; PORT=4000 npm run dev)",
     "local-recreate": "npm run local-unmigrate; npm run docker-clear; npm run rm-migrates; npm run local-engine; npm run local-migrate;",
-    "gitpod-recreate": "npm run gitpod-unmigrate; npm run docker-clear; npm run rm-migrates; npm run gitpod-engine; npm run gitpod-migrate;"
+    "gitpod-recreate": "npm run gitpod-unmigrate; npm run docker-clear; npm run rm-migrates; npm run gitpod-engine; npm run gitpod-migrate;",
+    "local-reinit": "npm run docker-clear; npm run rm-migrates; npm run local-engine;",
+    "gitpod-reinit": "npm run docker-clear; npm run rm-migrates; npm run gitpod-engine;"
   },
   "repository": {
     "type": "git",
@@ -70,7 +72,7 @@
   },
   "type": "module",
   "dependencies": {
-    "@deep-foundation/deeplinks": "0.0.94",
+    "@deep-foundation/deeplinks": "0.0.96",
     "@types/gulp": "^4.0.8",
     "concurrently": "^5.3.0",
     "cross-env": "^7.0.3",
@@ -86,13 +88,6 @@
     "rimraf": "^3.0.2",
     "simple-git": "^2.45.0",
     "ts-node": "^9.1.1",
-    "typescript": "^4.1.5",
-    "uniqid": "^5.4.0"
-  },
-  "devDependencies": {
-    "graphql": "^16.6.0",
-    "lodash": "^4.17.21",
-    "react": "^18.2.0",
-    "subscriptions-transport-ws": "^0.11.0"
+    "typescript": "^4.4.3"
   }
 }
