@@ -61,14 +61,6 @@ for (const requiredEnvVariableName of requiredEnvVariableNames) {
   }
 }
 
-for (let i = 0; i < requiredEnvVariableNames.length; i++) {
-  const envItem = envi[i];
-  if(envItem) {
-    throw new Error(``)
-  }
-}
-
-
 const allCreatedLinkIds = [];
 
 const installPackage = async () => {
