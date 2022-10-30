@@ -10,7 +10,6 @@ const {
   minilinks,
   Link,
 } = require('@deep-foundation/deeplinks/imports/minilinks');
-const puppeteer = require('puppeteer');
 const crypto = require('crypto');
 const axios = require('axios');
 const uniqid = require('uniqid');
