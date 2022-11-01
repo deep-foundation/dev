@@ -3,6 +3,16 @@ const { generateToken } = require("./../generateToken.cjs");
 const { getError } = require("./getError.cjs");
 const { getUrl } = require("./getUrl.cjs");
 
+const objectToFormData = (details) => {
+  const formBody = [];
+  for (const property in details) {
+    const encodedKey = encodeURIComponent(property);
+    const encodedValue = encodeURIComponent(details[property]);
+    formBody.push(`${encodedKey}=${encodedValue}`);
+  }
+  return formBody.join('&');
+};
+
 const init = async (options) => {
     try {
       const response = await axios({

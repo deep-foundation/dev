@@ -37,4 +37,4 @@ const errors = {
     9999:	'Внутренняя ошибка системы',
   };
 
-exprots.errors = errors;
+exports.errors = errors;
