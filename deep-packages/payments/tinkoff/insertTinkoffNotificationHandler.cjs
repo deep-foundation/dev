@@ -24,8 +24,8 @@ async (
     type_id: TinkoffProvider
   });
   if(tinkoffProviderLinkSelectQuery.error) {throw new Error(tinkoffProviderLinkSelectQuery.error.message);}
-  const tinkoffProviderLinkId = tinkoffProviderLinkSelectQuery.data[0].id;
-  console.log({tinkoffProviderLinkId});
+  const tinkoffProviderId = tinkoffProviderLinkSelectQuery.data[0].id;
+  console.log({tinkoffProviderId});
 
   const paymentLinkSelectQuery = await deep.select({
     object: {value: {_contains: {orderId: req.body.OrderId}}}
@@ -53,18 +53,18 @@ async (
   if (req.body.Status === 'AUTHORIZED') {
   const confirm = ${confirm.toString()};
 
-  const storageBusinessLinkSelectQuery = await deep.select({
+  const storageReceiverLinkSelectQuery = await deep.select({
     id: paymentLink.to_id
   });
-  if(storageBusinessLinkSelectQuery.error) {throw new Error(storageBusinessLinkSelectQuery.error.message);}
-  const storageBusinessLinkId = storageBusinessLinkSelectQuery.data[0].id;
-  console.log({storageBusinessLinkId});
+  if(storageReceiverLinkSelectQuery.error) {throw new Error(storageReceiverLinkSelectQuery.error.message);}
+  const storageReceiverId = storageReceiverLinkSelectQuery.data[0].id;
+  console.log({storageReceiverId});
 
   const Token = await deep.id("${packageName}", "Token");
   const tokenLinkSelectQuery = await deep.select({
     type_id: Token,
-    from_id: storageBusinessLinkId,
-    to_id: storageBusinessLinkId
+    from_id: storageReceiverId,
+    to_id: storageReceiverId
   });
   if(tokenLinkSelectQuery.error) {throw new Error(tokenLinkSelectQuery.error.message);}
   const tokenLink = tokenLinkSelectQuery.data[0];
@@ -85,7 +85,7 @@ async (
       const errorMessage = "Could not confirm the pay. " + confirmResult.error;
       const {error: errorLinkInsertError} = await deep.insert({
         type_id: (await deep.id("${packageName}", "Error")),
-        from_id: tinkoffProviderLinkId,
+        from_id: tinkoffProviderId,
         to_id: payLink.id,
         string: { data: { value: errorMessage } },
       });
