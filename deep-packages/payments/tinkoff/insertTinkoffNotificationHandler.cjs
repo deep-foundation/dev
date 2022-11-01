@@ -2,7 +2,7 @@ const {insertNotificationHandler: baseInsertNotificationHandler} = require("../.
 const {handlersDependencies} = require("./handlersDependencies.cjs");
 const {confirm} = require("./confirm.cjs");
 
-const insertTinkoffNotificationHandler = async ({packageName, packageId, deep, notificationPort, notificationRoute, portTypeId, routerListeningTypeId, routerTypeId, routerStringUseTypeId, routeTypeId, handleRouteTypeId, handlerTypeId, supportsId, containTypeId,  adminId, fileTypeId, onCofirmedCode}) => {
+const insertTinkoffNotificationHandler = async ({packageName, packageId, deep, notificationPort, notificationRoute, portTypeId, routerListeningTypeId, routerTypeId, routerStringUseTypeId, routeTypeId, handleRouteTypeId, handlerTypeId, supportsId, containTypeId,  adminId, fileTypeId, onConfirmedCode}) => {
     const code = `
 async (
   req,
@@ -95,7 +95,7 @@ async (
 
     return confirmResult;
   } else if (req.body.Status === 'CONFIRMED') {
-    ${onCofirmedCode}
+    ${onConfirmedCode}
   } 
   res.send('ok');
 };
