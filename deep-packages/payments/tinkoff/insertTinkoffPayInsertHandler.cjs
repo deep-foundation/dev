@@ -4,7 +4,7 @@ const {init} = require("./init.cjs");
 
 const insertTinkoffPayInsertHandler = async ({packageName, deep, notificationUrl, userEmail, userPhone, fileTypeId, containTypeId, packageId, dockerSupportsJsId,  handleInsertTypeId, handlerTypeId, payTypeId}) => {
     const code = `
-async ({ deep, require, data: { newLink: payLink } }) => {
+async ({ deep, require, data: { newLink } }) => {
   ${handlersDependencies}
 
   const TinkoffProvider = await deep.id("${packageName}", "TinkoffProvider");
@@ -16,7 +16,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
 
   const {data: mpDownPay, error: mpDownPaySelectQueryError} = await deep.select({
     down: {
-      link_id: { _eq: payLink.id },
+      link_id: { _eq: newLink.id },
       tree_id: { _eq: await deep.id("${packageName}", "paymentTree") },
     },
   });
@@ -26,12 +26,12 @@ async ({ deep, require, data: { newLink: payLink } }) => {
   const Payment = await deep.id("${packageName}", "Payment");
   const paymentLink = mpDownPay.find(link => link.type_id === Payment);
   console.log({paymentLink});
-  if(!paymentLink) throw new Error("Payment link associated with the pay link " + payLink.id + " is not found.");
+  if(!paymentLink) throw new Error("Payment link associated with the pay link " + newLink.id + " is not found.");
 
   const Sum = await deep.id("${packageName}", "Sum");
   const sumLink = mpDownPay.find(link => link.type_id === Sum); 
   console.log({sumLink});
-  if(!sumLink) throw new Error("Sum link associated with the pay link " + payLink.id + " is not found.");
+  if(!sumLink) throw new Error("Sum link associated with the pay link " + newLink.id + " is not found.");
 
   const fromLinkOfPaymentSelectQuery = await deep.select({
     id: paymentLink.from_id
@@ -97,7 +97,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
     const {error: errorLinkInsertQueryError} = await deep.insert({
       type_id: (await deep.id("${packageName}", "Error")),
       from_id: tinkoffProviderLinkId,
-      to_id: payLink.id,
+      to_id: newLink.id,
       string: { data: { value: errorMessage } },
     });
     if(errorLinkInsertQueryError) { throw new Error(errorLinkInsertQueryError.message); }
@@ -108,7 +108,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
   const {error: urlLinkInsertQueryError} = await deep.insert({
     type_id: Url,
     from_id: tinkoffProviderLinkId,
-    to_id: payLink.id,
+    to_id: newLink.id,
     string: { data: { value: initResult.response.PaymentURL } },
   });
   if(urlLinkInsertQueryError) { throw new Error(urlLinkInsertQueryError.message); }
