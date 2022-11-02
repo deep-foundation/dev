@@ -1,5 +1,5 @@
 const axios = require('axios');
-const { generateToken } = require("./../generateToken.cjs");
+const { generateToken } = require("./generateToken.cjs");
 const { getError } = require("./getError.cjs");
 const { getUrl } = require("./getUrl.cjs");
 
@@ -19,9 +19,9 @@ const init = async (options) => {
         method: 'post',
         url: getUrl('Init'),
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
+          'Content-Type': 'application/json',
         },
-        data: objectToFormData({ ...options, Token: generateToken(options) }),
+        data: { ...options, Token: generateToken(options) },
       });
   
       const error = getError(response.data.ErrorCode);
