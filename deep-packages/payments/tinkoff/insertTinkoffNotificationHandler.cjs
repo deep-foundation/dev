@@ -12,6 +12,8 @@ async (
 ) => {
   ${handlersDependencies}
 
+  res.send('ok');
+
   if(!(req.body.Status === "AUTHORIZED" || req.body.Status === "CONFIRMED" || req.body.Status === "CHECKED" )) {
     return next();
   }
@@ -97,7 +99,6 @@ async (
   } else if (req.body.Status === "CHECKED") {
     ${onCheckedCode}
   }
-  res.send('ok');
 };
 `;
 
