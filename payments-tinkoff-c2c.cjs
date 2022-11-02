@@ -593,20 +593,28 @@ const payedLinkId = payedLinkInsertQuery.data[0].id;
 console.log({ payedLinkId });
 
 const StorageClient = await deep.id("${packageName}", "StorageClient");
-const storageClientLinkSelectQuery = await deep.insert({
+const storagePayerLinkSelectQuery = await deep.select({
     type_id: StorageClient,
-    to_id: deep.linkId,
     number: { value: req.body.CardId }
 });
-if (storageClientLinkSelectQuery.error) { throw new Error(storageClientLinkSelectQuery.error.message); }
-storageClientLinkId = storageClientLinkSelectQuery.data[0];
-console.log({storageClientLinkId});
+if (storagePayerLinkSelectQuery.error) { throw new Error(storagePayerLinkSelectQuery.error.message); }
+let storagePayerLinkId = storagePayerLinkSelectQuery.data[0];
+console.log({storagePayerLinkId});
+if(!storagePayerLinkId) {
+  const storagePayerLinkInsertQuery = await deep.insert({
+    type_id: StorageClient,
+    number: { value: req.body.CardId }
+  });
+  if (storagePayerLinkInsertQuery.error) { throw new Error(storagePayerLinkInsertQuery.error.message); }
+  storagePayerLinkId = storagePayerLinkInsertQuery.data[0];
+  console.log({storagePayerLinkId});
+}
 
 const Income = await deep.id("${packageName}", "Income");
 const incomeLinkInsertQuery = await deep.insert({
     type_id: Income,
     from_id: paymentLink.id,
-    to_id: storageClientLinkId,
+    to_id: storagePayerLinkId,
 });
 if (incomeLinkInsertQuery.error) { throw new Error(incomeLinkInsertQuery.error.message); }
 const incomeLinkId = incomeLinkInsertQuery.data[0].id;
@@ -1094,9 +1102,11 @@ if (initResult.error) {
           CustomerKey: CUSTOMER_KEY,
         }
         const getCardListResult = await getCardList(getCardListOptions);
+        const getCardListResultResponse = getCardListResult.response;
+        console.log({getCardListResultResponse});
 
         const {
-          data: [{ id: storageClientLinkId }],
+          data: [{ id: storageReceiverLinkId }],
         } = await deep.insert({
           type_id: storageClientTypeId,
           number: {data: {value: getCardListResult.response[0].CardId}},
@@ -1109,16 +1119,16 @@ if (initResult.error) {
             ],
           },
         });
-        console.log({ storageClientLinkId });
-        createdLinkIds.push(storageClientLinkId);
-        allCreatedLinkIds.push(storageClientLinkId);
+        console.log({ storageReceiverLinkId });
+        createdLinkIds.push(storageReceiverLinkId);
+        allCreatedLinkIds.push(storageReceiverLinkId);
 
         const {
           data: [{ id: tokenLinkId }],
         } = await deep.insert({
           type_id: tokenTypeId,
-          from_id: storageClientLinkId,
-          to_id: storageClientLinkId,
+          from_id: storageReceiverLinkId,
+          to_id: storageReceiverLinkId,
           string: { data: { value: process.env.PAYMENTS_C2B_TERMINAL_KEY } },
           in: {
             data: [
@@ -1137,8 +1147,8 @@ if (initResult.error) {
           data: [{ id: C2CtokenLinkId }],
         } = await deep.insert({
           type_id: C2CtokenTypeId,
-          from_id: storageClientLinkId,
-          to_id: storageClientLinkId,
+          from_id: storageReceiverLinkId,
+          to_id: storageReceiverLinkId,
           string: { data: { value: process.env.PAYMENTS_C2C_TERMINAL_KEY } },
           in: {
             data: [
@@ -1200,7 +1210,7 @@ if (initResult.error) {
             type_id: paymentTypeId,
             object: { data: { value: { orderId: uniqid() } } },
             from_id: deep.linkId,
-            to_id: storageClientLinkId,
+            to_id: storageReceiverLinkId,
             in: {
               data: [
                 {
