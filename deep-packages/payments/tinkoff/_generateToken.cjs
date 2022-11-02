@@ -1,3 +1,5 @@
+const crypto = require('crypto');
+
 const _generateToken = (dataWithPassword) => {
     const dataString = Object.keys(dataWithPassword)
       .sort((a, b) => a.localeCompare(b))
