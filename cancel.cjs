@@ -36,7 +36,7 @@ dotenvExpand.expand(myEnv);
 const f = async () => {
     const cancelOptions = {
         TerminalKey: process.env.PAYMENTS_C2B_TERMINAL_KEY,
-        PaymentId: 1941223046,
+        PaymentId: 1942858647,
         Amount: 3000
     }
 
