@@ -484,6 +484,22 @@ const installPackage = async () => {
     });
     console.log({tokenTypeId});
 
+    const {
+      data: [{ id: C2CtokenTypeId }],
+    } = await deep.insert({
+      type_id: typeTypeId,
+      from_id: anyTypeId,
+      to_id: anyTypeId,
+      in: {
+        data: {
+          type_id: containTypeId,
+          from_id: packageId, // before created package
+          string: { data: { value: 'C2CToken' } },
+        },
+      },
+    });
+    console.log({C2CtokenTypeId});
+
 
     const {
       data: [{ id: storageClientTypeId }],
@@ -627,8 +643,18 @@ const generateToken = ${ generateTokenStringWithInsertedTerminalPasswordC2C.toSt
 const getUrl = ${ getUrlC2C.toString()};
 const getError = ${ getErrorC2C.toString()};
 
+const C2CToken = await deep.id("${packageName}", "C2CToken");
+const C2CTokenLinkSelectQuery = await deep.select({
+    type_id: C2CToken,
+    from_id: storageReceiverId,
+    to_id: storageReceiverId
+});
+if (C2CTokenLinkSelectQuery.error) { throw new Error(C2CTokenLinkSelectQuery.error.message); }
+const C2CTokenLink = C2CTokenLinkSelectQuery.data[0];
+console.log({ C2CTokenLink });
+
 const initOptions = {
-    TerminalKey: tokenLink.value.value,
+    TerminalKey: C2CTokenLink.value.value,
     OrderId: req.body.OrderId,
     CardId: storageReceiver.value.value,
     Amount: sumLink.value.value,
@@ -684,8 +710,18 @@ if (initResult.error) {
     console.log({ payLink });
     if (!payLink) { throw new Error("The pay link associated with payment link " + paymentLink + " is not found.") }
 
+    const C2CToken = await deep.id("${packageName}", "C2CToken");
+    const C2CTokenLinkSelectQuery = await deep.select({
+        type_id: C2CToken,
+        from_id: storageReceiverId,
+        to_id: storageReceiverId
+    });
+    if (C2CTokenLinkSelectQuery.error) { throw new Error(C2CTokenLinkSelectQuery.error.message); }
+    const C2CTokenLink = C2CTokenLinkSelectQuery.data[0];
+    console.log({ C2CTokenLink });
+
     const paymentOptions = {
-      TerminalKey: tokenLink.value.value,
+      TerminalKey: C2CTokenLink.value.value,
       PaymentId: paymentLink.value.PaymentId,
     }
 
@@ -1036,30 +1072,34 @@ if (initResult.error) {
         allCreatedLinkIds.push(sumProviderLinkId);
 
         const addCustomerResult = await addCustomerC2C({
-          TerminalKey: process.env.PAYMENTS_C2B_TERMINAL_KEY,
+          TerminalKey: process.env.PAYMENTS_C2C_TERMINAL_KEY,
           CustomerKey: CUSTOMER_KEY,
         });
 
         console.log({addCustomerResult});
 
         const addCardResult = await addCardC2C({
-          TerminalKey: process.env.PAYMENTS_C2B_TERMINAL_KEY,
+          TerminalKey: process.env.PAYMENTS_C2C_TERMINAL_KEY,
           CustomerKey: CUSTOMER_KEY,
         });
 
         console.log({addCardResult});
-        prompt("WAIT");
 
-        await deep.insert({
-          type_id: storageClientTypeId,
-          number: {data: {value: 2}}
-        });
+        const browser = await puppeteer.launch({  args: [],headless: true });
+        const page = await browser.newPage();
+        await addCardInBrowser({browser, page, url: addCardResult.response.PaymentURL});
+
+        const getCardListOptions = {
+          TerminalKey: process.env.PAYMENTS_C2C_TERMINAL_KEY,
+          CustomerKey: CUSTOMER_KEY,
+        }
+        const getCardListResult = await getCardList(getCardListOptions);
 
         const {
           data: [{ id: storageClientLinkId }],
         } = await deep.insert({
           type_id: storageClientTypeId,
-          number: {data: {value: process.env.PAYMENTS_C2B_CARD_NUMBER_SUCCESS}},
+          number: {data: {value: getCardListResult.response[0].CardId}},
           in: {
             data: [
               {
@@ -1092,6 +1132,26 @@ if (initResult.error) {
         console.log({ tokenLinkId });
         createdLinkIds.push(tokenLinkId);
         allCreatedLinkIds.push(tokenLinkId);
+
+        const {
+          data: [{ id: C2CtokenLinkId }],
+        } = await deep.insert({
+          type_id: C2CtokenTypeId,
+          from_id: storageClientLinkId,
+          to_id: storageClientLinkId,
+          string: { data: { value: process.env.PAYMENTS_C2C_TERMINAL_KEY } },
+          in: {
+            data: [
+              {
+                type_id: containTypeId,
+                from_id: deep.linkId,
+              },
+            ],
+          },
+        });
+        console.log({ C2CtokenLinkId });
+        createdLinkIds.push(C2CtokenLinkId);
+        allCreatedLinkIds.push(C2CtokenLinkId);
 
         const {
           data: [{ id: Product }],
