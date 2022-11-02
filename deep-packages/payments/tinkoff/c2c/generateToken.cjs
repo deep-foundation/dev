@@ -1,3 +1,4 @@
+const crypto = require('crypto');
 const {_generateToken} = require("./../_generateToken.cjs");
 
 const generateToken = (data) => {
