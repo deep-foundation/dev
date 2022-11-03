@@ -584,43 +584,6 @@ const payLink = mpUpPayment.find(link => link.type_id === Pay);
 console.log({ payLink });
 if (!payLink) { throw new Error("The pay link associated with payment link " + paymentLink + " is not found.") }
 
-const payedLinkInsertQuery = await deep.insert({
-    type_id: await deep.id("${packageName}", "Payed"),
-    from_id: tinkoffProviderId,
-    to_id: payLink.id,
-});
-if (payedLinkInsertQuery.error) { throw new Error(payedLinkInsertQuery.error.message); }
-const payedLinkId = payedLinkInsertQuery.data[0].id;
-console.log({ payedLinkId });
-
-const StorageClient = await deep.id("${packageName}", "StorageClient");
-const storagePayerLinkSelectQuery = await deep.select({
-    type_id: StorageClient,
-    number: { value: req.body.CardId }
-});
-if (storagePayerLinkSelectQuery.error) { throw new Error(storagePayerLinkSelectQuery.error.message); }
-let storagePayerLinkId = storagePayerLinkSelectQuery.data[0];
-console.log({storagePayerLinkId});
-if(!storagePayerLinkId) {
-  const storagePayerLinkInsertQuery = await deep.insert({
-    type_id: StorageClient,
-    number: { data: {value: req.body.CardId} }
-  });
-  if (storagePayerLinkInsertQuery.error) { throw new Error(storagePayerLinkInsertQuery.error.message); }
-  storagePayerLinkId = storagePayerLinkInsertQuery.data[0].id;
-  console.log({storagePayerLinkId});
-}
-
-const Income = await deep.id("${packageName}", "Income");
-const incomeLinkInsertQuery = await deep.insert({
-    type_id: Income,
-    from_id: paymentLink.id,
-    to_id: storagePayerLinkId,
-});
-if (incomeLinkInsertQuery.error) { throw new Error(incomeLinkInsertQuery.error.message); }
-const incomeLinkId = incomeLinkInsertQuery.data[0].id;
-console.log({ incomeLinkId });
-
 const storageReceiverLinkSelectQuery = await deep.select({
     id: paymentLink.to_id
 });
@@ -711,6 +674,44 @@ if (paymentResult.error) {
   });
   if (errorLinkInsertQueryError) { throw new Error(errorLinkInsertQueryError.message); }
   throw new Error(errorMessage);
+
+  const payedLinkInsertQuery = await deep.insert({
+    type_id: await deep.id("${packageName}", "Payed"),
+    from_id: tinkoffProviderId,
+    to_id: payLink.id,
+});
+
+if (payedLinkInsertQuery.error) { throw new Error(payedLinkInsertQuery.error.message); }
+const payedLinkId = payedLinkInsertQuery.data[0].id;
+console.log({ payedLinkId });
+
+const StorageClient = await deep.id("${packageName}", "StorageClient");
+const storagePayerLinkSelectQuery = await deep.select({
+    type_id: StorageClient,
+    number: { value: req.body.CardId }
+});
+if (storagePayerLinkSelectQuery.error) { throw new Error(storagePayerLinkSelectQuery.error.message); }
+let storagePayerLinkId = storagePayerLinkSelectQuery.data[0];
+console.log({storagePayerLinkId});
+if(!storagePayerLinkId) {
+  const storagePayerLinkInsertQuery = await deep.insert({
+    type_id: StorageClient,
+    number: { data: {value: req.body.CardId} }
+  });
+  if (storagePayerLinkInsertQuery.error) { throw new Error(storagePayerLinkInsertQuery.error.message); }
+  storagePayerLinkId = storagePayerLinkInsertQuery.data[0].id;
+  console.log({storagePayerLinkId});
+}
+
+const Income = await deep.id("${packageName}", "Income");
+const incomeLinkInsertQuery = await deep.insert({
+    type_id: Income,
+    from_id: paymentLink.id,
+    to_id: storagePayerLinkId,
+});
+if (incomeLinkInsertQuery.error) { throw new Error(incomeLinkInsertQuery.error.message); }
+const incomeLinkId = incomeLinkInsertQuery.data[0].id;
+console.log({ incomeLinkId });
 }
   `;
 
