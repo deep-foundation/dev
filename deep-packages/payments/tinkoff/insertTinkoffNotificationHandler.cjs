@@ -14,6 +14,8 @@ async (
 
   res.send('ok');
 
+  console.log("req.body", req.body);
+
   if(!(req.body.Status === "AUTHORIZED" || req.body.Status === "CONFIRMED" || req.body.Status === "CHECKED" )) {
     return next();
   }

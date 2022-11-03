@@ -42,7 +42,8 @@ const { insertTinkoffPayInsertHandler } = require("./deep-packages/payments/tink
 const { insertTinkoffNotificationHandler } = require("./deep-packages/payments/tinkoff/insertTinkoffNotificationHandler.cjs");
 const {sleep} = require("./deep-packages/sleep.cjs");
 const {confirm} = require("./deep-packages/payments/tinkoff/confirm.cjs");
-const getUrlC2C = require("./deep-packages/payments/tinkoff/c2c/getUrl.cjs").getUrl;
+const { _generateToken } = require('./deep-packages/payments/tinkoff/_generateToken.cjs');
+const getUrlC2CString = require("./deep-packages/payments/tinkoff/c2c/getUrl.cjs").getUrlString;
 const initC2C = require("./deep-packages/payments/tinkoff/c2c/init.cjs").init;
 const getErrorC2C = require("./deep-packages/payments/tinkoff/c2c/getError.cjs").getError;
 const addCustomerC2C = require("./deep-packages/payments/tinkoff/c2c/addCustomer.cjs").addCustomer;
@@ -603,10 +604,10 @@ console.log({storagePayerLinkId});
 if(!storagePayerLinkId) {
   const storagePayerLinkInsertQuery = await deep.insert({
     type_id: StorageClient,
-    number: { value: req.body.CardId }
+    number: { data: {value: req.body.CardId} }
   });
   if (storagePayerLinkInsertQuery.error) { throw new Error(storagePayerLinkInsertQuery.error.message); }
-  storagePayerLinkId = storagePayerLinkInsertQuery.data[0];
+  storagePayerLinkId = storagePayerLinkInsertQuery.data[0].id;
   console.log({storagePayerLinkId});
 }
 
@@ -620,11 +621,18 @@ if (incomeLinkInsertQuery.error) { throw new Error(incomeLinkInsertQuery.error.m
 const incomeLinkId = incomeLinkInsertQuery.data[0].id;
 console.log({ incomeLinkId });
 
+const storageReceiverLinkSelectQuery = await deep.select({
+    id: paymentLink.to_id
+});
+if (storageReceiverLinkSelectQuery.error) { throw new Error(storageReceiverLinkSelectQuery.error.message); }
+const storageReceiverLink = storageReceiverLinkSelectQuery.data[0];
+console.log({ storageReceiverLink });
+
 const Token = await deep.id("${packageName}", "Token");
 const tokenLinkSelectQuery = await deep.select({
     type_id: Token,
-    from_id: storageReceiverId,
-    to_id: storageReceiverId
+    from_id: storageReceiverLink.id,
+    to_id: storageReceiverLink.id
 });
 if (tokenLinkSelectQuery.error) { throw new Error(tokenLinkSelectQuery.error.message); }
 const tokenLink = tokenLinkSelectQuery.data[0];
@@ -639,7 +647,7 @@ console.log({ storageReceiver });
 if (!storageReceiver) { throw new Error("The storage receiver link associated with the order id " + req.body.OrderId + " is not found."); }
 
 const sumLinkSelectQuery = await deep.select({
-    type_id: { _id: ["@deep-foundation/payments-tinkoff-c2c", "Sum"] },
+    type_id: await deep.id("${packageName}", "Sum"),
     to_id: paymentLink.id
 });
 if (sumLinkSelectQuery.error) { throw new Error(sumLinkSelectQuery.error.message); }
@@ -647,15 +655,16 @@ const sumLink = sumLinkSelectQuery.data[0];
 console.log({ sumLink });
 if (!sumLink) { throw new Error("The sum link associated with the order id " + req.body.OrderId + " is not found."); }
 
+const _generateToken = ${_generateToken.toString()};
 const generateToken = ${ generateTokenStringWithInsertedTerminalPasswordC2C.toString()};
-const getUrl = ${ getUrlC2C.toString()};
+const getUrl = ${getUrlC2CString};
 const getError = ${ getErrorC2C.toString()};
 
 const C2CToken = await deep.id("${packageName}", "C2CToken");
 const C2CTokenLinkSelectQuery = await deep.select({
     type_id: C2CToken,
-    from_id: storageReceiverId,
-    to_id: storageReceiverId
+    from_id: storageReceiverLink.id,
+    to_id: storageReceiverLink.id
 });
 if (C2CTokenLinkSelectQuery.error) { throw new Error(C2CTokenLinkSelectQuery.error.message); }
 const C2CTokenLink = C2CTokenLinkSelectQuery.data[0];
@@ -667,11 +676,33 @@ const initOptions = {
     CardId: storageReceiver.value.value,
     Amount: sumLink.value.value,
 };
+console.log({initOptions});
 
 const init = ${ initC2C.toString()};
 const initResult = await init(initOptions);
+console.log({initResult});
 if (initResult.error) {
-  const errorMessage = "Could not initialize the order. " + initResult.error;
+  const errorMessage = initResult.error;
+  const { error: errorLinkInsertQueryError } = await deep.insert({
+      type_id: (await deep.id("${packageName}", "Error")),
+      from_id: tinkoffProviderId,
+      to_id: payLink.id,
+      string: { data: { value: errorMessage } },
+  });
+  if (errorLinkInsertQueryError) { throw new Error(errorLinkInsertQueryError.message); }
+  throw new Error(errorMessage);
+}
+
+const paymentOptions = {
+  TerminalKey: C2CTokenLink.value.value,
+  PaymentId: initResult.response.PaymentId,
+}
+
+const payment = ${paymentC2C.toString()};
+const paymentResult = await payment(paymentOptions);
+console.log({paymentResult});
+if (paymentResult.error) {
+  const errorMessage = "Could not initialize the order. " + paymentResult.error;
   const { error: errorLinkInsertQueryError } = await deep.insert({
       type_id: (await deep.id("${packageName}", "Error")),
       from_id: tinkoffProviderId,
@@ -698,8 +729,8 @@ if (initResult.error) {
     const Token = await deep.id("${packageName}", "Token");
     const tokenLinkSelectQuery = await deep.select({
         type_id: Token,
-        from_id: storageReceiverId,
-        to_id: storageReceiverId
+        from_id: storageReceiverLink.id,
+        to_id: storageReceiverLink.id
     });
     if (tokenLinkSelectQuery.error) { throw new Error(tokenLinkSelectQuery.error.message); }
     const tokenLink = tokenLinkSelectQuery.data[0];
@@ -721,31 +752,14 @@ if (initResult.error) {
     const C2CToken = await deep.id("${packageName}", "C2CToken");
     const C2CTokenLinkSelectQuery = await deep.select({
         type_id: C2CToken,
-        from_id: storageReceiverId,
-        to_id: storageReceiverId
+        from_id: storageReceiverLink.id,
+        to_id: storageReceiverLink.id
     });
     if (C2CTokenLinkSelectQuery.error) { throw new Error(C2CTokenLinkSelectQuery.error.message); }
     const C2CTokenLink = C2CTokenLinkSelectQuery.data[0];
     console.log({ C2CTokenLink });
 
-    const paymentOptions = {
-      TerminalKey: C2CTokenLink.value.value,
-      PaymentId: paymentLink.value.PaymentId,
-    }
-
-    const payment = ${paymentC2C.toString()};
-    const paymentResult = await payment(paymentOptions);
-    if (paymentResult.error) {
-      const errorMessage = "Could not initialize the order. " + paymentResult.error;
-      const { error: errorLinkInsertQueryError } = await deep.insert({
-          type_id: (await deep.id("${packageName}", "Error")),
-          from_id: tinkoffProviderId,
-          to_id: payLink.id,
-          string: { data: { value: errorMessage } },
-      });
-      if (errorLinkInsertQueryError) { throw new Error(errorLinkInsertQueryError.message); }
-      throw new Error(errorMessage);
-    }
+    
     
   `;
 

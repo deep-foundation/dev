@@ -8,14 +8,14 @@ const payment = async (options) => {
     try {
       const response = await axios({
         method: 'post',
-        url: getUrlE2C('Payment'),
+        url: getUrl('Payment'),
         headers: {
           'Content-Type': 'application/json',
         },
         data: {...options, Token: generateToken(options)},
       });
   
-      const error = getErrorE2C(response.data.ErrorCode);
+      const error = getError(response.data.ErrorCode);
   
       const d = {
         error,
