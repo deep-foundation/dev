@@ -24,7 +24,7 @@ const f = async () => {
 
   await deep.insert({
     type_id: deep.idSync('@deep-foundation/core', 'PackageQuery'),
-    string: { data: { value: `https://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@gist.github.com/ivansglazunov/450e028fccc4dbcb2ae0cdde37dad1d0` } },
+    string: { data: { value: `https://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@gist.github.com/ivansglazunov/450e028fccc4dbcb2ae0cdde37dad1d0` } },
     in: { data: [
       {
         type_id: deep.idSync('@deep-foundation/core', 'PackageInstall'),
