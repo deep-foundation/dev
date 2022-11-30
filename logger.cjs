@@ -135,7 +135,7 @@ const main = async () => {
         data: {
           type_id: containTypeId,
           from_id: packageId, // before created package
-          string: { data: { value: 'TriggerTypeId' } },
+          string: { data: { value: 'Trigger' } },
         },
       },
     });
@@ -276,28 +276,33 @@ const main = async () => {
       {
         code: `({deep, data: {newLink}}) => {
             const timestamp = Date.now();
+
+            const logObjectInsertData = {
+              type_id: deep.id("@deep-foundation/logger", "LogObject"),
+              ...(newLink.from_id && {from_id: newLink.from_id}),
+              ...(newLink.to_id && {to_id: newLink.to_id}),
+            };
+            /*logObjectInsertData: {"type_id":"719"}*/
+            
+            /*throw new Error("logObjectInsertData: " + JSON.stringify(logObjectInsertData, (key, value) =>
+            typeof value === 'bigint'
+                ? value.toString()
+                : value // return everything else unchanged
+        ));*/
+        const {data: [{id: logObjectId}]} = deep.insert(logObjectInsertData);
+        /*data: [{"id":"742"}]*/
+            /*logObjectId: "742"*/
+
+            const {data: [{id: logTypeId}]} = deep.insert({
+              type_id: deep.id("@deep-foundation/logger", "LogType"),
+              from_id: logObjectId,
+              to_id: newLink.type_id
+            });
     
-            const logObjectTypeId = deep.id("@deep-foundation/logger", "LogObject");
-            const logTypeTypeId = deep.id("@deep-foundation/logger", "LogType");
-  
-            /*const {data: [{logObjectId}]} = deep.insert({
-              type_id: logObjectTypeId,
-              from_id: newLink.from_id,
-              to_id: newLink.to_id,
-              out: {
-                data: [{
-                  type_id: logTypeTypeId,
-                  to_id: newLink.type_id
-                }]
-              }
-            });*/
-  
-            const logInsertTypeId = deep.id("@deep-foundation/logger", "LogInsert");
-    
-            const {data: [{logInsertId}]} = deep.insert({
-              type_id: logInsertTypeId,
-              /*from_id: logObjectId,
-              to_id: newLink.id,*/
+            const {data: [{id: logInsertId}]} = deep.insert({
+              type_id: deep.id("@deep-foundation/logger", "LogInsert"),
+              from_id: logObjectId,
+              to_id: newLink.id,
               string: {data: {value: timestamp}}
              });
            }`,
@@ -320,22 +325,24 @@ const main = async () => {
       {
         code: `({deep, data: {newLink}}) => { 
             const timestamp = Date.now();
-  
-            const logInsertTypeId = deep.id("@deep-foundation/logger", "LogInsert");
          
             const {data: [{id: logInsertId}]} = deep.select({
-               type_id: logInsertTypeId,
+               type_id: deep.id("@deep-foundation/logger", "LogInsert"),
                to_id: newLink.id
-            })
-  
-            const logUpdateTypeId = deep.id("@deep-foundation/logger", "LogUpdate");
+            });
+
+            throw new Error("deep: " + JSON.stringify(deep, (key, value) =>
+            typeof value === 'bigint'
+                ? value.toString()
+                : value // return everything else unchanged
+        ));
          
-            deep.update({
-               type_id: logUpdateTypeId,
-               from_id: deep.linkId,
+            deep.insert({
+               type_id: deep.id("@deep-foundation/logger", "LogUpdate"),
+               from_id: deep.link_id,
                to_id: logInsertId,
                number: timestamp
-            })
+            });
            }`,
         fileName: "updateHandlerFile",
         handlerName: "updateHandler",
@@ -356,18 +363,14 @@ const main = async () => {
       {
         code: `({deep, data: {newLink}}) => { 
             const timestamp = Date.now();
-  
-            const logInsertTypeId = deep.id("@deep-foundation/logger", "LogInsert");
          
             const {data: [{id: logInsertId}]} = deep.select({
-               type_id: logInsertTypeId,
+               type_id: deep.id("@deep-foundation/logger", "LogInsert"),
                to_id: newLink.id
             })
-  
-            const logDeleteTypeId = deep.id("@deep-foundation/logger", "LogDelete");
          
             deep.insert({
-               type_id: logDeleteTypeId,
+               type_id: deep.id("@deep-foundation/logger", "LogDelete"),
                from_id: deep.linkId,
                to_id: logInsertId,
                number: timestamp
@@ -390,7 +393,7 @@ const main = async () => {
   
     const createdTestLinkIds = [];
     const callTests = async () => {
-      // const {data: [{id: customTypeId}]} = await deep.Delete({
+      // TODO: const {data: [{id: customTypeId}]} = await deep.Delete({
       //   type_id: typeTypeId,
       //   from_id: anyTypeId,
       //   to_id: anyTypeId
@@ -399,7 +402,6 @@ const main = async () => {
       // createdTestLinkIds.push(customTypeId)
       // createdLinkIds.push(customTypeId)
   
-      console.log("Before linkId");
       const { data: [{ id: linkId }] } = await deep.insert({
         type_id: /* TODO: customTypeId*/ triggerTypeId,
       });
@@ -411,7 +413,7 @@ const main = async () => {
       for (let i = 0; i < 10; i++) {
         const { data } = await deep.select({
           type_id: logInsertTypeId,
-          // to_id: linkId
+          to_id: linkId
         });
         if (data.length > 0) {
           logInsertId = data[0].id;
@@ -419,6 +421,7 @@ const main = async () => {
         }
         await sleep(1000);
       }
+      console.log({logInsertId});
       expect(logInsertId).to.not.be.equal(undefined);
   
       var logObjectId;
@@ -434,6 +437,7 @@ const main = async () => {
         }
         await sleep(1000);
       }
+      console.log({logObjectId});
       expect(logObjectId).to.not.be.equal(undefined);
   
       var logTypeId;
@@ -441,7 +445,7 @@ const main = async () => {
         const { data } = await deep.select({
           type_id: logTypeTypeId,
           from_id: logObjectId,
-          to_id: customTypeId
+          to_id: /*customTypeId*/ triggerTypeId
         });
         if (data.length > 0) {
           logTypeId = data[0].id;
@@ -449,9 +453,11 @@ const main = async () => {
         }
         await sleep(1000);
       }
+      console.log({logTypeId});
       expect(logTypeId).to.not.be.equal(undefined);
   
       await deep.insert({ link_id: linkId, value: "string" }, { table: "strings" });
+
   
       var logUpdateId;
       for (let i = 0; i < 10; i++) {
@@ -489,16 +495,16 @@ const main = async () => {
   
     }
     await callTests().then(() => {
-      deep.delete(createdTestLinkIds);
-    }).catch(error => {
+      // TODO: deep.delete(createdTestLinkIds);
+    }, error => {
       console.error(error)
-      deep.delete(createdLinkIds);
+      // TODO: deep.delete(createdLinkIds);
     });
   }
 
   await installPackage().catch(error => {
     console.error(error)
-    deep.delete(createdLinkIds);
+    // TODO: deep.delete(createdLinkIds);
   });
 };
 
