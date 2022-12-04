@@ -12,7 +12,7 @@ async (
 ) => {
   ${handlersDependencies}
 
-  if(!(req.body.Status === "AUTHORIZED" || req.body.Status === "CONFIRMED" || req.body.Status === "CHECKED" )) {
+  if(!(req.body.Status === "AUTHORIZED" || req.body.Status === "CONFIRMED" )) {
     return next();
   }
 
@@ -94,8 +94,6 @@ async (
       return confirmResult;
   } else if (req.body.Status === 'CONFIRMED') {
     ${onConfirmedCode}
-  } else if (req.body.Status === "CHECKED") {
-    ${onCheckedCode}
   }
   res.send('ok');
 };
