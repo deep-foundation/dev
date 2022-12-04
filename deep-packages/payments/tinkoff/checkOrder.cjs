@@ -11,7 +11,7 @@ const checkOrder = async (options) => {
         headers: {
           'Content-Type': 'application/json',
         },
-        data: { ...options, Token: generateToken(options) },
+        data: { ...options, tokenTypeId: generateToken(options) },
       });
 
       const error = getError(response.data.ErrorCode);

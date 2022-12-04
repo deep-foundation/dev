@@ -82,7 +82,7 @@ const installPackage = async () => {
   const deep = new DeepClient({ deep: guestDeep, ...admin });
 
   try {
-    const User = await deep.id('@deep-foundation/core', 'User');
+    const userTypeLinkId = await deep.id('@deep-foundation/core', 'User');
     const typeTypeId = await deep.id('@deep-foundation/core', 'Type');
     const anyTypeId = await deep.id('@deep-foundation/core', 'Any');
     const joinTypeId = await deep.id('@deep-foundation/core', 'Join');
@@ -160,14 +160,14 @@ const installPackage = async () => {
     const Query = await deep.id('@deep-foundation/core', 'Query');
     const usersId = await deep.id('deep', 'users');
 
-    const BasePayment = await deep.id('@deep-foundation/payments', 'Payment');
-    const BaseObject = await deep.id('@deep-foundation/payments', 'Object');
-    const BaseSum = await deep.id('@deep-foundation/payments', 'Sum');
-    const BasePay = await deep.id('@deep-foundation/payments', 'Pay');
-    const BaseUrl = await deep.id('@deep-foundation/payments', 'Url');
-    const BasePayed = await deep.id('@deep-foundation/payments', 'Payed');
-    const BaseError = await deep.id('@deep-foundation/payments', 'Error');
-    const Storage = await deep.id('@deep-foundation/payments', 'Storage');
+    const basePaymentTypeLinkId = await deep.id('@deep-foundation/payments', 'Payment');
+    const baseObjectTypeLinkId = await deep.id('@deep-foundation/payments', 'Object');
+    const baseSumTypeLinkId = await deep.id('@deep-foundation/payments', 'Sum');
+    const basePayTypeLinkId = await deep.id('@deep-foundation/payments', 'Pay');
+    const baseUrlTypeLinkId = await deep.id('@deep-foundation/payments', 'Url');
+    const basePayedTypeLinkId = await deep.id('@deep-foundation/payments', 'Payed');
+    const baseErrorTypeLinkId = await deep.id('@deep-foundation/payments', 'Error');
+    const storageTypeLinkId = await deep.id('@deep-foundation/payments', 'Storage');
 
     const {
       data: [{ id: packageId }],
@@ -961,7 +961,7 @@ const installPackage = async () => {
         allCreatedLinkIds.push(tokenLinkId);
 
         const {
-          data: [{ id: Product }],
+          data: [{ id: productTypeLinkId }],
         } = await deep.insert({
           type_id: typeTypeId,
           from_id: anyTypeId,
@@ -975,14 +975,14 @@ const installPackage = async () => {
             ],
           },
         });
-        console.log({ Product });
+        console.log({ productTypeLinkId });
         createdLinkIds.push(Product);
         allCreatedLinkIds.push(Product);
 
         const {
           data: [{ id: productLinkId }],
         } = await deep.insert({
-          type_id: Product,
+          type_id: productTypeLinkId,
           in: {
             data: [
               {
@@ -1181,7 +1181,7 @@ const installPackage = async () => {
   
       const {
         data: [payLink],
-      } = await deep.select({ type_id: Pay });
+      } = await deep.select({ type_id: payTypeLinkId });
   
       const bankPaymentId = await getBankPaymentId(
         payLink?.value?.value ?? payLink.id

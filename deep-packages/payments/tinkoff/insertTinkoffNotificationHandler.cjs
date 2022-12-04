@@ -20,9 +20,9 @@ async (
     const reqBody = req.body;
     console.log({reqBody});
   
-    const TinkoffProvider = await deep.id("${packageName}", "TinkoffProvider");
+    const tinkoffProviderTypeLinkId = await deep.id("${packageName}", "TinkoffProvider");
     const tinkoffProviderLinkSelectQuery = await deep.select({
-      type_id: TinkoffProvider
+      type_id: tinkoffProviderTypeLinkId
     });
     if(tinkoffProviderLinkSelectQuery.error) {throw new Error(tinkoffProviderLinkSelectQuery.error.message);}
     const tinkoffProviderId = tinkoffProviderLinkSelectQuery.data[0].id;
@@ -45,8 +45,8 @@ async (
     console.log({mpUpPayment});
     if(mpUpPaymentSelectQueryError) { throw new Error(mpUpPaymentSelectQueryError.message); }
   
-    const Pay = await deep.id("${packageName}", "Pay");
-    const payLink = mpUpPayment.find(link => link.type_id === Pay);
+    const payTypeLinkId = await deep.id("${packageName}", "Pay");
+    const payLink = mpUpPayment.find(link => link.type_id === payTypeLinkId);
     console.log({payLink});
     if(!payLink) { throw new Error("The pay link associated with payment link " + paymentLink + " is not found.") }
     const confirm = ${confirm.toString()};
@@ -58,9 +58,9 @@ async (
     const storageReceiverId = storageReceiverLinkSelectQuery.data[0].id;
     console.log({storageReceiverId});
 
-    const Token = await deep.id("${packageName}", "Token");
+    const tokenTypeId = await deep.id("${packageName}", "Token");
     const tokenLinkSelectQuery = await deep.select({
-      type_id: Token,
+      type_id: tokenTypeId,
       from_id: storageReceiverId,
       to_id: storageReceiverId
     });
