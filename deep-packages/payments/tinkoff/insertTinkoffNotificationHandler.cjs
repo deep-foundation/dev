@@ -2,7 +2,7 @@ const {insertNotificationHandler: baseInsertNotificationHandler} = require("../.
 const {handlersDependencies} = require("./handlersDependencies.cjs");
 const {confirm} = require("./confirm.cjs");
 
-exports.insertTinkoffNotificationHandler = async ({packageName, packageId, deep, notificationPort, notificationRoute, portTypeId, routerListeningTypeId, routerTypeId, routerStringUseTypeId, routeTypeId, handleRouteTypeId, handlerTypeId, supportsId, containTypeId,  adminId, fileTypeId, onConfirmedCode, onCheckedCode}) => {
+exports.insertTinkoffNotificationHandler = async ({packageName, packageId, deep, notificationPort, notificationRoute, portTypeId, routerListeningTypeId, routerTypeId, routerStringUseTypeId, routeTypeId, handleRouteTypeId, handlerTypeId, supportsId, containTypeId,  adminId, fileTypeId, onConfirmedCode}) => {
     const code = `
 async (
   req,
@@ -58,9 +58,9 @@ async (
     const storageReceiverId = storageReceiverLinkSelectQuery.data[0].id;
     console.log({storageReceiverId});
 
-    const tokenTypeId = await deep.id("${packageName}", "Token");
+    const tokenTypeLinkId = await deep.id("${packageName}", "Token");
     const tokenLinkSelectQuery = await deep.select({
-      type_id: tokenTypeId,
+      type_id: tokenTypeLinkId,
       from_id: storageReceiverId,
       to_id: storageReceiverId
     });
