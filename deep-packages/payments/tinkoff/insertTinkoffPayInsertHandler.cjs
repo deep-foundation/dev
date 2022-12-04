@@ -113,12 +113,13 @@ async ({ deep, require, data: { newLink } }) => {
   });
   if(urlLinkInsertQueryError) { throw new Error(urlLinkInsertQueryError.message); }
 
-  const paymentLinkValueInsertQuery = await deep.insert({link_id: {_eq: paymentLink.id}}, {value: {bankPaymentId: initResult.response.PaymentId}}, {table: "objects"});
-  if(paymentLinkValueInsertQuery.error) { throw new Error(paymentLinkValueInsertQuery.error.message); }
+  const paymentValueLinkInsertQuery  await deep.insert({link_id: paymentLink.id, value: {bankPaymentId: initResult.response.PaymentId}}, {table: "objects"})
+  if(paymentValueLinkInsertQuery.error) { throw new Error(paymentValueLinkInsertQuery.error.message); }
   
   return initResult;
 };
 `;
+
 return await insertHandler({deep, fileTypeId, fileName: 'payInsertHandlerFile', handlerName: 'payInsertHandler', handleName: 'payInsertHandle', triggerTypeId: payTypeId, code, supportsId: dockerSupportsJsId, handleOperationTypeId: handleInsertTypeId, containTypeId, packageId, handlerTypeId, code});
 }
 
