@@ -61,6 +61,9 @@ for (const requiredEnvVariableName of requiredEnvVariableNames) {
   }
 }
 
+// console.log(process.env.PAYMENTS_C2B_NOTIFICATION_URL);
+// process.exit(1);
+
 const allCreatedLinkIds = [];
 
 const installPackage = async () => {
@@ -505,7 +508,37 @@ const installPackage = async () => {
     await insertTinkoffPayInsertHandler({packageName: "@deep-foundation/payments-tinkoff-c2b",deep, containTypeId, fileTypeId: syncTextFileTypeId, handleInsertTypeId, handlerTypeId, notificationUrl: process.env.PAYMENTS_C2B_NOTIFICATION_URL, packageId, supportsId: dockerSupportsJs, userEmail: process.env.PAYMENTS_C2B_EMAIL, userPhone: process.env.PAYMENTS_C2B_PHONE, dockerSupportsJsId, payTypeId});
 
     const tinkoffNotificationOnConfirmedCode = `
-    
+
+    const tinkoffProviderTypeLinkId = await deep.id("@deep-foundation/payments-tinkoff-c2b", "TinkoffProvider");
+    const tinkoffProviderLinkSelectQuery = await deep.select({
+      type_id: tinkoffProviderTypeLinkId
+    });
+    if(tinkoffProviderLinkSelectQuery.error) {throw new Error(tinkoffProviderLinkSelectQuery.error.message);}
+    const tinkoffProviderLinkId = tinkoffProviderLinkSelectQuery.data[0].id;
+    console.log({tinkoffProviderLinkId});
+
+    const paymentLinkSelectQuery = await deep.select({
+      object: {value: {_contains: {bankPaymentId: parseInt(req.body.PaymentId)}}}
+    });
+    if(paymentLinkSelectQuery.error) { throw new Error(paymentLinkSelectQuery.error.message); }
+    const paymentLink = paymentLinkSelectQuery.data[0];
+    console.log({paymentLink});
+    if(!paymentLink) { throw new Error("The payment link associated with the bank payment id " + req.body.PaymentId + " is not found."); }
+
+    const {data: mpUpPayment, error: mpUpPaymentSelectQueryError} = await deep.select({
+      up: {
+        parent_id: { _eq: paymentLink.id },
+        tree_id: { _eq: await deep.id("@deep-foundation/payments-tinkoff-c2b", "paymentTree") }
+      }
+    });
+    console.log({mpUpPayment});
+    if(mpUpPaymentSelectQueryError) { throw new Error(mpUpPaymentSelectQueryError.message); }
+
+    const payTypeLinkId = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Pay");
+    const payLink = mpUpPayment.find(link => link.type_id === payTypeLinkId);
+    console.log({payLink});
+    if(!payLink) { throw new Error("The pay link associated with payment link " + paymentLink + " is not found.") }
+
     const payedLinkInsertQuery = await deep.insert({
       type_id: await deep.id("@deep-foundation/payments-tinkoff-c2b", "Payed"),
     from_id: tinkoffProviderLinkId,

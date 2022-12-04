@@ -25,16 +25,21 @@ async (
       type_id: tinkoffProviderTypeLinkId
     });
     if(tinkoffProviderLinkSelectQuery.error) {throw new Error(tinkoffProviderLinkSelectQuery.error.message);}
-    const tinkoffProviderId = tinkoffProviderLinkSelectQuery.data[0].id;
-    console.log({tinkoffProviderId});
+    const tinkoffProviderLinkId = tinkoffProviderLinkSelectQuery.data[0].id;
+    console.log({tinkoffProviderLinkId});
   
+    console.log(JSON.stringify(await deep.select({type_id: await deep.id("${packageName}", "Payment")})))
+    console.log("Select args:" ,JSON.stringify({
+      object: {value: {_contains: {bankPaymentId: req.body.PaymentId}}}
+    }))
+
     const paymentLinkSelectQuery = await deep.select({
-      object: {value: {_contains: {orderId: req.body.OrderId}}}
+      object: {value: {_contains: {bankPaymentId: parseInt(req.body.PaymentId)}}}
     });
     if(paymentLinkSelectQuery.error) { throw new Error(paymentLinkSelectQuery.error.message); }
     const paymentLink = paymentLinkSelectQuery.data[0];
     console.log({paymentLink});
-    if(!paymentLink) { throw new Error("The payment link associated with the order id " + req.body.OrderId + " is not found."); }
+    if(!paymentLink) { throw new Error("The payment link associated with the bank payment id " + req.body.PaymentId + " is not found."); }
   
     const {data: mpUpPayment, error: mpUpPaymentSelectQueryError} = await deep.select({
       up: {
@@ -49,6 +54,7 @@ async (
     const payLink = mpUpPayment.find(link => link.type_id === payTypeLinkId);
     console.log({payLink});
     if(!payLink) { throw new Error("The pay link associated with payment link " + paymentLink + " is not found.") }
+    
     const confirm = ${confirm.toString()};
 
     const storageReceiverLinkSelectQuery = await deep.select({
@@ -83,7 +89,7 @@ async (
       const errorMessage = "Could not confirm the pay. " + confirmResult.error;
       const {error: errorLinkInsertError} = await deep.insert({
         type_id: (await deep.id("${packageName}", "Error")),
-        from_id: tinkoffProviderId,
+        from_id: tinkoffProviderLinkId,
         to_id: payLink.id,
         string: { data: { value: errorMessage } },
       });
