@@ -115,7 +115,7 @@ async ({ deep, require, data: { newLink } }) => {
 
   console.log("paymentLink.value.value", paymentLink.value.value);
   console.log("paymentLink.value.value", paymentLink.value.value);
-  const paymentLinkValueUpdateQuery = await deep.update({link_id: {_eq: paymentLink.id}}, {value: {...paymentLink.value.value, bankPaymentId: initResult.response.PaymentId}}, {table: "objects"});
+  const paymentLinkValueUpdateQuery = await deep.insert({link_id: {_eq: paymentLink.id}}, {value: {bankPaymentId: initResult.response.PaymentId}}, {table: "objects"});
   if(paymentLinkValueUpdateQuery.error) { throw new Error(paymentLinkValueUpdateQuery.error.message); }
   
   return initResult;
