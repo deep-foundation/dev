@@ -6,7 +6,6 @@ exports.getUrlString = exports.getUrl
     '${process.env.PAYMENTS_C2B_URL}',
     process.env.PAYMENTS_C2B_URL
   );
-console.log({ getUrlString });
 
     
     

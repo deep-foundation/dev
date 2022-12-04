@@ -1,4 +1,4 @@
-exports.axios = require('axios');
+const axios = require('axios');
 const { generateToken } = require("./generateToken.cjs");
 const { getError } = require("./getError.cjs");
 const { getUrl } = require("./getUrl.cjs");

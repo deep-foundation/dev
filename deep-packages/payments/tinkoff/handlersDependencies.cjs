@@ -6,7 +6,7 @@ const { generateTokenStringWithInsertedTerminalPassword } = require("./generateT
 
 exports.handlersDependencies = `
 exports.crypto = require('crypto');
-exports.axios = require('axios');
+const axios = require('axios');
 exports.errors = ${JSON.stringify(errors)};
 exports.getError = ${getError.toString()};
 exports.getUrl = ${getUrlString};
