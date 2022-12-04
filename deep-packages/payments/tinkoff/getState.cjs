@@ -8,7 +8,7 @@ exports.getState = async (options) => {
       const response = await axios({
         method: 'post',
         url: getUrl('GetState'),
-        data: { ...options, tokenTypeId: generateToken(options) },
+        data: { ...options, tokenTypeLinkId: generateToken(options) },
       });
 
       const error = getError(response.data.ErrorCode);

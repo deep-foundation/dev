@@ -11,7 +11,7 @@ exports.removeCustomer = async (options) => {
         headers: {
           'Content-Type': 'application/json',
         },
-        data: { ...options, tokenTypeId: generateToken(options) },
+        data: { ...options, tokenTypeLinkId: generateToken(options) },
       });
 
       const error = getError(response.data.ErrorCode);
