@@ -1,6 +1,6 @@
 const {sleep} = require('./../../sleep.cjs');
 
-const payInBrowser = async ({ page, browser, url }) => {
+exports.payInBrowser = async ({ page, browser, url }) => {
     await page.goto(url, { waitUntil: 'networkidle2' });
     await sleep(5000);
     const oldForm = await page.evaluate(() => {
@@ -97,4 +97,4 @@ const payInBrowser = async ({ page, browser, url }) => {
     await browser.close();
   };
 
-  exports.payInBrowser = payInBrowser;
+  

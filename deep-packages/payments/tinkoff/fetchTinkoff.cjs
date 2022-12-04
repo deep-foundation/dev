@@ -1,16 +1,8 @@
-exports.axios = require('axios');
-const { generateToken } = require("./generateToken.cjs");
-const { getError } = require("./getError.cjs");
-const { getUrl } = require("./getUrl.cjs");
 
-exports.checkOrder = async (options) => {
     try {
       const response = await axios({
         method: 'post',
-        url: getUrl('CheckOrder'),
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        url: getUrl('Confirm'),
         data: { ...options, tokenTypeId: generateToken(options) },
       });
 
@@ -28,6 +20,4 @@ exports.checkOrder = async (options) => {
         response: null,
       };
     }
-  };
-
-  
+  }

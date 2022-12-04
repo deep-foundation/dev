@@ -1,9 +1,9 @@
-const axios = require('axios');
+exports.axios = require('axios');
 const { generateToken } = require("./generateToken.cjs");
 const { getError } = require("./getError.cjs");
 const { getUrl } = require("./getUrl.cjs");
 
-const charge = async (options) => {
+exports.charge = async (options) => {
     try {
       const response = await axios({
         method: 'post',
@@ -30,4 +30,4 @@ const charge = async (options) => {
     }
   };
 
-  exports.charge = charge;
+  

@@ -1,4 +1,4 @@
-const crypto = require('crypto');
+exports.crypto = require('crypto');
 
   const generateToken = (data) => {
     const { Receipt, DATA, Shops, ...restData } = data;
@@ -24,5 +24,5 @@ const crypto = require('crypto');
     `"${process.env.PAYMENTS_C2B_TERMINAL_PASSWORD}"`
   );
 
-  exports.generateToken = generateToken;
-  exports.generateTokenStringWithInsertedTerminalPassword = generateTokenStringWithInsertedTerminalPassword;
+  
+  

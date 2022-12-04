@@ -1,4 +1,4 @@
-const getUrl = (method) =>
+exports.getUrl = (method) =>
       `${process.env.PAYMENTS_C2B_URL}/${method}`;
     getUrlString = getUrl
       .toString()
@@ -8,5 +8,5 @@ const getUrl = (method) =>
       );
     console.log({ getUrlString });
 
-    exports.getUrl = getUrl;
-    exports.getUrlString = getUrlString;
+    
+    

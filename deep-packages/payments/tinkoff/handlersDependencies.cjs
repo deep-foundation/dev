@@ -4,13 +4,12 @@ const { getUrlString } = require("./getUrl.cjs");
 const { generateTokenStringWithInsertedTerminalPassword } = require("./generateToken.cjs");
 
 
-const handlersDependencies = `
-const crypto = require('crypto');
-const axios = require('axios');
-const errors = ${JSON.stringify(errors)};
-const getError = ${getError.toString()};
-const getUrl = ${getUrlString};
-const generateToken = ${generateTokenStringWithInsertedTerminalPassword};
+exports.handlersDependencies = `
+exports.crypto = require('crypto');
+exports.axios = require('axios');
+exports.errors = ${JSON.stringify(errors)};
+exports.getError = ${getError.toString()};
+exports.getUrl = ${getUrlString};
+exports.generateToken = ${generateTokenStringWithInsertedTerminalPassword};
 `;
 
-exports.handlersDependencies = handlersDependencies;

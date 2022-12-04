@@ -3,7 +3,7 @@ const { generateToken } = require("./generateToken.cjs");
 const { getError } = require("./getError.cjs");
 const { getUrl } = require("./getUrl.cjs");
 
-const confirm = async (options) => {
+exports.confirm = async (options) => {
     try {
       const response = await axios({
         method: 'post',
@@ -26,5 +26,3 @@ const confirm = async (options) => {
       };
     }
   };
-
-  exports.confirm = confirm;

@@ -1,9 +1,9 @@
-const axios = require('axios');
+exports.axios = require('axios');
 const { generateToken } = require("./generateToken.cjs");
 const { getError } = require("./getError.cjs");
 const { getUrl } = require("./getUrl.cjs");
 
-const getCardList = async (options) => {
+exports.getCardList = async (options) => {
     try {
       const response = await axios({
         method: 'post',
@@ -30,4 +30,4 @@ const getCardList = async (options) => {
     }
   };
 
-  exports.getCardList = getCardList;
+  

@@ -1,4 +1,4 @@
-const insertNotificationHandler = async ({deep, packageId,notificationPort, notificationRoute, portTypeId, routerListeningTypeId, routerTypeId, routerStringUseTypeId, routeTypeId, handleRouteTypeId, handlerTypeId, supportsId, containTypeId,  adminId, fileTypeId, handlerName, code}) => {
+exports.insertNotificationHandler = async ({deep, packageId,notificationPort, notificationRoute, portTypeId, routerListeningTypeId, routerTypeId, routerStringUseTypeId, routeTypeId, handleRouteTypeId, handlerTypeId, supportsId, containTypeId,  adminId, fileTypeId, handlerName, code}) => {
 return await deep.insert(
     {
       type_id: portTypeId,
@@ -82,4 +82,3 @@ return await deep.insert(
   )
 }
 
-exports.insertNotificationHandler = insertNotificationHandler;

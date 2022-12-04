@@ -2,7 +2,7 @@ const { insertHandler } = require("../../insertHandler.cjs");
 const {handlersDependencies} = require("./handlersDependencies.cjs");
 const {init} = require("./init.cjs");
 
-const insertTinkoffPayInsertHandler = async ({packageName, deep, notificationUrl, userEmail, userPhone, fileTypeId, containTypeId, packageId, dockerSupportsJsId,  handleInsertTypeId, handlerTypeId, payTypeId}) => {
+exports.insertTinkoffPayInsertHandler = async ({packageName, deep, notificationUrl, userEmail, userPhone, fileTypeId, containTypeId, packageId, dockerSupportsJsId,  handleInsertTypeId, handlerTypeId, payTypeId}) => {
     const code = `
 async ({ deep, require, data: { newLink } }) => {
   ${handlersDependencies}
@@ -124,4 +124,3 @@ async ({ deep, require, data: { newLink } }) => {
 return await insertHandler({deep, fileTypeId, fileName: 'payInsertHandlerFile', handlerName: 'payInsertHandler', handleName: 'payInsertHandle', triggerTypeId: payTypeId, code, supportsId: dockerSupportsJsId, handleOperationTypeId: handleInsertTypeId, containTypeId, packageId, handlerTypeId, code});
 }
 
-exports.insertTinkoffPayInsertHandler = insertTinkoffPayInsertHandler;
