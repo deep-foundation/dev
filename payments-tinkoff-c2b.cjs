@@ -1076,7 +1076,7 @@ const installPackage = async () => {
 
         const testFinishAuthorize = async () => {
           console.log('testFinishAuthorize-start');
-          const { createdLinks } = await testInit({ customerKey });
+          const { createdLinks } = await testInit();
 
           const urlLink = createdLinks.find(link => link.type_id === urlTypeId);
           expect(urlLink).to.not.be.equal(undefined)
@@ -1103,7 +1103,7 @@ const installPackage = async () => {
 
         const testConfirm = async () => {
           console.log('testConfirm-start');
-          const { createdLinks } = await testFinishAuthorize({ customerKey });
+          const { createdLinks } = await testFinishAuthorize();
 
           const createdLinkIds = [];
 
