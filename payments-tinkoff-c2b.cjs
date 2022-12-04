@@ -82,13 +82,10 @@ const installPackage = async () => {
   const deep = new DeepClient({ deep: guestDeep, ...admin });
 
   try {
-    const userTypeLinkId = await deep.id('@deep-foundation/core', 'User');
     const typeTypeId = await deep.id('@deep-foundation/core', 'Type');
     const anyTypeId = await deep.id('@deep-foundation/core', 'Any');
     const joinTypeId = await deep.id('@deep-foundation/core', 'Join');
     const containTypeId = await deep.id('@deep-foundation/core', 'Contain');
-    const Value = await deep.id('@deep-foundation/core', 'Value');
-    const String = await deep.id('@deep-foundation/core', 'String');
     const packageTypeId = await deep.id('@deep-foundation/core', 'Package');
   
 
@@ -129,36 +126,6 @@ const installPackage = async () => {
       '@deep-foundation/core',
       'TreeIncludeDown'
     );
-
-    const Rule = await deep.id('@deep-foundation/core', 'Rule');
-    const RuleSubject = await deep.id('@deep-foundation/core', 'RuleSubject');
-    const RuleObject = await deep.id('@deep-foundation/core', 'RuleObject');
-    const RuleAction = await deep.id('@deep-foundation/core', 'RuleAction');
-    const Selector = await deep.id('@deep-foundation/core', 'Selector');
-    const SelectorInclude = await deep.id(
-      '@deep-foundation/core',
-      'SelectorInclude'
-    );
-    const SelectorExclude = await deep.id(
-      '@deep-foundation/core',
-      'SelectorExclude'
-    );
-    const SelectorTree = await deep.id('@deep-foundation/core', 'SelectorTree');
-    const containTree = await deep.id('@deep-foundation/core', 'containTree');
-    const AllowInsertType = await deep.id(
-      '@deep-foundation/core',
-      'AllowInsertType'
-    );
-    const AllowDeleteType = await deep.id(
-      '@deep-foundation/core',
-      'AllowDeleteType'
-    );
-    const SelectorFilter = await deep.id(
-      '@deep-foundation/core',
-      'SelectorFilter'
-    );
-    const Query = await deep.id('@deep-foundation/core', 'Query');
-    const usersId = await deep.id('deep', 'users');
 
     const basePaymentTypeLinkId = await deep.id('@deep-foundation/payments', 'Payment');
     const baseObjectTypeLinkId = await deep.id('@deep-foundation/payments', 'Object');
@@ -1174,46 +1141,6 @@ const installPackage = async () => {
           }
         };
 
-        /*
-      const testGetState = async () => {
-      console.log('testGetState-start');
-      await testFinishAuthorize();
-  
-      const {
-        data: [payLink],
-      } = await deep.select({ type_id: payTypeLinkId });
-  
-      const bankPaymentId = await getBankPaymentId(
-        payLink?.value?.value ?? payLink.id
-      );
-  
-      const getStateOptions = {
-        TerminalKey: process.env.PAYMENTS_C2B_TERMINAL_KEY,
-        PaymentId: bankPaymentId,
-      };
-  
-      const getStateResult = await getState(getStateOptions);
-  
-      expect(getStateResult.error).to.equal(undefined);
-      console.log('testGetState-end');
-      };
-  
-      const testGetCardList = async () => {
-      console.log('testGetCardList-end');
-      await testFinishAuthorize();
-  
-      const getCardListOptions = {
-        TerminalKey: process.env.PAYMENTS_C2B_TERMINAL_KEY,
-        CustomerKey: deep.linkId,
-      };
-  
-      const getCardListResult = await getCardList(getCardListOptions);
-  
-      expect(getCardListResult.error).to.equal(undefined);
-      console.log('testGetCardList-end');
-      };
-      */
-
       const callTest = async (testFunction) => {
         const { createdLinks } = await testFunction();
         for (const createdLink of createdLinks) {
@@ -1233,12 +1160,9 @@ const installPackage = async () => {
       await callTest(testConfirm);
 
       await deep.delete(createdLinkIds);
-
-      /*await testGetState();
-      await testGetCardList();*/
       };
 
-      // await callRealizationTests();
+      await callRealizationTests();
       await callIntegrationTests();
     };
 
