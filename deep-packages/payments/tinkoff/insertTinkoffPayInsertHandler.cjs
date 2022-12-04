@@ -61,7 +61,7 @@ async ({ deep, require, data: { newLink } }) => {
 
   const options = {
     TerminalKey: tokenLink.value.value,
-    OrderId: paymentLink?.value?.value.orderId ?? paymentLink.id,
+    OrderId: "" + Date.now() + paymentLink.id,
     CustomerKey: deep.linkId,
     NotificationURL: "${notificationUrl}",
     PayType: 'T',
