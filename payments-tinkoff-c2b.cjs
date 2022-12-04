@@ -963,7 +963,7 @@ const installPackage = async () => {
         createdLinkIds.push(productLinkId);
         allCreatedLinkIds.push(productLinkId);
 
-        const testInit = async (payTypeLinkId) => {
+        const testInit = async ({ customerKey } = { customerKey: uniqid() }) => {
           console.log('testInit-start');
 
           const createdLinkIds = [];
@@ -1075,7 +1075,7 @@ const installPackage = async () => {
           }
         };
 
-        const testFinishAuthorize = async (payTypeLinkId) => {
+        const testFinishAuthorize = async ({ customerKey } = { customerKey: uniqid() }) => {
           console.log('testFinishAuthorize-start');
           const { createdLinks } = await testInit({ customerKey });
 
@@ -1102,7 +1102,7 @@ const installPackage = async () => {
           }
         };
 
-        const testConfirm = async (payTypeLinkId) => {
+        const testConfirm = async ({ customerKey } = { customerKey: uniqid() }) => {
           console.log('testConfirm-start');
           const { createdLinks } = await testFinishAuthorize({ customerKey });
 
