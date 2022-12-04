@@ -68,30 +68,30 @@ async (
     const tokenLink = tokenLinkSelectQuery.data[0];
     console.log({tokenLink});
 
-      const confirmOptions = {
-        TerminalKey: tokenLink.value.value,
-        PaymentId: req.body.PaymentId,
-        Amount: req.body.Amount,
-        // Receipt: req.body.Receipt,
-      };
-      console.log({confirmOptions});
+    const confirmOptions = {
+      TerminalKey: tokenLink.value.value,
+      PaymentId: req.body.PaymentId,
+      Amount: req.body.Amount,
+      // Receipt: req.body.Receipt,
+    };
+    console.log({confirmOptions});
 
-      const confirmResult = await confirm(confirmOptions);
-      console.log({confirmResult});
+    const confirmResult = await confirm(confirmOptions);
+    console.log({confirmResult});
 
-      if (confirmResult.error) {
-        const errorMessage = "Could not confirm the pay. " + confirmResult.error;
-        const {error: errorLinkInsertError} = await deep.insert({
-          type_id: (await deep.id("${packageName}", "Error")),
-          from_id: tinkoffProviderId,
-          to_id: payLink.id,
-          string: { data: { value: errorMessage } },
-        });
-        if(errorLinkInsertError) { throw new Error(errorLinkInsertError); }
-        throw new Error(errorMessage);
-      }
+    if (confirmResult.error) {
+      const errorMessage = "Could not confirm the pay. " + confirmResult.error;
+      const {error: errorLinkInsertError} = await deep.insert({
+        type_id: (await deep.id("${packageName}", "Error")),
+        from_id: tinkoffProviderId,
+        to_id: payLink.id,
+        string: { data: { value: errorMessage } },
+      });
+      if(errorLinkInsertError) { throw new Error(errorLinkInsertError); }
+      throw new Error(errorMessage);
+    }
 
-      return confirmResult;
+    return confirmResult;
   } else if (req.body.Status === 'CONFIRMED') {
     ${onConfirmedCode}
   }
