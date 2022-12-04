@@ -943,8 +943,8 @@ const installPackage = async () => {
           },
         });
         console.log({ productTypeLinkId });
-        createdLinkIds.push(Product);
-        allCreatedLinkIds.push(Product);
+        createdLinkIds.push(productTypeLinkId);
+        allCreatedLinkIds.push(productTypeLinkId);
 
         const {
           data: [{ id: productLinkId }],
@@ -1161,7 +1161,7 @@ const installPackage = async () => {
       await deep.delete(createdLinkIds);
       };
 
-      await callRealizationTests();
+      // await callRealizationTests();
       await callIntegrationTests();
     };
 
