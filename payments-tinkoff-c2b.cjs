@@ -94,32 +94,32 @@ const installPackage = async () => {
   const deep = new DeepClient({ deep: guestDeep, ...admin });
 
   try {
-    const typeTypeId = await deep.id('@deep-foundation/core', 'Type');
-    const anyTypeId = await deep.id('@deep-foundation/core', 'Any');
-    const joinTypeId = await deep.id('@deep-foundation/core', 'Join');
-    const containTypeId = await deep.id('@deep-foundation/core', 'Contain');
-    const packageTypeId = await deep.id('@deep-foundation/core', 'Package');
+    const typeTypeLinkId = await deep.id('@deep-foundation/core', 'Type');
+    const anyTypeLinkId = await deep.id('@deep-foundation/core', 'Any');
+    const joinTypeLinkId = await deep.id('@deep-foundation/core', 'Join');
+    const containTypeLinkId = await deep.id('@deep-foundation/core', 'Contain');
+    const packageTypeLinkId = await deep.id('@deep-foundation/core', 'Package');
   
 
-    const syncTextFileTypeId = await deep.id('@deep-foundation/core', 'SyncTextFile');
+    const syncTextFileTypeLinkId = await deep.id('@deep-foundation/core', 'SyncTextFile');
     const dockerSupportsJs = await deep.id(
       '@deep-foundation/core',
       'dockerSupportsJs'
     );
-    const handleInsertTypeId = await deep.id('@deep-foundation/core', 'HandleInsert');
-    const portTypeId = await deep.id('@deep-foundation/core', 'Port');
-    const routerListeningTypeId = await deep.id('@deep-foundation/core', 'RouterListening');
-    const routerTypeId = await deep.id('@deep-foundation/core', 'Router');
-    const routerStringUseTypeId = await deep.id(
+    const handleInsertTypeLinkId = await deep.id('@deep-foundation/core', 'HandleInsert');
+    const portTypeLinkId = await deep.id('@deep-foundation/core', 'Port');
+    const routerListeningTypeLinkId = await deep.id('@deep-foundation/core', 'RouterListening');
+    const routerTypeLinkId = await deep.id('@deep-foundation/core', 'Router');
+    const routerStringUseTypeLinkId = await deep.id(
       '@deep-foundation/core',
       'RouterStringUse'
     );
-    const routeTypeId = await deep.id('@deep-foundation/core', 'Route');
-    const handleRouteTypeId = await deep.id(
+    const routeTypeLinkId = await deep.id('@deep-foundation/core', 'Route');
+    const handleRouteTypeLinkId = await deep.id(
       '@deep-foundation/core',
       'HandleRoute'
     );
-    const handlerTypeId = await deep.id(
+    const handlerTypeLinkId = await deep.id(
       '@deep-foundation/core',
       'Handler'
     );
@@ -128,13 +128,13 @@ const installPackage = async () => {
       'dockerSupportsJs'
     );
 
-    const treeTypeId = await deep.id('@deep-foundation/core', 'Tree');
-    const treeIncludeNodeTypeId = await deep.id(
+    const treeTypeLinkId = await deep.id('@deep-foundation/core', 'Tree');
+    const treeIncludeNodeTypeLinkId = await deep.id(
       '@deep-foundation/core',
       'TreeIncludeNode'
     );
-    const treeIncludeUpTypeId = await deep.id('@deep-foundation/core', 'TreeIncludeUp');
-    const treeIncludeDownTypeId = await deep.id(
+    const treeIncludeUpTypeLinkId = await deep.id('@deep-foundation/core', 'TreeIncludeUp');
+    const treeIncludeDownTypeLinkId = await deep.id(
       '@deep-foundation/core',
       'TreeIncludeDown'
     );
@@ -151,12 +151,12 @@ const installPackage = async () => {
     const {
       data: [{ id: packageId }],
     } = await deep.insert({
-      type_id: packageTypeId,
+      type_id: packageTypeLinkId,
       string: { data: { value: '@deep-foundation/payments-tinkoff-c2b' } },
       in: {
         data: [
           {
-            type_id: containTypeId,
+            type_id: containTypeLinkId,
             from_id: deep.linkId,
           },
         ],
@@ -164,11 +164,11 @@ const installPackage = async () => {
       out: {
         data: [
           {
-            type_id: joinTypeId,
+            type_id: joinTypeLinkId,
             to_id: await deep.id('deep', 'users', 'packages'),
           },
           {
-            type_id: joinTypeId,
+            type_id: joinTypeLinkId,
             to_id: await deep.id('deep', 'admin'),
           },
         ],
@@ -178,166 +178,166 @@ const installPackage = async () => {
     console.log({ packageId });
 
     const {
-      data: [{ id: sumProviderTypeId }],
+      data: [{ id: sumProviderTypeLinkId }],
     } = await deep.insert({
-      type_id: typeTypeId,
-      from_id: anyTypeId,
-      to_id: anyTypeId,
+      type_id: typeTypeLinkId,
+      from_id: anyTypeLinkId,
+      to_id: anyTypeLinkId,
       in: {
         data: {
-          type_id: containTypeId,
+          type_id: containTypeLinkId,
           from_id: packageId,
           string: { data: { value: 'SumProvider' } },
         },
       },
     });
 
-    console.log({ sumProviderTypeId });
+    console.log({ sumProviderTypeLinkId });
 
     const {
-      data: [{ id: tinkoffProviderTypeId }],
+      data: [{ id: tinkoffProviderTypeLinkId }],
     } = await deep.insert({
-      type_id: typeTypeId,
-      from_id: anyTypeId,
-      to_id: anyTypeId,
+      type_id: typeTypeLinkId,
+      from_id: anyTypeLinkId,
+      to_id: anyTypeLinkId,
       in: {
         data: {
-          type_id: containTypeId,
+          type_id: containTypeLinkId,
           from_id: packageId,
           string: { data: { value: 'TinkoffProvider' } },
         },
       },
     });
 
-    console.log({ tinkoffProviderTypeId });
+    console.log({ tinkoffProviderTypeLinkId });
 
     const {
-      data: [{ id: paymentTypeId }],
+      data: [{ id: paymentTypeLinkId }],
     } = await deep.insert({
-      type_id: typeTypeId,
-      from_id: anyTypeId,
-      to_id: anyTypeId,
+      type_id: typeTypeLinkId,
+      from_id: anyTypeLinkId,
+      to_id: anyTypeLinkId,
       in: {
         data: {
-          type_id: containTypeId,
+          type_id: containTypeLinkId,
           from_id: packageId,
           string: { data: { value: 'Payment' } },
         },
       },
     });
 
-    console.log({ paymentTypeId });
+    console.log({ paymentTypeLinkId });
 
     const {
-      data: [{ id: objectTypeId }],
+      data: [{ id: objectTypeLinkId }],
     } = await deep.insert({
-      type_id: typeTypeId,
-      from_id: paymentTypeId,
-      to_id: anyTypeId,
+      type_id: typeTypeLinkId,
+      from_id: paymentTypeLinkId,
+      to_id: anyTypeLinkId,
       in: {
         data: {
-          type_id: containTypeId,
+          type_id: containTypeLinkId,
           from_id: packageId,
           string: { data: { value: 'Object' } },
         },
       },
     });
 
-    console.log({ objectTypeId });
+    console.log({ objectTypeLinkId });
 
     const {
-      data: [{ id: sumTypeId }],
+      data: [{ id: sumTypeLinkId }],
     } = await deep.insert({
-      type_id: typeTypeId,
-      from_id: anyTypeId,
-      to_id: anyTypeId,
+      type_id: typeTypeLinkId,
+      from_id: anyTypeLinkId,
+      to_id: anyTypeLinkId,
       in: {
         data: {
-          type_id: containTypeId,
+          type_id: containTypeLinkId,
           from_id: packageId, // before created package
           string: { data: { value: 'Sum' } },
         },
       },
     });
 
-    console.log({ sumTypeId });
+    console.log({ sumTypeLinkId });
 
     // TODO Rest restrictions
     const {
-      data: [{ id: payTypeId }],
+      data: [{ id: payTypeLinkId }],
     } = await deep.insert({
-      type_id: typeTypeId,
-      from_id: anyTypeId,
-      to_id: anyTypeId,
+      type_id: typeTypeLinkId,
+      from_id: anyTypeLinkId,
+      to_id: anyTypeLinkId,
       in: {
         data: {
-          type_id: containTypeId,
+          type_id: containTypeLinkId,
           from_id: packageId, // before created package
           string: { data: { value: 'Pay' } },
         },
       },
     });
 
-    console.log({ payTypeId });
+    console.log({ payTypeLinkId });
 
     const {
-      data: [{ id: urlTypeId }],
+      data: [{ id: urlTypeLinkId }],
     } = await deep.insert({
-      type_id: typeTypeId,
-      from_id: anyTypeId,
-      to_id: anyTypeId,
+      type_id: typeTypeLinkId,
+      from_id: anyTypeLinkId,
+      to_id: anyTypeLinkId,
       in: {
         data: {
-          type_id: containTypeId,
+          type_id: containTypeLinkId,
           from_id: packageId, // before created package
           string: { data: { value: 'Url' } },
         },
       },
     });
 
-    console.log({ urlTypeId });
+    console.log({ urlTypeLinkId });
 
     const {
-      data: [{ id: payedTypeId }],
+      data: [{ id: payedTypeLinkId }],
     } = await deep.insert({
-      type_id: typeTypeId,
-      from_id: anyTypeId,
-      to_id: anyTypeId,
+      type_id: typeTypeLinkId,
+      from_id: anyTypeLinkId,
+      to_id: anyTypeLinkId,
       in: {
         data: {
-          type_id: containTypeId,
+          type_id: containTypeLinkId,
           from_id: packageId, // before created package
           string: { data: { value: 'Payed' } },
         },
       },
     });
 
-    console.log({ payedTypeId });
+    console.log({ payedTypeLinkId });
 
     const {
-      data: [{ id: errorTypeId }],
+      data: [{ id: errorTypeLinkId }],
     } = await deep.insert({
-      type_id: typeTypeId,
-      from_id: anyTypeId,
-      to_id: anyTypeId,
+      type_id: typeTypeLinkId,
+      from_id: anyTypeLinkId,
+      to_id: anyTypeLinkId,
       in: {
         data: {
-          type_id: containTypeId,
+          type_id: containTypeLinkId,
           from_id: packageId, // before created package
           string: { data: { value: 'Error' } },
         },
       },
     });
 
-    console.log({ errorTypeId });
+    console.log({ errorTypeLinkId });
 
     const {
       data: [{ id: paymentTreeId }],
     } = await deep.insert({
-      type_id: treeTypeId,
+      type_id: treeTypeLinkId,
       in: {
         data: {
-          type_id: containTypeId,
+          type_id: containTypeLinkId,
           from_id: packageId,
           string: { data: { value: 'paymentTree' } },
         },
@@ -345,84 +345,84 @@ const installPackage = async () => {
       out: {
         data: [
           {
-            type_id: treeIncludeNodeTypeId,
-            to_id: paymentTypeId,
+            type_id: treeIncludeNodeTypeLinkId,
+            to_id: paymentTypeLinkId,
             in: {
               data: [
                 {
-                  type_id: containTypeId,
+                  type_id: containTypeLinkId,
                   from_id: deep.linkId,
                 },
               ],
             },
           },
           {
-            type_id: treeIncludeUpTypeId,
-            to_id: sumTypeId,
+            type_id: treeIncludeUpTypeLinkId,
+            to_id: sumTypeLinkId,
             in: {
               data: [
                 {
-                  type_id: containTypeId,
+                  type_id: containTypeLinkId,
                   from_id: deep.linkId,
                 },
               ],
             },
           },
           {
-            type_id: treeIncludeDownTypeId,
-            to_id: objectTypeId,
+            type_id: treeIncludeDownTypeLinkId,
+            to_id: objectTypeLinkId,
             in: {
               data: [
                 {
-                  type_id: containTypeId,
+                  type_id: containTypeLinkId,
                   from_id: deep.linkId,
                 },
               ],
             },
           },
           {
-            type_id: treeIncludeUpTypeId,
-            to_id: errorTypeId,
+            type_id: treeIncludeUpTypeLinkId,
+            to_id: errorTypeLinkId,
             in: {
               data: [
                 {
-                  type_id: containTypeId,
+                  type_id: containTypeLinkId,
                   from_id: deep.linkId,
                 },
               ],
             },
           },
           {
-            type_id: treeIncludeUpTypeId,
-            to_id: payedTypeId,
+            type_id: treeIncludeUpTypeLinkId,
+            to_id: payedTypeLinkId,
             in: {
               data: [
                 {
-                  type_id: containTypeId,
+                  type_id: containTypeLinkId,
                   from_id: deep.linkId,
                 },
               ],
             },
           },
           {
-            type_id: treeIncludeUpTypeId,
-            to_id: payTypeId,
+            type_id: treeIncludeUpTypeLinkId,
+            to_id: payTypeLinkId,
             in: {
               data: [
                 {
-                  type_id: containTypeId,
+                  type_id: containTypeLinkId,
                   from_id: deep.linkId,
                 },
               ],
             },
           },
           {
-            type_id: treeIncludeUpTypeId,
-            to_id: urlTypeId,
+            type_id: treeIncludeUpTypeLinkId,
+            to_id: urlTypeLinkId,
             in: {
               data: [
                 {
-                  type_id: containTypeId,
+                  type_id: containTypeLinkId,
                   from_id: deep.linkId,
                 },
               ],
@@ -433,88 +433,88 @@ const installPackage = async () => {
     });
 
     const {
-      data: [{ id: storageBusinessTypeId }],
+      data: [{ id: storageBusinessTypeLinkId }],
     } = await deep.insert({
-      type_id: typeTypeId,
-      from_id: anyTypeId,
-      to_id: anyTypeId,
+      type_id: typeTypeLinkId,
+      from_id: anyTypeLinkId,
+      to_id: anyTypeLinkId,
       in: {
         data: {
-          type_id: containTypeId,
+          type_id: containTypeLinkId,
           from_id: packageId, // before created package
           string: { data: { value: 'StorageBusiness' } },
         },
       },
     });
-    console.log({storageBusinessTypeId});
+    console.log({storageBusinessTypeLinkId});
 
     const {
-      data: [{ id: tokenTypeId }],
+      data: [{ id: tokenTypeLinkId }],
     } = await deep.insert({
-      type_id: typeTypeId,
-      from_id: anyTypeId,
-      to_id: anyTypeId,
+      type_id: typeTypeLinkId,
+      from_id: anyTypeLinkId,
+      to_id: anyTypeLinkId,
       in: {
         data: {
-          type_id: containTypeId,
+          type_id: containTypeLinkId,
           from_id: packageId, // before created package
           string: { data: { value: 'Token' } },
         },
       },
     });
-    console.log({tokenTypeId});
+    console.log({tokenTypeLinkId});
 
 
     const {
-      data: [{ id: storageClientTypeId }],
+      data: [{ id: storageClientTypeLinkId }],
     } = await deep.insert({
-      type_id: typeTypeId,
-      from_id: anyTypeId,
-      to_id: anyTypeId,
+      type_id: typeTypeLinkId,
+      from_id: anyTypeLinkId,
+      to_id: anyTypeLinkId,
       in: {
         data: {
-          type_id: containTypeId,
+          type_id: containTypeLinkId,
           from_id: packageId, // before created package
           string: { data: { value: 'StorageClient' } },
         },
       },
     });
-    console.log({storageClientTypeId});
+    console.log({storageClientTypeLinkId});
 
     const {
-      data: [{ id: titleTypeId }],
+      data: [{ id: titleTypeLinkId }],
     } = await deep.insert({
-      type_id: typeTypeId,
-      from_id: anyTypeId,
-      to_id: anyTypeId,
+      type_id: typeTypeLinkId,
+      from_id: anyTypeLinkId,
+      to_id: anyTypeLinkId,
       in: {
         data: {
-          type_id: containTypeId,
+          type_id: containTypeLinkId,
           from_id: packageId, // before created package
           string: { data: { value: 'Title' } },
         },
       },
     });
-    console.log({ titleTypeId });
+    console.log({ titleTypeLinkId });
 
     const {
-      data: [{ id: incomeTypeId }],
+      data: [{ id: incomeTypeLinkId }],
     } = await deep.insert({
-      type_id: typeTypeId,
-      from_id: anyTypeId,
-      to_id: anyTypeId,
+      type_id: typeTypeLinkId,
+      from_id: anyTypeLinkId,
+      to_id: anyTypeLinkId,
       in: {
         data: {
-          type_id: containTypeId,
+          type_id: containTypeLinkId,
           from_id: packageId, // before created package
           string: { data: { value: 'Income' } },
         },
       },
     });
-    console.log({ incomeTypeId });
+    console.log({ incomeTypeLinkId });
     debugger;
 
-    await insertTinkoffPayInsertHandler({packageName: "@deep-foundation/payments-tinkoff-c2b",deep, containTypeId, fileTypeId: syncTextFileTypeId, handleInsertTypeId, handlerTypeId, notificationUrl: process.env.PAYMENTS_C2B_NOTIFICATION_URL, packageId, supportsId: dockerSupportsJs, userEmail: process.env.PAYMENTS_C2B_EMAIL, userPhone: process.env.PAYMENTS_C2B_PHONE, dockerSupportsJsId, payTypeId});
+    await insertTinkoffPayInsertHandler({packageName: "@deep-foundation/payments-tinkoff-c2b",deep, containTypeLinkId, fileTypeLinkId: syncTextFileTypeLinkId, handleInsertTypeLinkId, handlerTypeLinkId, notificationUrl: process.env.PAYMENTS_C2B_NOTIFICATION_URL, packageId, supportsId: dockerSupportsJs, userEmail: process.env.PAYMENTS_C2B_EMAIL, userPhone: process.env.PAYMENTS_C2B_PHONE, dockerSupportsJsId, payTypeLinkId});
 
     const tinkoffNotificationOnConfirmedCode = `
 
@@ -602,7 +602,7 @@ const installPackage = async () => {
       
     }
   `;
-    await insertTinkoffNotificationHandler({packageName: "@deep-foundation/payments-tinkoff-c2b",packageId,deep, adminId: await deep.id('deep', 'admin'), containTypeId, fileTypeId: syncTextFileTypeId, handleRouteTypeId, handlerTypeId, notificationPort: process.env.PAYMENTS_C2B_NOTIFICATION_PORT, notificationRoute: process.env.PAYMENTS_C2B_NOTIFICATION_ROUTE, portTypeId, routerListeningTypeId, routerStringUseTypeId, routerTypeId, routeTypeId, supportsId: dockerSupportsJsId, onConfirmedCode: tinkoffNotificationOnConfirmedCode});
+    await insertTinkoffNotificationHandler({packageName: "@deep-foundation/payments-tinkoff-c2b",packageId,deep, adminId: await deep.id('deep', 'admin'), containTypeLinkId, fileTypeLinkId: syncTextFileTypeLinkId, handleRouteTypeLinkId, handlerTypeLinkId, notificationPort: process.env.PAYMENTS_C2B_NOTIFICATION_PORT, notificationRoute: process.env.PAYMENTS_C2B_NOTIFICATION_ROUTE, portTypeLinkId, routerListeningTypeLinkId, routerStringUseTypeLinkId, routerTypeLinkId, routeTypeLinkId, supportsId: dockerSupportsJsId, onConfirmedCode: tinkoffNotificationOnConfirmedCode});
 
     const callTests = async () => {
       console.log('callTests-start');
@@ -628,11 +628,11 @@ const installPackage = async () => {
         const {
           data: [{ id: tinkoffProviderLinkId }],
         } = await deep.insert({
-          type_id: tinkoffProviderTypeId,
+          type_id: tinkoffProviderTypeLinkId,
           in: {
             data: [
               {
-                type_id: containTypeId,
+                type_id: containTypeLinkId,
                 from_id: deep.linkId,
               },
             ],
@@ -645,11 +645,11 @@ const installPackage = async () => {
         const {
           data: [{ id: sumProviderLinkId }],
         } = await deep.insert({
-          type_id: sumProviderTypeId,
+          type_id: sumProviderTypeLinkId,
           in: {
             data: [
               {
-                type_id: containTypeId,
+                type_id: containTypeLinkId,
                 from_id: deep.linkId,
               },
             ],
@@ -662,11 +662,11 @@ const installPackage = async () => {
         const {
           data: [{ id: storageBusinessLinkId }],
         } = await deep.insert({
-          type_id: storageBusinessTypeId,
+          type_id: storageBusinessTypeLinkId,
           in: {
             data: [
               {
-                type_id: containTypeId,
+                type_id: containTypeLinkId,
                 from_id: deep.linkId,
               },
             ],
@@ -679,14 +679,14 @@ const installPackage = async () => {
         const {
           data: [{ id: tokenLinkId }],
         } = await deep.insert({
-          type_id: tokenTypeId,
+          type_id: tokenTypeLinkId,
           from_id: storageBusinessLinkId,
           to_id: storageBusinessLinkId,
           string: { data: { value: process.env.PAYMENTS_C2B_TERMINAL_KEY } },
           in: {
             data: [
               {
-                type_id: containTypeId,
+                type_id: containTypeLinkId,
                 from_id: deep.linkId,
               },
             ],
@@ -699,13 +699,13 @@ const installPackage = async () => {
         const {
           data: [{ id: productTypeLinkId }],
         } = await deep.insert({
-          type_id: typeTypeId,
-          from_id: anyTypeId,
-          to_id: anyTypeId,
+          type_id: typeTypeLinkId,
+          from_id: anyTypeLinkId,
+          to_id: anyTypeLinkId,
           in: {
             data: [
               {
-                type_id: containTypeId,
+                type_id: containTypeLinkId,
                 from_id: deep.linkId,
               },
             ],
@@ -722,7 +722,7 @@ const installPackage = async () => {
           in: {
             data: [
               {
-                type_id: containTypeId,
+                type_id: containTypeLinkId,
                 from_id: deep.linkId,
               },
             ],
@@ -740,13 +740,13 @@ const installPackage = async () => {
           const {
             data: [{ id: paymentLinkId }],
           } = await deep.insert({
-            type_id: paymentTypeId,
+            type_id: paymentTypeLinkId,
             from_id: deep.linkId,
             to_id: storageBusinessLinkId,
             in: {
               data: [
                 {
-                  type_id: containTypeId,
+                  type_id: containTypeLinkId,
                   from_id: deep.linkId,
                 },
               ],
@@ -759,14 +759,14 @@ const installPackage = async () => {
           const {
             data: [{ id: sumLinkId }],
           } = await deep.insert({
-            type_id: sumTypeId,
+            type_id: sumTypeLinkId,
             from_id: sumProviderLinkId,
             to_id: paymentLinkId,
             number: { data: { value: PRICE } },
             in: {
               data: [
                 {
-                  type_id: containTypeId,
+                  type_id: containTypeLinkId,
                   from_id: deep.linkId,
                 },
               ],
@@ -779,13 +779,13 @@ const installPackage = async () => {
           const {
             data: [{ id: objectLinkId }],
           } = await deep.insert({
-            type_id: objectTypeId,
+            type_id: objectTypeLinkId,
             from_id: paymentLinkId,
             to_id: productLinkId,
             in: {
               data: [
                 {
-                  type_id: containTypeId,
+                  type_id: containTypeLinkId,
                   from_id: deep.linkId,
                 },
               ],
@@ -798,13 +798,13 @@ const installPackage = async () => {
           const {
             data: [{ id: payLinkId }],
           } = await deep.insert({
-            type_id: payTypeId,
+            type_id: payTypeLinkId,
             from_id: deep.linkId,
             to_id: sumLinkId,
             in: {
               data: [
                 {
-                  type_id: containTypeId,
+                  type_id: containTypeLinkId,
                   from_id: deep.linkId,
                 },
               ],
@@ -817,7 +817,7 @@ const installPackage = async () => {
           var urlLinkSelectQuery;
           for (let i = 0; i < 10; i++) {
             urlLinkSelectQuery = await deep.select({
-              type_id: urlTypeId,
+              type_id: urlTypeLinkId,
               to_id: payLinkId,
             });
 
@@ -847,7 +847,7 @@ const installPackage = async () => {
           console.log('testFinishAuthorize-start');
           const { createdLinks } = await testInit();
 
-          const urlLink = createdLinks.find(link => link.type_id === urlTypeId);
+          const urlLink = createdLinks.find(link => link.type_id === urlTypeLinkId);
           expect(urlLink).to.not.be.equal(undefined)
 
           const url = urlLink.value.value;
@@ -876,13 +876,13 @@ const installPackage = async () => {
 
           const createdLinkIds = [];
 
-          const payLink = createdLinks.find(link => link.type_id === payTypeId);
+          const payLink = createdLinks.find(link => link.type_id === payTypeLinkId);
           expect(payLink).to.not.be.equal(undefined);
 
           var payedLinkSelectQuery;
           for (let i = 0; i < 10; i++) {
             payedLinkSelectQuery = await deep.select({
-              type_id: payedTypeId,
+              type_id: payedTypeLinkId,
               to_id: payLink.id
             });
 
@@ -912,9 +912,9 @@ const installPackage = async () => {
       const callTest = async (testFunction) => {
         const { createdLinks } = await testFunction();
         for (const createdLink of createdLinks) {
-          if(createdLink.type_id === payTypeId) {
+          if(createdLink.type_id === payTypeLinkId) {
             const errorLinkSelectQuery = await deep.select({
-              type_id: errorTypeId,
+              type_id: errorTypeLinkId,
               to_id: createdLink.id
             });
             createdLinks.push(...errorLinkSelectQuery.data);

@@ -1,19 +1,19 @@
-exports.insertNotificationHandler = async ({deep, packageId,notificationPort, notificationRoute, portTypeId, routerListeningTypeId, routerTypeId, routerStringUseTypeId, routeTypeId, handleRouteTypeId, handlerTypeId, supportsId, containTypeId,  adminId, fileTypeId, handlerName, code}) => {
+exports.insertNotificationHandler = async ({deep, packageId,notificationPort, notificationRoute, portTypeLinkId, routerListeningTypeLinkId, routerTypeLinkId, routerStringUseTypeLinkId, routeTypeLinkId, handleRouteTypeLinkId, handlerTypeLinkId, supportsId, containTypeLinkId,  adminId, fileTypeLinkId, handlerName, code}) => {
 return await deep.insert(
     {
-      type_id: portTypeId,
+      type_id: portTypeLinkId,
       number: {
         data: { value: notificationPort },
       },
       in: {
         data: {
-          type_id: routerListeningTypeId,
+          type_id: routerListeningTypeLinkId,
           from: {
             data: {
-              type_id: routerTypeId,
+              type_id: routerTypeLinkId,
               in: {
                 data: {
-                  type_id: routerStringUseTypeId,
+                  type_id: routerStringUseTypeLinkId,
                   string: {
                     data: {
                       value:
@@ -22,17 +22,17 @@ return await deep.insert(
                   },
                   from: {
                     data: {
-                      type_id: routeTypeId,
+                      type_id: routeTypeLinkId,
                       out: {
                         data: {
-                          type_id: handleRouteTypeId,
+                          type_id: handleRouteTypeLinkId,
                           to: {
                             data: {
-                              type_id: handlerTypeId,
+                              type_id: handlerTypeLinkId,
                               from_id: supportsId,
                               in: {
                                 data: {
-                                  type_id: containTypeId,
+                                  type_id: containTypeLinkId,
                                   // from_id: deep.linkId,
                                   from_id: adminId,
                                   string: {
@@ -44,7 +44,7 @@ return await deep.insert(
                               },
                               to: {
                                 data: {
-                                  type_id: fileTypeId,
+                                  type_id: fileTypeLinkId,
                                   string: {
                                     data: {
                                       value: code,
@@ -52,7 +52,7 @@ return await deep.insert(
                                   },
                                   in: {
                                     data: {
-                                      type_id: containTypeId,
+                                      type_id: containTypeLinkId,
                                       from_id: packageId,
                                       string: {
                                         data: {
