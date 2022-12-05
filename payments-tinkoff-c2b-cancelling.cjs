@@ -724,7 +724,7 @@ const installPackage = async () => {
         createdLinkIds.push(productId);
         allCreatedLinkIds.push(productId);
 
-        const testInit = async ({ customerKey } = { customerKey: uniqid() }) => {
+        const testInit = async () => {
           console.log('testInit-start');
 
           const createdLinkIds = [];
@@ -836,7 +836,7 @@ const installPackage = async () => {
           }
         };
 
-        const testFinishAuthorize = async ({ customerKey } = { customerKey: uniqid() }) => {
+        const testFinishAuthorize = async () => {
           console.log('testFinishAuthorize-start');
           const { createdLinks } = await testInit({ customerKey });
 
@@ -863,7 +863,7 @@ const installPackage = async () => {
           }
         };
 
-        const testConfirm = async ({ customerKey } = { customerKey: uniqid() }) => {
+        const testConfirm = async () => {
           console.log('testConfirm-start');
           const { createdLinks } = await testFinishAuthorize({ customerKey });
 
@@ -904,7 +904,7 @@ const installPackage = async () => {
 
         const callCancelTests = async () => {
           console.log('testCancel-start');
-          const testCancelAfterPayAfterConfirmFullPrice = async ({ customerKey } = { customerKey: uniqid() }) => {
+          const testCancelAfterPayAfterConfirmFullPrice = async () => {
             console.log('testCancelAfterPayAfterConfirmFullPrice-start');
             const { createdLinks } = await testConfirm({ customerKey });
 
@@ -998,7 +998,7 @@ const installPackage = async () => {
             };
           };
 
-          const testCancelAfterPayAfterConfirmCustomPriceX2 = async ({ customerKey } = { customerKey: uniqid() }) => {
+          const testCancelAfterPayAfterConfirmCustomPriceX2 = async () => {
             console.log('testCancelAfterPayAfterConfirmCustomPriceX2-start');
             const { createdLinks } = await testConfirm({ customerKey });
 
@@ -1096,7 +1096,7 @@ const installPackage = async () => {
             }
           };
 
-          const testCancelBeforePay = async ({ customerKey } = { customerKey: uniqid() }) => {
+          const testCancelBeforePay = async () => {
             console.log('testCancelBeforePay-start');
             const { createdLinks } = await testInit({ customerKey });
 
