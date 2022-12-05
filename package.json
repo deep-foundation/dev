@@ -65,7 +65,7 @@
     "gitpod-recreate": "npm run gitpod-unmigrate; npm run docker-clear; npm run rm-migrates; npm run gitpod-engine; npm run gitpod-migrate;",
     "local-reinit": "npm run docker-clear; npm run rm-migrates; npm run local-engine;",
     "gitpod-reinit": "npm run docker-clear; npm run rm-migrates; npm run gitpod-engine;",
-    "gitpod-hasura-reattach": "export REATTACH_HASURA_SECRET=myadminsecretkey; export REATTACH_HASURA_PATH=$(echo $(gp url 8080) | awk -F[/:] '{print $4}'); export REATTACH_HASURA_SSL=1; export REATTACH_DEEPLINKS_PATH=$(echo $(gp url 3006) | awk -F[/:] '{print $4}'); gulp gitpod:hasura:reattach"
+    "gitpod-hasura-reattach": "export REATTACH_HASURA_SECRET=myadminsecretkey; export REATTACH_HASURA_PATH=$(echo $(gp url 8080) | awk -F[/:] '{print $4}'); export REATTACH_HASURA_SSL=1; export REATTACH_DEEPLINKS_PATH=$(echo $(gp url 3006) | awk -F[/:] '{print $4}'); npx gulp gitpod:hasura:reattach"
   },
   "repository": {
     "type": "git",
