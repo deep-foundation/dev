@@ -1,12 +1,11 @@
-const getUrl = (method) =>
+exports.getUrl = (method) =>
       `${process.env.PAYMENTS_C2B_URL}/${method}`;
-    getUrlString = getUrl
-      .toString()
-      .replace(
-        '${process.env.PAYMENTS_C2B_URL}',
-        process.env.PAYMENTS_C2B_URL
-      );
-    console.log({ getUrlString });
+exports.getUrlString = exports.getUrl
+  .toString()
+  .replace(
+    '${process.env.PAYMENTS_C2B_URL}',
+    process.env.PAYMENTS_C2B_URL
+  );
 
-    exports.getUrl = getUrl;
-    exports.getUrlString = getUrlString;
+    
+    

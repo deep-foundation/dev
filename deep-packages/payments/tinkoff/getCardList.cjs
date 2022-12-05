@@ -3,7 +3,7 @@ const { generateToken } = require("./generateToken.cjs");
 const { getError } = require("./getError.cjs");
 const { getUrl } = require("./getUrl.cjs");
 
-const getCardList = async (options) => {
+exports.getCardList = async (options) => {
     try {
       const response = await axios({
         method: 'post',
@@ -11,7 +11,7 @@ const getCardList = async (options) => {
         headers: {
           'Content-Type': 'application/json',
         },
-        data: { ...options, Token: generateToken(options) },
+        data: { ...options, tokenTypeLinkId: generateToken(options) },
       });
 
       const error = getError(response.data.ErrorCode || '0');
@@ -30,4 +30,4 @@ const getCardList = async (options) => {
     }
   };
 
-  exports.getCardList = getCardList;
+  

@@ -1,4 +1,4 @@
-const insertHandler = async ({deep,fileTypeId, fileName, handlerName, handleName, triggerTypeId, code, supportsId, handleOperationTypeId, containTypeId, packageId, handlerTypeId}) => {
+exports.insertHandler = async ({deep,fileTypeId, fileName, handlerName, handleName, triggerTypeId, code, supportsId, handleOperationTypeId, containTypeId, packageId, handlerTypeId}) => {
     return await deep.insert({
         type_id: fileTypeId,
         in: {
@@ -44,4 +44,4 @@ const insertHandler = async ({deep,fileTypeId, fileName, handlerName, handleName
       });
   };
 
-  exports.insertHandler = insertHandler;
+  

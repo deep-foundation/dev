@@ -2,7 +2,7 @@ const {insertNotificationHandler: baseInsertNotificationHandler} = require("../.
 const {handlersDependencies} = require("./handlersDependencies.cjs");
 const {confirm} = require("./confirm.cjs");
 
-const insertTinkoffNotificationHandler = async ({packageName, packageId, deep, notificationPort, notificationRoute, portTypeId, routerListeningTypeId, routerTypeId, routerStringUseTypeId, routeTypeId, handleRouteTypeId, handlerTypeId, supportsId, containTypeId,  adminId, fileTypeId, onCofirmedCode}) => {
+exports.insertTinkoffNotificationHandler = async ({packageName, packageId, deep, notificationPort, notificationRoute, portTypeId, routerListeningTypeId, routerTypeId, routerStringUseTypeId, routeTypeId, handleRouteTypeId, handlerTypeId, supportsId, containTypeId,  adminId, fileTypeId, onConfirmedCode}) => {
     const code = `
 async (
   req,
@@ -12,63 +12,67 @@ async (
 ) => {
   ${handlersDependencies}
 
-  if(!(req.body.Status === "AUTHORIZED" || req.body.Status === "CONFIRMED")) {
+  if(!(req.body.Status === "AUTHORIZED" || req.body.Status === "CONFIRMED" )) {
     return next();
   }
 
-  const reqBody = req.body;
-  console.log({reqBody});
-
-  const TinkoffProvider = await deep.id("${packageName}", "TinkoffProvider");
-  const tinkoffProviderLinkSelectQuery = await deep.select({
-    type_id: TinkoffProvider
-  });
-  if(tinkoffProviderLinkSelectQuery.error) {throw new Error(tinkoffProviderLinkSelectQuery.error.message);}
-  const tinkoffProviderLinkId = tinkoffProviderLinkSelectQuery.data[0].id;
-  console.log({tinkoffProviderLinkId});
-
-  const paymentLinkSelectQuery = await deep.select({
-    object: {value: {_contains: {orderId: req.body.OrderId}}}
-  });
-  if(paymentLinkSelectQuery.error) { throw new Error(paymentLinkSelectQuery.error.message); }
-  const paymentLink = paymentLinkSelectQuery.data[0];
-  console.log({paymentLink});
-  if(!paymentLink) { throw new Error("The payment link associated with the order id " + req.body.OrderId + " is not found."); }
-
-  const {data: mpUpPayment, error: mpUpPaymentSelectQueryError} = await deep.select({
-    up: {
-      parent_id: { _eq: paymentLink.id },
-      tree_id: { _eq: await deep.id("${packageName}", "paymentTree") }
-    }
-  });
-  console.log({mpUpPayment});
-  if(mpUpPaymentSelectQueryError) { throw new Error(mpUpPaymentSelectQueryError.message); }
-
-  const Pay = await deep.id("${packageName}", "Pay");
-  const payLink = mpUpPayment.find(link => link.type_id === Pay);
-  console.log({payLink});
-  if(!payLink) { throw new Error("The pay link associated with payment link " + paymentLink + " is not found.") }
-
-
   if (req.body.Status === 'AUTHORIZED') {
-  const confirm = ${confirm.toString()};
+    const reqBody = req.body;
+    console.log({reqBody});
+  
+    const tinkoffProviderTypeLinkId = await deep.id("${packageName}", "TinkoffProvider");
+    const tinkoffProviderLinkSelectQuery = await deep.select({
+      type_id: tinkoffProviderTypeLinkId
+    });
+    if(tinkoffProviderLinkSelectQuery.error) {throw new Error(tinkoffProviderLinkSelectQuery.error.message);}
+    const tinkoffProviderLinkId = tinkoffProviderLinkSelectQuery.data[0].id;
+    console.log({tinkoffProviderLinkId});
+  
+    console.log(JSON.stringify(await deep.select({type_id: await deep.id("${packageName}", "Payment")})))
+    console.log("Select args:" ,JSON.stringify({
+      object: {value: {_contains: {bankPaymentId: req.body.PaymentId}}}
+    }))
 
-  const storageBusinessLinkSelectQuery = await deep.select({
-    id: paymentLink.to_id
-  });
-  if(storageBusinessLinkSelectQuery.error) {throw new Error(storageBusinessLinkSelectQuery.error.message);}
-  const storageBusinessLinkId = storageBusinessLinkSelectQuery.data[0].id;
-  console.log({storageBusinessLinkId});
+    const paymentLinkSelectQuery = await deep.select({
+      object: {value: {_contains: {bankPaymentId: parseInt(req.body.PaymentId)}}}
+    });
+    if(paymentLinkSelectQuery.error) { throw new Error(paymentLinkSelectQuery.error.message); }
+    const paymentLink = paymentLinkSelectQuery.data[0];
+    console.log({paymentLink});
+    if(!paymentLink) { throw new Error("The payment link associated with the bank payment id " + req.body.PaymentId + " is not found."); }
+  
+    const {data: mpUpPayment, error: mpUpPaymentSelectQueryError} = await deep.select({
+      up: {
+        parent_id: { _eq: paymentLink.id },
+        tree_id: { _eq: await deep.id("${packageName}", "paymentTree") }
+      }
+    });
+    console.log({mpUpPayment});
+    if(mpUpPaymentSelectQueryError) { throw new Error(mpUpPaymentSelectQueryError.message); }
+  
+    const payTypeLinkId = await deep.id("${packageName}", "Pay");
+    const payLink = mpUpPayment.find(link => link.type_id === payTypeLinkId);
+    console.log({payLink});
+    if(!payLink) { throw new Error("The pay link associated with payment link " + paymentLink + " is not found.") }
+    
+    const confirm = ${confirm.toString()};
 
-  const Token = await deep.id("${packageName}", "Token");
-  const tokenLinkSelectQuery = await deep.select({
-    type_id: Token,
-    from_id: storageBusinessLinkId,
-    to_id: storageBusinessLinkId
-  });
-  if(tokenLinkSelectQuery.error) {throw new Error(tokenLinkSelectQuery.error.message);}
-  const tokenLink = tokenLinkSelectQuery.data[0];
-  console.log({tokenLink});
+    const storageReceiverLinkSelectQuery = await deep.select({
+      id: paymentLink.to_id
+    });
+    if(storageReceiverLinkSelectQuery.error) {throw new Error(storageReceiverLinkSelectQuery.error.message);}
+    const storageReceiverId = storageReceiverLinkSelectQuery.data[0].id;
+    console.log({storageReceiverId});
+
+    const tokenTypeLinkId = await deep.id("${packageName}", "Token");
+    const tokenLinkSelectQuery = await deep.select({
+      type_id: tokenTypeLinkId,
+      from_id: storageReceiverId,
+      to_id: storageReceiverId
+    });
+    if(tokenLinkSelectQuery.error) {throw new Error(tokenLinkSelectQuery.error.message);}
+    const tokenLink = tokenLinkSelectQuery.data[0];
+    console.log({tokenLink});
 
     const confirmOptions = {
       TerminalKey: tokenLink.value.value,
@@ -95,8 +99,8 @@ async (
 
     return confirmResult;
   } else if (req.body.Status === 'CONFIRMED') {
-    ${onCofirmedCode}
-  } 
+    ${onConfirmedCode}
+  }
   res.send('ok');
 };
 `;
@@ -104,4 +108,3 @@ async (
 return await baseInsertNotificationHandler({packageId, adminId, containTypeId, deep, fileTypeId, handlerName: "tinkoffNotificationHandler", handleRouteTypeId,handlerTypeId,notificationPort,notificationRoute,portTypeId,routerListeningTypeId,routerStringUseTypeId,routerTypeId,routeTypeId,supportsId, code});
 }
 
-exports.insertTinkoffNotificationHandler = insertTinkoffNotificationHandler;

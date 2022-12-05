@@ -3,7 +3,7 @@ const { generateToken } = require("./generateToken.cjs");
 const { getError } = require("./getError.cjs");
 const { getUrl } = require("./getUrl.cjs");
 
-const init = async (options) => {
+exports.init = async (options) => {
     try {
       const response = await axios({
         method: 'post',
@@ -11,7 +11,7 @@ const init = async (options) => {
         headers: {
           'Content-Type': 'application/json',
         },
-        data: { ...options, Token: generateToken(options) },
+        data: { ...options, tokenTypeLinkId: generateToken(options) },
       });
 
       const error = getError(response.data.ErrorCode);
@@ -30,4 +30,4 @@ const init = async (options) => {
     }
   };
 
-  exports.init = init;
+  
