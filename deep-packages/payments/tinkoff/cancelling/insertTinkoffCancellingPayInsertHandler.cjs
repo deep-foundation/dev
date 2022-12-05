@@ -16,26 +16,26 @@ async ({ deep, require, data: { newLink: payLink } }) => {
   console.log({mpDownPay});
   if(mpDownPaySelectQueryError) { throw new Error(mpDownPaySelectQueryError.message); }
 
-  const CancellingPayment = await deep.id("${cancellingPaymentsPackageName}", "CancellingPayment");
-  const cancellingPaymentLink = mpDownPay.find(link => link.type_id === CancellingPayment);
+  const cancellingPaymentTypeLinkId = await deep.id("${cancellingPaymentsPackageName}", "CancellingPayment");
+  const cancellingPaymentLink = mpDownPay.find(link => link.type_id === cancellingPaymentTypeLinkId);
   console.log({cancellingPaymentLink});
   if(!cancellingPaymentLink) {
     return;
   }
 
-  const TinkoffProvider = await deep.id("${paymentsPackageName}", "TinkoffProvider");
+  const tinkoffProviderTypeLinkId = await deep.id("${paymentsPackageName}", "TinkoffProvider");
   const tinkoffProviderLinkSelectQuery = await deep.select({
-    type_id: TinkoffProvider
+    type_id: tinkoffProviderTypeLinkId
   });
   if(tinkoffProviderLinkSelectQuery.error) {throw new Error(tinkoffProviderLinkSelectQuery.error.message);}
   const tinkoffProviderLink = tinkoffProviderLinkSelectQuery.data[0];
 
-  const Sum = await deep.id("${paymentsPackageName}", "Sum");
-  const sumLink = mpDownPay.find(link => link.type_id === Sum); 
+  const sumTypeLinkId = await deep.id("${paymentsPackageName}", "Sum");
+  const sumLink = mpDownPay.find(link => link.type_id === sumTypeLinkId); 
   console.log({sumLink});
   if(!sumLink) throw new Error("Sum link associated with the pay link " + payLink.id + " is not found.");
 
-  const Url = await deep.id("${paymentsPackageName}", "Url");
+  const urlTypeLinkId = await deep.id("${paymentsPackageName}", "Url");
 
   const cancelledPaymentLinkSelectQuery = await deep.select({
     id: cancellingPaymentLink.from_id
@@ -44,9 +44,9 @@ async ({ deep, require, data: { newLink: payLink } }) => {
   const cancelledPaymentLink = cancelledPaymentLinkSelectQuery.data[0];
   console.log({cancelledPaymentLink}); 
 
-  const Income = await deep.id("${paymentsPackageName}", "Income");
+  const incomeTypeLinkId = await deep.id("${paymentsPackageName}", "Income");
   const incomeLinkInsertQuery = await deep.insert({
-    type_id: Income,
+    type_id: incomeTypeLinkId,
     from_id: cancellingPaymentLink.id,
     to_id: cancelledPaymentLink.to_id
   });

@@ -62,9 +62,9 @@ async (
   const sumLink = mpUpPayment.find(link => link.type_id === sumTypeLinkId);
   if(!sumLink) {throw new Error("Could not find sum link associated with the cancelling payment " + cancellingPaymentLink);}
   
-  const Payed = await deep.id("${paymentsPackageName}", "Payed")
+  const payedTypeLinkId = await deep.id("${paymentsPackageName}", "Payed")
   const payedInsertLinkInsertQuery = await deep.insert({
-    type_id: Payed,
+    type_id: payedTypeLinkId,
     from_id: tinkoffProviderLink.id,
     to_id: sumLink.id,
   });
