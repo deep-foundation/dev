@@ -38,6 +38,15 @@ const { insertTinkoffPayInsertHandler } = require("./deep-packages/payments/tink
 const { insertTinkoffNotificationHandler } = require("./deep-packages/payments/tinkoff/insertTinkoffNotificationHandler.cjs");
 const {sleep} = require("./deep-packages/sleep.cjs");
 const {confirm} = require("./deep-packages/payments/tinkoff/confirm.cjs");
+const {testInit: callRealizationTestInit} = require('./deep-packages/payments/tinkoff/tests/realization/testInit.cjs');
+const {testConfirm: callRealizationTestConfirm} = require('./deep-packages/payments/tinkoff/tests/realization/testConfirm.cjs');
+const {testGetState: callRealizationTestGetState} = require('./deep-packages/payments/tinkoff/tests/realization/testGetState.cjs');
+const {testGetCardList: callRealizationTestGetCardList} = require('./deep-packages/payments/tinkoff/tests/realization/testGetCardList.cjs');
+const {testResend: callRealizationTestResend} = require('./deep-packages/payments/tinkoff/tests/realization/testResend.cjs');
+const {testCharge: callRealizationTestCharge} = require('./deep-packages/payments/tinkoff/tests/realization/testCharge.cjs');
+const {testAddCustomer: callRealizationTestAddCustomer} = require('./deep-packages/payments/tinkoff/tests/realization/testAddCustomer.cjs');
+const {testGetCustomer: callRealizationTestGetCustomer} = require('./deep-packages/payments/tinkoff/tests/realization/testGetCustomer.cjs');
+const {testRemoveCustomer: callRealizationTestRemoveCustomer} = require('./deep-packages/payments/tinkoff/tests/realization/testRemoveCustomer.cjs');
 
 console.log('Installing payments-tinkoff-c2b package');
 
@@ -601,288 +610,15 @@ const installPackage = async () => {
       const PRICE = 5500;
 
       const callRealizationTests = async () => {
-        const testInit = async () => {
-          const initOptions = {
-            TerminalKey: process.env.PAYMENTS_C2B_TERMINAL_KEY,
-            OrderId: uniqid(),
-            Amount: PRICE,
-            Description: 'Test shopping',
-            CustomerKey: deep.linkId,
-            Language: 'ru',
-            Recurrent: 'Y',
-            DATA: {
-              Email: process.env.PAYMENTS_C2B_EMAIL,
-              Phone: process.env.PAYMENTS_C2B_PHONE,
-            },
-            // Receipt: {
-            // 	Items: [{
-            // 		Name: 'Test item',
-            // 		Price: PRICE,
-            // 		Quantity: 1,
-            // 		Amount: PRICE,
-            // 		PaymentMethod: 'prepayment',
-            // 		PaymentObject: 'service',
-            // 		Tax: 'none',
-            // 	}],
-            // 	Email: process.env.PAYMENTS_C2B_EMAIL,
-            // 	Phone: process.env.PAYMENTS_C2B_PHONE,
-            // 	Taxation: 'usn_income',
-            // },
-          };
-
-          const initResult = await init(initOptions);
-
-          expect(initResult.error).to.equal(undefined);
-
-          return initResult;
-        };
-
-        const testConfirm = async () => {
-          const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
-          const page = await browser.newPage();
-
-          const initOptions = {
-            TerminalKey: process.env.PAYMENTS_C2B_TERMINAL_KEY,
-            Amount: PRICE,
-            OrderId: uniqid(),
-            CustomerKey: deep.linkId,
-            PayType: 'T',
-            // Receipt: {
-            // 	Items: [{
-            // 		Name: 'Test item',
-            // 		Price: PRICE,
-            // 		Quantity: 1,
-            // 		Amount: PRICE,
-            // 		PaymentMethod: 'prepayment',
-            // 		PaymentObject: 'service',
-            // 		Tax: 'none',
-            // 	}],
-            // 	Email: process.env.PAYMENTS_C2B_EMAIL,
-            // 	Phone: process.env.PAYMENTS_C2B_PHONE,
-            // 	Taxation: 'usn_income',
-            // },
-          };
-
-          const initResult = await init(initOptions);
-
-          await payInBrowser({
-            browser,
-            page,
-            url: initResult.response.PaymentURL,
-          });
-
-          const confirmOptions = {
-            TerminalKey: process.env.PAYMENTS_C2B_TERMINAL_KEY,
-            PaymentId: initResult.response.PaymentId,
-          };
-
-          const confirmResult = await confirm(confirmOptions);
-
-          expect(confirmResult.error).to.equal(undefined);
-          expect(confirmResult.response.Status).to.equal('CONFIRMED');
-
-          return confirmResult;
-        };
-
-        const testGetState = async () => {
-          const initResult = await init({
-            TerminalKey: process.env.PAYMENTS_C2B_TERMINAL_KEY,
-            OrderId: uniqid(),
-            CustomerKey: deep.linkId,
-            Amount: PRICE,
-          });
-
-          const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
-          const page = await browser.newPage();
-          await payInBrowser({
-            browser,
-            page,
-            url: initResult.response.PaymentURL,
-          });
-
-          const getStateOptions = {
-            TerminalKey: process.env.PAYMENTS_C2B_TERMINAL_KEY,
-            PaymentId: initResult.response.PaymentId,
-          };
-
-          const getStateResult = await getState(getStateOptions);
-
-          expect(getStateResult.error).to.equal(undefined);
-        };
-
-        const testGetCardList = async () => {
-          const initResult = await init({
-            TerminalKey: process.env.PAYMENTS_C2B_TERMINAL_KEY,
-            CustomerKey: deep.linkId,
-            OrderId: uniqid(),
-            Amount: PRICE,
-            Recurrent: 'Y',
-          });
-
-          const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
-          const page = await browser.newPage();
-          await payInBrowser({
-            browser,
-            page,
-            url: initResult.response.PaymentURL,
-          });
-
-          const getCardListOptions = {
-            TerminalKey: process.env.PAYMENTS_C2B_TERMINAL_KEY,
-            CustomerKey: deep.linkId,
-          };
-
-          const getCardListResult = await getCardList(getCardListOptions);
-
-          expect(getCardListResult.error).to.equal(undefined);
-        };
-
-        const testResend = async () => {
-          console.log('testResend-start');
-          const resendOptions = {
-            TerminalKey: process.env.PAYMENTS_C2B_TERMINAL_KEY,
-          };
-          console.log({ resendOptions });
-
-          const resendResult = await resend(resendOptions);
-          console.log({ resendResult });
-
-          expect(resendResult.error).to.equal(undefined);
-          console.log('testResend-end');
-        };
-
-        const testCharge = async () => {
-          console.log('testCharge-start');
-          const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
-          const page = await browser.newPage();
-
-          const initResult = await init({
-            TerminalKey: process.env.PAYMENTS_C2B_TERMINAL_KEY,
-            Amount: PRICE,
-            OrderId: uniqid(),
-            CustomerKey: deep.linkId,
-            Recurrent: 'Y',
-          });
-
-          await payInBrowser({
-            browser,
-            page,
-            url: initResult.response.PaymentURL,
-          });
-
-          const getCardListOptions = {
-            TerminalKey: process.env.PAYMENTS_C2B_TERMINAL_KEY,
-            CustomerKey: deep.linkId,
-          };
-
-          const getCardListResult = await getCardList(getCardListOptions);
-
-          expect(getCardListResult.response[0].RebillId).to.have.length.above(0);
-
-          const getStateOptions = {
-            TerminalKey: process.env.PAYMENTS_C2B_TERMINAL_KEY,
-            PaymentId: initResult.response.PaymentId,
-          };
-
-          const getStateResult = await getState(getStateOptions);
-
-          expect(getStateResult.response.Status).to.equal('AUTHORIZED');
-
-          const newInitResult = await init({
-            TerminalKey: process.env.PAYMENTS_C2B_TERMINAL_KEY,
-            Amount: PRICE,
-            OrderId: uniqid(),
-            CustomerKey: deep.linkId,
-          });
-
-          const newChargeOptions = {
-            TerminalKey: process.env.PAYMENTS_C2B_TERMINAL_KEY,
-            PaymentId: newInitResult.response.PaymentId,
-            RebillId: Number(getCardListResult.response[0].RebillId),
-          };
-
-          const chargeResult = await charge(newChargeOptions);
-
-          expect(chargeResult.error).to.equal(undefined);
-          console.log('testCharge-end');
-        };
-
-        const testAddCustomer = async () => {
-          console.log('testAddCustomer-start');
-
-          const addCustomerOptions = {
-            TerminalKey: process.env.PAYMENTS_C2B_TERMINAL_KEY,
-            CustomerKey: uniqid(),
-          };
-          console.log({ addCustomerOptions });
-
-          const addCustomerResult = await addCustomer(addCustomerOptions);
-          console.log({ addCustomerResult });
-
-          expect(addCustomerResult.error).to.equal(undefined);
-          console.log('testAddCustomer-end');
-        };
-
-        const testGetCustomer = async () => {
-          console.log('testGetCustomer-start');
-
-          const customerOptions = {
-            TerminalKey: process.env.PAYMENTS_C2B_TERMINAL_KEY,
-            CustomerKey: uniqid(),
-          };
-
-          const addCustomerDataOptions = {
-            ...customerOptions,
-            Phone: process.env.PAYMENTS_C2B_PHONE,
-          };
-
-          const addResult = await addCustomer(addCustomerDataOptions);
-
-          expect(addResult.error).to.equal(undefined);
-
-          const getResult = await getCustomer(customerOptions);
-
-          expect(getResult.error).to.equal(undefined);
-          expect(getResult.response.Phone).to.equal(
-            process.env.PAYMENTS_C2B_PHONE
-          );
-
-          console.log('testGetCustomer-end');
-        };
-
-        const testRemoveCustomer = async () => {
-          console.log('testRemoveCustomer-start');
-
-          const removeCustomerData = {
-            TerminalKey: process.env.PAYMENTS_C2B_TERMINAL_KEY,
-            CustomerKey: uniqid(),
-          };
-
-          const newAddCustomerData = {
-            ...removeCustomerData,
-            Phone: process.env.PAYMENTS_C2B_PHONE,
-          };
-
-          const addResult = await addCustomer(newAddCustomerData);
-
-          expect(addResult.error).to.equal(undefined);
-
-          const removeResult = await removeCustomer(removeCustomerData);
-
-          expect(removeResult.error).to.equal(undefined);
-
-          console.log('testRemoveCustomer-end');
-        };
-
-        await testInit();
-        await testConfirm();
-        await testGetState();
-        await testGetCardList();
-        await testResend();
-        await testCharge();
-        await testAddCustomer();
-        await testGetCustomer();
-        await testRemoveCustomer();
+        await callRealizationTestInit();
+        await callRealizationTestConfirm();
+        await callRealizationTestGetState();
+        await callRealizationTestGetCardList();
+        await callRealizationTestResend();
+        await callRealizationTestCharge();
+        await callRealizationTestAddCustomer();
+        await callRealizationTestGetCustomer();
+        await callRealizationTestRemoveCustomer();
       };
 
       const callIntegrationTests = async () => {
