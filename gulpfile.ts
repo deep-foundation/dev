@@ -138,7 +138,6 @@ gulp.task('packages:ci', async () => {
 
 const getModules = () => {
   const gitmodules = fs.readFileSync(`${__dirname}/.gitmodules`, { encoding: 'utf8' });
-  console.log(gitmodules);
   const regex = /\[submodule ?"(?<submodule_name>.+?)"]\s+path ?= ?(?<path>.+?)\s+url ?= ?(?<url>.+?)\s/gm;
   const modules = {};
 
