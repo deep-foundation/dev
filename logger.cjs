@@ -22,7 +22,9 @@ const { sleep } = require('./deep-packages/sleep.cjs');
 var myEnv = dotenv.config();
 dotenvExpand.expand(myEnv);
 
-console.log('Installing logger package');
+const PACKAGE_NAME = "@deep-foundation/logger";
+
+console.log(`Installing ${PACKAGE_NAME} package.`);
 
 
 const createdLinkIds = [];
@@ -66,7 +68,7 @@ const main = async () => {
 
     const { data: [{ id: packageId }] } = await deep.insert({
       type_id: packageTypeId,
-      string: { data: { value: `@deep-foundation/logger` } },
+      string: { data: { value: PACKAGE_NAME } },
       in: {
         data: [
           {
@@ -193,8 +195,8 @@ const main = async () => {
     //     code: `({deep, data: {newLink}}) => {
     //       const timestamp = Date.now();
 
-    //       const logObjectTypeId = deep.id("@deep-foundation/logger", "LogObject");
-    //       const logTypeTypeId = deep.id("@deep-foundation/logger", "LogType");
+    //       const logObjectTypeId = deep.id("${PACKAGE_NAME}", "LogObject");
+    //       const logTypeTypeId = deep.id("${PACKAGE_NAME}", "LogType");
 
     //       const {data: [{logObjectId}]} = deep.insert({
     //         type_id: logObjectTypeId,
@@ -207,7 +209,7 @@ const main = async () => {
     //           }]
     //         }
     //       });
-    //       const logInsertTypeId = deep.id("@deep-foundation/logger", "LogInsert");
+    //       const logInsertTypeId = deep.id("${PACKAGE_NAME}", "LogInsert");
     //       const {data: [{logInsertId}]} = deep.insert({
     //         type_id: logInsertTypeId,
     //         number: timestamp
@@ -245,7 +247,7 @@ const main = async () => {
             const timestamp = Date.now();
 
             const logObjectInsertData = {
-              type_id: deep.id("@deep-foundation/logger", "LogObject"),
+              type_id: deep.id("${PACKAGE_NAME}", "LogObject"),
               ...(newLink.from_id && {from_id: newLink.from_id}),
               ...(newLink.to_id && {to_id: newLink.to_id}),
             };
@@ -254,13 +256,13 @@ const main = async () => {
             const {data: [{id: logObjectId}]} = deep.insert(logObjectInsertData);
 
             const {data: [{id: logTypeId}]} = deep.insert({
-              type_id: deep.id("@deep-foundation/logger", "LogType"),
+              type_id: deep.id("${PACKAGE_NAME}", "LogType"),
               from_id: logObjectId,
               to_id: newLink.type_id
             });
     
             const {data: [{id: logInsertId}]} = deep.insert({
-              type_id: deep.id("@deep-foundation/logger", "LogInsert"),
+              type_id: deep.id("${PACKAGE_NAME}", "LogInsert"),
               from_id: logObjectId,
               to_id: newLink.id,
               string: {data: {value: timestamp}}
@@ -287,12 +289,12 @@ const main = async () => {
             const timestamp = Date.now();
 
             const {data: [{id: logInsertId}]} = deep.select({
-               type_id: deep.id("@deep-foundation/logger", "LogInsert"),
+               type_id: deep.id("${PACKAGE_NAME}", "LogInsert"),
                to_id: newLink.id
             });
          
             deep.insert({
-               type_id: deep.id("@deep-foundation/logger", "LogUpdate"),
+               type_id: deep.id("${PACKAGE_NAME}", "LogUpdate"),
                from_id: triggeredByLinkId,
                to_id: logInsertId,
                number: timestamp
@@ -319,12 +321,12 @@ const main = async () => {
             const timestamp = Date.now();
          
             const {data: [{id: logInsertId}]} = deep.select({
-               type_id: deep.id("@deep-foundation/logger", "LogInsert"),
+               type_id: deep.id("${PACKAGE_NAME}", "LogInsert"),
                to_id: oldLink.id
             })
          
             deep.insert({
-               type_id: deep.id("@deep-foundation/logger", "LogDelete"),
+               type_id: deep.id("${PACKAGE_NAME}", "LogDelete"),
                from_id: triggeredByLinkId,
                to_id: logInsertId,
                number: timestamp
