@@ -27,8 +27,6 @@ console.log('Installing logger package');
 
 const createdLinkIds = [];
 
-
-
 const main = async () => {
 
   const installPackage = async () => {
@@ -56,37 +54,6 @@ const main = async () => {
     const handleInsertTypeId = await deep.id('@deep-foundation/core', 'HandleInsert');
     const handleUpdateTypeId = await deep.id('@deep-foundation/core', 'HandleUpdate');
     const handleDeleteTypeId = await deep.id('@deep-foundation/core', 'HandleDelete');
-    const portTypeId = await deep.id('@deep-foundation/core', 'Port');
-    const routerListeningTypeId = await deep.id('@deep-foundation/core', 'RouterListening');
-    const routerTypeId = await deep.id('@deep-foundation/core', 'Router');
-    const routerStringUseTypeId = await deep.id(
-      '@deep-foundation/core',
-      'RouterStringUse'
-    );
-    const routeTypeId = await deep.id('@deep-foundation/core', 'Route');
-    const handleRouteTypeId = await deep.id(
-      '@deep-foundation/core',
-      'HandleRoute'
-    );
-    const handlerTypeId = await deep.id(
-      '@deep-foundation/core',
-      'Handler'
-    );
-    const dockerSupportsJsId = await deep.id(
-      '@deep-foundation/core',
-      'dockerSupportsJs'
-    );
-  
-    const treeTypeId = await deep.id('@deep-foundation/core', 'Tree');
-    const treeIncludeNodeTypeId = await deep.id(
-      '@deep-foundation/core',
-      'TreeIncludeNode'
-    );
-    const treeIncludeUpTypeId = await deep.id('@deep-foundation/core', 'TreeIncludeUp');
-    const treeIncludeDownTypeId = await deep.id(
-      '@deep-foundation/core',
-      'TreeIncludeDown'
-    );
   
     const containTypeId = await deep.id('@deep-foundation/core', 'Contain');
     const typeTypeId = await deep.id('@deep-foundation/core', 'Type');
