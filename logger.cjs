@@ -282,16 +282,9 @@ const main = async () => {
               ...(newLink.from_id && {from_id: newLink.from_id}),
               ...(newLink.to_id && {to_id: newLink.to_id}),
             };
-            /*logObjectInsertData: {"type_id":"719"}*/
             
-            /*throw new Error("logObjectInsertData: " + JSON.stringify(logObjectInsertData, (key, value) =>
-            typeof value === 'bigint'
-                ? value.toString()
-                : value // return everything else unchanged
-        ));*/
-        const {data: [{id: logObjectId}]} = deep.insert(logObjectInsertData);
-        /*data: [{"id":"742"}]*/
-            /*logObjectId: "742"*/
+
+            const {data: [{id: logObjectId}]} = deep.insert(logObjectInsertData);
 
             const {data: [{id: logTypeId}]} = deep.insert({
               type_id: deep.id("@deep-foundation/logger", "LogType"),
@@ -304,7 +297,7 @@ const main = async () => {
               from_id: logObjectId,
               to_id: newLink.id,
               string: {data: {value: timestamp}}
-             });
+            });
            }`,
         fileName: "insertHandlerFile",
         handlerName: "insertHandler",
@@ -323,23 +316,17 @@ const main = async () => {
   
     const updateHandlerId = await insertHandler(
       {
-        code: `({deep, data: {newLink}}) => { 
+        code: `({deep, data: {newLink, triggeredByLinkId}}) => { 
             const timestamp = Date.now();
-         
+
             const {data: [{id: logInsertId}]} = deep.select({
                type_id: deep.id("@deep-foundation/logger", "LogInsert"),
                to_id: newLink.id
             });
-
-            throw new Error("deep: " + JSON.stringify(deep, (key, value) =>
-            typeof value === 'bigint'
-                ? value.toString()
-                : value // return everything else unchanged
-        ));
          
             deep.insert({
                type_id: deep.id("@deep-foundation/logger", "LogUpdate"),
-               from_id: deep.link_id,
+               from_id: triggeredByLinkId,
                to_id: logInsertId,
                number: timestamp
             });
@@ -361,17 +348,17 @@ const main = async () => {
   
     const deleteHandlerId = await insertHandler(
       {
-        code: `({deep, data: {newLink}}) => { 
+        code: `({deep, data: {oldLink, triggeredByLinkId}}) => { 
             const timestamp = Date.now();
          
             const {data: [{id: logInsertId}]} = deep.select({
                type_id: deep.id("@deep-foundation/logger", "LogInsert"),
-               to_id: newLink.id
+               to_id: oldLink.id
             })
          
             deep.insert({
                type_id: deep.id("@deep-foundation/logger", "LogDelete"),
-               from_id: deep.linkId,
+               from_id: triggeredByLinkId,
                to_id: logInsertId,
                number: timestamp
             })
@@ -457,7 +444,6 @@ const main = async () => {
       expect(logTypeId).to.not.be.equal(undefined);
   
       await deep.insert({ link_id: linkId, value: "string" }, { table: "strings" });
-
   
       var logUpdateId;
       for (let i = 0; i < 10; i++) {
@@ -472,6 +458,7 @@ const main = async () => {
         }
         await sleep(1000);
       }
+      console.log({logUpdateId});
       expect(logUpdateId).to.not.be.equal(undefined);
   
       await deep.delete({
@@ -491,6 +478,7 @@ const main = async () => {
         }
         await sleep(1000);
       }
+      console.log({logDeleteId});
       expect(logDeleteId).to.not.be.equal(undefined);
   
     }
