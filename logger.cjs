@@ -260,7 +260,7 @@ const main = async () => {
 
     const insertHandlerId = await insertHandler(
       {
-        code: `({deep, data: {newLink}}) => {
+        code: `({deep, data: {newLink, triggeredByLinkId}}) => {
             const timestamp = Date.now();
 
             const logLinkInsertData = {
@@ -281,11 +281,17 @@ const main = async () => {
               to_id: newLink.type_id
             });
     
-            const {data: [{id: logInsertId}]} = deep.insert({
+            const {data: [{id: logInsertLinkId}]} = deep.insert({
               type_id: deep.id("${PACKAGE_NAME}", "LogInsert"),
               from_id: logLinkId,
               to_id: newLink.id,
-              string: {data: {value: timestamp}}
+              number: timestamp
+            });
+
+            const {data: [{id: logSubjectId}]} = deep.insert({
+              type_id: deep.id("${PACKAGE_NAME}", "LogSubject"),
+              from_id: triggeredByLinkId,
+              to_id: logInsertLinkId,
             });
            }`,
         fileName: "insertHandlerFile",
