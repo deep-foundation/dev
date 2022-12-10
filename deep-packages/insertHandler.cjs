@@ -1,30 +1,30 @@
-const insertHandler = async ({deep,fileTypeId, fileName, handlerName, handleName, triggerTypeId, code, supportsId, handleOperationTypeId, containTypeId, packageId, handlerTypeId}) => {
+const insertHandler = async ({deep,fileTypeLinkId, fileName, handlerName, handleName, triggerTypeLinkId, code, supportsId, handleOperationTypeLinkId, containTypeLinkId, packageId, handlerTypeLinkId}) => {
     return await deep.insert({
-        type_id: fileTypeId,
+        type_id: fileTypeLinkId,
         in: {
           data: [
             {
-              type_id: containTypeId,
+              type_id: containTypeLinkId,
               from_id: packageId, // before created package
               string: { data: { value: fileName } },
             },
             {
               from_id: supportsId,
-              type_id: handlerTypeId,
+              type_id: handlerTypeLinkId,
               in: {
                 data: [
                   {
-                    type_id: containTypeId,
+                    type_id: containTypeLinkId,
                     from_id: packageId, // before created package
                     string: { data: { value: handlerName } },
                   },
                   {
-                    type_id: handleOperationTypeId,
-                    from_id: triggerTypeId,
+                    type_id: handleOperationTypeLinkId,
+                    from_id: triggerTypeLinkId,
                     in: {
                       data: [
                         {
-                          type_id: containTypeId,
+                          type_id: containTypeLinkId,
                           from_id: packageId, // before created package
                           string: { data: { value: handleName } },
                         },
