@@ -464,6 +464,22 @@ const installPackage = async () => {
     });
     console.log({tokenTypeLinkId});
 
+    const {
+      data: [{ id: usesTokenTypeLinkId }],
+    } = await deep.insert({
+      type_id: typeTypeLinkId,
+      from_id: anyTypeLinkId,
+      to_id: anyTypeLinkId,
+      in: {
+        data: {
+          type_id: containTypeLinkId,
+          from_id: packageId, // before created package
+          string: { data: { value: 'UsesToken' } },
+        },
+      },
+    });
+    console.log({usesTokenTypeLinkId});
+
 
     const {
       data: [{ id: storageClientTypeLinkId }],
@@ -680,14 +696,16 @@ const installPackage = async () => {
           data: [{ id: tokenLinkId }],
         } = await deep.insert({
           type_id: tokenTypeLinkId,
-          from_id: storageBusinessLinkId,
-          to_id: storageBusinessLinkId,
           string: { data: { value: process.env.PAYMENTS_C2B_TERMINAL_KEY } },
           in: {
             data: [
               {
                 type_id: containTypeLinkId,
                 from_id: deep.linkId,
+              },
+              {
+                type_id: usesTokenTypeLinkId,
+                from_id: storageBusinessLinkId
               },
             ],
           },
@@ -927,7 +945,7 @@ const installPackage = async () => {
       await callTest(testFinishAuthorize);
       await callTest(testConfirm);
 
-      await deep.delete(createdLinkIds);
+      // await deep.delete(createdLinkIds);
       };
 
       // await callRealizationTests();
@@ -937,9 +955,9 @@ const installPackage = async () => {
     await callTests();
 
   } catch (error) {
-    await deep.delete(allCreatedLinkIds);
+    // await deep.delete(allCreatedLinkIds);
     console.log(error);
-    process.exit(1);
+    // process.exit(1);
   }
 };
 

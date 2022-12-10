@@ -64,11 +64,18 @@ async (
     const storageReceiverId = storageReceiverLinkSelectQuery.data[0].id;
     console.log({storageReceiverId});
 
-    const tokenTypeLinkId = await deep.id("${packageName}", "Token");
-    const tokenLinkSelectQuery = await deep.select({
-      type_id: tokenTypeLinkId,
+
+    const usesTokenTypeLinkId = await deep.id("${packageName}", "UsesToken");
+    const usesTokenLinkSelectQuery = await deep.select({
+      type_id: usesTokenTypeLinkId,
       from_id: storageReceiverId,
-      to_id: storageReceiverId
+    });
+    if(usesTokenLinkSelectQuery.error) {throw new Error(usesTokenLinkSelectQuery.error.message);}
+    const usesTokenLink = usesTokenLinkSelectQuery.data[0];
+    console.log({usesTokenLink});
+  
+    const tokenLinkSelectQuery = await deep.select({
+      id: usesTokenLink.to_id,
     });
     if(tokenLinkSelectQuery.error) {throw new Error(tokenLinkSelectQuery.error.message);}
     const tokenLink = tokenLinkSelectQuery.data[0];
