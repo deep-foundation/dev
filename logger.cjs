@@ -190,6 +190,22 @@ const main = async () => {
     });
     console.log({ logLinkTypeId: logLinkTypeId });
 
+    const {
+      data: [{ id: logSubjectTypeId }],
+    } = await deep.insert({
+      type_id: typeTypeId,
+      from_id: anyTypeId,
+      to_id: anyTypeId,
+      in: {
+        data: {
+          type_id: containTypeId,
+          from_id: packageId, // before created package
+          string: { data: { value: 'LogSubject' } },
+        },
+      },
+    });
+    console.log({ logLinkTypeId: logLinkTypeId });
+
     // const insertHandlerId = await insertHandler(
     //   {
     //     code: `({deep, data: {newLink}}) => {
