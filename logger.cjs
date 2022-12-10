@@ -175,7 +175,7 @@ const main = async () => {
     console.log({ logTypeTypeId });
 
     const {
-      data: [{ id: logObjectTypeId }],
+      data: [{ id: logLinkTypeId }],
     } = await deep.insert({
       type_id: typeTypeId,
       from_id: anyTypeId,
@@ -184,11 +184,11 @@ const main = async () => {
         data: {
           type_id: containTypeId,
           from_id: packageId, // before created package
-          string: { data: { value: 'LogObject' } },
+          string: { data: { value: 'LogLink' } },
         },
       },
     });
-    console.log({ logObjectTypeId });
+    console.log({ logObjectTypeId: logLinkTypeId });
 
     // const insertHandlerId = await insertHandler(
     //   {
@@ -383,7 +383,7 @@ const main = async () => {
       var logObjectId;
       for (let i = 0; i < 10; i++) {
         const { data } = await deep.select({
-          type_id: logObjectTypeId,
+          type_id: logLinkTypeId,
           from_id: linkId.from_id,
           to_id: linkId.to_id
         });
