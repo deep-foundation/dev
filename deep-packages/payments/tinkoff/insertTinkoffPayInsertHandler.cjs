@@ -2,7 +2,7 @@ const { insertHandler } = require("../../insertHandler.cjs");
 const {handlersDependencies} = require("./handlersDependencies.cjs");
 const {init} = require("./init.cjs");
 
-exports.insertTinkoffPayInsertHandler = async ({packageName, deep, notificationUrl, userEmail, userPhone, fileTypeId, containTypeId, packageId, dockerSupportsJsId,  handleInsertTypeId, handlerTypeId, payTypeId}) => {
+exports.insertTinkoffPayInsertHandler = async ({packageName, deep, notificationUrl, userEmail, userPhone, fileTypeLinkId, containTypeLinkId, packageId, dockerSupportsJsId,  handleInsertTypeLinkId, handlerTypeLinkId, payTypeLinkId}) => {
     const code = `
 async ({ deep, require, data: { newLink } }) => {
   ${handlersDependencies}
@@ -47,11 +47,17 @@ async ({ deep, require, data: { newLink } }) => {
   const storageBusinessLinkId = storageBusinessLinkSelectQuery.data[0].id;
   console.log({storageBusinessLinkId});
 
-  const tokenTypeLinkId = await deep.id("${packageName}", "Token");
-  const tokenLinkSelectQuery = await deep.select({
-    type_id: tokenTypeLinkId,
+  const usesTokenTypeLinkId = await deep.id("${packageName}", "UsesToken");
+  const usesTokenLinkSelectQuery = await deep.select({
+    type_id: usesTokenTypeLinkId,
     from_id: storageBusinessLinkId,
-    to_id: storageBusinessLinkId
+  });
+  if(usesTokenLinkSelectQuery.error) {throw new Error(usesTokenLinkSelectQuery.error.message);}
+  const usesTokenLink = usesTokenLinkSelectQuery.data[0];
+  console.log({usesTokenLink});
+
+  const tokenLinkSelectQuery = await deep.select({
+    id: usesTokenLink.to_id,
   });
   if(tokenLinkSelectQuery.error) {throw new Error(tokenLinkSelectQuery.error.message);}
   const tokenLink = tokenLinkSelectQuery.data[0];
@@ -121,6 +127,6 @@ async ({ deep, require, data: { newLink } }) => {
 };
 `;
 
-return await insertHandler({deep, fileTypeId, fileName: 'payInsertHandlerFile', handlerName: 'payInsertHandler', handleName: 'payInsertHandle', triggerTypeId: payTypeId, code, supportsId: dockerSupportsJsId, handleOperationTypeId: handleInsertTypeId, containTypeId, packageId, handlerTypeId, code});
+return await insertHandler({deep, fileTypeLinkId, fileName: 'payInsertHandlerFile', handlerName: 'payInsertHandler', handleName: 'payInsertHandle', triggerTypeLinkId: payTypeLinkId, code, supportsId: dockerSupportsJsId, handleOperationTypeLinkId: handleInsertTypeLinkId, containTypeLinkId, packageId, handlerTypeLinkId, code});
 }
 

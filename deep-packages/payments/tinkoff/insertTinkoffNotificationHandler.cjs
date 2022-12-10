@@ -2,7 +2,7 @@ const {insertNotificationHandler: baseInsertNotificationHandler} = require("../.
 const {handlersDependencies} = require("./handlersDependencies.cjs");
 const {confirm} = require("./confirm.cjs");
 
-exports.insertTinkoffNotificationHandler = async ({packageName, packageId, deep, notificationPort, notificationRoute, portTypeId, routerListeningTypeId, routerTypeId, routerStringUseTypeId, routeTypeId, handleRouteTypeId, handlerTypeId, supportsId, containTypeId,  adminId, fileTypeId, onConfirmedCode}) => {
+exports.insertTinkoffNotificationHandler = async ({packageName, packageId, deep, notificationPort, notificationRoute, portTypeLinkId, routerListeningTypeLinkId, routerTypeLinkId, routerStringUseTypeLinkId, routeTypeLinkId, handleRouteTypeLinkId, handlerTypeLinkId, supportsId, containTypeLinkId,  adminId, fileTypeLinkId, onConfirmedCode}) => {
     const code = `
 async (
   req,
@@ -64,11 +64,18 @@ async (
     const storageReceiverId = storageReceiverLinkSelectQuery.data[0].id;
     console.log({storageReceiverId});
 
-    const tokenTypeLinkId = await deep.id("${packageName}", "Token");
-    const tokenLinkSelectQuery = await deep.select({
-      type_id: tokenTypeLinkId,
+
+    const usesTokenTypeLinkId = await deep.id("${packageName}", "UsesToken");
+    const usesTokenLinkSelectQuery = await deep.select({
+      type_id: usesTokenTypeLinkId,
       from_id: storageReceiverId,
-      to_id: storageReceiverId
+    });
+    if(usesTokenLinkSelectQuery.error) {throw new Error(usesTokenLinkSelectQuery.error.message);}
+    const usesTokenLink = usesTokenLinkSelectQuery.data[0];
+    console.log({usesTokenLink});
+  
+    const tokenLinkSelectQuery = await deep.select({
+      id: usesTokenLink.to_id,
     });
     if(tokenLinkSelectQuery.error) {throw new Error(tokenLinkSelectQuery.error.message);}
     const tokenLink = tokenLinkSelectQuery.data[0];
@@ -105,6 +112,6 @@ async (
 };
 `;
 
-return await baseInsertNotificationHandler({packageId, adminId, containTypeId, deep, fileTypeId, handlerName: "tinkoffNotificationHandler", handleRouteTypeId,handlerTypeId,notificationPort,notificationRoute,portTypeId,routerListeningTypeId,routerStringUseTypeId,routerTypeId,routeTypeId,supportsId, code});
+return await baseInsertNotificationHandler({packageId, adminId, containTypeLinkId, deep, fileTypeLinkId, handlerName: "tinkoffNotificationHandler", handleRouteTypeLinkId,handlerTypeLinkId,notificationPort,notificationRoute,portTypeLinkId,routerListeningTypeLinkId,routerStringUseTypeLinkId,routerTypeLinkId,routeTypeLinkId,supportsId, code});
 }
 
