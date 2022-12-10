@@ -264,10 +264,13 @@ const main = async () => {
 
             const logLinkInsertData = {
               type_id: deep.id("${PACKAGE_NAME}", "LogLink"),
-              ...(newLink.from_id && {from_id: newLink.from_id}),
-              ...(newLink.to_id && {to_id: newLink.to_id}),
             };
-            
+            if(newLink.from_id) {
+              logLinkInsertData.from_id = newLink.from_id;
+            }
+            if(newLink.to_id) {
+              logLinkInsertData.to_id = newLink.to_id;
+            }
 
             const {data: [{id: logLinkId}]} = deep.insert(logLinkInsertData);
 
