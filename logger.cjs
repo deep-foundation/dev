@@ -53,6 +53,7 @@ const main = async () => {
       '@deep-foundation/core',
       'dockerSupportsJs'
     );
+    const handlerTypeLinkId = await deep.id('@deep-foundation/core', 'Handler');
     const handleInsertTypeLinkId = await deep.id('@deep-foundation/core', 'HandleInsert');
     const handleUpdateTypeLinkId = await deep.id('@deep-foundation/core', 'HandleUpdate');
     const handleDeleteTypeLinkId = await deep.id('@deep-foundation/core', 'HandleDelete');
