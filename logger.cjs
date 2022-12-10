@@ -53,26 +53,26 @@ const main = async () => {
       '@deep-foundation/core',
       'dockerSupportsJs'
     );
-    const handleInsertTypeId = await deep.id('@deep-foundation/core', 'HandleInsert');
-    const handleUpdateTypeId = await deep.id('@deep-foundation/core', 'HandleUpdate');
-    const handleDeleteTypeId = await deep.id('@deep-foundation/core', 'HandleDelete');
+    const handleInsertTypeLinkId = await deep.id('@deep-foundation/core', 'HandleInsert');
+    const handleUpdateTypeLinkId = await deep.id('@deep-foundation/core', 'HandleUpdate');
+    const handleDeleteTypeLinkId = await deep.id('@deep-foundation/core', 'HandleDelete');
 
-    const containTypeId = await deep.id('@deep-foundation/core', 'Contain');
-    const typeTypeId = await deep.id('@deep-foundation/core', 'Type');
-    const packageTypeId = await deep.id('@deep-foundation/core', 'Package');
-    const anyTypeId = await deep.id('@deep-foundation/core', 'Any');
-    const syncTextFileTypeId = await deep.id('@deep-foundation/core', 'SyncTextFile');
-    const joinTypeId = await deep.id('@deep-foundation/core', 'Join');
+    const containTypeLinkId = await deep.id('@deep-foundation/core', 'Contain');
+    const typeTypeLinkId = await deep.id('@deep-foundation/core', 'Type');
+    const packageTypeLinkId = await deep.id('@deep-foundation/core', 'Package');
+    const anyTypeLinkId = await deep.id('@deep-foundation/core', 'Any');
+    const syncTextFileTypeLinkId = await deep.id('@deep-foundation/core', 'SyncTextFile');
+    const joinTypeLinkId = await deep.id('@deep-foundation/core', 'Join');
     const plv8SupportsJsId = await deep.id('@deep-foundation/core', 'plv8SupportsJs');
 
 
     const { data: [{ id: packageId }] } = await deep.insert({
-      type_id: packageTypeId,
+      type_id: packageTypeLinkId,
       string: { data: { value: PACKAGE_NAME } },
       in: {
         data: [
           {
-            type_id: containTypeId,
+            type_id: containTypeLinkId,
             from_id: deep.linkId
           },
         ]
@@ -80,11 +80,11 @@ const main = async () => {
       out: {
         data: [
           {
-            type_id: joinTypeId,
+            type_id: joinTypeLinkId,
             to_id: await deep.id('deep', 'users', 'packages'),
           },
           {
-            type_id: joinTypeId,
+            type_id: joinTypeLinkId,
             to_id: await deep.id('deep', 'admin'),
           },
         ]
@@ -95,165 +95,165 @@ const main = async () => {
 
     // Only for development until handlers will handlle "any" as trigger to handle links of all types
     const {
-      data: [{ id: triggerTypeId }],
+      data: [{ id: triggerTypeLinkId }],
     } = await deep.insert({
-      type_id: typeTypeId,
-      from_id: anyTypeId,
-      to_id: anyTypeId,
+      type_id: typeTypeLinkId,
+      from_id: anyTypeLinkId,
+      to_id: anyTypeLinkId,
       in: {
         data: {
-          type_id: containTypeId,
+          type_id: containTypeLinkId,
           from_id: packageId, // before created package
           string: { data: { value: 'Trigger' } },
         },
       },
     });
-    console.log({ triggerTypeId });
+    console.log({ triggerTypeLinkId });
 
     const {
-      data: [{ id: logInsertTypeId }],
+      data: [{ id: logInsertTypeLinkId }],
     } = await deep.insert({
-      type_id: typeTypeId,
-      from_id: anyTypeId,
-      to_id: anyTypeId,
+      type_id: typeTypeLinkId,
+      from_id: anyTypeLinkId,
+      to_id: anyTypeLinkId,
       in: {
         data: {
-          type_id: containTypeId,
+          type_id: containTypeLinkId,
           from_id: packageId, // before created package
           string: { data: { value: 'LogInsert' } },
         },
       },
     });
-    console.log({ logInsertTypeId });
+    console.log({ logInsertTypeLinkId });
 
     const {
-      data: [{ id: logUpdateTypeId }],
+      data: [{ id: logUpdateTypeLinkId }],
     } = await deep.insert({
-      type_id: typeTypeId,
-      from_id: anyTypeId,
-      to_id: anyTypeId,
+      type_id: typeTypeLinkId,
+      from_id: anyTypeLinkId,
+      to_id: anyTypeLinkId,
       in: {
         data: {
-          type_id: containTypeId,
+          type_id: containTypeLinkId,
           from_id: packageId, // before created package
           string: { data: { value: 'LogUpdate' } },
         },
       },
     });
-    console.log({ logUpdateTypeId });
+    console.log({ logUpdateTypeLinkId });
 
     const {
-      data: [{ id: logDeleteTypeId }],
+      data: [{ id: logDeleteTypeLinkId }],
     } = await deep.insert({
-      type_id: typeTypeId,
-      from_id: anyTypeId,
-      to_id: anyTypeId,
+      type_id: typeTypeLinkId,
+      from_id: anyTypeLinkId,
+      to_id: anyTypeLinkId,
       in: {
         data: {
-          type_id: containTypeId,
+          type_id: containTypeLinkId,
           from_id: packageId, // before created package
           string: { data: { value: 'LogDelete' } },
         },
       },
     });
-    console.log({ logDeleteTypeId });
+    console.log({ logDeleteTypeLinkId });
 
     const {
-      data: [{ id: logTypeTypeId }],
+      data: [{ id: logTypeTypeLinkId }],
     } = await deep.insert({
-      type_id: typeTypeId,
-      from_id: anyTypeId,
-      to_id: anyTypeId,
+      type_id: typeTypeLinkId,
+      from_id: anyTypeLinkId,
+      to_id: anyTypeLinkId,
       in: {
         data: {
-          type_id: containTypeId,
+          type_id: containTypeLinkId,
           from_id: packageId, // before created package
           string: { data: { value: 'LogType' } },
         },
       },
     });
-    console.log({ logTypeTypeId });
+    console.log({ logTypeTypeLinkId });
 
     const {
-      data: [{ id: logLinkTypeId }],
+      data: [{ id: logLinkTypeLinkId }],
     } = await deep.insert({
-      type_id: typeTypeId,
-      from_id: anyTypeId,
-      to_id: anyTypeId,
+      type_id: typeTypeLinkId,
+      from_id: anyTypeLinkId,
+      to_id: anyTypeLinkId,
       in: {
         data: {
-          type_id: containTypeId,
+          type_id: containTypeLinkId,
           from_id: packageId, // before created package
           string: { data: { value: 'LogLink' } },
         },
       },
     });
-    console.log({ logLinkTypeId: logLinkTypeId });
+    console.log({ logLinkTypeLinkId: logLinkTypeLinkId });
 
     const {
-      data: [{ id: logSubjectTypeId }],
+      data: [{ id: logSubjectTypeLinkId }],
     } = await deep.insert({
-      type_id: typeTypeId,
-      from_id: anyTypeId,
-      to_id: anyTypeId,
+      type_id: typeTypeLinkId,
+      from_id: anyTypeLinkId,
+      to_id: anyTypeLinkId,
       in: {
         data: {
-          type_id: containTypeId,
+          type_id: containTypeLinkId,
           from_id: packageId, // before created package
           string: { data: { value: 'LogSubject' } },
         },
       },
     });
-    console.log({ logLinkTypeId: logLinkTypeId });
+    console.log({ logLinkTypeLinkId: logLinkTypeLinkId });
 
     // const insertHandlerId = await insertHandler(
     //   {
     //     code: `({deep, data: {newLink}}) => {
     //       const timestamp = Date.now();
 
-    //       const logLinkTypeId = deep.id("${PACKAGE_NAME}", "LogLink");
-    //       const logTypeTypeId = deep.id("${PACKAGE_NAME}", "LogType");
+    //       const logLinkTypeLinkId = deep.id("${PACKAGE_NAME}", "LogLink");
+    //       const logTypeTypeLinkId = deep.id("${PACKAGE_NAME}", "LogType");
 
     //       const {data: [{logLinkId}]} = deep.insert({
-    //         type_id: logLinkTypeId,
+    //         type_id: logLinkTypeLinkId,
     //         from_id: newLink.from_id,
     //         to_id: newLink.to_id,
     //         out: {
     //           data: [{
-    //             type_id: logTypeTypeId,
+    //             type_id: logTypeTypeLinkId,
     //             to_id: newLink.type_id
     //           }]
     //         }
     //       });
-    //       const logInsertTypeId = deep.id("${PACKAGE_NAME}", "LogInsert");
+    //       const logInsertTypeLinkId = deep.id("${PACKAGE_NAME}", "LogInsert");
     //       const {data: [{logInsertId}]} = deep.insert({
-    //         type_id: logInsertTypeId,
+    //         type_id: logInsertTypeLinkId,
     //         number: timestamp
     //       });
     //     }`,
     //     fileName: "insertHandlerFile",
     //     handlerName: "insertHandler",
     //     handleName: "insertHandle",
-    //     handleOperationTypeId: handleInsertTypeId,
+    //     handleOperationTypeLinkId: handleInsertTypeLinkId,
     //     supportsId: plv8SupportsJsId,
-    //     triggerTypeId: /*TODO: anyTypeId*/ triggerTypeId,
-    //     containTypeId,
+    //     triggerTypeLinkId: /*TODO: anyTypeLinkId*/ triggerTypeLinkId,
+    //     containTypeLinkId,
     //     deep,
-    //     fileTypeId: syncTextFileTypeId,
-    //     handlerTypeId,
+    //     fileTypeLinkId: syncTextFileTypeLinkId,
+    //     handlerTypeLinkId,
     //     packageId
     //   }
     // );
     // console.log({ insertHandlerId });
 
     // await deep.insert({
-    //   type_id: triggerTypeId
+    //   type_id: triggerTypeLinkId
     // })
 
     // await sleep(5000);
 
     // const {data} =await deep.select({
-    //   type_id: logInsertTypeId
+    //   type_id: logInsertTypeLinkId
     // })
     // console.log({data});
 
@@ -271,7 +271,7 @@ const main = async () => {
 
             const {data: [{id: logLinkId}]} = deep.insert(logLinkInsertData);
 
-            const {data: [{id: logTypeId}]} = deep.insert({
+            const {data: [{id: logTypeLinkId}]} = deep.insert({
               type_id: deep.id("${PACKAGE_NAME}", "LogType"),
               from_id: logLinkId,
               to_id: newLink.type_id
@@ -287,13 +287,13 @@ const main = async () => {
         fileName: "insertHandlerFile",
         handlerName: "insertHandler",
         handleName: "insertHandle",
-        handleOperationTypeId: handleInsertTypeId,
+        handleOperationTypeLinkId: handleInsertTypeLinkId,
         supportsId: plv8SupportsJsId,
-        triggerTypeId: /*TODO: anyTypeId*/ triggerTypeId,
-        containTypeId,
+        triggerTypeLinkId: /*TODO: anyTypeLinkId*/ triggerTypeLinkId,
+        containTypeLinkId,
         deep,
-        fileTypeId: syncTextFileTypeId,
-        handlerTypeId,
+        fileTypeLinkId: syncTextFileTypeLinkId,
+        handlerTypeLinkId,
         packageId
       }
     );
@@ -319,13 +319,13 @@ const main = async () => {
         fileName: "updateHandlerFile",
         handlerName: "updateHandler",
         handleName: "updateHandle",
-        handleOperationTypeId: handleUpdateTypeId,
+        handleOperationTypeLinkId: handleUpdateTypeLinkId,
         supportsId: plv8SupportsJsId,
-        triggerTypeId: /* TODO: anyTypeId */ triggerTypeId,
-        containTypeId,
+        triggerTypeLinkId: /* TODO: anyTypeLinkId */ triggerTypeLinkId,
+        containTypeLinkId,
         deep,
-        fileTypeId: syncTextFileTypeId,
-        handlerTypeId,
+        fileTypeLinkId: syncTextFileTypeLinkId,
+        handlerTypeLinkId,
         packageId,
       }
     );
@@ -351,13 +351,13 @@ const main = async () => {
         fileName: "deleteHandlerFile",
         handlerName: "deleteHandler",
         handleName: "deleteHandle",
-        handleOperationTypeId: handleDeleteTypeId,
+        handleOperationTypeLinkId: handleDeleteTypeLinkId,
         supportsId: plv8SupportsJsId,
-        triggerTypeId: /* TODO: anyTypeId */ triggerTypeId,
-        containTypeId,
+        triggerTypeLinkId: /* TODO: anyTypeLinkId */ triggerTypeLinkId,
+        containTypeLinkId,
         deep,
-        fileTypeId: syncTextFileTypeId,
-        handlerTypeId,
+        fileTypeLinkId: syncTextFileTypeLinkId,
+        handlerTypeLinkId,
         packageId
       }
     );
@@ -365,17 +365,17 @@ const main = async () => {
 
     const createdTestLinkIds = [];
     const callTests = async () => {
-      // TODO: const {data: [{id: customTypeId}]} = await deep.Delete({
-      //   type_id: typeTypeId,
-      //   from_id: anyTypeId,
-      //   to_id: anyTypeId
+      // TODO: const {data: [{id: customTypeLinkId}]} = await deep.Delete({
+      //   type_id: typeTypeLinkId,
+      //   from_id: anyTypeLinkId,
+      //   to_id: anyTypeLinkId
       // });
-      // console.log({ customTypeId });
-      // createdTestLinkIds.push(customTypeId)
-      // createdLinkIds.push(customTypeId)
+      // console.log({ customTypeLinkId });
+      // createdTestLinkIds.push(customTypeLinkId)
+      // createdLinkIds.push(customTypeLinkId)
 
       const { data: [{ id: linkId }] } = await deep.insert({
-        type_id: /* TODO: customTypeId*/ triggerTypeId,
+        type_id: /* TODO: customTypeLinkId*/ triggerTypeLinkId,
       });
       console.log({ linkId });
       createdTestLinkIds.push(linkId)
@@ -384,7 +384,7 @@ const main = async () => {
       var logInsertId;
       for (let i = 0; i < 10; i++) {
         const { data } = await deep.select({
-          type_id: logInsertTypeId,
+          type_id: logInsertTypeLinkId,
           to_id: linkId
         });
         if (data.length > 0) {
@@ -399,7 +399,7 @@ const main = async () => {
       var logLinkId;
       for (let i = 0; i < 10; i++) {
         const { data } = await deep.select({
-          type_id: logLinkTypeId,
+          type_id: logLinkTypeLinkId,
           from_id: linkId.from_id,
           to_id: linkId.to_id
         });
@@ -412,28 +412,28 @@ const main = async () => {
       console.log({ logLinkId });
       expect(logLinkId).to.not.be.equal(undefined);
 
-      var logTypeId;
+      var logTypeLinkId;
       for (let i = 0; i < 10; i++) {
         const { data } = await deep.select({
-          type_id: logTypeTypeId,
+          type_id: logTypeTypeLinkId,
           from_id: logLinkId,
-          to_id: /*customTypeId*/ triggerTypeId
+          to_id: /*customTypeLinkId*/ triggerTypeLinkId
         });
         if (data.length > 0) {
-          logTypeId = data[0].id;
+          logTypeLinkId = data[0].id;
           break;
         }
         await sleep(1000);
       }
-      console.log({ logTypeId });
-      expect(logTypeId).to.not.be.equal(undefined);
+      console.log({ logTypeLinkId });
+      expect(logTypeLinkId).to.not.be.equal(undefined);
 
       await deep.insert({ link_id: linkId, value: "string" }, { table: "strings" });
 
       var logUpdateId;
       for (let i = 0; i < 10; i++) {
         const { data } = await deep.select({
-          type_id: logUpdateTypeId,
+          type_id: logUpdateTypeLinkId,
           from_id: deep.linkId,
           to_id: logInsertId
         });
@@ -453,7 +453,7 @@ const main = async () => {
       var logDeleteId;
       for (let i = 0; i < 10; i++) {
         const { data } = await deep.select({
-          type_id: logDeleteTypeId,
+          type_id: logDeleteTypeLinkId,
           from_id: deep.linkId,
           to_id: logInsertId
         });
