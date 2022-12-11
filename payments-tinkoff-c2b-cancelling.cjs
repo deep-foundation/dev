@@ -681,6 +681,10 @@ const installPackage = async () => {
                 type_id: containTypeLinkId,
                 from_id: deep.linkId,
               },
+              {
+                type_id: usesTokenTypeLinkId,
+                from_id: storageBusinessLinkId
+              },
             ],
           },
         });
