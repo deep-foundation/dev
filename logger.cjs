@@ -288,7 +288,7 @@ const main = async () => {
               number: timestamp
             });
 
-            const {data: [{id: logSubjectId}]} = deep.insert({
+            const {data: [{id: logSubjectLinkId}]} = deep.insert({
               type_id: deep.id("${PACKAGE_NAME}", "LogSubject"),
               from_id: triggeredByLinkId,
               to_id: logInsertLinkId,
@@ -314,16 +314,19 @@ const main = async () => {
         code: `({deep, data: {newLink, triggeredByLinkId}}) => { 
             const timestamp = Date.now();
 
-            const {data: [{id: logInsertId}]} = deep.select({
-               type_id: deep.id("${PACKAGE_NAME}", "LogInsert"),
-               to_id: newLink.id
-            });
+            /* TODO: const logValueLinkId = LogString|LogNumber|LogObject|LogFile*/
          
-            deep.insert({
+            const {data: [{id: logUpdateLinkId}]} = await deep.insert({
                type_id: deep.id("${PACKAGE_NAME}", "LogUpdate"),
-               from_id: triggeredByLinkId,
-               to_id: logInsertId,
+               from_id: logValueLinkId,
+               to_id: newLink.id,
                number: timestamp
+            });
+
+            const {data: [{id: logSubjectLinkId}]} = deep.insert({
+              type_id: deep.id("${PACKAGE_NAME}", "LogSubject"),
+              from_id: triggeredByLinkId,
+              to_id: logUpdateLinkId,
             });
            }`,
         fileName: "updateHandlerFile",
@@ -350,13 +353,24 @@ const main = async () => {
                type_id: deep.id("${PACKAGE_NAME}", "LogInsert"),
                to_id: oldLink.id
             })
+
+            const {data: [{id: logLinkLinkId}]} = deep.select({
+              type_id: deep.id("${PACKAGE_NAME}", "LogLink"),
+              id: logInsertId.from_id
+            });
          
-            deep.insert({
+            const {data: [{id: logDeleteLinkId}]} = deep.insert({
                type_id: deep.id("${PACKAGE_NAME}", "LogDelete"),
-               from_id: triggeredByLinkId,
-               to_id: logInsertId,
+               from_id: logLinkLinkId,
+               to_id: oldLink.id,
                number: timestamp
-            })
+            });
+
+            const {data: [{id: logSubjectLinkId}]} = deep.insert({
+              type_id: deep.id("${PACKAGE_NAME}", "LogSubject"),
+              from_id: triggeredByLinkId,
+              to_id: logDeleteLinkId,
+            });
            }`,
         fileName: "deleteHandlerFile",
         handlerName: "deleteHandler",
