@@ -23,22 +23,22 @@ const f = async () => {
   const deep = new DeepClient({ deep: guestDeep, ...admin });
 
   await deep.insert({
-    type_id: deep.idSync('@deep-foundation/core', 'PackageQuery'),
-    string: { data: { value: `https://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@gist.github.com/ivansglazunov/450e028fccc4dbcb2ae0cdde37dad1d0` } },
+    type_id: deep.idLocal('@deep-foundation/core', 'PackageQuery'),
+    string: { data: { value: `https://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@gist.github.com/ivansglazunov/450e028fccc4dbcb2ae0cdde37dad1d0` } },
     in: { data: [
       {
-        type_id: deep.idSync('@deep-foundation/core', 'PackageInstall'),
+        type_id: deep.idLocal('@deep-foundation/core', 'PackageInstall'),
         from_id: deep.linkId,
         in: { data: [
           {
-            type_id: deep.idSync('@deep-foundation/core', 'Contain'),
+            type_id: deep.idLocal('@deep-foundation/core', 'Contain'),
             from_id: deep.linkId,
             string: { data: { value: 'tsxPackageInstall' } },
           },
         ] },
       },
       {
-        type_id: deep.idSync('@deep-foundation/core', 'Contain'),
+        type_id: deep.idLocal('@deep-foundation/core', 'Contain'),
         from_id: deep.linkId,
         string: { data: { value: 'tsxPackage' } },
       },
@@ -46,7 +46,7 @@ const f = async () => {
   });
   await delay(7000);
   await deep.insert({
-    type_id: deep.idSync('@deep-foundation/core', 'Join'),
+    type_id: deep.idLocal('@deep-foundation/core', 'Join'),
     from_id: await deep.id('@deep-foundation/tsx'),
     to_id: await deep.id('deep', 'admin'),
   });

@@ -6,12 +6,96 @@ import concurrently from 'concurrently';
 import minimist from 'minimist';
 import * as gulp from 'gulp';
 import Git from 'simple-git/promise';
+import { HasuraApi } from '@deep-foundation/hasura/api';
 
 process.setMaxListeners(0);
 
 const git = Git();
 const argv = require('minimist')(process.argv.slice(2));
 const delimetr = process.platform === 'win32' ? '\\' : '/';
+
+const api = new HasuraApi({
+  path: process.env.REATTACH_HASURA_PATH,
+  ssl: !!+(process.env.REATTACH_HASURA_SSL || 0),
+  secret: process.env.REATTACH_HASURA_SECRET,
+});
+
+gulp.task('gitpod:hasura:reattach', async () => {
+  console.log(process.env.REATTACH_DEEPLINKS_PATH);
+  const u = new url.URL(`https://${process.env.REATTACH_DEEPLINKS_PATH}`);
+  const convert = (a) => {
+    console.log('a', a)
+    const au = new url.URL(a);
+    return `${u.origin}/${au.pathname}`;
+  };
+  const { data } = await api.query({
+    type: "export_metadata",
+    version: 1,
+    args: {}
+  });
+  await api.query({
+    "type": "drop_inconsistent_metadata",
+    "args": {}
+  });
+  console.log('remote_schemas', data.remote_schemas);
+  for (let p in data.remote_schemas) {
+    const i = data.remote_schemas[p];
+    console.log('remote_schema ', i);
+    await api.query({
+      type: "add_remote_schema",
+      args: {
+        ...i,
+        name: i.name,
+        definition: {
+          url: convert(i.definition.url),
+          ...i.definition,
+        },
+      }
+    });
+  }
+  console.log('actions', data.actions);
+  for (let p in data.actions) {
+    const i = data.actions[p];
+    await api.query({
+      type: "create_action",
+      args: {
+        ...i,
+        name: i.name,
+        definition: {
+          url: convert(i.definition.handler),
+          ...i.definition,
+        },
+      }
+    });
+  }
+  console.log('custom_types', data.custom_types);
+  console.log('cron_triggers', data.cron_triggers);
+  for (let p in data.cron_triggers) {
+    const i = data.cron_triggers[p];
+    await api.query({
+      type: "delete_cron_trigger",
+      args: {
+        name: i.name,
+      }
+    });
+    await api.query({
+      type: "create_cron_trigger",
+      args: {
+        ...i,
+        name: i.name,
+        webhook: convert(i.webhook),
+      }
+    });
+  }
+  await api.query({
+    type: "reload_metadata",
+    args: {
+      reload_remote_schemas: true,
+      reload_sources: false,
+      recreate_event_triggers: true
+    }
+  });
+});
 
 gulp.task('assets:update', () => {
   const packages = fs.readdirSync(`${__dirname}/packages`);
