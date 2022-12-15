@@ -1,27 +1,36 @@
 [submodule "packages/hasura"]
 	path = packages/hasura
 	url = https://github.com/deep-foundation/hasura.git
+	branch = main
 [submodule "packages/deeplinks"]
 	path = packages/deeplinks
 	url = https://github.com/deep-foundation/deeplinks.git
+	branch = main
 [submodule "packages/materialized-path"]
 	path = packages/materialized-path
 	url = https://github.com/deep-foundation/materialized-path.git
+	branch = main
 [submodule "packages/store"]
 	path = packages/store
 	url = https://github.com/deep-foundation/store.git
+	branch = main
 [submodule "packages/react-hasura"]
 	path = packages/react-hasura
 	url = https://github.com/deep-foundation/react-hasura.git
+	branch = main
 [submodule "packages/deepcase"]
 	path = packages/deepcase
 	url = https://github.com/deep-foundation/deepcase.git
+	branch = main
 [submodule "packages/gh-pages"]
 	path = packages/gh-pages
 	url = https://github.com/deep-foundation/deepcase.github.io.git
+	branch = main
 [submodule "packages/js-docker-isolation-provider"]
 	path = packages/js-docker-isolation-provider
 	url = https://github.com/deep-foundation/js-docker-isolation-provider
+	branch = main
 [submodule "packages/nextjs"]
 	path = packages/nextjs
 	url = https://github.com/deep-foundation/nextjs.git
+	branch = main
