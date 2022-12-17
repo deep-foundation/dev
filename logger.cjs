@@ -3,7 +3,6 @@ require('graphql');
 require('lodash');
 require('subscriptions-transport-ws');
 const dotenv = require('dotenv');
-const dotenvExpand = require('dotenv-expand');
 const { generateApolloClient } = require('@deep-foundation/hasura/client');
 const { DeepClient } = require('@deep-foundation/deeplinks/imports/client');
 const {
@@ -20,7 +19,6 @@ const { insertHandler } = require('./deep-packages/insertHandler.cjs');
 const { sleep } = require('./deep-packages/sleep.cjs');
 
 var myEnv = dotenv.config();
-dotenvExpand.expand(myEnv);
 
 const PACKAGE_NAME = "@deep-foundation/logger";
 
@@ -33,8 +31,8 @@ const main = async () => {
 
   const installPackage = async () => {
     const apolloClient = generateApolloClient({
-      path: process.env.NEXT_PUBLIC_GQL_PATH || '', // <<= HERE PATH TO UPDATE
-      ssl: !!~process.env.NEXT_PUBLIC_GQL_PATH.indexOf('localhost')
+      path: "localhost:3006/gql" || '', // <<= HERE PATH TO UPDATE
+      ssl: !!~"localhost:3006/gql".indexOf('localhost')
         ? false
         : true,
       // admin token in prealpha deep secret key
@@ -108,6 +106,11 @@ const main = async () => {
           string: { data: { value: 'Trigger' } },
         },
       },
+      out: {
+        data: {
+          
+        }
+      }
     });
     console.log({ triggerTypeLinkId });
 
@@ -260,40 +263,69 @@ const main = async () => {
 
     const insertHandlerId = await insertHandler(
       {
-        code: `({deep, data: {newLink, triggeredByLinkId}}) => {
-            const timestamp = Date.now();
+        code: 
+`
+({ deep, data: { newLink, triggeredByLinkId } }) => {
+  const timestamp = Date.now();
 
-            const logLinkInsertData = {
-              type_id: deep.id("${PACKAGE_NAME}", "LogLink"),
-            };
-            if(newLink.from_id) {
-              logLinkInsertData.from_id = newLink.from_id;
-            }
-            if(newLink.to_id) {
-              logLinkInsertData.to_id = newLink.to_id;
-            }
+  const containTypeLinkId = deep.id('@deep-foundation/core', 'Contain');
 
-            const {data: [{id: logLinkId}]} = deep.insert(logLinkInsertData);
+  const logLinkInsertData = {
+    type_id: deep.id("@deep-foundation/logger", "LogLink"),
+  };
+  if (newLink.from_id) {
+    logLinkInsertData.from_id = newLink.from_id;
+  }
+  if (newLink.to_id) {
+    logLinkInsertData.to_id = newLink.to_id;
+  }
 
-            const {data: [{id: logTypeLinkId}]} = deep.insert({
-              type_id: deep.id("${PACKAGE_NAME}", "LogType"),
-              from_id: logLinkId,
-              to_id: newLink.type_id
-            });
-    
-            const {data: [{id: logInsertLinkId}]} = deep.insert({
-              type_id: deep.id("${PACKAGE_NAME}", "LogInsert"),
-              from_id: logLinkId,
-              to_id: newLink.id,
-              number: timestamp
-            });
+  const { data: [{ id: logLinkId }] } = deep.insert(logLinkInsertData);
 
-            const {data: [{id: logSubjectLinkId}]} = deep.insert({
-              type_id: deep.id("${PACKAGE_NAME}", "LogSubject"),
-              from_id: triggeredByLinkId,
-              to_id: logInsertLinkId,
-            });
-           }`,
+  const { data: [{ id: logTypeLinkId }] } = deep.insert({
+    type_id: deep.id("@deep-foundation/logger", "LogType"),
+    from_id: logLinkId,
+    to_id: newLink.type_id,
+    in: {
+      data: {
+        type_id: containTypeLinkId,
+        from_id: triggeredByLinkId,
+      },
+    },
+  });
+
+  const { data: [{ id: logInsertLinkId }] } = deep.insert({
+    type_id: deep.id("@deep-foundation/logger", "LogInsert"),
+    from_id: logLinkId,
+    to_id: newLink.id,
+    number: timestamp,
+    in: {
+      data: {
+        type_id: containTypeLinkId,
+        from_id: triggeredByLinkId,
+      },
+    },
+  });
+
+  deep.insert({
+    type_id: containTypeLinkId,
+    from_id: triggeredByLinkId,
+    to_id: 1057
+  });
+
+  const { data: [{ id: logSubjectLinkId }] } = deep.insert({
+    type_id: deep.id("@deep-foundation/logger", "LogSubject"),
+    from_id: triggeredByLinkId,
+    to_id: logInsertLinkId,
+    in: {
+      data: {
+        type_id: containTypeLinkId,
+        from_id: triggeredByLinkId,
+      },
+    },
+  });
+}
+`.trim(),
         fileName: "insertHandlerFile",
         handlerName: "insertHandler",
         handleName: "insertHandle",
@@ -311,24 +343,73 @@ const main = async () => {
 
     const updateHandlerId = await insertHandler(
       {
-        code: `({deep, data: {newLink, triggeredByLinkId}}) => { 
-            const timestamp = Date.now();
+        code: 
+`
+({ deep, data: { newLink, triggeredByLinkId } }) => {
 
-            /* TODO: const logValueLinkId = LogString|LogNumber|LogObject|LogFile*/
-         
-            const {data: [{id: logUpdateLinkId}]} = await deep.insert({
-               type_id: deep.id("${PACKAGE_NAME}", "LogUpdate"),
-               from_id: logValueLinkId,
-               to_id: newLink.id,
-               number: timestamp
-            });
+  const timestamp = Date.now();
 
-            const {data: [{id: logSubjectLinkId}]} = deep.insert({
-              type_id: deep.id("${PACKAGE_NAME}", "LogSubject"),
-              from_id: triggeredByLinkId,
-              to_id: logUpdateLinkId,
-            });
-           }`,
+
+  const containTypeLinkId = deep.id('@deep-foundation/core', 'Contain');
+
+  const { data: [{ to_id: typeOfValueTypeLinkId }] } = deep.select({
+    type_id: deep.id("@deep-foundation/core", "Value"),
+    from_id: newLink.type_id,
+  });
+
+  const typeOfValueString = (
+    deep.select({
+      type_id: containTypeLinkId,
+      to_id: typeOfValueTypeLinkId
+    })
+  ).data[0].value.value;
+
+
+
+  const logValueLinkInsertData = {
+    type_id: deep.id("@deep-foundation/core", "Value"),
+    from_id: newLink.type_id,
+    to_id: deep.id("@deep-foundation/core", typeOfValueString),
+
+    // in: {
+    //   data: {
+    //     type_id: containTypeLinkId,
+    //     from_id: triggeredByLinkId,
+    //   },
+    // },
+  };
+  logValueLinkInsertData[typeOfValueString.toLowerCase()] = {
+    data: { value: newLink.value.value }
+  };
+
+  const { data: [{ id: logValueLinkId }] } = deep.insert(logValueLinkInsertData);
+
+  const { data: [{ id: logUpdateLinkId }] } = deep.insert({
+    type_id: deep.id("@deep-foundation/logger", "LogUpdate"),
+    from_id: logValueLinkId,
+    to_id: newLink.id,
+    number: timestamp,
+    // in: {
+    //   data: {
+    //     type_id: containTypeLinkId,
+    //     from_id: triggeredByLinkId,
+    //   },
+    // },
+  });
+
+  const { data: [{ id: logSubjectLinkId }] } = deep.insert({
+    type_id: deep.id("@deep-foundation/logger", "LogSubject"),
+    from_id: triggeredByLinkId,
+    to_id: logUpdateLinkId,
+    // in: {
+    //   data: {
+    //     type_id: containTypeLinkId,
+    //     from_id: triggeredByLinkId,
+    //   },
+    // },
+  });
+}
+`.trim()       ,
         fileName: "updateHandlerFile",
         handlerName: "updateHandler",
         handleName: "updateHandle",
@@ -346,32 +427,56 @@ const main = async () => {
 
     const deleteHandlerId = await insertHandler(
       {
-        code: `({deep, data: {oldLink, triggeredByLinkId}}) => { 
-            const timestamp = Date.now();
-         
-            const {data: [{id: logInsertId}]} = deep.select({
-               type_id: deep.id("${PACKAGE_NAME}", "LogInsert"),
-               to_id: oldLink.id
-            })
+        code: 
+`
+({ deep, data: { oldLink, triggeredByLinkId } }) => {
 
-            const {data: [{id: logLinkLinkId}]} = deep.select({
-              type_id: deep.id("${PACKAGE_NAME}", "LogLink"),
-              id: logInsertId.from_id
-            });
-         
-            const {data: [{id: logDeleteLinkId}]} = deep.insert({
-               type_id: deep.id("${PACKAGE_NAME}", "LogDelete"),
-               from_id: logLinkLinkId,
-               to_id: oldLink.id,
-               number: timestamp
-            });
+  const timestamp = Date.now();
 
-            const {data: [{id: logSubjectLinkId}]} = deep.insert({
-              type_id: deep.id("${PACKAGE_NAME}", "LogSubject"),
-              from_id: triggeredByLinkId,
-              to_id: logDeleteLinkId,
-            });
-           }`,
+  // const containTypeLinkId = deep.id('@deep-foundation/core', 'Contain');
+
+  const { data: [{ id: logInsertId }] } = deep.select({
+    type_id: deep.id("@deep-foundation/logger", "LogInsert"),
+    to_id: oldLink.id
+  })
+
+  const { data: [{ id: logLinkLinkId }] } = deep.select({
+    type_id: deep.id("@deep-foundation/logger", "LogLink"),
+    id: logInsertId.from_id,
+    // in: {
+    //   data: {
+    //     type_id: containTypeLinkId,
+    //     from_id: triggeredByLinkId,
+    //   },
+    // },
+  });
+  const { data: [{ id: logDeleteLinkId }] } = deep.insert({
+    type_id: deep.id("@deep-foundation/logger", "LogDelete"),
+    from_id: logLinkLinkId,
+    to_id: oldLink.id,
+    number: timestamp,
+    // in: {
+    //   data: {
+    //     type_id: containTypeLinkId,
+    //     from_id: triggeredByLinkId,
+    //   },
+    // },
+  });
+
+  const { data: [{ id: logSubjectLinkId }] } = deep.insert({
+    type_id: deep.id("@deep-foundation/logger", "LogSubject"),
+    from_id: triggeredByLinkId,
+    to_id: logDeleteLinkId,
+    // in: {
+    //   data: {
+    //     type_id: containTypeLinkId,
+    //     from_id: triggeredByLinkId,
+    //   },
+    // },
+  });
+}
+`.trim()
+        ,
         fileName: "deleteHandlerFile",
         handlerName: "deleteHandler",
         handleName: "deleteHandle",
