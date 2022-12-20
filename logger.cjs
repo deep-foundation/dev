@@ -18,8 +18,6 @@ const { default: links } = require('@deep-foundation/deeplinks/imports/router/li
 const { insertHandler } = require('./deep-packages/insertHandler.cjs');
 const { sleep } = require('./deep-packages/sleep.cjs');
 
-var myEnv = dotenv.config();
-
 const PACKAGE_NAME = "@deep-foundation/logger";
 
 console.log(`Installing ${PACKAGE_NAME} package.`);
@@ -433,8 +431,6 @@ const main = async () => {
 
   const timestamp = Date.now();
 
-  // const containTypeLinkId = deep.id('@deep-foundation/core', 'Contain');
-
   const { data: [{ id: logInsertId }] } = deep.select({
     type_id: deep.id("@deep-foundation/logger", "LogInsert"),
     to_id: oldLink.id
@@ -443,36 +439,18 @@ const main = async () => {
   const { data: [{ id: logLinkLinkId }] } = deep.select({
     type_id: deep.id("@deep-foundation/logger", "LogLink"),
     id: logInsertId.from_id,
-    // in: {
-    //   data: {
-    //     type_id: containTypeLinkId,
-    //     from_id: triggeredByLinkId,
-    //   },
-    // },
   });
   const { data: [{ id: logDeleteLinkId }] } = deep.insert({
     type_id: deep.id("@deep-foundation/logger", "LogDelete"),
     from_id: logLinkLinkId,
     to_id: oldLink.id,
     number: timestamp,
-    // in: {
-    //   data: {
-    //     type_id: containTypeLinkId,
-    //     from_id: triggeredByLinkId,
-    //   },
-    // },
   });
 
   const { data: [{ id: logSubjectLinkId }] } = deep.insert({
     type_id: deep.id("@deep-foundation/logger", "LogSubject"),
     from_id: triggeredByLinkId,
     to_id: logDeleteLinkId,
-    // in: {
-    //   data: {
-    //     type_id: containTypeLinkId,
-    //     from_id: triggeredByLinkId,
-    //   },
-    // },
   });
 }
 `.trim()
