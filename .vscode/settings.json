@@ -1,5 +1,5 @@
 {
-    "workbench.colorTheme": "Starfall Ocean",
+    "workbench.colorTheme": "Default Dark+",
     "editor.tabSize": 2,
     "files.autoSave": "off",
     "workbench.colorCustomizations": {
@@ -7,5 +7,6 @@
         "titleBar.activeBackground": "#181818",
         "titleBar.activeForeground": "#F9FAFF"
     },
-    "editor.wordWrap": "on"
+    "editor.wordWrap": "on",
+    "typescript.tsdk": "node_modules/typescript/lib"
 }
