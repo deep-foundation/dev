@@ -1,12 +1,13 @@
 
 import url from 'url';
 import del from 'del';
-import fs from 'fs';
+import fsExtra from 'fs-extra';
 import concurrently from 'concurrently';
 import minimist from 'minimist';
 import * as gulp from 'gulp';
 import Git from 'simple-git/promise';
 import { HasuraApi } from '@deep-foundation/hasura/api';
+import * as pathUtils from 'path';
 
 process.setMaxListeners(0);
 
@@ -98,7 +99,7 @@ gulp.task('gitpod:hasura:reattach', async () => {
 });
 
 gulp.task('assets:update', () => {
-  const packages = fs.readdirSync(`${__dirname}/packages`);
+  const packages = fsExtra.readdirSync(`${__dirname}/packages`);
   let g = gulp.src('assets/*', { base: 'assets' }).pipe(gulp.dest(`./`));
   for (let p in packages) {
     const pckg = packages[p];
@@ -137,7 +138,7 @@ gulp.task('packages:ci', async () => {
 });
 
 const getModules = () => {
-  const gitmodules = fs.readFileSync(`${__dirname}/.gitmodules`, { encoding: 'utf8' });
+  const gitmodules = fsExtra.readFileSync(`${__dirname}/.gitmodules`, { encoding: 'utf8' });
   const modulesArray: any = gitmodules.split('[').filter(m => !!m).map((m, i) => m.split(`
 	`).map((p, i) => !i ? p.split(' ')[1].slice(1, process.platform === 'win32' ? -3 : -2) : p.replace('\n', '').split(' = ')));
   const modules = {};
@@ -175,7 +176,7 @@ gulp.task('packages:set', async () => {
 });
 
 gulp.task('packages:sync', async () => {
-  const packages = fs.readdirSync(`${__dirname}/packages`);
+  const packages = fsExtra.readdirSync(`${__dirname}/packages`);
   const npmPackages = {};
   console.log('find buildable packages');
   for (let p in packages) {
@@ -244,5 +245,45 @@ gulp.task('packages:sync', async () => {
         await concurrently([`(cd ${__dirname}/packages/${pa} && npm run package:unbuild)`]);
       }
     } catch (error) {}
+  }
+});
+
+gulp.task('replace-node-modules-by-submodules', async () => {
+  // TODO: Replace node modules not only for submodules but for dev monorepository too
+  
+  const packagesDirectoryPath = pathUtils.resolve('packages');
+
+  const submodulePathArray = fsExtra.readdirSync(packagesDirectoryPath).map((name) =>
+    pathUtils.resolve(packagesDirectoryPath, name)
+  );
+  console.log({ submodulePathArray });
+
+
+  for (const submodulePath of submodulePathArray) {
+    for (const dependantSubmodulePath of submodulePathArray) {
+
+      const dependantDependencyNodeModulePath = pathUtils.resolve(
+        dependantSubmodulePath,
+        'node_modules',
+        '@deep-foundation',
+        pathUtils.basename(submodulePath)
+      );
+
+      
+      if (!fsExtra.existsSync(dependantDependencyNodeModulePath)) {
+        continue;
+      }
+      console.info(`Copying ${submodulePath} to ${dependantDependencyNodeModulePath}`)
+      fsExtra.rmSync(dependantDependencyNodeModulePath, {force: true, recursive: true});
+      fsExtra.mkdirSync(dependantDependencyNodeModulePath);
+      fsExtra.copySync(submodulePath, dependantDependencyNodeModulePath, {
+        recursive: true,
+        filter: (path) => {
+          console.log({path})
+          console.log(`path == pathUtils.join(submodulePath, "node_modules")` ,path == pathUtils.join(submodulePath, "node_modules"))
+          return false;
+        },
+      })
+    }
   }
 });
