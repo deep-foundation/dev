@@ -1,12 +1,14 @@
 
 import url from 'url';
 import del from 'del';
-import fs from 'fs';
+import * as fsExtra from 'fs-extra';
 import concurrently from 'concurrently';
 import minimist from 'minimist';
 import * as gulp from 'gulp';
 import Git from 'simple-git/promise';
-import { HasuraApi } from '@deep-foundation/hasura/api';
+import { HasuraApi } from '/home/freephoenix888/Programming/dev/packages/hasura/api';
+import * as pathUtils from 'path';
+import globPromiseUtils from 'glob-promise';
 
 process.setMaxListeners(0);
 
@@ -98,7 +100,7 @@ gulp.task('gitpod:hasura:reattach', async () => {
 });
 
 gulp.task('assets:update', () => {
-  const packages = fs.readdirSync(`${__dirname}/packages`);
+  const packages = fsExtra.readdirSync(`${__dirname}/packages`);
   let g = gulp.src('assets/*', { base: 'assets' }).pipe(gulp.dest(`./`));
   for (let p in packages) {
     const pckg = packages[p];
@@ -137,7 +139,7 @@ gulp.task('packages:ci', async () => {
 });
 
 const getModules = () => {
-  const gitmodules = fs.readFileSync(`${__dirname}/.gitmodules`, { encoding: 'utf8' });
+  const gitmodules = fsExtra.readFileSync(`${__dirname}/.gitmodules`, { encoding: 'utf8' });
   const regex = /\[submodule ?"(?<submodule_name>.+?)"]\s+path ?= ?(?<path>.+?)\s+url ?= ?(?<url>.+?)\s/gm;
   const modules = {};
 
@@ -176,7 +178,7 @@ gulp.task('packages:set', async () => {
 });
 
 gulp.task('packages:sync', async () => {
-  const packages = fs.readdirSync(`${__dirname}/packages`);
+  const packages = fsExtra.readdirSync(`${__dirname}/packages`);
   const npmPackages = {};
   console.log('find buildable packages');
   for (let p in packages) {
@@ -247,3 +249,37 @@ gulp.task('packages:sync', async () => {
     } catch (error) {}
   }
 });
+
+gulp.task('use-submodules-instead-of-node-modules-in-import-paths', async () => {
+  const currentWorkingDirectory = process.cwd();
+  const submodulesDirectory = pathUtils.join(currentWorkingDirectory, "packages");
+  const filePaths = await globPromiseUtils(`./**/*.{ts,tsx}`, {
+    ignore: ["./**/node_modules/**", "./**/*.d.ts"],
+  });
+  const promises: Promise<string|void>[] = []
+  for (const filePath of filePaths) {
+    promises.push(
+      fsExtra.readFile(filePath, {encoding: 'utf-8'}).then((fileContent) => {
+        const regex = /(?<before>import.+?from ('|"))@deep-foundation/g;
+        promises.push(
+          fsExtra.writeFile(
+            filePath,
+            fileContent.replace(regex, `$<before>${submodulesDirectory}`)
+          )
+        )      
+      })
+    )
+  }
+  
+  await Promise.all(promises);
+})
+
+gulp.task('build-submodules', async () => {
+  const currentWorkingDirectory = process.cwd();
+  const submodulesDirectory = pathUtils.join(currentWorkingDirectory, "packages");
+  const submoduleNames = await fsExtra.readdir(submodulesDirectory);
+  const submodulePaths = submoduleNames.map(submoduleName => pathUtils.join(submodulesDirectory, submoduleName));
+  await concurrently(
+    submodulePaths.map(submodulePath => `cd ${submodulePath} && npm run package:build`)
+  ).result;
+})
