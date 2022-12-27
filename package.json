@@ -98,7 +98,7 @@
   },
   "type": "module",
   "dependencies": {
-    "@deep-foundation/deeplinks": "0.0.96",
+    "@deep-foundation/deeplinks": "0.0.97",
     "@types/gulp": "^4.0.8",
     "concurrently": "^7.6.0",
     "cross-env": "^7.0.3",
