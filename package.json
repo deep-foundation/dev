@@ -97,7 +97,7 @@
     "url": "git+https://github.com/deep-foundation/dev.git"
   },
   "dependencies": {
-    "@deep-foundation/deeplinks": "0.0.102",
+    "@deep-foundation/deeplinks": "^0.0.101",
     "concurrently": "^7.6.0",
     "cross-env": "^7.0.3",
     "i": "^0.3.7",
