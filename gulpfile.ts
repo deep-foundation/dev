@@ -1,12 +1,12 @@
 
 import url from 'url';
+import del from 'del';
 import fs from 'fs';
 import concurrently from 'concurrently';
 import minimist from 'minimist';
 import * as gulp from 'gulp';
 import Git from 'simple-git/promise';
 import { HasuraApi } from '@deep-foundation/hasura/api';
-import {deleteAsync} from 'del';
 
 process.setMaxListeners(0);
 
@@ -112,7 +112,7 @@ gulp.task('package:insert', async () => {
 });
 
 gulp.task('package:delete', async () => {
-  await deleteAsync([`packages/${argv.name}`, `.git/modules/packages/${argv.name}`]);
+  await del([`packages/${argv.name}`, `.git/modules/packages/${argv.name}`]);
   await git.rm(`packages/${argv.name}`);
 });
 
@@ -246,8 +246,4 @@ gulp.task('packages:sync', async () => {
       }
     } catch (error) {}
   }
-});
-
-gulp.task('a', async () => {
-  console.log("a result");
 });
