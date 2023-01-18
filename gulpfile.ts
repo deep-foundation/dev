@@ -125,7 +125,7 @@ gulp.task('packages:get', async () => {
 gulp.task('packages:ci', async () => {
   const modules = getModules();
   const parts = [];
-  
+
   const packages = Object.keys(modules);
   for (let i = 0; i < packages.length; i++) {
     const currentPackage = process.platform === 'win32' ? packages[i].replace('/', '\\') : packages[i];
@@ -138,19 +138,18 @@ gulp.task('packages:ci', async () => {
 
 const getModules = () => {
   const gitmodules = fs.readFileSync(`${__dirname}/.gitmodules`, { encoding: 'utf8' });
-  const regex = /\[submodule ?"(?<submodule_name>.+?)"]\s+path ?= ?(?<path>.+?)\s+url ?= ?(?<url>.+?)\s/gm;
+  const modulesArray: any = gitmodules.split('[').filter(m => !!m).map((m, i) => m.split(`
+	`).map((p, i) => !i ? p.split(' ')[1].slice(1, process.platform === 'win32' ? -3 : -2) : p.replace('\n', '').split(' = ')));
   const modules = {};
-
-  let submodule;
-
-  while ((submodule = regex.exec(gitmodules)) !== null) {
-    const {submodule_name, path, url} = submodule.groups
-    modules[submodule_name] = {
-      path,
-      url,
+  for (let m = 0; m < modulesArray.length; m++) {
+    const ma = modulesArray[m];
+    const mod = modules[ma[0]] = {};
+    const mas = ma.slice(1);
+    for (let k = 0; k < mas.length; k++) {
+      const field = mas[k];
+      mod[field[0]] = field[1];
     }
   }
-  
   return modules;
 }
 
