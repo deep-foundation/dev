@@ -31,6 +31,6 @@
 	url = https://github.com/deep-foundation/js-docker-isolation-provider
 	branch = main
 [submodule "packages/nextjs"]
-	path = packages/nextjs
+	path = packages/sdk
 	url = https://github.com/deep-foundation/nextjs.git
 	branch = main
