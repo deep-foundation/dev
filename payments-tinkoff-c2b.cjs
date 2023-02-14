@@ -3,7 +3,6 @@ require('graphql');
 require('lodash');
 require('subscriptions-transport-ws');
 const dotenv = require('dotenv');
-const dotenvExpand = require('dotenv-expand');
 const { generateApolloClient } = require('@deep-foundation/hasura/client');
 const { DeepClient } = require('@deep-foundation/deeplinks/imports/client');
 const {
@@ -20,7 +19,6 @@ const {
   default: links,
 } = require('@deep-foundation/deeplinks/imports/router/links');
 var myEnv = dotenv.config();
-dotenvExpand.expand(myEnv);
 const {payInBrowser} = require("./deep-packages/payments/tinkoff/payInBrowser.cjs");
 const {getError} = require("./deep-packages/payments/tinkoff/getError.cjs");
 const { generateToken, generateTokenStringWithInsertedTerminalPassword } = require("./deep-packages/payments/tinkoff/generateToken.cjs");
