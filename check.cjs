@@ -21,7 +21,7 @@ const f = async () => {
   console.log((await deep.select({
     down: {
       link: {
-        type_id: deep.idSync('@deep-foundation/core', 'Supports')
+        type_id: deep.idLocal('@deep-foundation/core', 'Supports')
       },
     },
   }))?.data?.find(l => l?.value?.value === 'dockerSupportsJs'))
