@@ -349,7 +349,7 @@ const installPackage = async () => {
               data: [
                 {
                   type_id: containTypeLinkId,
-                  from_id: deep.linkId,
+                  from_id: packageId,
                 },
               ],
             },
@@ -361,7 +361,7 @@ const installPackage = async () => {
               data: [
                 {
                   type_id: containTypeLinkId,
-                  from_id: deep.linkId,
+                  from_id: packageId,
                 },
               ],
             },
@@ -373,7 +373,7 @@ const installPackage = async () => {
               data: [
                 {
                   type_id: containTypeLinkId,
-                  from_id: deep.linkId,
+                  from_id: packageId,
                 },
               ],
             },
@@ -385,7 +385,7 @@ const installPackage = async () => {
               data: [
                 {
                   type_id: containTypeLinkId,
-                  from_id: deep.linkId,
+                  from_id: packageId,
                 },
               ],
             },
@@ -397,7 +397,7 @@ const installPackage = async () => {
               data: [
                 {
                   type_id: containTypeLinkId,
-                  from_id: deep.linkId,
+                  from_id: packageId,
                 },
               ],
             },
@@ -409,7 +409,7 @@ const installPackage = async () => {
               data: [
                 {
                   type_id: containTypeLinkId,
-                  from_id: deep.linkId,
+                  from_id: packageId,
                 },
               ],
             },
@@ -421,7 +421,7 @@ const installPackage = async () => {
               data: [
                 {
                   type_id: containTypeLinkId,
-                  from_id: deep.linkId,
+                  from_id: packageId,
                 },
               ],
             },
