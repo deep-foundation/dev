@@ -946,19 +946,6 @@ await insertHandler({deep, fileTypeLinkId, fileName: 'payInsertHandlerFile', han
           createdLinkIds.push(objectLinkId);
           allCreatedLinkIds.push(objectLinkId);
 
-          console.log({
-            type_id: payTypeLinkId,
-            from_id: deep.linkId,
-            to_id: sumLinkId,
-            in: {
-              data: [
-                {
-                  type_id: containTypeLinkId,
-                  from_id: deep.linkId,
-                },
-              ],
-            },
-          })
           const {
             data: [{ id: payLinkId }],
           } = await deep.insert({
