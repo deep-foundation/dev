@@ -72,7 +72,7 @@ exports.payInBrowser = async ({ page, browser, url }) => {
           process.env.PAYMENTS_C2B_CARD_CVC
         ); // CVC code
         await sleep(300);
-        await page.click('button[automation-id="pay-wallet__submit"]'); // submit button
+        await page.click('button[automation-id="card-form__submit"]'); // submit button
         // await sleep(300);
         // await page.waitForSelector('input[name="password"]');
         // const code = prompt('enter code ');
