@@ -5,7 +5,7 @@ exports.insertHandler = async ({deep,fileTypeLinkId, fileName, handlerName, hand
           data: [
             {
               type_id: containTypeLinkId,
-              from_id: packageId, // before created package
+              from_id: packageId, 
               string: { data: { value: fileName } },
             },
             {
@@ -15,7 +15,7 @@ exports.insertHandler = async ({deep,fileTypeLinkId, fileName, handlerName, hand
                 data: [
                   {
                     type_id: containTypeLinkId,
-                    from_id: packageId, // before created package
+                    from_id: packageId,
                     string: { data: { value: handlerName } },
                   },
                   {
@@ -25,7 +25,7 @@ exports.insertHandler = async ({deep,fileTypeLinkId, fileName, handlerName, hand
                       data: [
                         {
                           type_id: containTypeLinkId,
-                          from_id: packageId, // before created package
+                          from_id: packageId, 
                           string: { data: { value: handleName } },
                         },
                       ],
