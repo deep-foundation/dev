@@ -533,38 +533,66 @@ const installPackage = async () => {
     await deep.insert({
       type_id: await deep.id('@deep-foundation/core', 'Port'),
       number: { data: { value: process.env.PAYMENTS_C2B_NOTIFICATION_PORT } },
-      in: { data: {
-        type_id: await deep.id('@deep-foundation/core', 'RouterListening'),
-        from: { data: {
-          type_id: await deep.id('@deep-foundation/core', 'Router'),
+      in: { data: [
+        {
+          type_id: await deep.id('@deep-foundation/core', 'Contain'),
+          from_id: deep.linkId,
+        },
+        {
+          type_id: await deep.id('@deep-foundation/core', 'RouterListening'),
           in: { data: {
-            type_id: await deep.id('@deep-foundation/core', 'RouterStringUse'),
-            string: { data: { value: process.env.PAYMENTS_C2B_NOTIFICATION_ROUTE } },
-            from: { data: {
-              type_id: await deep.id('@deep-foundation/core', 'Route'),
-              out: { data: {
-                type_id: await deep.id('@deep-foundation/core', 'HandleRoute'),
-                to: { data: {
-                  type_id: await deep.id('@deep-foundation/core', 'Handler'),
-                  from_id: await deep.id('@deep-foundation/core', 'dockerSupportsJs'),
+            type_id: await deep.id('@deep-foundation/core', 'Contain'),
+            from_id: packageId,
+          } },
+          from: { data: {
+            type_id: await deep.id('@deep-foundation/core', 'Router'),
+            in: { data: {
+              type_id: await deep.id('@deep-foundation/core', 'Contain'),
+              from_id: packageId,
+            } },
+            in: { data: {
+              type_id: await deep.id('@deep-foundation/core', 'RouterStringUse'),
+              string: { data: { value: process.env.PAYMENTS_C2B_NOTIFICATION_ROUTE } },
+              in: { data: {
+                type_id: await deep.id('@deep-foundation/core', 'Contain'),
+                from_id: deep.linkId,
+              } },
+              from: { data: {
+                type_id: await deep.id('@deep-foundation/core', 'Route'),
+                in: { data: {
+                  type_id: await deep.id('@deep-foundation/core', 'Contain'),
+                  from_id: packageId,
+                } },
+                out: { data: {
+                  type_id: await deep.id('@deep-foundation/core', 'HandleRoute'),
                   in: { data: {
                     type_id: await deep.id('@deep-foundation/core', 'Contain'),
-                    // from_id: deep.linkId,
-                    from_id: await deep.id('deep', 'admin'),
-                    string: { data: { value: 'passport' } },
+                    from_id: packageId,
                   } },
                   to: { data: {
-                    type_id: await deep.id('@deep-foundation/core', 'SyncTextFile'),
-                    string: { data: {
-                      value: fs.readFileSync('./deep-packages/payments/tinkoff/tinkoffNotificationHandler.ts', {encoding: 'utf-8'}),
+                    type_id: await deep.id('@deep-foundation/core', 'Handler'),
+                    from_id: await deep.id('@deep-foundation/core', 'dockerSupportsJs'),
+                    in: { data: {
+                      type_id: await deep.id('@deep-foundation/core', 'Contain'),
+                      from_id: packageId,
+                    } },
+                    to: { data: {
+                      type_id: await deep.id('@deep-foundation/core', 'SyncTextFile'),
+                      string: { data: {
+                        value: fs.readFileSync('./deep-packages/payments/tinkoff/tinkoffNotificationHandler.js', {encoding: 'utf-8'}),
+                      } },
+                      in: { data: {
+                        type_id: await deep.id('@deep-foundation/core', 'Contain'),
+                        from_id: packageId,
+                      } },
                     } },
                   } },
                 } },
               } },
             } },
           } },
-        } },
-      } },
+        }
+      ] },
     })
 
 
