@@ -8,7 +8,7 @@ async ({ deep, require, data: { newLink: payLink, triggeredByLinkId } }) => {
     const { data: linksUpToPayMp } = await deep.select({
       down: {
         parent_id: { _eq: payLink.id },
-        tree_id: { _eq: payTreeId }
+        tree_id: { _eq: paymentTreeId }
       }
     });
     if (linksUpToPayMp.length === 0) {
