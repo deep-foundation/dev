@@ -7,7 +7,7 @@ async ({ deep, require, data: { newLink: payLink, triggeredByLinkId } }) => {
     const paymentTreeId = await deep.id("@deep-foundation/payments-tinkoff-c2b", "paymentTree");
     const { data: linksUpToPayMp } = await deep.select({
       down: {
-        parent_id: { _eq: payLink.id },
+        link_id: { _eq: payLink.id },
         tree_id: { _eq: paymentTreeId }
       }
     });
