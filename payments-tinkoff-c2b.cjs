@@ -253,7 +253,7 @@ const installPackage = async () => {
       in: {
         data: {
           type_id: containTypeLinkId,
-          from_id: packageId, // before created package
+          from_id: packageId, 
           string: { data: { value: 'Sum' } },
         },
       },
@@ -271,7 +271,7 @@ const installPackage = async () => {
       in: {
         data: {
           type_id: containTypeLinkId,
-          from_id: packageId, // before created package
+          from_id: packageId, 
           string: { data: { value: 'Pay' } },
         },
       },
@@ -288,7 +288,7 @@ const installPackage = async () => {
       in: {
         data: {
           type_id: containTypeLinkId,
-          from_id: packageId, // before created package
+          from_id: packageId, 
           string: { data: { value: 'Url' } },
         },
       },
@@ -305,7 +305,7 @@ const installPackage = async () => {
       in: {
         data: {
           type_id: containTypeLinkId,
-          from_id: packageId, // before created package
+          from_id: packageId, 
           string: { data: { value: 'Payed' } },
         },
       },
@@ -322,7 +322,7 @@ const installPackage = async () => {
       in: {
         data: {
           type_id: containTypeLinkId,
-          from_id: packageId, // before created package
+          from_id: packageId, 
           string: { data: { value: 'Error' } },
         },
       },
@@ -440,7 +440,7 @@ const installPackage = async () => {
       in: {
         data: {
           type_id: containTypeLinkId,
-          from_id: packageId, // before created package
+          from_id: packageId, 
           string: { data: { value: 'StorageBusiness' } },
         },
       },
@@ -456,7 +456,7 @@ const installPackage = async () => {
       in: {
         data: {
           type_id: containTypeLinkId,
-          from_id: packageId, // before created package
+          from_id: packageId, 
           string: { data: { value: 'Token' } },
         },
       },
@@ -472,7 +472,7 @@ const installPackage = async () => {
       in: {
         data: {
           type_id: containTypeLinkId,
-          from_id: packageId, // before created package
+          from_id: packageId, 
           string: { data: { value: 'UsesToken' } },
         },
       },
@@ -489,7 +489,7 @@ const installPackage = async () => {
       in: {
         data: {
           type_id: containTypeLinkId,
-          from_id: packageId, // before created package
+          from_id: packageId, 
           string: { data: { value: 'StorageClient' } },
         },
       },
@@ -505,7 +505,7 @@ const installPackage = async () => {
       in: {
         data: {
           type_id: containTypeLinkId,
-          from_id: packageId, // before created package
+          from_id: packageId, 
           string: { data: { value: 'Title' } },
         },
       },
@@ -521,13 +521,12 @@ const installPackage = async () => {
       in: {
         data: {
           type_id: containTypeLinkId,
-          from_id: packageId, // before created package
+          from_id: packageId, 
           string: { data: { value: 'Income' } },
         },
       },
     });
     console.log({ incomeTypeLinkId });
-    debugger;
 
     await insertTinkoffPayInsertHandler({ packageName: "@deep-foundation/payments-tinkoff-c2b", deep, containTypeLinkId, fileTypeLinkId: syncTextFileTypeLinkId, handleInsertTypeLinkId, handlerTypeLinkId, notificationUrl: process.env.PAYMENTS_C2B_NOTIFICATION_URL, packageId, supportsId: dockerSupportsJs, userEmail: process.env.PAYMENTS_C2B_EMAIL, userPhone: process.env.PAYMENTS_C2B_PHONE, dockerSupportsJsId, payTypeLinkId });
 
