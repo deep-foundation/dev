@@ -8,7 +8,7 @@ exports.resend = async (options) => {
       const response = await axios({
         method: 'post',
         url: getUrl('Resend'),
-        data: { ...options, tokenTypeLinkId: generateToken(options) },
+        data: { ...options, Token: generateToken(options) },
       });
 
       const error = getError(response.data.ErrorCode);
