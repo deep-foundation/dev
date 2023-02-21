@@ -181,50 +181,43 @@ async (
       throw new Error(`Unable to insert a link with type ##${payedTypeLinkId}`)
     }
 
-    const storageClientTypeLinkId = await deep.id("@deep-foundation/payments-tinkoff-c2b", "StorageClient");
-    const storageClientLinkSelectQuery = await deep.select({
-      type_id: storageClientTypeLinkId,
-      number: { value: req.body.CardId }
-    });
-    console.log({ storageClientLinkSelectQuery });
-    if (storageClientLinkSelectQuery.error) { throw new Error(storageClientLinkSelectQuery.error.message); }
+    // TODO
+    // const storageClientTypeLinkId = await deep.id("@deep-foundation/payments-tinkoff-c2b", "StorageClient");
+    // const {data: [storageClientLink]} = await deep.select({
+    //   type_id: storageClientTypeLinkId,
+    //   number: { value: req.body.CardId }
+    // });
 
-    if (fromLinkOfPayment.type_id !== storageClientTypeLinkId) {
-      var storageClientLinkId;
-      if (storageClientLinkSelectQuery.data.length === 0) {
-        const StorageClient = await deep.id("@deep-foundation/payments-tinkoff-c2b", "StorageClient");
-        const storageClientLinkInsertQuery = await deep.insert({
-          type_id: StorageClient,
-          number: { data: { value: req.body.CardId } },
-        });
-        console.log({ storageClientLinkInsertQuery });
-        if (storageClientLinkInsertQuery.error) { throw new Error(storageClientLinkInsertQuery.error.message); }
-        storageClientLinkId = storageClientLinkInsertQuery.data[0].id;
 
-        const Title = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Title");
-        const titleLinkInsertQuery = await deep.insert({
-          type_id: Title,
-          from_id: storageClientLinkId,
-          to_id: storageClientLinkId,
-          string: { data: { value: req.body.Pan } },
-        });
-        if (titleLinkInsertQuery.error) { throw new Error(titleLinkInsertQuery.error.message); }
-        const titleLinkId = titleLinkInsertQuery.data[0].id;
-        console.log({ titleLinkId });
-      } else {
-        storageClientLinkId = storageClientLinkSelectQuery.data[0];
-      }
-      const Income = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Income");
-      const incomeLinkInsertQuery = await deep.insert({
-        type_id: Income,
-        from_id: paymentLink.id,
-        to_id: storageClientLinkId,
-      });
-      if (incomeLinkInsertQuery.error) { throw new Error(incomeLinkInsertQuery.error.message); }
-      const incomeLinkId = incomeLinkInsertQuery.data[0].id;
-      console.log({ incomeLinkId });
+    // if (fromLinkOfPayment.type_id !== storageClientTypeLinkId) {
+    //   var storageClientLinkId;
+    //   if (storageClientLinkSelectQuery.data.length === 0) {
+    //     const StorageClient = await deep.id("@deep-foundation/payments-tinkoff-c2b", "StorageClient");
+    //     const storageClientLinkInsertQuery = await deep.insert({
+    //       type_id: StorageClient,
+    //       number: { data: { value: req.body.CardId } },
+    //     });
+    //     console.log({ storageClientLinkInsertQuery });
+    //     if (storageClientLinkInsertQuery.error) { throw new Error(storageClientLinkInsertQuery.error.message); }
+    //     storageClientLinkId = storageClientLinkInsertQuery.data[0].id;
 
-    }
+    //     const storageClientTitle = await deep.id("@deep-foundation/payments-tinkoff-c2b", "StorageClientTitle");
+    //     const storageClientTitleLinkInsertQuery = await deep.insert({
+    //       type_id: storageClientTitle,
+    //       from_id: storageClientLinkId,
+    //       to_id: storageClientLinkId,
+    //       string: { data: { value: req.body.Pan } },
+    //     });
+    //   } else {
+    //     storageClientLinkId = storageClientLinkSelectQuery.data[0];
+    //   }
+    //   const incomeTypeLinkId = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Income");
+    //   await deep.insert({
+    //     type_id: incomeTypeLinkId,
+    //     from_id: paymentLink.id,
+    //     to_id: storageClientLinkId,
+    //   });
+    // }
 
   }
   res.send('ok');

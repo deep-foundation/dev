@@ -6,13 +6,13 @@ async ({ deep, require, data: { newLink: payLink, triggeredByLinkId } }) => {
 
     const paymentTreeId = await deep.id("@deep-foundation/payments-tinkoff-c2b", "paymentTree");
     const { data: linksUpToPayMp } = await deep.select({
-      down: {
-        link_id: { _eq: payLink.id },
-        tree_id: { _eq: paymentTreeId }
-      }
+        down: {
+            link_id: { _eq: payLink.id },
+            tree_id: { _eq: paymentTreeId }
+        }
     });
     if (linksUpToPayMp.length === 0) {
-      throw new Error(`There is no links up to ##${payLink.id} materialized path`);
+        throw new Error(`There is no links up to ##${payLink.id} materialized path`);
     }
 
     const paymentTypeLinkId = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Payment");
@@ -59,10 +59,10 @@ async ({ deep, require, data: { newLink: payLink, triggeredByLinkId } }) => {
     };
 
     const tinkoffProviderTypeLinkId = await deep.id("@deep-foundation/payments-tinkoff-c2b", "TinkoffProvider");
-    const {data: [tinkoffProviderLink]} = await deep.select({
+    const { data: [tinkoffProviderLink] } = await deep.select({
         type_id: tinkoffProviderTypeLinkId
     });
-    if(!tinkoffProviderLink) {
+    if (!tinkoffProviderLink) {
         throw new Error(`A link with type ##${tinkoffProviderTypeLinkId} is not found`)
     }
 
@@ -70,7 +70,7 @@ async ({ deep, require, data: { newLink: payLink, triggeredByLinkId } }) => {
     const sumLink = linksUpToPayMp.find(link => link.type_id === sumTypeLinkId);
     console.log({ sumLink });
     if (!sumLink) throw new Error(`A link with type ##${sumTypeLinkId} associated with the link ##${payLink.id} is not found`);
-    if(!sumLink.value?.value) {
+    if (!sumLink.value?.value) {
         throw new Error(`##${sumLink.id} must have a value`)
     }
 
@@ -92,16 +92,16 @@ async ({ deep, require, data: { newLink: payLink, triggeredByLinkId } }) => {
     }
 
     const tinkoffApiUrlTypeLinkId = await deep.id("@deep-foundation/payments-tinkoff-c2b", "TinkoffApiUrl");
-    const { data: [tinkoffApiUrlLinkId] } = await deep.select({
-      type_id: tinkoffApiUrlTypeLinkId
+    const { data: [tinkoffApiUrlLink] } = await deep.select({
+        type_id: tinkoffApiUrlTypeLinkId
     });
-    if (!tinkoffApiUrlLinkId) {
-      throw new Error(`A link with type ##${tinkoffApiUrlTypeLinkId} is not found`);
+    if (!tinkoffApiUrlLink) {
+        throw new Error(`A link with type ##${tinkoffApiUrlTypeLinkId} is not found`);
     }
-    if (!tinkoffApiUrlLinkId.value?.value) {
-      throw new Error(`##${tinkoffApiUrlLinkId} must have a value`);
+    if (!tinkoffApiUrlLink.value?.value) {
+        throw new Error(`##${tinkoffApiUrlLink.id} must have a value`);
     }
-    const tinkoffApiUrl = tinkoffApiUrlLinkId.value.value;
+    const tinkoffApiUrl = tinkoffApiUrlLink.value.value;
 
     const init = async (options) => {
         try {
@@ -130,19 +130,64 @@ async ({ deep, require, data: { newLink: payLink, triggeredByLinkId } }) => {
         }
     };
 
+    const containTypeLinkId = await deep.id("@deep-foundation/core", "Contain");
+    const notificationUrlTypeLinkId = await deep.id("@deep-foundation/payments-tinkoff-c2b", "NotificationUrl");
+    const { data: [notificationUrlLink] } = await deep.select({
+        type_id: notificationUrlTypeLinkId,
+        in: {
+            type_id: containTypeLinkId,
+            from_id: triggeredByLinkId
+        }
+    });
+    if (!notificationUrlLink) {
+        throw new Error(`A link with type ##${notificationUrlTypeLinkId} is not found`);
+    }
+    if (!notificationUrlLink.value?.value) {
+        throw new Error(`##${notificationUrlLink.id} must have a value`)
+    }
+
+    const emailTypeLinkId = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Email");
+    const { data: [emailLink] } = await deep.select({
+        type_id: emailTypeLinkId,
+        in: {
+            type_id: containTypeLinkId,
+            from_id: triggeredByLinkId
+        }
+    });
+    if (!emailLink) {
+        throw new Error(`A link with type ##${emailTypeLinkId} is not found`);
+    }
+    if (!emailLink.value?.value) {
+        throw new Error(`##${emailLink.id} must have a value`);
+    }
+
+    const phoneNumberTypeLinkId = await deep.id("@deep-foundation/payments-tinkoff-c2b", "PhoneNumber");
+    const { data: [phoneNumberLink] } = await deep.select({
+        type_id: phoneNumberTypeLinkId,
+        in: {
+            type_id: containTypeLinkId,
+            from_id: triggeredByLinkId
+        }
+    });
+    if (!phoneNumberLink) {
+        throw new Error(`A link with type ##${phoneNumberTypeLinkId} is not found`);
+    }
+    if (!phoneNumberLink.value?.value) {
+        throw new Error(`##${phoneNumberLink.id} must have a value`);
+    }
+
     const options = {
         TerminalKey: terminalKeyLink.value.value,
         OrderId: "" + Date.now() + paymentLink.id,
         CustomerKey: triggeredByLinkId,
-        NotificationURL: "https://5237-deepfoundation-dev-ymdvap98nh7.ws-us87.gitpod.io/payments-tinkoff-c2b",
+        NotificationURL: notificationUrlLink.value.value,
         PayType: 'T',
         Amount: sumLink.value.value,
-        Description: 'Test shopping',
         Language: 'ru',
         Recurrent: 'Y',
         DATA: {
-            Email: "karafizi.artur@gmail.com",
-            Phone: "+79003201234",
+            Email: emailLink.value.value,
+            Phone: phoneNumberLink.value.value,
         },
         // Receipt: {
         //   Items: [{
@@ -154,8 +199,8 @@ async ({ deep, require, data: { newLink: payLink, triggeredByLinkId } }) => {
         //     PaymentObject: 'service',
         //     Tax: 'none',
         //   }],
-        //   Email: "karafizi.artur@gmail.com",
-        //   Phone: "+79003201234",
+        //   Email: emailLinkId.value.value,
+        //   Phone: phoneLinkId.value.value,
         //   Taxation: 'usn_income',
         // }
     };
@@ -176,18 +221,17 @@ async ({ deep, require, data: { newLink: payLink, triggeredByLinkId } }) => {
     }
 
     const urlTypeLinkId = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Url");
-    const { error: urlLinkInsertQueryError } = await deep.insert({
+    await deep.insert({
         type_id: urlTypeLinkId,
         from_id: tinkoffProviderLink.id,
         to_id: payLink.id,
         string: { data: { value: initResult.response.PaymentURL } },
     });
-    if (urlLinkInsertQueryError) { throw new Error(urlLinkInsertQueryError.message); }
 
-    const paymentValueLinkInsertQuery = await deep.insert({ link_id: paymentLink.id, value: { bankPaymentId: parseInt(initResult.response.PaymentId) } }, { table: "objects" });
-    console.log(`Setting ${initResult.response.PaymentId} as bankPaymentId for ${paymentLink.id}`)
-    if (paymentValueLinkInsertQuery.error) { throw new Error(paymentValueLinkInsertQuery.error.message); }
-    console.log(JSON.stringify(paymentValueLinkInsertQuery));
+    await deep.insert(
+        { link_id: paymentLink.id, value: { bankPaymentId: parseInt(initResult.response.PaymentId) } },
+        { table: "objects" }
+    );
 
     return initResult;
 };
