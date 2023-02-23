@@ -11,7 +11,7 @@ exports.init = async (options) => {
         headers: {
           'Content-Type': 'application/json',
         },
-        data: { ...options, tokenTypeLinkId: generateToken(options) },
+        data: { ...options, Token: generateToken(options) },
       });
 
       const error = getError(response.data.ErrorCode);

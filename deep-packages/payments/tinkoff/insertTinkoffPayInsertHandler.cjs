@@ -4,7 +4,7 @@ const {init} = require("./init.cjs");
 
 exports.insertTinkoffPayInsertHandler = async ({packageName, deep, notificationUrl, userEmail, userPhone, fileTypeLinkId, containTypeLinkId, packageId, dockerSupportsJsId,  handleInsertTypeLinkId, handlerTypeLinkId, payTypeLinkId}) => {
     const code = `
-async ({ deep, require, data: { newLink } }) => {
+async ({ deep, require, data: { newLink, triggeredByLinkId } }) => {
   ${handlersDependencies}
 
   const tinkoffProviderTypeLinkId = await deep.id("${packageName}", "TinkoffProvider");
@@ -68,7 +68,7 @@ async ({ deep, require, data: { newLink } }) => {
   const options = {
     TerminalKey: tokenLink.value.value,
     OrderId: "" + Date.now() + paymentLink.id,
-    CustomerKey: deep.linkId,
+    CustomerKey: triggeredByLinkId,
     NotificationURL: "${notificationUrl}",
     PayType: 'T',
     Amount: sumLink.value.value,
