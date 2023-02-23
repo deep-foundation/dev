@@ -90,6 +90,7 @@
     "minimist": "^1.2.5",
     "npm": "^7.5.4",
     "prompt": "^1.2.0",
+    "prompt-sync": "^4.2.0",
     "puppeteer": "^16.2.0",
     "react": "^18.2.0",
     "rimraf": "^3.0.2",
