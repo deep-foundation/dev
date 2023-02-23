@@ -1,62 +1,97 @@
-const insertNotificationHandler = async ({deep, packageId,notificationPort, notificationRoute, portTypeId, routerListeningTypeId, routerTypeId, routerStringUseTypeId, routeTypeId, handleRouteTypeId, handlerTypeId, supportsId, containTypeId,  adminId, fileTypeId, handlerName, code}) => {
+exports.insertNotificationHandler = async ({deep, packageId,notificationPort, notificationRoute, portTypeLinkId, routerListeningTypeLinkId, routerTypeLinkId, routerStringUseTypeLinkId, routeTypeLinkId, handleRouteTypeLinkId, handlerTypeLinkId, supportsId, containTypeLinkId,  adminId, fileTypeLinkId, handlerName, code}) => {
 return await deep.insert(
     {
-      type_id: portTypeId,
+      type_id: portTypeLinkId,
       number: {
         data: { value: notificationPort },
       },
       in: {
-        data: {
-          type_id: routerListeningTypeId,
-          from: {
-            data: {
-              type_id: routerTypeId,
-              in: {
-                data: {
-                  type_id: routerStringUseTypeId,
-                  string: {
-                    data: {
-                      value:
-                        notificationRoute,
-                    },
-                  },
-                  from: {
-                    data: {
-                      type_id: routeTypeId,
-                      out: {
+        data: [
+          {
+            type_id: routerListeningTypeLinkId,
+            in: {
+              data: {
+                type_id: containTypeLinkId,
+                from_id: packageId,
+              },
+            },
+            from: {
+              data: {
+                type_id: routerTypeLinkId,
+                in: {
+                  data: [
+                    {
+                      type_id: routerStringUseTypeLinkId,
+                      in: {
                         data: {
-                          type_id: handleRouteTypeId,
-                          to: {
+                          type_id: containTypeLinkId,
+                          from_id: packageId,
+                          string: {
                             data: {
-                              type_id: handlerTypeId,
-                              from_id: supportsId,
+                              value: handlerName,
+                            },
+                          },
+                        },
+                      },
+                      string: {
+                        data: {
+                          value:
+                            notificationRoute,
+                        },
+                      },
+                      from: {
+                        data: {
+                          type_id: routeTypeLinkId,
+                          in: {
+                            data: {
+                              type_id: containTypeLinkId,
+                              from_id: packageId,
+                            },
+                          },
+                          out: {
+                            data: {
+                              type_id: handleRouteTypeLinkId,
                               in: {
-                                data: {
-                                  type_id: containTypeId,
-                                  // from_id: deep.linkId,
-                                  from_id: adminId,
-                                  string: {
-                                    data: {
-                                      value: handlerName,
-                                    },
-                                  },
-                                },
+                                data: [
+                                  {
+                                  type_id: containTypeLinkId,
+                                  from_id: packageId,
+                                }
+                              ]
                               },
                               to: {
                                 data: {
-                                  type_id: fileTypeId,
-                                  string: {
-                                    data: {
-                                      value: code,
-                                    },
-                                  },
+                                  type_id: handlerTypeLinkId,
+                                  from_id: supportsId,
                                   in: {
                                     data: {
-                                      type_id: containTypeId,
+                                      type_id: containTypeLinkId,
+                                      // from_id: deep.linkId,
                                       from_id: packageId,
                                       string: {
                                         data: {
                                           value: handlerName,
+                                        },
+                                      },
+                                    },
+                                  },
+                                  to: {
+                                    data: {
+                                      type_id: fileTypeLinkId,
+                                      string: {
+                                        data: {
+                                          value: code,
+                                        },
+                                      },
+                                      in: {
+                                        data: {
+                                          type_id: containTypeLinkId,
+                                          from_id: packageId,
+                                          string: {
+                                            data: {
+                                              value: handlerName,
+                                            },
+                                          },
                                         },
                                       },
                                     },
@@ -68,12 +103,21 @@ return await deep.insert(
                         },
                       },
                     },
-                  },
+                    {
+                      type_id: containTypeLinkId,
+                      from_id: packageId,
+                    }
+                  ],
                 },
               },
             },
-          },
-        },
+          }
+        ,
+        {
+          type_id: containTypeLinkId,
+          from_id: packageId,
+        }
+        ],
       },
     },
     {
@@ -82,4 +126,3 @@ return await deep.insert(
   )
 }
 
-exports.insertNotificationHandler = insertNotificationHandler;

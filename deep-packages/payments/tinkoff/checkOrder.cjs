@@ -3,7 +3,7 @@ const { generateToken } = require("./generateToken.cjs");
 const { getError } = require("./getError.cjs");
 const { getUrl } = require("./getUrl.cjs");
 
-const checkOrder = async (options) => {
+exports.checkOrder = async (options) => {
     try {
       const response = await axios({
         method: 'post',
@@ -30,4 +30,4 @@ const checkOrder = async (options) => {
     }
   };
 
-  exports.checkOrder = checkOrder; 
+  

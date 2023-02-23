@@ -3,7 +3,7 @@ const { generateToken } = require("./generateToken.cjs");
 const { getError } = require("./getError.cjs");
 const { getUrl } = require("./getUrl.cjs");
 
-const removeCustomer = async (options) => {
+exports.removeCustomer = async (options) => {
     try {
       const response = await axios({
         method: 'post',
@@ -30,4 +30,4 @@ const removeCustomer = async (options) => {
     }
   };
 
-  exports.removeCustomer = removeCustomer;
+  

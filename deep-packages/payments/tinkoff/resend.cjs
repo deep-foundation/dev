@@ -3,7 +3,7 @@ const { generateToken } = require("./generateToken.cjs");
 const { getError } = require("./getError.cjs");
 const { getUrl } = require("./getUrl.cjs");
 
-const resend = async (options) => {
+exports.resend = async (options) => {
     try {
       const response = await axios({
         method: 'post',
@@ -27,4 +27,4 @@ const resend = async (options) => {
     }
   };
 
-  exports.resend = resend;
+  

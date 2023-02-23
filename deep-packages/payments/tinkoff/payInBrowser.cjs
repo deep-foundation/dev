@@ -125,4 +125,4 @@ const payInBrowser = async ({ page, browser, url }) => {
   await browser.close();
 };
 
-  exports.payInBrowser = payInBrowser;
+  

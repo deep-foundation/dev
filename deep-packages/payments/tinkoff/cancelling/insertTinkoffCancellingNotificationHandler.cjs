@@ -1,7 +1,7 @@
 const { handlersDependencies } = require("../handlersDependencies.cjs");
 const {insertNotificationHandler: baseInsertNotificationHandler} = require("../insertTinkoffNotificationHandler.cjs");
 
-const insertTinkoffCancellingNotificationHandler = async ({paymentsPackageName,deep, notificationPort, notificationRoute, portTypeId, routerListeningTypeId, routerTypeId, routerStringUseTypeId, routeTypeId, handleRouteTypeId, handlerTypeId, supportsId, containTypeId,  adminId, fileTypeId}) => {
+exports.insertTinkoffCancellingNotificationHandler = async ({paymentsPackageName,deep, notificationPort, notificationRoute, portTypeLinkId, routerListeningTypeLinkId, routerTypeLinkId, routerStringUseTypeLinkId, routeTypeLinkId, handleRouteTypeLinkId, handlerTypeLinkId, supportsId, containTypeLinkId,  adminId, fileTypeLinkId}) => {
     const code = `
 async (
   req,
@@ -18,9 +18,9 @@ async (
     return next();
   }
 
-  const TinkoffProvider = await deep.id("${paymentsPackageName}", "TinkoffProvider");
+  const tinkoffProviderTypeLinkId = await deep.id("${paymentsPackageName}", "TinkoffProvider");
   const tinkoffProviderLinkSelectQuery = await deep.select({
-    type_id: TinkoffProvider
+    type_id: tinkoffProviderTypeLinkId
   });
   if(tinkoffProviderLinkSelectQuery.error) {throw new Error(tinkoffProviderLinkSelectQuery.error.message);}
   const tinkoffProviderLink = tinkoffProviderLinkSelectQuery.data[0];
@@ -42,8 +42,8 @@ async (
   console.log({mpUpCancellingPaymentLink});
   if(mpUpcancellingPaymentLinkSelectQueryError) { throw new Error(mpUpcancellingPaymentLinkSelectQueryError.message); }
 
-  const Pay = await deep.id("${paymentsPackageName}", "Pay");
-  const payLink = mpUpCancellingPaymentLink.find(link => link.type_id === Pay);
+  const payTypeLinkId = await deep.id("${paymentsPackageName}", "Pay");
+  const payLink = mpUpCancellingPaymentLink.find(link => link.type_id === payTypeLinkId);
   console.log({payLink});
   if(!payLink) { throw new Error("The pay link associated with cancelling payment link " + cancellingPaymentLink + " is not found.") }
 
@@ -57,8 +57,8 @@ async (
     }
   });
 
-  const Sum = await deep.id("${paymentsPackageName}", "Sum")
-  const sumLink = mpUpPayment.find(link => link.type_id === Sum);
+  const sumTypeLinkId = await deep.id("${paymentsPackageName}", "Sum")
+  const sumLink = mpUpPayment.find(link => link.type_id === sumTypeLinkId);
   if(!sumLink) {throw new Error("Could not find sum link associated with the cancelling payment " + cancellingPaymentLink);}
   
   const Payed = await deep.id("${paymentsPackageName}", "Payed")
@@ -73,7 +73,6 @@ async (
 };
 `;
 
-return await baseInsertNotificationHandler({adminId, containTypeId, deep, fileTypeId, handlerName: "tinkoffNotificationHandler", handleRouteTypeId,handlerTypeId,notificationPort,notificationRoute,portTypeId,routerListeningTypeId,routerStringUseTypeId,routerTypeId,routeTypeId,supportsId, code});
+return await baseInsertNotificationHandler({adminId, containTypeLinkId, deep, fileTypeLinkId, handlerName: "tinkoffNotificationHandler", handleRouteTypeLinkId,handlerTypeLinkId,notificationPort,notificationRoute,portTypeLinkId,routerListeningTypeLinkId,routerStringUseTypeLinkId,routerTypeLinkId,routeTypeLinkId,supportsId, code});
 }
 
-exports.insertTinkoffCancellingNotificationHandler = insertTinkoffCancellingNotificationHandler;
