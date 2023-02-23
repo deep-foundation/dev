@@ -63,7 +63,7 @@ const requiredEnvVariableNames = [
 "PAYMENTS_C2B_CARD_NUMBER_SUCCESS",
 "PAYMENTS_C2B_CARD_EXPDATE",
 "PAYMENTS_C2B_CARD_CVC",
-"PAYMENTS_C2B_PHONE",
+"PAYMENTS_C2B_PHONE_NUMBER",
 "PAYMENTS_C2B_EMAIL",
 ];
 
@@ -551,7 +551,7 @@ const installPackage = async () => {
     console.log({ incomeTypeId });
     debugger;
 
-    await insertTinkoffPayInsertHandler({packageName,deep, containTypeId, fileTypeId: syncTextFileTypeId, handleInsertTypeId, handlerTypeId, notificationUrl: process.env.PAYMENTS_C2B_NOTIFICATION_URL, packageId, supportsId: dockerSupportsJs, userEmail: process.env.PAYMENTS_C2B_EMAIL, userPhone: process.env.PAYMENTS_C2B_PHONE, dockerSupportsJsId, payTypeId});
+    await insertTinkoffPayInsertHandler({packageName,deep, containTypeId, fileTypeId: syncTextFileTypeId, handleInsertTypeId, handlerTypeId, notificationUrl: process.env.PAYMENTS_C2B_NOTIFICATION_URL, packageId, supportsId: dockerSupportsJs, userEmail: process.env.PAYMENTS_C2B_EMAIL, userPhone: process.env.PAYMENTS_C2B_PHONE_NUMBER, dockerSupportsJsId, payTypeId});
 
     const tinkoffNotificationOnConfirmedCode = `
 const TinkoffProvider = await deep.id("${packageName}", "TinkoffProvider");
@@ -715,7 +715,7 @@ const incomeLinkId = incomeLinkInsertQuery.data[0].id;
 console.log({ incomeLinkId });
   `;
 
-    await insertTinkoffNotificationHandler({packageName,packageId,deep, adminId: await deep.id('deep', 'admin'), containTypeId, fileTypeId: syncTextFileTypeId, handleRouteTypeId, handlerTypeId, notificationPort: process.env.PAYMENTS_C2B_NOTIFICATION_PORT, notificationRoute: process.env.PAYMENTS_C2B_NOTIFICATION_ROUTE, portTypeId, routerListeningTypeId, routerStringUseTypeId, routerTypeId, routeTypeId, supportsId: dockerSupportsJsId, onConfirmedCode: tinkoffNotificationOnConfirmedCode, onCheckedCode: tinkoffNotificationOnCheckedCode});
+    await insertTinkoffNotificationHandler({packageName,packageId,deep, adminId: await deep.id('deep', 'admin'), containTypeId, fileTypeId: syncTextFileTypeId, handleRouteTypeId, handlerTypeId, notificationPort: process.env.PAYMENTS_C2B_NOTIFICATION_PORT, notificationRoute: process.env.PAYMENTS_C2B_NOTIFICATION_ROUTE, portTypeId, routerListeningTypeId, routerStringUseTypeId, routerTypeId, routeTypeId, supportsId: dockerSupportsJsId, onConfirmedCode: tinkoffNotificationOnConfirmedCode});
 
     const callTests = async () => {
       console.log('callTests-start');
@@ -734,7 +734,7 @@ console.log({ incomeLinkId });
             Recurrent: 'Y',
             DATA: {
               Email: process.env.PAYMENTS_C2B_EMAIL,
-              Phone: process.env.PAYMENTS_C2B_PHONE,
+              Phone: process.env.PAYMENTS_C2B_PHONE_NUMBER,
             },
             // Receipt: {
             // 	Items: [{
@@ -747,7 +747,7 @@ console.log({ incomeLinkId });
             // 		Tax: 'none',
             // 	}],
             // 	Email: process.env.PAYMENTS_C2B_EMAIL,
-            // 	Phone: process.env.PAYMENTS_C2B_PHONE,
+            // 	Phone: process.env.PAYMENTS_C2B_PHONE_NUMBER,
             // 	Taxation: 'usn_income',
             // },
           };
@@ -780,7 +780,7 @@ console.log({ incomeLinkId });
             // 		Tax: 'none',
             // 	}],
             // 	Email: process.env.PAYMENTS_C2B_EMAIL,
-            // 	Phone: process.env.PAYMENTS_C2B_PHONE,
+            // 	Phone: process.env.PAYMENTS_C2B_PHONE_NUMBER,
             // 	Taxation: 'usn_income',
             // },
           };
@@ -955,7 +955,7 @@ console.log({ incomeLinkId });
 
           const addCustomerDataOptions = {
             ...customerOptions,
-            Phone: process.env.PAYMENTS_C2B_PHONE,
+            Phone: process.env.PAYMENTS_C2B_PHONE_NUMBER,
           };
 
           const addResult = await addCustomer(addCustomerDataOptions);
@@ -966,7 +966,7 @@ console.log({ incomeLinkId });
 
           expect(getResult.error).to.equal(undefined);
           expect(getResult.response.Phone).to.equal(
-            process.env.PAYMENTS_C2B_PHONE
+            process.env.PAYMENTS_C2B_PHONE_NUMBER
           );
 
           console.log('testGetCustomer-end');
@@ -982,7 +982,7 @@ console.log({ incomeLinkId });
 
           const newAddCustomerData = {
             ...removeCustomerData,
-            Phone: process.env.PAYMENTS_C2B_PHONE,
+            Phone: process.env.PAYMENTS_C2B_PHONE_NUMBER,
           };
 
           const addResult = await addCustomer(newAddCustomerData);
