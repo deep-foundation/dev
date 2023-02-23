@@ -19,34 +19,34 @@ const {
   default: links,
 } = require('@deep-foundation/deeplinks/imports/router/links');
 var myEnv = dotenv.config();
-const { payInBrowser } = require("./payments/tinkoff/payInBrowser.cjs");
-const { getError } = require("./payments/tinkoff/getError.cjs");
-const { generateToken, generateTokenStringWithInsertedTerminalPassword } = require("./payments/tinkoff/generateToken.cjs");
-const { getUrl } = require("./payments/tinkoff/getUrl.cjs");
-const { getState } = require("./payments/tinkoff/getState.cjs");
-const { checkOrder } = require("./payments/tinkoff/checkOrder.cjs");
-const { getCardList } = require("./payments/tinkoff/getCardList.cjs");
-const { init } = require("./payments/tinkoff/init.cjs");
-const { charge } = require("./payments/tinkoff/charge.cjs");
-const { addCustomer } = require("./payments/tinkoff/addCustomer.cjs");
-const { getCustomer } = require("./payments/tinkoff/getCustomer.cjs");
-const { removeCustomer } = require("./payments/tinkoff/removeCustomer.cjs");
-const { handlersDependencies } = require("./payments/tinkoff/handlersDependencies.cjs");
-const { insertTinkoffPayInsertHandler } = require("./payments/tinkoff/insertTinkoffPayInsertHandler.cjs");
-const { insertTinkoffNotificationHandler } = require("./payments/tinkoff/insertTinkoffNotificationHandler.cjs");
-const { sleep } = require("./sleep.cjs");
-const { confirm } = require("./payments/tinkoff/confirm.cjs");
-const { testInit: callRealizationTestInit } = require('./payments/tinkoff/tests/realization/testInit.cjs');
-const { testConfirm: callRealizationTestConfirm } = require('./payments/tinkoff/tests/realization/testConfirm.cjs');
-const { testGetState: callRealizationTestGetState } = require('./payments/tinkoff/tests/realization/testGetState.cjs');
-const { testGetCardList: callRealizationTestGetCardList } = require('./payments/tinkoff/tests/realization/testGetCardList.cjs');
-const { testResend: callRealizationTestResend } = require('./payments/tinkoff/tests/realization/testResend.cjs');
-const { testCharge: callRealizationTestCharge } = require('./payments/tinkoff/tests/realization/testCharge.cjs');
-const { testAddCustomer: callRealizationTestAddCustomer } = require('./payments/tinkoff/tests/realization/testAddCustomer.cjs');
-const { testGetCustomer: callRealizationTestGetCustomer } = require('./payments/tinkoff/tests/realization/testGetCustomer.cjs');
-const { testRemoveCustomer: callRealizationTestRemoveCustomer } = require('./payments/tinkoff/tests/realization/testRemoveCustomer.cjs');
+const { payInBrowser } = require("./payInBrowser.cjs");
+const { getError } = require("./getError.cjs");
+const { generateToken, generateTokenStringWithInsertedTerminalPassword } = require("./generateToken.cjs");
+const { getUrl } = require("./getUrl.cjs");
+const { getState } = require("./getState.cjs");
+const { checkOrder } = require("./checkOrder.cjs");
+const { getCardList } = require("./getCardList.cjs");
+const { init } = require("./init.cjs");
+const { charge } = require("./charge.cjs");
+const { addCustomer } = require("./addCustomer.cjs");
+const { getCustomer } = require("./getCustomer.cjs");
+const { removeCustomer } = require("./removeCustomer.cjs");
+const { handlersDependencies } = require("./handlersDependencies.cjs");
+const { insertTinkoffPayInsertHandler } = require("./insertTinkoffPayInsertHandler.cjs");
+const { insertTinkoffNotificationHandler } = require("./insertTinkoffNotificationHandler.cjs");
+const { sleep } = require("../../sleep.cjs");
+const { confirm } = require("./confirm.cjs");
+const { testInit: callRealizationTestInit } = require('./tests/realization/testInit.cjs');
+const { testConfirm: callRealizationTestConfirm } = require('./tests/realization/testConfirm.cjs');
+const { testGetState: callRealizationTestGetState } = require('./tests/realization/testGetState.cjs');
+const { testGetCardList: callRealizationTestGetCardList } = require('./tests/realization/testGetCardList.cjs');
+const { testResend: callRealizationTestResend } = require('./tests/realization/testResend.cjs');
+const { testCharge: callRealizationTestCharge } = require('./tests/realization/testCharge.cjs');
+const { testAddCustomer: callRealizationTestAddCustomer } = require('./tests/realization/testAddCustomer.cjs');
+const { testGetCustomer: callRealizationTestGetCustomer } = require('./tests/realization/testGetCustomer.cjs');
+const { testRemoveCustomer: callRealizationTestRemoveCustomer } = require('./tests/realization/testRemoveCustomer.cjs');
 const fs = require('fs');
-const { errors } = require('./payments/tinkoff/errors.cjs');
+const { errors } = require('./errors.cjs');
 
 console.log('Installing payments-tinkoff-c2b package');
 
@@ -210,6 +210,183 @@ const installPackage = async () => {
     });
 
     console.log({ tinkoffProviderTypeLinkId });
+
+    const {
+      data: [{ id: storageBusinessTypeLinkId }],
+    } = await deep.insert({
+      type_id: storageTypeLinkId,
+      in: {
+        data: {
+          type_id: containTypeLinkId,
+          from_id: packageLinkId, 
+          string: { data: { value: 'StorageBusiness' } },
+        },
+      },
+    });
+    console.log({ storageBusinessTypeLinkId });
+
+    const {
+      data: [{ id: terminalPasswordTypeLinkId }],
+    } = await deep.insert({
+      type_id: typeTypeLinkId,
+      in: {
+        data: {
+          type_id: containTypeLinkId,
+          from_id: packageLinkId, 
+          string: { data: { value: 'TerminalPassword' } },
+        },
+      },
+    });
+    console.log({ terminalPasswordTypeLinkId });
+
+    const {
+      data: [{ id: storageClientTypeLinkId }],
+    } = await deep.insert({
+      type_id: storageTypeLinkId,
+      in: {
+        data: {
+          type_id: containTypeLinkId,
+          from_id: packageLinkId, 
+          string: { data: { value: 'StorageClient' } },
+        },
+      },
+    });
+    console.log({ storageClientTypeLinkId });
+
+    const {
+      data: [{ id: storageClientTitleTypeLinkId }],
+    } = await deep.insert({
+      type_id: typeTypeLinkId,
+      from_id: storageClientTypeLinkId,
+      to_id: storageClientTypeLinkId, // TODO
+      in: {
+        data: {
+          type_id: containTypeLinkId,
+          from_id: packageLinkId, 
+          string: { data: { value: 'StorageClientTitle' } },
+        },
+      },
+    });
+    console.log({ titleTypeLinkId: storageClientTitleTypeLinkId });
+
+    const {
+      data: [{ id: incomeTypeLinkId }],
+    } = await deep.insert({
+      type_id: typeTypeLinkId,
+      from_id: anyTypeLinkId,
+      to_id: anyTypeLinkId,
+      in: {
+        data: {
+          type_id: containTypeLinkId,
+          from_id: packageLinkId, 
+          string: { data: { value: 'Income' } },
+        },
+      },
+    });
+    console.log({ incomeTypeLinkId });
+
+    const {
+      data: [{ id: storageBusinessLinkId }],
+    } = await deep.insert({
+      type_id: storageBusinessTypeLinkId,
+      in: {
+        data: [
+          {
+            type_id: containTypeLinkId,
+            from_id: deep.linkId,
+          },
+        ],
+      },
+    });
+    console.log({ storageBusinessLinkId });
+
+    const {
+      data: [{ id: terminalKeyTypeLinkId }],
+    } = await deep.insert({
+      type_id: typeTypeLinkId,
+      from_id: anyTypeLinkId,
+      to_id: anyTypeLinkId,
+      in: {
+        data: {
+          type_id: containTypeLinkId,
+          from_id: packageLinkId, 
+          string: { data: { value: 'TerminalKey' } },
+        },
+      },
+    });
+    console.log({ terminalKeyTypeLinkId });
+
+    const {
+      data: [{ id: usesTerminalKeyTypeLinkId }],
+    } = await deep.insert({
+      type_id: typeTypeLinkId,
+      from_id: anyTypeLinkId,
+      to_id: anyTypeLinkId,
+      in: {
+        data: {
+          type_id: containTypeLinkId,
+          from_id: packageLinkId, 
+          string: { data: { value: 'UsesTerminalKey' } },
+        },
+      },
+    });
+    console.log({ usesTerminalKeyTypeLinkId });
+
+    const {
+      data: [{ id: terminalKeyLinkId }],
+    } = await deep.insert({
+      type_id: terminalKeyTypeLinkId,
+      string: { data: { value: process.env.PAYMENTS_C2B_TERMINAL_KEY } },
+      in: {
+        data: [
+          {
+            type_id: containTypeLinkId,
+            from_id: deep.linkId,
+          },
+          {
+            type_id: usesTerminalKeyTypeLinkId,
+            from_id: storageBusinessLinkId
+          },
+        ],
+      },
+    });
+    console.log({ terminalKeyLinkId });
+
+    const {
+      data: [{ id: usesTerminalPasswordTypeLinkId }],
+    } = await deep.insert({
+      type_id: typeTypeLinkId,
+      from_id: anyTypeLinkId,
+      to_id: anyTypeLinkId,
+      in: {
+        data: {
+          type_id: containTypeLinkId,
+          from_id: packageLinkId, 
+          string: { data: { value: 'UsesTerminalPassword' } },
+        },
+      },
+    });
+    console.log({ usesTerminalPasswordTypeLinkId });
+
+    const {
+      data: [{ id: terminalPasswordLinkId }],
+    } = await deep.insert({
+      type_id: terminalPasswordTypeLinkId,
+      string: { data: { value: process.env.PAYMENTS_C2B_TERMINAL_PASSWORD } },
+      in: {
+        data: [
+          {
+            type_id: containTypeLinkId,
+            from_id: deep.linkId,
+          },
+          {
+            type_id: usesTerminalPasswordTypeLinkId,
+            from_id: storageBusinessLinkId
+          },
+        ],
+      },
+    });
+    console.log({ terminalPasswordLinkId });
 
     const {
       data: [{ id: paymentTypeLinkId }],
@@ -461,219 +638,6 @@ const installPackage = async () => {
         ],
       },
     });
-
-    const {
-      data: [{ id: storageBusinessTypeLinkId }],
-    } = await deep.insert({
-      type_id: storageTypeLinkId,
-      in: {
-        data: {
-          type_id: containTypeLinkId,
-          from_id: packageLinkId, 
-          string: { data: { value: 'StorageBusiness' } },
-        },
-      },
-    });
-    console.log({ storageBusinessTypeLinkId });
-
-    const {
-      data: [{ id: terminalPasswordTypeLinkId }],
-    } = await deep.insert({
-      type_id: typeTypeLinkId,
-      in: {
-        data: {
-          type_id: containTypeLinkId,
-          from_id: packageLinkId, 
-          string: { data: { value: 'TerminalPassword' } },
-        },
-      },
-    });
-    console.log({ terminalPasswordTypeLinkId });
-
-    const {
-      data: [{ id: storageClientTypeLinkId }],
-    } = await deep.insert({
-      type_id: storageTypeLinkId,
-      in: {
-        data: {
-          type_id: containTypeLinkId,
-          from_id: packageLinkId, 
-          string: { data: { value: 'StorageClient' } },
-        },
-      },
-    });
-    console.log({ storageClientTypeLinkId });
-
-    const {
-      data: [{ id: storageClientTitleTypeLinkId }],
-    } = await deep.insert({
-      type_id: typeTypeLinkId,
-      from_id: storageClientTypeLinkId,
-      to_id: storageClientTypeLinkId, // TODO
-      in: {
-        data: {
-          type_id: containTypeLinkId,
-          from_id: packageLinkId, 
-          string: { data: { value: 'StorageClientTitle' } },
-        },
-      },
-    });
-    console.log({ titleTypeLinkId: storageClientTitleTypeLinkId });
-
-    const {
-      data: [{ id: incomeTypeLinkId }],
-    } = await deep.insert({
-      type_id: typeTypeLinkId,
-      from_id: anyTypeLinkId,
-      to_id: anyTypeLinkId,
-      in: {
-        data: {
-          type_id: containTypeLinkId,
-          from_id: packageLinkId, 
-          string: { data: { value: 'Income' } },
-        },
-      },
-    });
-    console.log({ incomeTypeLinkId });
-
-    const {
-      data: [{ id: storageBusinessLinkId }],
-    } = await deep.insert({
-      type_id: storageBusinessTypeLinkId,
-      in: {
-        data: [
-          {
-            type_id: containTypeLinkId,
-            from_id: deep.linkId,
-          },
-        ],
-      },
-    });
-    console.log({ storageBusinessLinkId });
-
-    const {
-      data: [{ id: terminalKeyTypeLinkId }],
-    } = await deep.insert({
-      type_id: typeTypeLinkId,
-      from_id: anyTypeLinkId,
-      to_id: anyTypeLinkId,
-      in: {
-        data: {
-          type_id: containTypeLinkId,
-          from_id: packageLinkId, 
-          string: { data: { value: 'TerminalKey' } },
-        },
-      },
-    });
-    console.log({ terminalKeyTypeLinkId });
-
-    const {
-      data: [{ id: usesTerminalKeyTypeLinkId }],
-    } = await deep.insert({
-      type_id: typeTypeLinkId,
-      from_id: anyTypeLinkId,
-      to_id: anyTypeLinkId,
-      in: {
-        data: {
-          type_id: containTypeLinkId,
-          from_id: packageLinkId, 
-          string: { data: { value: 'UsesTerminalKey' } },
-        },
-      },
-    });
-    console.log({ usesTerminalKeyTypeLinkId });
-
-    const {
-      data: [{ id: terminalKeyLinkId }],
-    } = await deep.insert({
-      type_id: terminalKeyTypeLinkId,
-      string: { data: { value: process.env.PAYMENTS_C2B_TERMINAL_KEY } },
-      in: {
-        data: [
-          {
-            type_id: containTypeLinkId,
-            from_id: deep.linkId,
-          },
-          {
-            type_id: usesTerminalKeyTypeLinkId,
-            from_id: storageBusinessLinkId
-          },
-        ],
-      },
-    });
-    console.log({ terminalKeyLinkId });
-
-    const {
-      data: [{ id: usesTerminalPasswordTypeLinkId }],
-    } = await deep.insert({
-      type_id: typeTypeLinkId,
-      from_id: anyTypeLinkId,
-      to_id: anyTypeLinkId,
-      in: {
-        data: {
-          type_id: containTypeLinkId,
-          from_id: packageLinkId, 
-          string: { data: { value: 'UsesTerminalPassword' } },
-        },
-      },
-    });
-    console.log({ usesTerminalPasswordTypeLinkId });
-
-    const {
-      data: [{ id: terminalPasswordLinkId }],
-    } = await deep.insert({
-      type_id: terminalPasswordTypeLinkId,
-      string: { data: { value: process.env.PAYMENTS_C2B_TERMINAL_PASSWORD } },
-      in: {
-        data: [
-          {
-            type_id: containTypeLinkId,
-            from_id: deep.linkId,
-          },
-          {
-            type_id: usesTerminalPasswordTypeLinkId,
-            from_id: storageBusinessLinkId
-          },
-        ],
-      },
-    });
-    console.log({ terminalPasswordLinkId });
-
-    const {
-      data: [{ id: tinkoffErrorCodesAndMessagesTypeLinkId }],
-    } = await deep.insert({
-      type_id: typeTypeLinkId,
-      from_id: anyTypeLinkId,
-      to_id: anyTypeLinkId,
-      in: {
-        data: {
-          type_id: containTypeLinkId,
-          from_id: packageLinkId, 
-          string: { data: { value: 'TinkoffErrorCodesAndMessages' } },
-        },
-      },
-    });
-    console.log({ tinkoffErrorCodesAndMessagesTypeLinkId });
-
-    const {
-      data: [{ id: tinkoffErrorCodesAndMessagesLinkId }],
-    } = await deep.insert({
-      type_id: tinkoffErrorCodesAndMessagesTypeLinkId,
-      from_id: anyTypeLinkId,
-      to_id: anyTypeLinkId,
-      object: {
-        data: {
-          value: errors
-        }
-      },
-      in: {
-        data: {
-          type_id: containTypeLinkId,
-          from_id: deep.linkId, 
-        },
-      },
-    });
-    console.log({ tinkoffErrorCodesAndMessagesLinkId });
 
     const {
       data: [{ id: tinkoffApiUrlTypeLinkId }],
