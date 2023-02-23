@@ -26,6 +26,7 @@ const { cancel } = require("./deep-packages/payments/tinkoff/cancel.cjs");
 const { handlersDependencies } = require("./deep-packages/payments/tinkoff/handlersDependencies.cjs");
 const { insertTinkoffCancellingPayInsertHandler } = require("./deep-packages/payments/tinkoff/cancelling/insertTinkoffCancellingPayInsertHandler.cjs");
 const { insertTinkoffCancellingNotificationHandler } = require("./deep-packages/payments/tinkoff/cancelling/insertTinkoffCancellingNotificationHandler.cjs");
+const fs = require('fs')
 
 console.log("Installing @deep-foundation/payments-tinkoff-c2b-cancelling package");
 
@@ -43,7 +44,7 @@ const requiredEnvVariableNames = [
   "PAYMENTS_C2B_CARD_NUMBER_SUCCESS",
   "PAYMENTS_C2B_CARD_EXPDATE",
   "PAYMENTS_C2B_CARD_CVC",
-  "PAYMENTS_C2B_PHONE",
+  "PAYMENTS_C2B_PHONE_NUMBER",
   "PAYMENTS_C2B_EMAIL",
   ];
   
@@ -154,7 +155,7 @@ const installPackage = async () => {
     const usersId = await deep.id('deep', 'users');
 
     const {
-      data: [{ id: packageId }],
+      data: [{ id: packageLinkId }],
     } = await deep.insert({
       type_id: packageTypeLinkId,
       string: { data: { value: '@deep-foundation/payments-tinkoff-c2b-cancelling' } },
@@ -180,7 +181,7 @@ const installPackage = async () => {
       },
     });
 
-    console.log({ packageId });
+    console.log({ packageId: packageLinkId });
 
     const sumProviderTypeLinkId = await deep.id("@deep-foundation/payments-tinkoff-c2b", "SumProvider");
     console.log({ sumProviderTypeLinkId });
@@ -209,7 +210,7 @@ const installPackage = async () => {
       in: {
         data: {
           type_id: containTypeLinkId,
-          from_id: packageId,
+          from_id: packageLinkId,
           string: { data: { value: 'CancellingPay' } },
         },
       },
@@ -232,14 +233,14 @@ const installPackage = async () => {
     console.log({ storageBusinessTypeLinkId });
 
 
-    const tokenTypeLinkId = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Token");
-    console.log({ tokenTypeLinkId });
+    const terminalKeyTypeLinkId = await deep.id("@deep-foundation/payments-tinkoff-c2b", "TerminalKey");
+    console.log({ terminalKeyTypeLinkId: terminalKeyTypeLinkId });
 
     const storageClientTypeLinkId = await deep.id("@deep-foundation/payments-tinkoff-c2b", "StorageClient");
     console.log({ storageClientTypeLinkId });
 
-    const titleTypeLinkId = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Title");
-    console.log({ titleTypeLinkId });
+    const storageClientTitleTypeLinkId = await deep.id("@deep-foundation/payments-tinkoff-c2b", "StorageClientTitle");
+    console.log({ titleTypeLinkId: storageClientTitleTypeLinkId });
 
     const {
       data: [{ id: cancellingPaymentTypeLinkId }],
@@ -250,7 +251,7 @@ const installPackage = async () => {
       in: {
         data: {
           type_id: containTypeLinkId,
-          from_id: packageId,
+          from_id: packageLinkId,
           string: { data: { value: 'CancellingPayment' } },
         },
       },
@@ -284,11 +285,116 @@ const installPackage = async () => {
         ],
       },
     });
+    console.log("Before insert handler")
 
+    await deep.insert({
+      type_id: await deep.id("@deep-foundation/core", "SyncTextFile"),
+      string: {
+        data: {
+          value: fs.readFileSync('./deep-packages/payments/tinkoff/cancelling/cancellingPayInsertHandler.js', {encoding: 'utf-8'}),
+        },
+      },
+      in: {
+        data: [
+          {
+            type_id: containTypeLinkId,
+            from_id: packageLinkId,
+            string: { data: { value: "CancellingPayInsertHandlerCode" } },
+          },
+          {
+            from_id: await deep.id("@deep-foundation/core", "dockerSupportsJs"),
+            type_id: await deep.id("@deep-foundation/core", "Handler"),
+            in: {
+              data: [
+                {
+                  type_id: containTypeLinkId,
+                  from_id: packageLinkId, 
+                  string: { data: { value: "CancellingPayInsertHandler" } },
+                },
+                {
+                  type_id: await deep.id("@deep-foundation/core", "HandleInsert"),
+                  from_id: payTypeLinkId,
+                  in: {
+                    data: [
+                      {
+                        type_id: containTypeLinkId,
+                        from_id: packageLinkId, 
+                        string: { data: { value: "HandleCancellingPay" } },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    })
 
-
-    await insertTinkoffCancellingPayInsertHandler({ cancellingPayTypeLinkId, terminalKey: process.env.PAYMENTS_C2B_TERMINAL_KEY,paymentsPackageName: "@deep-foundation/payments-tinkoff-c2b",cancellingPaymentsPackageName: "@deep-foundation/payments-tinkoff-c2b-cancelling",containTypeLinkId, deep, dockerSupportsJsId, handleInsertTypeLinkId, handlerTypeLinkId, packageId, syncTextFileTypeLinkId, terminayKey: process.env.PAYMENTS_C2B_TERMINAL_KEY });
-    await insertTinkoffCancellingNotificationHandler({ paymentsPackageName: "@deep-foundation/payments-tinkoff-c2b-cancelling",deep, adminId: await deep.id('deep', 'admin'), containTypeLinkId, fileTypeLinkId: syncTextFileTypeLinkId, handleRouteTypeLinkId, handlerTypeLinkId, notificationPort: process.env.PAYMENTS_C2B_NOTIFICATION_PORT, notificationRoute: process.env.PAYMENTS_C2B_NOTIFICATION_ROUTE, portTypeLinkId, routerListeningTypeLinkId, routerStringUseTypeLinkId, routerTypeLinkId, routeTypeLinkId, supportsId: dockerSupportsJs , packageId});
+    await deep.insert({
+      type_id: await deep.id('@deep-foundation/core', 'Port'),
+      number: { data: { value: process.env.PAYMENTS_C2B_CANCELLING_NOTIFICATION_PORT } },
+      in: { data: [
+        {
+          type_id: await deep.id('@deep-foundation/core', 'Contain'),
+          from_id: deep.linkId,
+        },
+        {
+          type_id: await deep.id('@deep-foundation/core', 'RouterListening'),
+          in: { data: {
+            type_id: await deep.id('@deep-foundation/core', 'Contain'),
+            from_id: packageLinkId,
+          } },
+          from: { data: {
+            type_id: await deep.id('@deep-foundation/core', 'Router'),
+            in: { data: {
+              type_id: await deep.id('@deep-foundation/core', 'Contain'),
+              from_id: packageLinkId,
+            } },
+            in: { data: {
+              type_id: await deep.id('@deep-foundation/core', 'RouterStringUse'),
+              string: { data: { value: process.env.PAYMENTS_C2B_CANCELLING_NOTIFICATION_ROUTE } },
+              in: { data: {
+                type_id: await deep.id('@deep-foundation/core', 'Contain'),
+                from_id: deep.linkId,
+              } },
+              from: { data: {
+                type_id: await deep.id('@deep-foundation/core', 'Route'),
+                in: { data: {
+                  type_id: await deep.id('@deep-foundation/core', 'Contain'),
+                  from_id: packageLinkId,
+                } },
+                out: { data: {
+                  type_id: await deep.id('@deep-foundation/core', 'HandleRoute'),
+                  in: { data: {
+                    type_id: await deep.id('@deep-foundation/core', 'Contain'),
+                    from_id: packageLinkId,
+                  } },
+                  to: { data: {
+                    type_id: await deep.id('@deep-foundation/core', 'Handler'),
+                    from_id: await deep.id('@deep-foundation/core', 'dockerSupportsJs'),
+                    in: { data: {
+                      type_id: await deep.id('@deep-foundation/core', 'Contain'),
+                      from_id: packageLinkId,
+                    } },
+                    to: { data: {
+                      type_id: await deep.id('@deep-foundation/core', 'SyncTextFile'),
+                      string: { data: {
+                        value: fs.readFileSync('./deep-packages/payments/tinkoff/cancelling/notificationHandler.js', {encoding: 'utf-8'}),
+                      } },
+                      in: { data: {
+                        type_id: await deep.id('@deep-foundation/core', 'Contain'),
+                        from_id: packageLinkId,
+                      } },
+                    } },
+                  } },
+                } },
+              } },
+            } },
+          } },
+        }
+      ] },
+    })
 
     const callTests = async () => {
       console.log('callTests-start');
@@ -307,7 +413,7 @@ const installPackage = async () => {
             Recurrent: 'Y',
             DATA: {
               Email: process.env.PAYMENTS_C2B_EMAIL,
-              Phone: process.env.PAYMENTS_C2B_PHONE,
+              Phone: process.env.PAYMENTS_C2B_PHONE_NUMBER,
             },
             // Receipt: {
             // 	Items: [{
@@ -320,7 +426,7 @@ const installPackage = async () => {
             // 		Tax: 'none',
             // 	}],
             // 	Email: process.env.PAYMENTS_C2B_EMAIL,
-            // 	Phone: process.env.PAYMENTS_C2B_PHONE,
+            // 	Phone: process.env.PAYMENTS_C2B_PHONE_NUMBER,
             // 	Taxation: 'usn_income',
             // },
           };
@@ -353,7 +459,7 @@ const installPackage = async () => {
             // 		Tax: 'none',
             // 	}],
             // 	Email: process.env.PAYMENTS_C2B_EMAIL,
-            // 	Phone: process.env.PAYMENTS_C2B_PHONE,
+            // 	Phone: process.env.PAYMENTS_C2B_PHONE_NUMBER,
             // 	Taxation: 'usn_income',
             // },
           };
@@ -394,7 +500,7 @@ const installPackage = async () => {
               Recurrent: 'Y',
               DATA: {
                 Email: process.env.PAYMENTS_C2B_EMAIL,
-                Phone: process.env.PAYMENTS_C2B_PHONE,
+                Phone: process.env.PAYMENTS_C2B_PHONE_NUMBER,
               },
               // Receipt: {
               // 	Items: [{
@@ -407,7 +513,7 @@ const installPackage = async () => {
               // 		Tax: 'none',
               // 	}],
               // 	Email: process.env.PAYMENTS_C2B_EMAIL,
-              // 	Phone: process.env.PAYMENTS_C2B_PHONE,
+              // 	Phone: process.env.PAYMENTS_C2B_PHONE_NUMBER,
               // 	Taxation: 'usn_income',
               // }
             };
@@ -463,7 +569,7 @@ const installPackage = async () => {
               Recurrent: 'Y',
               DATA: {
                 Email: process.env.PAYMENTS_C2B_EMAIL,
-                Phone: process.env.PAYMENTS_C2B_PHONE,
+                Phone: process.env.PAYMENTS_C2B_PHONE_NUMBER,
               },
               // Receipt: {
               // 	Items: [{
@@ -476,7 +582,7 @@ const installPackage = async () => {
               // 		Tax: 'none',
               // 	}],
               // 	Email: process.env.PAYMENTS_C2B_EMAIL,
-              // 	Phone: process.env.PAYMENTS_C2B_PHONE,
+              // 	Phone: process.env.PAYMENTS_C2B_PHONE_NUMBER,
               // 	Taxation: 'usn_income',
               // }
             };
@@ -652,7 +758,7 @@ const installPackage = async () => {
         allCreatedLinkIds.push(sumProviderId);
 
         const {
-          data: [{ id: storageBusinessId }],
+          data: [{ id: storageBusinessLinkId }],
         } = await deep.insert({
           type_id: storageBusinessTypeLinkId,
           in: {
@@ -664,16 +770,32 @@ const installPackage = async () => {
             ],
           },
         });
-        console.log({ storageBusinessId });
-        createdLinkIds.push(storageBusinessId);
-        allCreatedLinkIds.push(storageBusinessId);
+        console.log({ storageBusinessId: storageBusinessLinkId });
+        createdLinkIds.push(storageBusinessLinkId);
+        allCreatedLinkIds.push(storageBusinessLinkId);
+
+        const {
+          data: [{ id: usesTerminalKeyTypeLinkId }],
+        } = await deep.insert({
+          type_id: typeTypeLinkId,
+          from_id: anyTypeLinkId,
+          to_id: anyTypeLinkId,
+          in: {
+            data: {
+              type_id: containTypeLinkId,
+              from_id: packageLinkId, 
+              string: { data: { value: 'UsesTerminalKey' } },
+            },
+          },
+        });
+        console.log({ usesTerminalKeyTypeLinkId });
 
         const {
           data: [{ id: tokenId }],
         } = await deep.insert({
-          type_id: tokenTypeLinkId,
-          from_id: storageBusinessId,
-          to_id: storageBusinessId,
+          type_id: terminalKeyTypeLinkId,
+          from_id: storageBusinessLinkId,
+          to_id: storageBusinessLinkId,
           string: { data: { value: process.env.PAYMENTS_C2B_TERMINAL_KEY } },
           in: {
             data: [
@@ -682,7 +804,7 @@ const installPackage = async () => {
                 from_id: deep.linkId,
               },
               {
-                type_id: usesTokenTypeLinkId,
+                type_id: usesTerminalKeyTypeLinkId,
                 from_id: storageBusinessLinkId
               },
             ],
@@ -739,7 +861,7 @@ const installPackage = async () => {
             type_id: paymentTypeLinkId,
             object: { data: { value: { orderId: uniqid() } } },
             from_id: deep.linkId,
-            to_id: storageBusinessId,
+            to_id: storageBusinessLinkId,
             in: {
               data: [
                 {
@@ -842,7 +964,7 @@ const installPackage = async () => {
 
         const testFinishAuthorize = async () => {
           console.log('testFinishAuthorize-start');
-          const { createdLinks } = await testInit({ customerKey });
+          const { createdLinks } = await testInit();
 
           const urlLink = createdLinks.find(link => link.type_id === urlTypeLinkId);
           expect(urlLink).to.not.be.equal(undefined)
@@ -869,7 +991,7 @@ const installPackage = async () => {
 
         const testConfirm = async () => {
           console.log('testConfirm-start');
-          const { createdLinks } = await testFinishAuthorize({ customerKey });
+          const { createdLinks } = await testFinishAuthorize();
 
           const createdLinkIds = [];
 
@@ -910,7 +1032,7 @@ const installPackage = async () => {
           console.log('testCancel-start');
           const testCancelAfterPayAfterConfirmFullPrice = async () => {
             console.log('testCancelAfterPayAfterConfirmFullPrice-start');
-            const { createdLinks } = await testConfirm({ customerKey });
+            const { createdLinks } = await testConfirm();
 
             const createdLinkIds = [];
 
