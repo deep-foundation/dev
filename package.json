@@ -1,6 +1,6 @@
 {
   "name": "@deep-foundation/dev",
-  "version": "0.0.21", 
+  "version": "0.0.21",
   "author": "ivansglazunov",
   "license": "Unlicense",
   "bugs": {
@@ -78,7 +78,8 @@
   "type": "module",
   "devDependencies": {},
   "dependencies": {
-    "@deep-foundation/deeplinks": "0.0.102",
+    "@apollo/client": "3.7.9",
+    "@deep-foundation/deeplinks": "0.0.110",
     "@types/gulp": "^4.0.8",
     "concurrently": "^5.3.0",
     "cross-env": "^7.0.3",
