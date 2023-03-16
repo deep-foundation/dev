@@ -39,11 +39,12 @@ async ({ deep, require, data: { newLink: payLink, triggeredByLinkId } }) => {
     if (!terminalPasswordLink.value?.value) {
         throw new Error(`##${terminalPasswordLink.id} must have a value`);
     }
+    const terminalPassword = terminalPasswordLink.value.value;
 
     const generateToken = (data) => {
         const { Receipt, DATA, Shops, ...restData } = data;
         const dataWithPassword = {
-            Password: terminalPasswordLink.value.value,
+            Password: terminalPassword,
             ...restData,
         };
         console.log({ dataWithPassword });
