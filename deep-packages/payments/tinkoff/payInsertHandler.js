@@ -209,15 +209,7 @@ async ({ deep, require, data: { newLink: payLink, triggeredByLinkId } }) => {
     let initResult = await init(options);
     console.log({ initResult });
     if (initResult.error) {
-        const errorMessage = "Could not initialize the order. " + initResult.error;
-        const { error: errorLinkInsertQueryError } = await deep.insert({
-            type_id: (await deep.id("@deep-foundation/payments-tinkoff-c2b", "Error")),
-            from_id: tinkoffProviderLink.id,
-            to_id: payLink.id,
-            string: { data: { value: errorMessage } },
-        });
-        if (errorLinkInsertQueryError) { throw new Error(errorLinkInsertQueryError.message); }
-        throw new Error(errorMessage);
+        throw new Error(initResult.error);
     }
 
     const urlTypeLinkId = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Url");

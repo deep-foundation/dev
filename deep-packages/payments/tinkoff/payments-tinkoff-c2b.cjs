@@ -149,7 +149,6 @@ const installPackage = async () => {
     const basePayTypeLinkId = await deep.id('@deep-foundation/payments', 'Pay');
     const baseUrlTypeLinkId = await deep.id('@deep-foundation/payments', 'Url');
     const basePayedTypeLinkId = await deep.id('@deep-foundation/payments', 'Payed');
-    const baseErrorTypeLinkId = await deep.id('@deep-foundation/payments', 'Error');
     const storageTypeLinkId = await deep.id('@deep-foundation/payments', 'Storage');
 
     const {
@@ -514,31 +513,6 @@ const installPackage = async () => {
     console.log({ payedTypeLinkId });
 
     const {
-      data: [{ id: errorTypeLinkId }],
-    } = await deep.insert({
-      type_id: baseErrorTypeLinkId,
-      from_id: tinkoffProviderTypeLinkId,
-      to_id: payTypeLinkId,
-      in: {
-        data: {
-          type_id: containTypeLinkId,
-          from_id: packageLinkId, 
-          string: { data: { value: 'Error' } },
-        },
-      },
-      out: {
-        data: [
-          {
-            type_id: valueTypeLinkId,
-            to_id: stringTypeLinkId
-          }
-        ]
-      }
-    });
-
-    console.log({ errorTypeLinkId });
-
-    const {
       data: [{ id: paymentTreeId }],
     } = await deep.insert({
       type_id: treeTypeLinkId,
@@ -578,18 +552,6 @@ const installPackage = async () => {
           {
             type_id: treeIncludeDownTypeLinkId,
             to_id: paymentObjectTypeLinkId,
-            in: {
-              data: [
-                {
-                  type_id: containTypeLinkId,
-                  from_id: packageLinkId,
-                },
-              ],
-            },
-          },
-          {
-            type_id: treeIncludeUpTypeLinkId,
-            to_id: errorTypeLinkId,
             in: {
               data: [
                 {
