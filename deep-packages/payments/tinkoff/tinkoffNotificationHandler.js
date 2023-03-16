@@ -193,13 +193,12 @@ async (
           {
             type_id: incomeTypeLinkId,
             from_id: paymentLink.id,
-            to_id: storageClientLinkId,
           }]
         },
         out: {
           data: {
-            type_id: storageClientTitle,
-            from_id: storageClientLinkId,
+            type_id: storageClientTitleTypeLinkId,
+            from_id: storageClientLinkId, // TODO how to make loop-link without doing multiple queries?
             to_id: storageClientLinkId,
             string: { data: { value: req.body.Pan } },
             in: {
