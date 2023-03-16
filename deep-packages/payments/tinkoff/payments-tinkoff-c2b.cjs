@@ -1174,23 +1174,15 @@ const installPackage = async () => {
           }
         };
 
-        const callTest = async (testFunction) => {
+        const callTestAndCleanup = async (testFunction) => {
           const { createdLinks } = await testFunction();
           for (const createdLink of createdLinks) {
-            if (createdLink.type_id === payTypeLinkId) {
-              const errorLinkSelectQuery = await deep.select({
-                type_id: errorTypeLinkId,
-                to_id: createdLink.id
-              });
-              createdLinks.push(...errorLinkSelectQuery.data);
-            }
-          }
           await deep.delete(createdLinks.map((link) => link.id));
         }
 
-        await callTest(testInit);
-        await callTest(testFinishAuthorize);
-        await callTest(testConfirm);
+        await callTestAndCleanup(testInit);
+        await callTestAndCleanup(testFinishAuthorize);
+        await callTestAndCleanup(testConfirm);
 
         // await deep.delete(createdLinkIds);
       };
