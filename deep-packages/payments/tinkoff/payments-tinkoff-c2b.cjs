@@ -1176,7 +1176,6 @@ const installPackage = async () => {
 
         const callTestAndCleanup = async (testFunction) => {
           const { createdLinks } = await testFunction();
-          for (const createdLink of createdLinks) {
           await deep.delete(createdLinks.map((link) => link.id));
         }
 
