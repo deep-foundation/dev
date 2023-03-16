@@ -474,7 +474,7 @@ const installPackage = async () => {
     const {
       data: [{ id: urlTypeLinkId }],
     } = await deep.insert({
-      type_id: typeTypeLinkId,
+      type_id: baseUrlTypeLinkId,
       from_id: tinkoffProviderTypeLinkId,
       to_id: payTypeLinkId,
       in: {
