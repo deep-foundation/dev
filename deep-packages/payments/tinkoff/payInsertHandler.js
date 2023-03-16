@@ -91,6 +91,7 @@ async ({ deep, require, data: { newLink: payLink, triggeredByLinkId } }) => {
     if (!terminalKeyLink.value?.value) {
         throw new Error(`##${terminalKeyLink.id} must have a value`);
     }
+    const terminalKey = terminalKeyLink.value.value;
 
     const tinkoffApiUrlTypeLinkId = await deep.id("@deep-foundation/payments-tinkoff-c2b", "TinkoffApiUrl");
     const { data: [tinkoffApiUrlLink] } = await deep.select({
@@ -178,7 +179,7 @@ async ({ deep, require, data: { newLink: payLink, triggeredByLinkId } }) => {
     }
 
     const options = {
-        TerminalKey: terminalKeyLink.value.value,
+        TerminalKey: terminalKey,
         OrderId: "" + Date.now() + paymentLink.id,
         CustomerKey: triggeredByLinkId,
         NotificationURL: notificationUrlLink.value.value,

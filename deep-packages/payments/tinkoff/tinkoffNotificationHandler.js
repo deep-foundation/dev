@@ -81,6 +81,7 @@ async (
   if(!terminalKeyLink.value?.value) {
     throw new Error(`##${terminalKeyLink.id} must have a value`);
   }
+  const terminalKey = terminalKeyLink.value.value;
 
   const terminalPasswordTypeLinkId = await deep.id("@deep-foundation/payments-tinkoff-c2b", "TerminalPassword");
   const usesTerminalPasswordTypeLinkId = await deep.id("@deep-foundation/payments-tinkoff-c2b", "UsesTerminalPassword");
@@ -144,7 +145,7 @@ async (
     };
 
     const confirmOptions = {
-      TerminalKey: terminalKeyLink.value.value,
+      TerminalKey: terminalKey,
       PaymentId: req.body.PaymentId,
       Amount: req.body.Amount,
       // Receipt: req.body.Receipt,
