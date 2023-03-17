@@ -155,12 +155,6 @@ async ({ deep, require, data: { newLink: payLink } }) => {
   const cancelResult = await cancel(cancelOptions);
   console.log({ cancelResult });
   if (cancelResult.error) {
-    await deep.insert({
-      type_id: (await deep.id("@deep-foundation/payments-tinkoff-c2b-cancelling", "Error")),
-      from_id: tinkoffProviderLink.id,
-      to_id: payLink.id,
-      string: { data: { value: cancelResult.error } },
-    });
     throw new Error(cancelResult.error);
   }
 
