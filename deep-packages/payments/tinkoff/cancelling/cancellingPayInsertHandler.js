@@ -4,7 +4,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
   const crypto = require('crypto');
   const axios = require('axios');
 
-  const tinkoffApiUrlTypeLinkId = await deep.id("@deep-foundation/payments-tinkoff-c2b", "TinkoffApiUrl");
+  const tinkoffApiUrlTypeLinkId = await deep.id("@deep-foundation/payments-tinkoff-c2b-cancelling", "TinkoffApiUrl");
   const { data: [tinkoffApiUrlLink] } = await deep.select({
     type_id: tinkoffApiUrlTypeLinkId
   });
@@ -16,8 +16,8 @@ async ({ deep, require, data: { newLink: payLink } }) => {
   }
   const tinkoffApiUrl = tinkoffApiUrlLink.value.value;
 
-  const terminalPasswordTypeLinkId = await deep.id("@deep-foundation/payments-tinkoff-c2b", "TerminalPassword");
-  const usesTerminalPasswordTypeLinkId = await deep.id("@deep-foundation/payments-tinkoff-c2b", "UsesTerminalPassword");
+  const terminalPasswordTypeLinkId = await deep.id("@deep-foundation/payments-tinkoff-c2b-cancelling", "TerminalPassword");
+  const usesTerminalPasswordTypeLinkId = await deep.id("@deep-foundation/payments-tinkoff-c2b-cancelling", "UsesTerminalPassword");
   const { data: [terminalPasswordLink] } = await deep.select({
     type_id: terminalPasswordTypeLinkId,
     in: {
@@ -52,22 +52,22 @@ async ({ deep, require, data: { newLink: payLink } }) => {
   };
 
 
-  const { data: linksUpToPayMp } = await deep.select({
+  const { data: linksDownToLinkPay } = await deep.select({
     down: {
       link_id: { _eq: payLink.id },
-      tree_id: { _eq: await deep.id("@deep-foundation/payments-tinkoff-c2b", "paymentTree") }, // TODO
+      tree_id: { _eq: await deep.id("@deep-foundation/payments-tinkoff-c2b-cancelling", "paymentTree") }, // TODO
     },
   });
-  console.log({ mpDownPay: linksUpToPayMp });
+  console.log({ mpDownPay: linksDownToLinkPay });
 
-  const cancellingPaymentTypeLinkId = await deep.id("@deep-foundation/payments-tinkoff-c2b-cancelling", "CancellingPayment");
-  const cancellingPaymentLink = linksUpToPayMp.find(link => link.type_id === cancellingPaymentTypeLinkId);
+  const cancellingPaymentTypeLinkId = await deep.id("@deep-foundation/payments-tinkoff-c2b-cancelling-cancelling", "CancellingPayment");
+  const cancellingPaymentLink = linksDownToLinkPay.find(link => link.type_id === cancellingPaymentTypeLinkId);
   console.log({ cancellingPaymentLink });
   if (!cancellingPaymentLink) {
     return;
   }
 
-  const tinkoffProviderTypeLinkId = await deep.id("@deep-foundation/payments-tinkoff-c2b", "TinkoffProvider");
+  const tinkoffProviderTypeLinkId = await deep.id("@deep-foundation/payments-tinkoff-c2b-cancelling", "TinkoffProvider");
   const { data: [tinkoffProviderLink] } = await deep.select({
       type_id: tinkoffProviderTypeLinkId
   });
@@ -75,8 +75,8 @@ async ({ deep, require, data: { newLink: payLink } }) => {
       throw new Error(`A link with type ##${tinkoffProviderTypeLinkId} is not found`)
   }
 
-  const sumTypeLinkId = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Sum");
-  const sumLink = linksUpToPayMp.find(link => link.type_id === sumTypeLinkId);
+  const sumTypeLinkId = await deep.id("@deep-foundation/payments-tinkoff-c2b-cancelling", "Sum");
+  const sumLink = linksDownToLinkPay.find(link => link.type_id === sumTypeLinkId);
   console.log({ sumLink });
   if (!sumLink) throw new Error(`A link with type ##${sumTypeLinkId} associated with the link ##${payLink.id} is not found`);
   if (!sumLink.value?.value) {
@@ -88,8 +88,8 @@ async ({ deep, require, data: { newLink: payLink } }) => {
     id: cancellingPaymentLink.from_id
   });
 
-  const terminalKeyTypeLinkId = await deep.id("@deep-foundation/payments-tinkoff-c2b", "TerminalKey");
-  const usesTerminalKeyTypeLinkId = await deep.id("@deep-foundation/payments-tinkoff-c2b", "UsesTerminalKey");
+  const terminalKeyTypeLinkId = await deep.id("@deep-foundation/payments-tinkoff-c2b-cancelling", "TerminalKey");
+  const usesTerminalKeyTypeLinkId = await deep.id("@deep-foundation/payments-tinkoff-c2b-cancelling", "UsesTerminalKey");
   const { data: [terminalKeyLink] } = await deep.select({
       type_id: terminalKeyTypeLinkId,
       in: {
@@ -107,7 +107,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
   const terminalKey = terminalKeyLink.value.value;
 
 
-  const incomeTypeLinkId = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Income");
+  const incomeTypeLinkId = await deep.id("@deep-foundation/payments-tinkoff-c2b-cancelling", "Income");
   await deep.insert({
     type_id: incomeTypeLinkId,
     from_id: cancellingPaymentLink.id,
@@ -144,9 +144,10 @@ async ({ deep, require, data: { newLink: payLink } }) => {
 
   await deep.insert({ link_id: cancellingPaymentLink.id, value: cancelledPaymentLink.value.value }, { table: "objects" });
 
+  const bankPaymentId = cancelledPaymentLink.value.value.bankPaymentId;
   const cancelOptions = {
     TerminalKey: terminalKey,
-    PaymentId: cancelledPaymentLink.value.value.bankPaymentId,
+    PaymentId: bankPaymentId,
     Amount: sumLink.value.value,
   };
   console.log({ cancelOptions });
@@ -155,7 +156,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
   console.log({ cancelResult });
   if (cancelResult.error) {
     await deep.insert({
-      type_id: (await deep.id("@deep-foundation/payments-tinkoff-c2b", "Error")),
+      type_id: (await deep.id("@deep-foundation/payments-tinkoff-c2b-cancelling", "Error")),
       from_id: tinkoffProviderLink.id,
       to_id: payLink.id,
       string: { data: { value: cancelResult.error } },
@@ -164,7 +165,7 @@ async ({ deep, require, data: { newLink: payLink } }) => {
   }
 
   await deep.insert({
-    type_id: await deep.id("@deep-foundation/payments-tinkoff-c2b", "Payed"),
+    type_id: await deep.id("@deep-foundation/payments-tinkoff-c2b-cancelling", "Payed"),
     from_id: tinkoffProviderLink.id,
     to_id: payLink.id,
   });
