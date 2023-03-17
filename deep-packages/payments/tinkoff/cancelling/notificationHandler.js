@@ -91,5 +91,11 @@ async (
     type_id: payedTypeLinkId,
     from_id: tinkoffProviderLink.id,
     to_id: sumLink.id,
+    in: {
+      data: {
+        type_id: containTypeLinkId,
+        from_id: triggeredByLinkId
+      }
+    }
   });
 };
