@@ -78,8 +78,6 @@ async (
   const payLink = linksDownToCancellingPaymentMp.find(link => link.type_id === payTypeLinkId);
   if (!payLink) { throw new Error(`A link with type ##${payTypeLinkId} associated with ##${cancellingPaymentLink} is not found.`) }
 
-  const bankPaymentId = req.body.PaymentId;
-
   const sumTypeLinkId = await deep.id("@deep-foundation/payments-tinkoff-c2b-cancelling", "Sum");
   const sumLink = linksUpToPayMp.find(link => link.type_id === sumTypeLinkId);
   console.log({ sumLink });
