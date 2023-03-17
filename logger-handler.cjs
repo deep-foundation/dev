@@ -3,7 +3,7 @@
 
   const containTypeLinkId = deep.id('@deep-foundation/core', 'Contain');
 
-  const reservedIds = deep.reserve(25);
+  const reservedIds = deep.reserve(2);
 
   const logLinkInsertData = {
     id: reservedIds[0],
