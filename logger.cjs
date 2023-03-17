@@ -208,7 +208,7 @@ const main = async () => {
 
     const updateHandlerId = await insertHandler(
       {
-        code: fs.readFileSync('./logger-handler.cjs', {encoding: 'utf-8'}),
+        code: fs.readFileSync('./update-handler.cjs', {encoding: 'utf-8'}),
         fileName: "updateHandlerFile",
         handlerName: "updateHandler",
         handleName: "updateHandle",
