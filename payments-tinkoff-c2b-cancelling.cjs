@@ -23,6 +23,7 @@ const { payInBrowser } = require("./deep-packages/payments/tinkoff/payInBrowser.
 const { getError } = require("./deep-packages/payments/tinkoff/getError.cjs");
 const { init } = require("./deep-packages/payments/tinkoff/init.cjs");
 const { cancel } = require("./deep-packages/payments/tinkoff/cancel.cjs");
+const { confirm } = require("./deep-packages/payments/tinkoff/confirm.cjs");
 const { handlersDependencies } = require("./deep-packages/payments/tinkoff/handlersDependencies.cjs");
 const { insertTinkoffCancellingPayInsertHandler } = require("./deep-packages/payments/tinkoff/cancelling/insertTinkoffCancellingPayInsertHandler.cjs");
 const { insertTinkoffCancellingNotificationHandler } = require("./deep-packages/payments/tinkoff/cancelling/insertTinkoffCancellingNotificationHandler.cjs");
