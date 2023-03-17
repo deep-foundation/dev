@@ -149,7 +149,6 @@ const installPackage = async () => {
     const basePayTypeLinkId = await deep.id('@deep-foundation/payments', 'Pay');
     const baseUrlTypeLinkId = await deep.id('@deep-foundation/payments', 'Url');
     const basePayedTypeLinkId = await deep.id('@deep-foundation/payments', 'Payed');
-    const baseErrorTypeLinkId = await deep.id('@deep-foundation/payments', 'Error');
     const storageTypeLinkId = await deep.id('@deep-foundation/payments', 'Storage');
 
     const {
@@ -474,7 +473,7 @@ const installPackage = async () => {
     const {
       data: [{ id: urlTypeLinkId }],
     } = await deep.insert({
-      type_id: typeTypeLinkId,
+      type_id: baseUrlTypeLinkId,
       from_id: tinkoffProviderTypeLinkId,
       to_id: payTypeLinkId,
       in: {
@@ -512,31 +511,6 @@ const installPackage = async () => {
     });
 
     console.log({ payedTypeLinkId });
-
-    const {
-      data: [{ id: errorTypeLinkId }],
-    } = await deep.insert({
-      type_id: baseErrorTypeLinkId,
-      from_id: tinkoffProviderTypeLinkId,
-      to_id: payTypeLinkId,
-      in: {
-        data: {
-          type_id: containTypeLinkId,
-          from_id: packageLinkId, 
-          string: { data: { value: 'Error' } },
-        },
-      },
-      out: {
-        data: [
-          {
-            type_id: valueTypeLinkId,
-            to_id: stringTypeLinkId
-          }
-        ]
-      }
-    });
-
-    console.log({ errorTypeLinkId });
 
     const {
       data: [{ id: paymentTreeId }],
@@ -578,18 +552,6 @@ const installPackage = async () => {
           {
             type_id: treeIncludeDownTypeLinkId,
             to_id: paymentObjectTypeLinkId,
-            in: {
-              data: [
-                {
-                  type_id: containTypeLinkId,
-                  from_id: packageLinkId,
-                },
-              ],
-            },
-          },
-          {
-            type_id: treeIncludeUpTypeLinkId,
-            to_id: errorTypeLinkId,
             in: {
               data: [
                 {
@@ -1174,23 +1136,14 @@ const installPackage = async () => {
           }
         };
 
-        const callTest = async (testFunction) => {
+        const callTestAndCleanup = async (testFunction) => {
           const { createdLinks } = await testFunction();
-          for (const createdLink of createdLinks) {
-            if (createdLink.type_id === payTypeLinkId) {
-              const errorLinkSelectQuery = await deep.select({
-                type_id: errorTypeLinkId,
-                to_id: createdLink.id
-              });
-              createdLinks.push(...errorLinkSelectQuery.data);
-            }
-          }
           await deep.delete(createdLinks.map((link) => link.id));
         }
 
-        await callTest(testInit);
-        await callTest(testFinishAuthorize);
-        await callTest(testConfirm);
+        await callTestAndCleanup(testInit);
+        await callTestAndCleanup(testFinishAuthorize);
+        await callTestAndCleanup(testConfirm);
 
         // await deep.delete(createdLinkIds);
       };

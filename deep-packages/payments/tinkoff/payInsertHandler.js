@@ -39,11 +39,12 @@ async ({ deep, require, data: { newLink: payLink, triggeredByLinkId } }) => {
     if (!terminalPasswordLink.value?.value) {
         throw new Error(`##${terminalPasswordLink.id} must have a value`);
     }
+    const terminalPassword = terminalPasswordLink.value.value;
 
     const generateToken = (data) => {
         const { Receipt, DATA, Shops, ...restData } = data;
         const dataWithPassword = {
-            Password: terminalPasswordLink.value.value,
+            Password: terminalPassword,
             ...restData,
         };
         console.log({ dataWithPassword });
@@ -90,6 +91,7 @@ async ({ deep, require, data: { newLink: payLink, triggeredByLinkId } }) => {
     if (!terminalKeyLink.value?.value) {
         throw new Error(`##${terminalKeyLink.id} must have a value`);
     }
+    const terminalKey = terminalKeyLink.value.value;
 
     const tinkoffApiUrlTypeLinkId = await deep.id("@deep-foundation/payments-tinkoff-c2b", "TinkoffApiUrl");
     const { data: [tinkoffApiUrlLink] } = await deep.select({
@@ -177,7 +179,7 @@ async ({ deep, require, data: { newLink: payLink, triggeredByLinkId } }) => {
     }
 
     const options = {
-        TerminalKey: terminalKeyLink.value.value,
+        TerminalKey: terminalKey,
         OrderId: "" + Date.now() + paymentLink.id,
         CustomerKey: triggeredByLinkId,
         NotificationURL: notificationUrlLink.value.value,
@@ -209,15 +211,7 @@ async ({ deep, require, data: { newLink: payLink, triggeredByLinkId } }) => {
     let initResult = await init(options);
     console.log({ initResult });
     if (initResult.error) {
-        const errorMessage = "Could not initialize the order. " + initResult.error;
-        const { error: errorLinkInsertQueryError } = await deep.insert({
-            type_id: (await deep.id("@deep-foundation/payments-tinkoff-c2b", "Error")),
-            from_id: tinkoffProviderLink.id,
-            to_id: payLink.id,
-            string: { data: { value: errorMessage } },
-        });
-        if (errorLinkInsertQueryError) { throw new Error(errorLinkInsertQueryError.message); }
-        throw new Error(errorMessage);
+        throw new Error(initResult.error);
     }
 
     const urlTypeLinkId = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Url");

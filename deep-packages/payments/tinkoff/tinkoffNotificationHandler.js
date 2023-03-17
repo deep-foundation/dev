@@ -81,6 +81,7 @@ async (
   if(!terminalKeyLink.value?.value) {
     throw new Error(`##${terminalKeyLink.id} must have a value`);
   }
+  const terminalKey = terminalKeyLink.value.value;
 
   const terminalPasswordTypeLinkId = await deep.id("@deep-foundation/payments-tinkoff-c2b", "TerminalPassword");
   const usesTerminalPasswordTypeLinkId = await deep.id("@deep-foundation/payments-tinkoff-c2b", "UsesTerminalPassword");
@@ -98,11 +99,12 @@ async (
   if(!terminalPasswordLink.value?.value) {
     throw new Error(`##${terminalPasswordLink.id} must have a value`);
   }
+  const terminalPassword = terminalPasswordLink.value.value;
 
   const generateToken = (data) => {
     const { Receipt, DATA, Shops, ...restData } = data;
     const dataWithPassword = {
-      Password: terminalPasswordLink.value.value,
+      Password: terminalPassword,
       ...restData,
     };
     console.log({ dataWithPassword });
@@ -143,7 +145,7 @@ async (
     };
 
     const confirmOptions = {
-      TerminalKey: terminalKeyLink.value.value,
+      TerminalKey: terminalKey,
       PaymentId: req.body.PaymentId,
       Amount: req.body.Amount,
       // Receipt: req.body.Receipt,
@@ -154,15 +156,7 @@ async (
     console.log({ confirmResult });
 
     if (confirmResult.error) {
-      const errorMessage = "Could not confirm the pay. " + confirmResult.error;
-      const { error: errorLinkInsertError } = await deep.insert({
-        type_id: (await deep.id("@deep-foundation/payments-tinkoff-c2b", "Error")),
-        from_id: tinkoffProviderLink.id,
-        to_id: payLink.id,
-        string: { data: { value: errorMessage } },
-      });
-      if (errorLinkInsertError) { throw new Error(errorLinkInsertError); }
-      throw new Error(errorMessage);
+      throw new Error(confirmResult.error);
     }
 
     return confirmResult;
@@ -181,43 +175,48 @@ async (
       throw new Error(`Unable to insert a link with type ##${payedTypeLinkId}`)
     }
 
-    // TODO
-    // const storageClientTypeLinkId = await deep.id("@deep-foundation/payments-tinkoff-c2b", "StorageClient");
-    // const {data: [storageClientLink]} = await deep.select({
-    //   type_id: storageClientTypeLinkId,
-    //   number: { value: req.body.CardId }
-    // });
-
-
-    // if (fromLinkOfPayment.type_id !== storageClientTypeLinkId) {
-    //   var storageClientLinkId;
-    //   if (storageClientLinkSelectQuery.data.length === 0) {
-    //     const StorageClient = await deep.id("@deep-foundation/payments-tinkoff-c2b", "StorageClient");
-    //     const storageClientLinkInsertQuery = await deep.insert({
-    //       type_id: StorageClient,
-    //       number: { data: { value: req.body.CardId } },
-    //     });
-    //     console.log({ storageClientLinkInsertQuery });
-    //     if (storageClientLinkInsertQuery.error) { throw new Error(storageClientLinkInsertQuery.error.message); }
-    //     storageClientLinkId = storageClientLinkInsertQuery.data[0].id;
-
-    //     const storageClientTitle = await deep.id("@deep-foundation/payments-tinkoff-c2b", "StorageClientTitle");
-    //     const storageClientTitleLinkInsertQuery = await deep.insert({
-    //       type_id: storageClientTitle,
-    //       from_id: storageClientLinkId,
-    //       to_id: storageClientLinkId,
-    //       string: { data: { value: req.body.Pan } },
-    //     });
-    //   } else {
-    //     storageClientLinkId = storageClientLinkSelectQuery.data[0];
-    //   }
-    //   const incomeTypeLinkId = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Income");
-    //   await deep.insert({
-    //     type_id: incomeTypeLinkId,
-    //     from_id: paymentLink.id,
-    //     to_id: storageClientLinkId,
-    //   });
-    // }
+    const storageClientTypeLinkId = await deep.id("@deep-foundation/payments-tinkoff-c2b", "StorageClient");
+    const incomeTypeLinkId = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Income");
+    const {data: [storageClientLink]} = await deep.select({
+      type_id: storageClientTypeLinkId,
+      number: { value: req.body.CardId }
+    });
+    if(!storageClientLink) {
+      await deep.insert({
+        type_id: storageClientTypeLinkId,
+        number: { data: { value: req.body.CardId } },
+        in: {
+          data: [{
+            type_id: containTypeLinkId,
+            from_id: triggeredByLinkId
+          },
+          {
+            type_id: incomeTypeLinkId,
+            from_id: paymentLink.id,
+          }]
+        },
+        out: {
+          data: {
+            type_id: storageClientTitleTypeLinkId,
+            from_id: storageClientLinkId, // TODO how to make loop-link without doing multiple queries?
+            to_id: storageClientLinkId,
+            string: { data: { value: req.body.Pan } },
+            in: {
+              data: {
+                type_id: containTypeLinkId,
+                from_id: triggeredByLinkId
+              }
+            }
+          }
+        }
+      });
+    } else {
+      await deep.insert({
+        type_id: incomeTypeLinkId,
+        from_id: paymentLink.id,
+        to_id: storageClientLink.id,
+      });
+    }
 
   }
   res.send('ok');
