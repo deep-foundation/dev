@@ -1,5 +1,5 @@
 
-async ({ deep, require, data: { newLink: payLink } }) => {
+async ({ deep, require, data: { newLink: payLink, triggeredByLinkId } }) => {
 
   const crypto = require('crypto');
   const axios = require('axios');
@@ -106,12 +106,19 @@ async ({ deep, require, data: { newLink: payLink } }) => {
   }
   const terminalKey = terminalKeyLink.value.value;
 
+  const containTypeLinkId = await deep.id("@deep-foundation/core", "Contain");
 
   const incomeTypeLinkId = await deep.id("@deep-foundation/payments-tinkoff-c2b-cancelling", "Income");
   await deep.insert({
     type_id: incomeTypeLinkId,
     from_id: cancellingPaymentLink.id,
-    to_id: cancelledPaymentLink.to_id
+    to_id: cancelledPaymentLink.to_id,
+    in: {
+      data: {
+        type_id: containTypeLinkId,
+        from_id: triggeredByLinkId
+      }
+    }
   });
 
   const {data: [userLink]} = await deep.select({
@@ -162,6 +169,12 @@ async ({ deep, require, data: { newLink: payLink } }) => {
     type_id: await deep.id("@deep-foundation/payments-tinkoff-c2b-cancelling", "Payed"),
     from_id: tinkoffProviderLink.id,
     to_id: payLink.id,
+    in: {
+      data: {
+        type_id: containTypeLinkId,
+        from_id: triggeredByLinkId
+      }
+    }
   });
 
 };
