@@ -14,6 +14,7 @@ When all tasks are done, you can open - http://localhost:3007/ **(ctrl/cmd + cli
 - make sure to use node v14.15.0 (we recommend to use nvm)
 - install docker and docker-compose
 - `git clone https://github.com/deep-foundation/dev.git; cd dev; npm ci; npm run packages; npm run local;`
+- `npm run local-migrate;` with `npm run local` started
 
 ## manual terminal methods
 
