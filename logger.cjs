@@ -62,6 +62,8 @@ const main = async () => {
     const syncTextFileTypeLinkId = await deep.id('@deep-foundation/core', 'SyncTextFile');
     const joinTypeLinkId = await deep.id('@deep-foundation/core', 'Join');
     const plv8SupportsJsId = await deep.id('@deep-foundation/core', 'plv8SupportsJs');
+    const userTypeLinkId = await deep.id('@deep-foundation/core', 'User');
+    
 
 
     const { data: [{ id: packageId }] } = await deep.insert({
@@ -92,10 +94,26 @@ const main = async () => {
     console.log({ packageId });
 
     const {
-      data: [{ id: logInsertTypeLinkId }],
+      data: [{ id: logLinkTypeLinkId }],
     } = await deep.insert({
       type_id: typeTypeLinkId,
       from_id: anyTypeLinkId,
+      to_id: anyTypeLinkId,
+      in: {
+        data: {
+          type_id: containTypeLinkId,
+          from_id: packageId, // before created package
+          string: { data: { value: 'LogLink' } },
+        },
+      },
+    });
+    console.log({ logLinkTypeLinkId: logLinkTypeLinkId });
+
+    const {
+      data: [{ id: logInsertTypeLinkId }],
+    } = await deep.insert({
+      type_id: typeTypeLinkId,
+      from_id: logLinkTypeLinkId,
       to_id: anyTypeLinkId,
       in: {
         data: {
@@ -127,7 +145,7 @@ const main = async () => {
       data: [{ id: logDeleteTypeLinkId }],
     } = await deep.insert({
       type_id: typeTypeLinkId,
-      from_id: anyTypeLinkId,
+      from_id: logLinkTypeLinkId,
       to_id: anyTypeLinkId,
       in: {
         data: {
@@ -156,26 +174,10 @@ const main = async () => {
     console.log({ logTypeTypeLinkId });
 
     const {
-      data: [{ id: logLinkTypeLinkId }],
-    } = await deep.insert({
-      type_id: typeTypeLinkId,
-      from_id: anyTypeLinkId,
-      to_id: anyTypeLinkId,
-      in: {
-        data: {
-          type_id: containTypeLinkId,
-          from_id: packageId, // before created package
-          string: { data: { value: 'LogLink' } },
-        },
-      },
-    });
-    console.log({ logLinkTypeLinkId: logLinkTypeLinkId });
-
-    const {
       data: [{ id: logSubjectTypeLinkId }],
     } = await deep.insert({
       type_id: typeTypeLinkId,
-      from_id: anyTypeLinkId,
+      from_id: userTypeLinkId,
       to_id: anyTypeLinkId,
       in: {
         data: {

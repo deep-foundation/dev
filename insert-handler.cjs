@@ -18,7 +18,7 @@
     },
   };
 
-  const logInsertLinkInsertData = {
+  const logInsertInsertData = {
     id: reservedIds[1],
     type_id: deep.id("@deep-foundation/logger", "LogInsert"),
     from_id: logLinkInsertData.id,
@@ -47,7 +47,7 @@
   const logSubjectLinkInsertData = {
     type_id: deep.id("@deep-foundation/logger", "LogSubject"),
     from_id: triggeredByLinkId,
-    to_id: logInsertLinkInsertData.id,
+    to_id: logInsertInsertData.id,
     in: {
       data: {
         type_id: containTypeLinkId,
@@ -58,7 +58,7 @@
 
   deep.insert([
     logLinkInsertData,
-    logInsertLinkInsertData,
+    logInsertInsertData,
     logTypeLinkInsertData,
     logSubjectLinkInsertData,
     logSubjectLinkInsertData
