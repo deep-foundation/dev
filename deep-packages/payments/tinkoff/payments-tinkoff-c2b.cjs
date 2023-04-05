@@ -50,20 +50,6 @@ const { errors } = require('./errors.cjs');
 
 console.log('Installing payments-tinkoff-c2b package');
 
-const requiredEnvVariableNames = [
-  "PAYMENTS_C2B_TERMINAL_KEY",
-  "PAYMENTS_C2B_TERMINAL_PASSWORD",
-  "PAYMENTS_C2B_URL",
-  "PAYMENTS_C2B_NOTIFICATION_ROUTE",
-  "PAYMENTS_C2B_NOTIFICATION_PORT",
-  "PAYMENTS_C2B_NOTIFICATION_URL",
-  "PAYMENTS_C2B_CARD_NUMBER_SUCCESS",
-  "PAYMENTS_C2B_CARD_EXPDATE",
-  "PAYMENTS_C2B_CARD_CVC",
-  "PAYMENTS_C2B_PHONE_NUMBER",
-  "PAYMENTS_C2B_EMAIL",
-];
-
 for (const requiredEnvVariableName of requiredEnvVariableNames) {
   if (!process.env[requiredEnvVariableName]) {
     throw new Error(`The environment variable ${requiredEnvVariableName} is required. All the required environment variables: \n${requiredEnvVariableNames.join("\n")}`);
@@ -181,36 +167,6 @@ const installPackage = async () => {
     console.log({ packageLinkId });
 
     const {
-      data: [{ id: sumProviderTypeLinkId }],
-    } = await deep.insert({
-      type_id: typeTypeLinkId,
-      in: {
-        data: {
-          type_id: containTypeLinkId,
-          from_id: packageLinkId,
-          string: { data: { value: 'SumProvider' } },
-        },
-      },
-    });
-
-    console.log({ sumProviderTypeLinkId });
-
-    const {
-      data: [{ id: tinkoffProviderTypeLinkId }],
-    } = await deep.insert({
-      type_id: typeTypeLinkId,
-      in: {
-        data: {
-          type_id: containTypeLinkId,
-          from_id: packageLinkId,
-          string: { data: { value: 'TinkoffProvider' } },
-        },
-      },
-    });
-
-    console.log({ tinkoffProviderTypeLinkId });
-
-    const {
       data: [{ id: storageBusinessTypeLinkId }],
     } = await deep.insert({
       type_id: storageTypeLinkId,
@@ -236,7 +192,18 @@ const installPackage = async () => {
         },
       },
     });
-    console.log({ terminalPasswordTypeLinkId });
+    await deep.insert({
+      type_id: typeTypeLinkId,
+      from_id: storageBusinessTypeLinkId,
+      to_id: terminalPasswordTypeLinkId,
+      in: {
+        data: {
+          type_id: containTypeLinkId,
+          from_id: packageLinkId, 
+          string: { data: { value: 'UsesTerminalPassword' } },
+        },
+      },
+    });
 
     const {
       data: [{ id: storageClientTypeLinkId }],
@@ -252,12 +219,8 @@ const installPackage = async () => {
     });
     console.log({ storageClientTypeLinkId });
 
-    const {
-      data: [{ id: storageClientTitleTypeLinkId }],
-    } = await deep.insert({
+    await deep.insert({
       type_id: typeTypeLinkId,
-      from_id: storageClientTypeLinkId,
-      to_id: storageClientTypeLinkId, // TODO
       in: {
         data: {
           type_id: containTypeLinkId,
@@ -266,13 +229,12 @@ const installPackage = async () => {
         },
       },
     });
-    console.log({ titleTypeLinkId: storageClientTitleTypeLinkId });
 
     const {
       data: [{ id: incomeTypeLinkId }],
     } = await deep.insert({
       type_id: typeTypeLinkId,
-      from_id: anyTypeLinkId,
+      from_id: paymentTypeLinkId,
       to_id: anyTypeLinkId,
       in: {
         data: {
@@ -283,21 +245,6 @@ const installPackage = async () => {
       },
     });
     console.log({ incomeTypeLinkId });
-
-    const {
-      data: [{ id: storageBusinessLinkId }],
-    } = await deep.insert({
-      type_id: storageBusinessTypeLinkId,
-      in: {
-        data: [
-          {
-            type_id: containTypeLinkId,
-            from_id: deep.linkId,
-          },
-        ],
-      },
-    });
-    console.log({ storageBusinessLinkId });
 
     const {
       data: [{ id: terminalKeyTypeLinkId }],
@@ -319,8 +266,8 @@ const installPackage = async () => {
       data: [{ id: usesTerminalKeyTypeLinkId }],
     } = await deep.insert({
       type_id: typeTypeLinkId,
-      from_id: anyTypeLinkId,
-      to_id: anyTypeLinkId,
+      from_id: storageBusinessTypeLinkId,
+      to_id: terminalKeyTypeLinkId,
       in: {
         data: {
           type_id: containTypeLinkId,
@@ -330,62 +277,6 @@ const installPackage = async () => {
       },
     });
     console.log({ usesTerminalKeyTypeLinkId });
-
-    const {
-      data: [{ id: terminalKeyLinkId }],
-    } = await deep.insert({
-      type_id: terminalKeyTypeLinkId,
-      string: { data: { value: process.env.PAYMENTS_C2B_TERMINAL_KEY } },
-      in: {
-        data: [
-          {
-            type_id: containTypeLinkId,
-            from_id: deep.linkId,
-          },
-          {
-            type_id: usesTerminalKeyTypeLinkId,
-            from_id: storageBusinessLinkId
-          },
-        ],
-      },
-    });
-    console.log({ terminalKeyLinkId });
-
-    const {
-      data: [{ id: usesTerminalPasswordTypeLinkId }],
-    } = await deep.insert({
-      type_id: typeTypeLinkId,
-      from_id: anyTypeLinkId,
-      to_id: anyTypeLinkId,
-      in: {
-        data: {
-          type_id: containTypeLinkId,
-          from_id: packageLinkId, 
-          string: { data: { value: 'UsesTerminalPassword' } },
-        },
-      },
-    });
-    console.log({ usesTerminalPasswordTypeLinkId });
-
-    const {
-      data: [{ id: terminalPasswordLinkId }],
-    } = await deep.insert({
-      type_id: terminalPasswordTypeLinkId,
-      string: { data: { value: process.env.PAYMENTS_C2B_TERMINAL_PASSWORD } },
-      in: {
-        data: [
-          {
-            type_id: containTypeLinkId,
-            from_id: deep.linkId,
-          },
-          {
-            type_id: usesTerminalPasswordTypeLinkId,
-            from_id: storageBusinessLinkId
-          },
-        ],
-      },
-    });
-    console.log({ terminalPasswordLinkId });
 
     const {
       data: [{ id: paymentTypeLinkId }],
@@ -400,14 +291,6 @@ const installPackage = async () => {
           string: { data: { value: 'Payment' } },
         },
       },
-      out: {
-        data: [
-          {
-            type_id: valueTypeLinkId,
-            to_id: objectTypeLinkId
-          }
-        ]
-      }
     });
     console.log({ paymentTypeLinkId });
 
@@ -432,7 +315,7 @@ const installPackage = async () => {
       data: [{ id: sumTypeLinkId }],
     } = await deep.insert({
       type_id: baseSumTypeLinkId,
-      from_id: sumProviderTypeLinkId,
+      from_id: anyTypeLinkId,
       to_id: paymentTypeLinkId,
       in: {
         data: {
@@ -474,7 +357,7 @@ const installPackage = async () => {
       data: [{ id: urlTypeLinkId }],
     } = await deep.insert({
       type_id: baseUrlTypeLinkId,
-      from_id: tinkoffProviderTypeLinkId,
+      from_id: packageTypeLinkId,
       to_id: payTypeLinkId,
       in: {
         data: {
@@ -494,23 +377,6 @@ const installPackage = async () => {
     });
 
     console.log({ urlTypeLinkId });
-
-    const {
-      data: [{ id: payedTypeLinkId }],
-    } = await deep.insert({
-      type_id: basePayedTypeLinkId,
-      from_id: tinkoffProviderTypeLinkId,
-      to_id: payTypeLinkId,
-      in: {
-        data: {
-          type_id: containTypeLinkId,
-          from_id: packageLinkId, 
-          string: { data: { value: 'Payed' } },
-        },
-      },
-    });
-
-    console.log({ payedTypeLinkId });
 
     const {
       data: [{ id: paymentTreeId }],
@@ -561,18 +427,7 @@ const installPackage = async () => {
               ],
             },
           },
-          {
-            type_id: treeIncludeUpTypeLinkId,
-            to_id: payedTypeLinkId,
-            in: {
-              data: [
-                {
-                  type_id: containTypeLinkId,
-                  from_id: packageLinkId,
-                },
-              ],
-            },
-          },
+          
           {
             type_id: treeIncludeUpTypeLinkId,
             to_id: payTypeLinkId,
@@ -621,7 +476,7 @@ const installPackage = async () => {
       type_id: tinkoffApiUrlTypeLinkId,
       string: {
         data: {
-          value: process.env.PAYMENTS_C2B_URL
+          value: 'https://securepay.tinkoff.ru/v2'
         }
       },
       in: {
@@ -646,6 +501,20 @@ const installPackage = async () => {
       },
     });
     console.log({ notificationUrlTypeLinkId });
+    await deep.insert({
+      type_id: typeTypeLinkId,
+      from_id: userTypeLinkId,
+      to_id: notificationUrlTypeLinkId,
+      in: {
+        data: {
+          type_id: containTypeLinkId,
+          from_id: packageLinkId, 
+          string: { data: { value: 'UsesNotificationUrl' } },
+        },
+      },
+    });
+    console.log({ notificationUrlTypeLinkId });
+
 
     const {
       data: [{ id: notificationUrlLinkId }],
