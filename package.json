@@ -79,7 +79,7 @@
   "type": "module",
   "devDependencies": {},
   "dependencies": {
-    "@deep-foundation/hasura": "0.0.38",
+    "@deep-foundation/hasura": "0.0.39",
     "@types/gulp": "^4.0.8",
     "concurrently": "^5.3.0",
     "cross-env": "^7.0.3",
