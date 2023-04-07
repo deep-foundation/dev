@@ -76,7 +76,6 @@
     "type": "git",
     "url": "git+https://github.com/deep-foundation/dev.git"
   },
-  "type": "module",
   "devDependencies": {},
   "dependencies": {
     "@deep-foundation/hasura": "0.0.39",
@@ -92,7 +91,7 @@
     "prompt": "^1.2.0",
     "rimraf": "^3.0.2",
     "simple-git": "^2.45.0",
-    "ts-node": "^9.1.1",
-    "typescript": "^4.4.3"
+    "ts-node": "^10.9.1",
+    "typescript": "^4.9.5"
   }
 }
