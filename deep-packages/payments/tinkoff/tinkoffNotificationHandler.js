@@ -9,7 +9,7 @@ async (
   const crypto = require('crypto');
   const axios = require('axios');
 
-  const tinkoffApiUrlTypeLinkId = await deep.id("@deep-foundation/payments-tinkoff-c2b", "TinkoffApiUrl");
+  const tinkoffApiUrlTypeLinkId = await deep.id(deep.linkId, "TinkoffApiUrl");
   const { data: [tinkoffApiUrlLinkId] } = await deep.select({
     type_id: tinkoffApiUrlTypeLinkId
   });
@@ -26,7 +26,7 @@ async (
     return next();
   }
 
-  const tinkoffProviderTypeLinkId = await deep.id("@deep-foundation/payments-tinkoff-c2b", "TinkoffProvider");
+  const tinkoffProviderTypeLinkId = await deep.id(deep.linkId, "TinkoffProvider");
   const { data: [tinkoffProviderLink] } = await deep.select({
     type_id: tinkoffProviderTypeLinkId
   });
@@ -34,14 +34,14 @@ async (
     throw new Error(`A link with type link id ##${tinkoffProviderTypeLinkId} is not found.`)
   }
 
-  const paymentTypeLinkId = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Payment");
+  const paymentTypeLinkId = await deep.id(deep.linkId, "Payment");
   const { data: [paymentLink] } = await deep.select({
     type_id: paymentTypeLinkId,
     object: { value: { _contains: { bankPaymentId: parseInt(req.body.PaymentId) } } }
   });
   if (!paymentLink) { throw new Error(`A link with type ##${paymentTypeLinkId} associated with the bank payment id ${req.body.PaymentId} is not found.`); }
 
-  const paymentTreeId = await deep.id("@deep-foundation/payments-tinkoff-c2b", "paymentTree");
+  const paymentTreeId = await deep.id(deep.linkId, "paymentTree");
   const { data: linksDownToPaymentMp } = await deep.select({
     up: {
       parent_id: { _eq: paymentLink.id },
@@ -52,7 +52,7 @@ async (
     throw new Error(`There is no links down to ##${paymentLink.id} materialized path`);
   }
 
-  const payTypeLinkId = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Pay");
+  const payTypeLinkId = await deep.id(deep.linkId, "Pay");
   const payLink = linksDownToPaymentMp.find(link => link.type_id === payTypeLinkId);
   console.log({ payLink });
   if (!payLink) { throw new Error(`A link with type ##${payTypeLinkId} associated with payment link ${paymentLink} is not found`) }
@@ -65,8 +65,8 @@ async (
   });
   console.log({storageBusinessLink})
 
-  const terminalKeyTypeLinkId = await deep.id("@deep-foundation/payments-tinkoff-c2b", "TerminalKey");
-  const usesTerminalKeyTypeLinkId = await deep.id("@deep-foundation/payments-tinkoff-c2b", "UsesTerminalKey");
+  const terminalKeyTypeLinkId = await deep.id(deep.linkId, "TerminalKey");
+  const usesTerminalKeyTypeLinkId = await deep.id(deep.linkId, "UsesTerminalKey");
   const { data: [terminalKeyLink] } = await deep.select({
     type_id: terminalKeyTypeLinkId,
     in: {
@@ -83,8 +83,8 @@ async (
   }
   const terminalKey = terminalKeyLink.value.value;
 
-  const terminalPasswordTypeLinkId = await deep.id("@deep-foundation/payments-tinkoff-c2b", "TerminalPassword");
-  const usesTerminalPasswordTypeLinkId = await deep.id("@deep-foundation/payments-tinkoff-c2b", "UsesTerminalPassword");
+  const terminalPasswordTypeLinkId = await deep.id(deep.linkId, "TerminalPassword");
+  const usesTerminalPasswordTypeLinkId = await deep.id(deep.linkId, "UsesTerminalPassword");
   const { data: [terminalPasswordLink] } = await deep.select({
     type_id: terminalPasswordTypeLinkId,
     in: {
@@ -162,7 +162,7 @@ async (
     return confirmResult;
   } else if (req.body.Status === 'CONFIRMED') {
 
-    const payedTypeLinkId = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Payed");
+    const payedTypeLinkId = await deep.id(deep.linkId, "Payed");
     const { data: [insertedPayedLink] } = await deep.insert({
       type_id: payedTypeLinkId,
       from_id: tinkoffProviderLink.id,
@@ -175,8 +175,8 @@ async (
       throw new Error(`Unable to insert a link with type ##${payedTypeLinkId}`)
     }
 
-    const storageClientTypeLinkId = await deep.id("@deep-foundation/payments-tinkoff-c2b", "StorageClient");
-    const incomeTypeLinkId = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Income");
+    const storageClientTypeLinkId = await deep.id(deep.linkId, "StorageClient");
+    const incomeTypeLinkId = await deep.id(deep.linkId, "Income");
     const {data: [storageClientLink]} = await deep.select({
       type_id: storageClientTypeLinkId,
       number: { value: req.body.CardId }
