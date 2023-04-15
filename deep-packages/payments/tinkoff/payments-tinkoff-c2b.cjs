@@ -716,18 +716,7 @@ const installPackage = async () => {
 
       const PRICE = 5500;
 
-      const callRealizationTests = async () => {
-        await callRealizationTestInit();
-        await callRealizationTestConfirm();
-        await callRealizationTestGetState();
-        await callRealizationTestGetCardList();
-        await callRealizationTestResend();
-        await callRealizationTestCharge();
-        await callRealizationTestAddCustomer();
-        await callRealizationTestGetCustomer();
-        await callRealizationTestRemoveCustomer();
-      };
-
+      
       const callIntegrationTests = async () => {
 
         const createdLinkIds = [];
