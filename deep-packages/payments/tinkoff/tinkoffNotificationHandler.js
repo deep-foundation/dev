@@ -282,7 +282,7 @@ async (
       const response = await axios({
         method: 'post',
         url: `${tinkoffApiUrl}/Confirm`,
-        data: { ...options, Token: generateToken(options) },
+        data: { ...options, Token: await generateToken(options) },
       });
 
       const error = response.data.Details;

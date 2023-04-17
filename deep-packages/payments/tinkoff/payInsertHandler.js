@@ -1,47 +1,132 @@
 
 async ({ deep, require, data: { newLink: payLink, triggeredByLinkId } }) => {
-
     const crypto = require('crypto');
     const axios = require('axios');
 
-    const paymentTreeId = await deep.id("@deep-foundation/payments-tinkoff-c2b", "paymentTree");
-    const { data: linksUpToPayMp } = await deep.select({
-        down: {
-            link_id: { _eq: payLink.id },
-            tree_id: { _eq: paymentTreeId }
-        }
-    });
-    if (linksUpToPayMp.length === 0) {
-        throw new Error(`There is no links up to ##${payLink.id} materialized path`);
-    }
+    const containTypeLinkId = await deep.id("@deep-foundation/core", "Contain");
 
-    const paymentTypeLinkId = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Payment");
-    const paymentLink = linksUpToPayMp.find(link => link.type_id === paymentTypeLinkId);
-    if (!paymentLink) throw new Error(`A link with type ##${paymentTypeLinkId} associated with the link ##${payLink.id} is not found`);
-
-    const { data: [storageBusinessLink] } = await deep.select({
-        id: paymentLink.to_id
-    });
-    console.log({ storageBusinessLink })
-
-    const terminalPasswordTypeLinkId = await deep.id("@deep-foundation/payments-tinkoff-c2b", "TerminalPassword");
-    const usesTerminalPasswordTypeLinkId = await deep.id("@deep-foundation/payments-tinkoff-c2b", "UsesTerminalPassword");
-    const { data: [terminalPasswordLink] } = await deep.select({
-        type_id: terminalPasswordTypeLinkId,
-        in: {
-            type_id: usesTerminalPasswordTypeLinkId,
-            from_id: storageBusinessLink.id
-        }
-    });
-    if (!terminalPasswordLink) {
-        throw new Error(`A link with type ##${terminalPasswordTypeLinkId} is not found`);
-    }
-    if (!terminalPasswordLink.value?.value) {
-        throw new Error(`##${terminalPasswordLink.id} must have a value`);
-    }
+    const paymentTreeLinksUpToPay = await getPaymentTreeLinksUpToPay({ payLinkId: payLink.id });
+    const paymentLink = await getPaymentLink({ paymentTreeLinksUpToPay });
+    const storageBusinessLink = await getStorageBusinessLink({ paymentLink });
+    const terminalPasswordLink = await getTerminalPasswordLink({ storageBusinessLink });
     const terminalPassword = terminalPasswordLink.value.value;
+    const sumLink = await getSumLink({ paymentTreeLinksUpToPay });
+    const sum = sumLink.value.value;
+    const terminalKeyLink = await getTerminalKeyLink({ storageBusinessLink });
+    const terminalKey = terminalKeyLink.value.value;
+    const tinkoffApiUrlLink = await getTinkoffApiUrlLink();
+    const tinkoffApiUrl = tinkoffApiUrlLink.value.value;
+    const emailLink = await getEmailLink({ triggeredByLinkId });
+    const email = emailLink?.value?.value;
+    const phoneNumberLink = await getPhoneNumberLink({ triggeredByLinkId });
+    const phoneNumber = phoneNumberLink?.value?.value;
+    const notificationUrlLink = await getNotificationUrlLink({ storageBusinessLink });
+    const notificationUrl = notificationUrlLink.value.value;
 
-    const generateToken = (data) => {
+    const initData = {
+        TerminalKey: terminalKey,
+        OrderId: `${Date.now()}${paymentLink.id}`,
+        CustomerKey: triggeredByLinkId,
+        NotificationURL: notificationUrl,
+        PayType: 'T',
+        Amount: sum,
+        Language: 'ru',
+        Recurrent: 'Y',
+        DATA: {
+            Email: email,
+            Phone: phoneNumber,
+        },
+    };
+
+    let initResult = await init(initData);
+    if (initResult.error) {
+        throw new Error(initResult.error);
+    }
+
+    const urlTypeLinkId = await deep.id(deep.id, "Url");
+
+    const urlInsertData = {
+        table: "links",
+        type: "insert",
+        objects: {
+            type_id: urlTypeLinkId,
+            from_id: tinkoffProviderLink.id,
+            to_id: payLink.id,
+            string: { data: { value: initResult.response.PaymentURL } },
+        }
+    }
+
+    const paymentValueInsertData = {
+        table: "objects",
+        type: "insert",
+        objects: {
+            link_id: paymentLink.id,
+            value: {
+                ...(paymentLink?.value?.value ? paymentLink.value.value : {}),
+                bankPaymentId: parseInt(initResult.response.PaymentId)
+            }
+        }
+    }
+
+    await deep.serial({
+        operations: [
+            urlInsertData, 
+            paymentValueInsertData
+        ]
+    })
+
+
+    return initResult;
+
+    async function getPaymentTreeLinksUpToPay({ payLinkId }) {
+        const selectData = {
+            down: {
+                link_id: { _eq: payLinkId },
+                tree_id: { _id: [deep.id, "paymentTree"] }
+            }
+        };
+        const { data } = await deep.select(selectData);
+        if (data.length === 0) {
+            throw new Error(`Select with data ${JSON.stringify(selectData)} returned no results`);
+        }
+    }
+
+    async function getPaymentLink({ paymentTreeLinksUpToPay }) {
+        const paymentTypeLinkId = await deep.id(deep.id, "Payment");
+        const paymentLink = paymentTreeLinksUpToPay.find(link => link.type_id === paymentTypeLinkId);
+        if (!paymentLink) throw new Error(`A link with type ##${paymentTypeLinkId} associated with the link ##${payLink.id} is not found`);
+    }
+
+    async function getStorageBusinessLink({ paymentLink }) {
+        const { data: [storageBusinessLink] } = await deep.select({
+            id: paymentLink.to_id
+        });
+        if (!storageBusinessLink) throw new Error(`##${paymentLink.to_id} is not found`);
+        return storageBusinessLink;
+    }
+
+    async function getTerminalPasswordLink({ storageBusinessLink }) {
+        const { data: [terminalPasswordLink] } = await deep.select({
+            type_id: {
+                _id: [deep.id, "TerminalPassword"]
+            },
+            in: {
+                type_id: {
+                    _id: [deep.id, "UsesTerminalPassword"]
+                },
+                from_id: storageBusinessLink.id
+            }
+        });
+        if (!terminalPasswordLink) {
+            throw new Error(`Terminal password is not found. Select with data ${JSON.stringify(terminalPasswordSelectData)} returned no results`);
+        }
+        if (!terminalPasswordLink.value?.value) {
+            throw new Error(`##${terminalPasswordLink.id} must have a value`);
+        }
+        return terminalPasswordLink;
+    }
+
+    async function generateToken(data) {
         const { Receipt, DATA, Shops, ...restData } = data;
         const dataWithPassword = {
             Password: terminalPassword,
@@ -59,53 +144,50 @@ async ({ deep, require, data: { newLink: payLink, triggeredByLinkId } }) => {
         return hash;
     };
 
-    const tinkoffProviderTypeLinkId = await deep.id("@deep-foundation/payments-tinkoff-c2b", "TinkoffProvider");
-    const { data: [tinkoffProviderLink] } = await deep.select({
-        type_id: tinkoffProviderTypeLinkId
-    });
-    if (!tinkoffProviderLink) {
-        throw new Error(`A link with type ##${tinkoffProviderTypeLinkId} is not found`)
-    }
-
-    const sumTypeLinkId = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Sum");
-    const sumLink = linksUpToPayMp.find(link => link.type_id === sumTypeLinkId);
-    console.log({ sumLink });
-    if (!sumLink) throw new Error(`A link with type ##${sumTypeLinkId} associated with the link ##${payLink.id} is not found`);
-    if (!sumLink.value?.value) {
-        throw new Error(`##${sumLink.id} must have a value`)
-    }
-
-    const terminalKeyTypeLinkId = await deep.id("@deep-foundation/payments-tinkoff-c2b", "TerminalKey");
-    const usesTerminalKeyTypeLinkId = await deep.id("@deep-foundation/payments-tinkoff-c2b", "UsesTerminalKey");
-    const { data: [terminalKeyLink] } = await deep.select({
-        type_id: terminalKeyTypeLinkId,
-        in: {
-            type_id: usesTerminalKeyTypeLinkId,
-            from_id: storageBusinessLink.id
+    async function getSumLink({ paymentTreeLinksUpToPay }) {
+        const sumTypeLinkId = await deep.id(deep.id, "Sum");
+        const sumLink = paymentTreeLinksUpToPay.find(link => link.type_id === sumTypeLinkId);
+        if (!sumLink) throw new Error(`Sum is not found. A link with type ##${sumTypeLinkId} associated with the Pay link ##${payLink.id} is not found`);
+        if (!sumLink.value?.value) {
+            throw new Error(`##${sumLink.id} must have a value`)
         }
-    });
-    console.log({ terminalKeyLink })
-    if (!terminalKeyLink) {
-        throw new Error(`A link with type ##${terminalKeyTypeLinkId} is not found`);
+        return sumLink;
     }
-    if (!terminalKeyLink.value?.value) {
-        throw new Error(`##${terminalKeyLink.id} must have a value`);
-    }
-    const terminalKey = terminalKeyLink.value.value;
 
-    const tinkoffApiUrlTypeLinkId = await deep.id("@deep-foundation/payments-tinkoff-c2b", "TinkoffApiUrl");
-    const { data: [tinkoffApiUrlLink] } = await deep.select({
-        type_id: tinkoffApiUrlTypeLinkId
-    });
-    if (!tinkoffApiUrlLink) {
-        throw new Error(`A link with type ##${tinkoffApiUrlTypeLinkId} is not found`);
+    async function getTerminalKeyLink({ storageBusinessLink }) {
+        const terminalKeyTypeLinkId = await deep.id(deep.id, "TerminalKey");
+        const usesTerminalKeyTypeLinkId = await deep.id(deep.id, "UsesTerminalKey");
+        const { data: [terminalKeyLink] } = await deep.select({
+            type_id: terminalKeyTypeLinkId,
+            in: {
+                type_id: usesTerminalKeyTypeLinkId,
+                from_id: storageBusinessLink.id
+            }
+        });
+        if (!terminalKeyLink) {
+            throw new Error(`A link with type ##${terminalKeyTypeLinkId} is not found`);
+        }
+        if (!terminalKeyLink.value?.value) {
+            throw new Error(`##${terminalKeyLink.id} must have a value`);
+        }
+        return terminalKeyLink;
     }
-    if (!tinkoffApiUrlLink.value?.value) {
-        throw new Error(`##${tinkoffApiUrlLink.id} must have a value`);
-    }
-    const tinkoffApiUrl = tinkoffApiUrlLink.value.value;
 
-    const init = async (options) => {
+    async function getTinkoffApiUrlLink() {
+        const tinkoffApiUrlTypeLinkId = await deep.id(deep.id, "TinkoffApiUrl");
+        const { data: [tinkoffApiUrlLink] } = await deep.select({
+            type_id: tinkoffApiUrlTypeLinkId
+        });
+        if (!tinkoffApiUrlLink) {
+            throw new Error(`A link with type ##${tinkoffApiUrlTypeLinkId} is not found`);
+        }
+        if (!tinkoffApiUrlLink.value?.value) {
+            throw new Error(`##${tinkoffApiUrlLink.id} must have a value`);
+        }
+    }
+
+
+    async function init(options) {
         try {
             const response = await axios({
                 method: 'post',
@@ -113,7 +195,7 @@ async ({ deep, require, data: { newLink: payLink, triggeredByLinkId } }) => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                data: { ...options, Token: generateToken(options) },
+                data: { ...options, Token: await generateToken(options) },
             });
 
             const error = response.data.Details;
@@ -132,100 +214,85 @@ async ({ deep, require, data: { newLink: payLink, triggeredByLinkId } }) => {
         }
     };
 
-    const containTypeLinkId = await deep.id("@deep-foundation/core", "Contain");
-    const notificationUrlTypeLinkId = await deep.id("@deep-foundation/payments-tinkoff-c2b", "NotificationUrl");
-    const { data: [notificationUrlLink] } = await deep.select({
-        type_id: notificationUrlTypeLinkId,
-        in: {
-            type_id: containTypeLinkId,
-            from_id: triggeredByLinkId
-        }
-    });
-    if (!notificationUrlLink) {
-        throw new Error(`A link with type ##${notificationUrlTypeLinkId} is not found`);
-    }
-    if (!notificationUrlLink.value?.value) {
-        throw new Error(`##${notificationUrlLink.id} must have a value`)
-    }
-
-    const emailTypeLinkId = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Email");
-    const { data: [emailLink] } = await deep.select({
-        type_id: emailTypeLinkId,
-        in: {
-            type_id: containTypeLinkId,
-            from_id: triggeredByLinkId
-        }
-    });
-    if (!emailLink) {
-        throw new Error(`A link with type ##${emailTypeLinkId} is not found`);
-    }
-    if (!emailLink.value?.value) {
-        throw new Error(`##${emailLink.id} must have a value`);
-    }
-
-    const phoneNumberTypeLinkId = await deep.id("@deep-foundation/payments-tinkoff-c2b", "PhoneNumber");
-    const { data: [phoneNumberLink] } = await deep.select({
-        type_id: phoneNumberTypeLinkId,
-        in: {
-            type_id: containTypeLinkId,
-            from_id: triggeredByLinkId
-        }
-    });
-    if (!phoneNumberLink) {
-        throw new Error(`A link with type ##${phoneNumberTypeLinkId} is not found`);
-    }
-    if (!phoneNumberLink.value?.value) {
-        throw new Error(`##${phoneNumberLink.id} must have a value`);
-    }
-
-    const options = {
-        TerminalKey: terminalKey,
-        OrderId: "" + Date.now() + paymentLink.id,
-        CustomerKey: triggeredByLinkId,
-        NotificationURL: notificationUrlLink.value.value,
-        PayType: 'T',
-        Amount: sumLink.value.value,
-        Language: 'ru',
-        Recurrent: 'Y',
-        DATA: {
-            Email: emailLink.value.value,
-            Phone: phoneNumberLink.value.value,
-        },
-        // Receipt: {
-        //   Items: [{
-        //     Name: 'Test item',
-        //     Price: sum,
-        //     Quantity: 1,
-        //     Amount: sumLink.value.value,
-        //     PaymentMethod: 'prepayment',
-        //     PaymentObject: 'service',
-        //     Tax: 'none',
-        //   }],
-        //   Email: emailLinkId.value.value,
-        //   Phone: phoneLinkId.value.value,
-        //   Taxation: 'usn_income',
+    async function getEmailLink({ triggeredByLinkId }) {
+        const emailTypeLinkId = await deep.id(deep.id, "Email");
+        const { data: [emailLink] } = await deep.select({
+            type_id: emailTypeLinkId,
+            in: {
+                type_id: containTypeLinkId,
+                from_id: triggeredByLinkId
+            }
+        });
+        // if (!emailLink) {
+        //     throw new Error(`A link with type ##${emailTypeLinkId} is not found`);
         // }
-    };
-    console.log({ options });
-
-    let initResult = await init(options);
-    console.log({ initResult });
-    if (initResult.error) {
-        throw new Error(initResult.error);
+        // if (!emailLink.value?.value) {
+        //     throw new Error(`##${emailLink.id} must have a value`);
+        // }
+        return emailLink;
     }
 
-    const urlTypeLinkId = await deep.id("@deep-foundation/payments-tinkoff-c2b", "Url");
-    await deep.insert({
-        type_id: urlTypeLinkId,
-        from_id: tinkoffProviderLink.id,
-        to_id: payLink.id,
-        string: { data: { value: initResult.response.PaymentURL } },
-    });
+    async function getPhoneNumberLink({ triggeredByLinkId }) {
+        const phoneNumberTypeLinkId = await deep.id(deep.id, "PhoneNumber");
+        const { data: [phoneNumberLink] } = await deep.select({
+            type_id: phoneNumberTypeLinkId,
+            in: {
+                type_id: containTypeLinkId,
+                from_id: triggeredByLinkId
+            }
+        });
+        if (!phoneNumberLink) {
+            throw new Error(`A link with type ##${phoneNumberTypeLinkId} is not found`);
+        }
+        if (!phoneNumberLink.value?.value) {
+            throw new Error(`##${phoneNumberLink.id} must have a value`);
+        }
+        return phoneNumberLink;
+    }
 
-    await deep.insert(
-        { link_id: paymentLink.id, value: { bankPaymentId: parseInt(initResult.response.PaymentId) } },
-        { table: "objects" }
-    );
+    async function getPaymentLink({ paymentTreeLinksUpToPay }) {
+        const paymentTypeLinkId = await deep.id(deep.id, "Payment");
+        const paymentLink = paymentTreeLinksUpToPay.find(link => link.type_id === paymentTypeLinkId);
+        if (!paymentLink) throw new Error(`Payment is not found. A link with type ##${paymentTypeLinkId} associated with the Pay link ##${payLink.id} is not found`);
+        return paymentLink;
+    }
 
-    return initResult;
+    async function getStorageBusinessLink({ paymentLink }) {
+        const storageBusinessTypeLinkId = await deep.id(deep.id, "StorageBusiness");
+        const { data: [storageBusinessLink] } = await deep.select({
+            type_id: storageBusinessTypeLinkId,
+            in: {
+                type_id: containTypeLinkId,
+                from_id: paymentLink.id
+            }
+        });
+        if (!storageBusinessLink) {
+            throw new Error(`A link with type ##${storageBusinessTypeLinkId} is not found`);
+        }
+        return storageBusinessLink;
+    }
+
+    async function getNotificationUrlLink() {
+        const selectData = {
+            type_id: {
+                _id: [deep.id, "NotificationUrl"]
+            },
+            in: {
+                type_id: {
+                    _id: [deep.id, "UsesNotificationUrl"],
+                },
+                from_id: triggeredByLinkId
+            }
+        };
+        const { data: [notificationUrlLink] } = await deep.select(selectData);
+        if (!notificationUrlLink) {
+            throw new Error(`Select with data ${JSON.stringify(selectData)} returned no data`);
+        }
+        if (!notificationUrlLink.value?.value) {
+            throw new Error(`##${notificationUrlLink.id} must have a value`);
+        }
+        return notificationUrlLink;
+    }
+
+
 };
