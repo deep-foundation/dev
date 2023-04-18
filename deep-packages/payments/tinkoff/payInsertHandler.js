@@ -43,30 +43,8 @@ async ({ deep, require, data: { newLink: payLink, triggeredByLinkId } }) => {
         throw new Error(initResult.error);
     }
 
-    const urlTypeLinkId = await deep.id(deep.id, "Url");
-
-    const urlInsertData = {
-        table: "links",
-        type: "insert",
-        objects: {
-            type_id: urlTypeLinkId,
-            from_id: tinkoffProviderLink.id,
-            to_id: payLink.id,
-            string: { data: { value: initResult.response.PaymentURL } },
-        }
-    }
-
-    const paymentValueInsertData = {
-        table: "objects",
-        type: "insert",
-        objects: {
-            link_id: paymentLink.id,
-            value: {
-                ...(paymentLink?.value?.value ? paymentLink.value.value : {}),
-                bankPaymentId: parseInt(initResult.response.PaymentId)
-            }
-        }
-    }
+    const urlInsertData = await getUrlInsertData();
+    const paymentValueInsertData = await getPaymentValueInsertData();
 
     await deep.serial({
         operations: [
@@ -74,7 +52,6 @@ async ({ deep, require, data: { newLink: payLink, triggeredByLinkId } }) => {
             paymentValueInsertData
         ]
     })
-
 
     return initResult;
 
@@ -292,6 +269,34 @@ async ({ deep, require, data: { newLink: payLink, triggeredByLinkId } }) => {
             throw new Error(`##${notificationUrlLink.id} must have a value`);
         }
         return notificationUrlLink;
+    }
+
+    async function getUrlInsertData() {
+    const urlTypeLinkId = await deep.id(deep.id, "Url");
+    return {
+            table: "links",
+            type: "insert",
+            objects: {
+                type_id: urlTypeLinkId,
+                from_id: tinkoffProviderLink.id,
+                to_id: payLink.id,
+                string: { data: { value: initResult.response.PaymentURL } },
+            }
+        };
+    }
+    
+    async function getPaymentValueInsertData() {
+        return {
+            table: "objects",
+            type: "insert",
+            objects: {
+                link_id: paymentLink.id,
+                value: {
+                    ...(paymentLink?.value?.value ? paymentLink.value.value : {}),
+                    bankPaymentId: parseInt(initResult.response.PaymentId)
+                }
+            }
+        };
     }
 
 
