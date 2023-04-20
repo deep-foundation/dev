@@ -587,7 +587,7 @@ const installPackage = async () => {
         {
           type_id: containTypeLinkId,
           from_id: packageLinkId,
-          string: { data: { value: "TokenizerHandlerCode" } },
+          string: { data: { value: "PayInsertHandlerCode" } },
         },
         {
           from_id: await deep.id("@deep-foundation/core", "dockerSupportsJs"),
@@ -597,7 +597,7 @@ const installPackage = async () => {
               {
                 type_id: containTypeLinkId,
                 from_id: packageLinkId,
-                string: { data: { value: "TokenizerHandler" } },
+                string: { data: { value: "PayInsertHandler" } },
               },
               {
                 type_id: await deep.id("@deep-foundation/core", "HandleInsert"),
@@ -607,7 +607,7 @@ const installPackage = async () => {
                     {
                       type_id: containTypeLinkId,
                       from_id: packageLinkId,
-                      string: { data: { value: "TokenizerHandle" } },
+                      string: { data: { value: "HandlePayInsert" } },
                     },
                   ],
                 },
@@ -619,11 +619,6 @@ const installPackage = async () => {
     },
 
   });
-
-  const code = ; 
-  const route = ;
-  const port = ;
-  const ownerLinkId = ;
   
   const reservedIds = await deep.reserve(6);
   
