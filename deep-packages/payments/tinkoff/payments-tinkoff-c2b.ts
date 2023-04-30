@@ -399,6 +399,47 @@ const installPackage = async () => {
     }
   });
 
+  const {
+    data: [{ id: notificationUrlLinkId }],
+  } = await deep.insert({
+    type_id: typeTypeLinkId,
+    in: {
+      data: {
+        type_id: containTypeLinkId,
+        from_id: packageLinkId,
+        string: { data: { value: 'NotificationUrl' } },
+      },
+    },
+    out: {
+      data: {
+        type_id: valueTypeLinkId,
+        to_id: stringTypeLinkId,
+        in: {
+          data: [
+            {
+              type_id: containTypeLinkId,
+              from_id: packageLinkId,
+              string: { data: { value: 'TypeOfValueOfNotificationUrl' } },
+            },
+          ],
+        },
+      }
+    }
+  });
+
+  const {
+    data: [{ id: usesNotificationUrlLinkId }],
+  } = await deep.insert({
+    type_id: typeTypeLinkId,
+    in: {
+      data: {
+        type_id: containTypeLinkId,
+        from_id: packageLinkId,
+        string: { data: { value: 'UsesNotificationUrl' } },
+      },
+    }
+  });
+
   console.log({ urlTypeLinkId });
 
   const {
