@@ -12,9 +12,14 @@ async (
     return next();
   }
 
+  const axios = require('axios');
+
+  const containTypeLinkId = await deep.id("@deep-foundation/core", "Contain");
+
   const tinkoffApiUrlLink = await getTinkoffApiUrlLink();
   const tinkoffApiUrl = tinkoffApiUrlLink.value.value;
   const paymentLink = await getPaymentLink();
+  const userLinkId = paymentLink.from_id;
   const paymentTreeLinksDownToPaymentParent = await getPaymentTreeLinksDownToPaymentParent();
   const payLink = await getPayLink();
   const storageBusinessLink = await getStorageBusinessLink();
@@ -84,7 +89,7 @@ async (
           in: {
             data: [{
               type_id: containTypeLinkId,
-              from_id: triggeredByLinkId
+              from_id: userLinkId
             },
             ]
           },
@@ -110,7 +115,7 @@ async (
           in: {
             data: {
               type_id: containTypeLinkId,
-              from_id: triggeredByLinkId
+              from_id: userLinkId
             }
           }
         }
@@ -129,7 +134,6 @@ async (
         ...serialOperations,
         storageClientInsertData,
         storageClientNumberValueInsertData,
-        incomeInsertData,
         storageClientTitleInsertData,
         storageClientTitleStringValueInsertData
       ]
@@ -186,7 +190,7 @@ async (
         from_id: storageBusinessLink.id
       }
     };
-    const { data: [terminalPasswordLink] } = await deep.select(terminalKeySelectData);
+    const { data: [terminalPasswordLink] } = await deep.select(terminalPasswordSelectData);
     console.log({ terminalPasswordLink })
     if (!terminalPasswordLink) {
       throw new Error(`Select with data ${JSON.stringify(terminalPasswordSelectData)} returned no results`);
@@ -194,6 +198,7 @@ async (
     if (!terminalPasswordLink.value?.value) {
       throw new Error(`##${terminalPasswordLink.id} must have a value`);
     }
+    return terminalPasswordLink;
   }
 
   async function getStorageBusinessLink() {
