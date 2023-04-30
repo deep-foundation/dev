@@ -20,31 +20,28 @@ async ({ deep, require, data: { newLink: payLink, triggeredByLinkId } }) => {
     const email = emailLink?.value?.value;
     const phoneNumberLink = await getPhoneNumberLink({ triggeredByLinkId });
     const phoneNumber = phoneNumberLink?.value?.value;
-    const notificationUrlLink = await getNotificationUrlLink({ storageBusinessLink });
+    const notificationUrlLink = await getNotificationUrlLink();
     const notificationUrl = notificationUrlLink.value.value;
 
-    const initData = {
-        TerminalKey: terminalKey,
-        OrderId: `${Date.now()}${paymentLink.id}`,
-        CustomerKey: triggeredByLinkId,
-        NotificationURL: notificationUrl,
-        PayType: 'T',
-        Amount: sum,
-        Language: 'ru',
-        Recurrent: 'Y',
-        DATA: {
-            Email: email,
-            Phone: phoneNumber,
-        },
-    };
-
-    let initResult = await init(initData);
+    const initData = await getInitData({
+        email,
+        notificationUrl,
+        paymentLinkId: paymentLink.id,
+        phoneNumber,
+        sum,
+        terminalKey
+    })
+    let initResult = await init({
+        data: initData,
+        tinkoffApiUrl: tinkoffApiUrl,
+        terminalPassword
+    });
     if (initResult.error) {
         throw new Error(initResult.error);
     }
 
     const urlInsertData = await getUrlInsertData();
-    const paymentValueInsertData = await getPaymentValueInsertData();
+    const paymentValueInsertData = await getPaymentValueInsertData({paymentLink});
 
     await deep.serial({
         operations: [
@@ -68,22 +65,8 @@ async ({ deep, require, data: { newLink: payLink, triggeredByLinkId } }) => {
         }
     }
 
-    async function getPaymentLink({ paymentTreeLinksUpToPay }) {
-        const paymentTypeLinkId = await deep.id(deep.id, "Payment");
-        const paymentLink = paymentTreeLinksUpToPay.find(link => link.type_id === paymentTypeLinkId);
-        if (!paymentLink) throw new Error(`A link with type ##${paymentTypeLinkId} associated with the link ##${payLink.id} is not found`);
-    }
-
-    async function getStorageBusinessLink({ paymentLink }) {
-        const { data: [storageBusinessLink] } = await deep.select({
-            id: paymentLink.to_id
-        });
-        if (!storageBusinessLink) throw new Error(`##${paymentLink.to_id} is not found`);
-        return storageBusinessLink;
-    }
-
     async function getTerminalPasswordLink({ storageBusinessLink }) {
-        const { data: [terminalPasswordLink] } = await deep.select({
+        const terminalPasswordSelectData = {
             type_id: {
                 _id: [deep.id, "TerminalPassword"]
             },
@@ -93,7 +76,8 @@ async ({ deep, require, data: { newLink: payLink, triggeredByLinkId } }) => {
                 },
                 from_id: storageBusinessLink.id
             }
-        });
+        };
+        const { data: [terminalPasswordLink] } = await deep.select(terminalPasswordSelectData);
         if (!terminalPasswordLink) {
             throw new Error(`Terminal password is not found. Select with data ${JSON.stringify(terminalPasswordSelectData)} returned no results`);
         }
@@ -103,7 +87,7 @@ async ({ deep, require, data: { newLink: payLink, triggeredByLinkId } }) => {
         return terminalPasswordLink;
     }
 
-    async function generateToken(data) {
+    async function generateToken({data, terminalPassword}) {
         const { Receipt, DATA, Shops, ...restData } = data;
         const dataWithPassword = {
             Password: terminalPassword,
@@ -161,10 +145,11 @@ async ({ deep, require, data: { newLink: payLink, triggeredByLinkId } }) => {
         if (!tinkoffApiUrlLink.value?.value) {
             throw new Error(`##${tinkoffApiUrlLink.id} must have a value`);
         }
+        return tinkoffApiUrlLink;
     }
 
 
-    async function init(options) {
+    async function init({data: data, tinkoffApiUrl, terminalPassword}) {
         try {
             const response = await axios({
                 method: 'post',
@@ -172,20 +157,23 @@ async ({ deep, require, data: { newLink: payLink, triggeredByLinkId } }) => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                data: { ...options, Token: await generateToken(options) },
+                data: { ...data, Token: await generateToken({
+                    data,
+                    terminalPassword: terminalPassword
+                }) },
             });
 
             const error = response.data.Details;
 
             return {
                 error,
-                request: options,
+                request: data,
                 response: response.data,
             };
         } catch (error) {
             return {
                 error,
-                request: options,
+                request: data,
                 response: null,
             };
         }
@@ -278,14 +266,14 @@ async ({ deep, require, data: { newLink: payLink, triggeredByLinkId } }) => {
             type: "insert",
             objects: {
                 type_id: urlTypeLinkId,
-                from_id: tinkoffProviderLink.id,
+                from_id: deep.linkId,
                 to_id: payLink.id,
                 string: { data: { value: initResult.response.PaymentURL } },
             }
         };
     }
     
-    async function getPaymentValueInsertData() {
+    async function getPaymentValueInsertData({paymentLink}) {
         return {
             table: "objects",
             type: "insert",
@@ -296,6 +284,23 @@ async ({ deep, require, data: { newLink: payLink, triggeredByLinkId } }) => {
                     bankPaymentId: parseInt(initResult.response.PaymentId)
                 }
             }
+        };
+    }
+
+    async function getInitData({terminalKey, paymentLinkId, notificationUrl, sum, email, phoneNumber}) {
+        return  {
+            TerminalKey: terminalKey,
+            OrderId: `${Date.now()}${paymentLinkId}`,
+            CustomerKey: triggeredByLinkId,
+            NotificationURL: notificationUrl,
+            PayType: 'T',
+            Amount: sum,
+            Language: 'ru',
+            Recurrent: 'Y',
+            DATA: {
+                Email: email,
+                Phone: phoneNumber,
+            },
         };
     }
 
