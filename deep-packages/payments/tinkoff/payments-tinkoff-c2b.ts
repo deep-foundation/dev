@@ -572,7 +572,7 @@ const installPackage = async () => {
     type_id: await deep.id("@deep-foundation/core", "SyncTextFile"),
     string: {
       data: {
-        value: fs.readFileSync('./deep-packages/payments/tinkoff/payInsertHandler.js', { encoding: 'utf-8' }),
+        value: fs.readFileSync('./deep-packages/payments/tinkoff/payInsertHandler.ts', { encoding: 'utf-8' }),
       },
     },
     in: {
@@ -639,7 +639,7 @@ const installPackage = async () => {
         type: 'insert',
         objects: {
           link_id: syncTextFileLinkId,
-          value: fs.readFileSync('./deep-packages/payments/tinkoff/tinkoffNotificationHandler.js', { encoding: 'utf-8' })
+          value: fs.readFileSync('./deep-packages/payments/tinkoff/tinkoffNotificationHandler.ts', { encoding: 'utf-8' })
         }
       }),
       createSerialOperation({
