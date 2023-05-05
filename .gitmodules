@@ -37,3 +37,4 @@
 [submodule "packages/python-docker-isolation-provider"]
 	path = packages/python-docker-isolation-provider
 	url = https://github.com/deep-foundation/python-docker-isolation-provider
+	branch = main
