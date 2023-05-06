@@ -76,7 +76,9 @@
     "type": "git",
     "url": "git+https://github.com/deep-foundation/dev.git"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "ts-node": "^10.9.1"
+  },
   "dependencies": {
     "@deep-foundation/hasura": "0.0.39",
     "@types/gulp": "^4.0.8",
@@ -93,8 +95,5 @@
     "simple-git": "^2.45.0",
     "subscriptions-transport-ws": "^0.11.0",
     "typescript": "^4.9.5"
-  },
-  "devDependencies": {
-    "ts-node": "^10.9.1"
   }
 }
