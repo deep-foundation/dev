@@ -15,16 +15,6 @@ const execCommand = async (command) => {
 
 (async () => {
   try {
-    console.log('Install nvm to manage Node.js versions...');
-    await execCommand('curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash');
-    
-    console.log('Activate nvm...');
-    const activateNvm = 'export NVM_DIR="$HOME/.nvm" && [ -s "$NVM_DIR/nvm.sh" ] && \\ . "$NVM_DIR/nvm.sh"';
-    await execCommand(activateNvm);
-    
-    console.log('Install and use Node v14.21.3...');
-    await execCommand(`${activateNvm} && nvm install v14.21.3 && nvm use v14.21.3`);
-    
     console.log('Install docker and docker-compose...');
     // For Ubuntu, you can use these commands to install docker and docker-compose
     await execCommand('sudo apt-get update');
