@@ -3,15 +3,32 @@ const util = require('util');
 const execAsync = util.promisify(exec);
 
 const execCommand = async (command) => {
-  const { stdout, stderr } = await execAsync(command);
-  console.log(stdout);
-  console.error(stderr);
+  return new Promise((resolve, reject) => {
+    const [cmd, ...args] = command.split(' ');
+    const childProcess = spawn(cmd, args);
 
-  // process.stdin.on("data", data => {
-  //   data = data.toString().toUpperCase()
-  //   process.stdout.write(data + "\n")
-  // })
+    childProcess.stdout.on('data', (data) => {
+      console.log(data.toString());
+    });
+
+    childProcess.stderr.on('data', (data) => {
+      console.error(data.toString());
+    });
+
+    childProcess.on('error', (error) => {
+      reject(error);
+    });
+
+    childProcess.on('exit', (code) => {
+      if (code === 0) {
+        resolve();
+      } else {
+        reject(new Error(`Command exited with code ${code}`));
+      }
+    });
+  });
 };
+
 
 (async () => {
   try {
@@ -24,13 +41,13 @@ const execCommand = async (command) => {
     await execCommand('npm ci && npm run packages');
 
     console.log('Start the local server...');
-    const startLocal = execCommand('cd dev && npm run local');
+    const startLocal = execCommand('npm run local');
 
     console.log('Wait for local server to start...');
     await new Promise(resolve => setTimeout(resolve, 10000));
 
     console.log('Run local migrations...');
-    await execCommand(`cd dev && npm run local-migrate`);
+    await execCommand(`npm run local-migrate`);
 
     console.log('Rejoin local server logs...');
     await startLocal;
