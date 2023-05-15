@@ -36,7 +36,8 @@ const execCommand = async (command) => {
     await execCommand('sudo apt-get install -y docker.io docker-compose');
     
     console.log('Install dependencies...');
-    await execCommand('npm ci && npm run packages');
+    await execCommand('npm ci');
+    await execCommand('npm run packages');
 
     console.log('Start the local server...');
     const startLocal = execCommand('npm run local');
