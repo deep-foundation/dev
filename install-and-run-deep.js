@@ -1,6 +1,4 @@
-const { exec } = require('child_process');
-const util = require('util');
-const execAsync = util.promisify(exec);
+const { spawn } = require('child_process');
 
 const execCommand = async (command) => {
   return new Promise((resolve, reject) => {
