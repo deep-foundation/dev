@@ -6,11 +6,11 @@ const execCommand = async (command) => {
     const childProcess = spawn(cmd, args);
 
     childProcess.stdout.on('data', (data) => {
-      console.log(data.toString());
+      process.stdout.write(data.toString());
     });
 
     childProcess.stderr.on('data', (data) => {
-      console.error(data.toString());
+      process.stderr.write(data.toString());
     });
 
     childProcess.on('error', (error) => {
