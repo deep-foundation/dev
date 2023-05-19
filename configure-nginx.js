@@ -24,7 +24,6 @@ const configWithoutCertificates = `
 server {
   charset utf-8;
   listen 80;
-  listen 443 ssl;
   server_name ${deepcaseDomain};
 
   location / {
@@ -49,7 +48,6 @@ server {
 server {
   charset utf-8;
   listen 80;
-  listen 443 ssl;
   server_name ${deeplinksDomain};
 
   location / {
