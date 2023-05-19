@@ -51,9 +51,6 @@ server {
   listen 80;
   listen 443 ssl;
   server_name ${deeplinksDomain};
-  ssl_certificate         /etc/letsencrypt/live/${deeplinksDomain}/fullchain.pem;
-  ssl_certificate_key     /etc/letsencrypt/live/${deeplinksDomain}/privkey.pem;
-  ssl_trusted_certificate /etc/letsencrypt/live/${deeplinksDomain}/chain.pem;
 
   location / {
       proxy_http_version 1.1;
