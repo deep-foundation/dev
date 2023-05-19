@@ -21,6 +21,11 @@ if (!deepcaseDomain || !deeplinksDomain) {
 }
 
 const configWithoutCertificates = `
+map $http_upgrade $connection_upgrade {  
+  default upgrade;
+  ''      close;
+}
+
 server {
   charset utf-8;
   listen 80;
@@ -71,6 +76,11 @@ server {
 `;
 
 const configWithCertificates = `
+map $http_upgrade $connection_upgrade {  
+  default upgrade;
+  ''      close;
+}
+
 server {
   charset utf-8;
   listen 80;
