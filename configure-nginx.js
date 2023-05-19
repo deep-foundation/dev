@@ -16,7 +16,7 @@ const deeplinksDomain = options['--deeplinks-domain'];
 
 if (!deepcaseDomain || !deeplinksDomain) {
   console.error('Error: Missing required options');
-  console.log('Usage: node configure-nginx.js --deepcase-domain chatgpt.deep.foundation --deepcase-domain deeplinks.chatgpt.deep.foundation');
+  console.log('Usage: node configure-nginx.js --deepcase-domain chatgpt.deep.foundation --deeplinks-domain deeplinks.chatgpt.deep.foundation');
   process.exit(1);
 }
 
