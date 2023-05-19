@@ -13,10 +13,11 @@ for (let i = 0; i < args.length - 1; i += 2) {
 
 const deepcaseDomain = options['--deepcase-domain'];
 const deeplinksDomain = options['--deeplinks-domain'];
+const certbotEmail = options['--certbot-email'];
 
-if (!deepcaseDomain || !deeplinksDomain) {
+if (!deepcaseDomain || !deeplinksDomain || !certbotEmail) {
   console.error('Error: Missing required options');
-  console.log('Usage: node configure-nginx.js --deepcase-domain chatgpt.deep.foundation --deeplinks-domain deeplinks.chatgpt.deep.foundation');
+  console.log('Usage: node configure-nginx.js --deepcase-domain chatgpt.deep.foundation --deeplinks-domain deeplinks.chatgpt.deep.foundation --certbot-email your@email.com');
   process.exit(1);
 }
 
@@ -160,8 +161,8 @@ const execCommand = async (command) => {
 
     await execCommand('sudo systemctl restart nginx');
 
-    await execCommand(`certbot certonly --webroot --webroot-path=/var/www/html -d ${deepcaseDomain} -n`);
-    await execCommand(`certbot certonly --webroot --webroot-path=/var/www/html -d ${deeplinksDomain} -n`);
+    await execCommand(`certbot certonly --webroot --webroot-path=/var/www/html -d ${deepcaseDomain} -n --agree-tos -m ${certbotEmail}`);
+    await execCommand(`certbot certonly --webroot --webroot-path=/var/www/html -d ${deeplinksDomain} -n --agree-tos -m ${certbotEmail}`);
 
     fs.writeFileSync(`/etc/nginx/sites-available/deep`, configWithCertificates);
 
