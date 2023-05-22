@@ -2,6 +2,7 @@ const fs = require('fs');
 const { exec } = require('child_process');
 const util = require('util');
 const execAsync = util.promisify(exec);
+const { spawn } = require('child_process');
 
 // Read command line arguments
 const [, , ...args] = process.argv;
@@ -140,14 +141,22 @@ server {
 `;
 
 const execCommand = async (command) => {
-  const { stdout, stderr } = await execAsync(command);
-  console.log(stdout);
-  console.error(stderr);
-
-  // process.stdin.on("data", data => {
-  //   data = data.toString().toUpperCase()
-  //   process.stdout.write(data + "\n")
-  // })
+  return new Promise((resolve, reject) => {
+    const childProcess = spawn(command, { 
+      stdio: 'inherit',
+      shell: true
+    });
+    childProcess.on('error', (error) => {
+      reject(error);
+    });
+    childProcess.on('exit', (code) => {
+      if (code === 0) {
+        resolve();
+      } else {
+        reject(new Error(`Command exited with code ${code}.`));
+      }
+    });
+  });
 };
 
 (async () => {
