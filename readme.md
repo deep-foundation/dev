@@ -49,7 +49,7 @@ Manual
 
 - `npm run rm-migrates` to delete all .migrate artifacts of npm migrate package
 
-## unsafe gulp methods 
+## unsafe gulp methods
 
 - **attention! before work checkout to branch from detached commits in each needed submodule**
 - `npm run gulp -- packages:get` clone and install all packages **starts automatically in workspace**
