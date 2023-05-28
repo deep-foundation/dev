@@ -38,3 +38,6 @@
 	path = packages/python-docker-isolation-provider
 	url = https://github.com/deep-foundation/python-docker-isolation-provider
 	branch = main
+[submodule "packages/workflows"]
+	path = packages/workflows
+	url = https://github.com/deep-foundation/workflows
