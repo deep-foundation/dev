@@ -16,6 +16,17 @@ When all tasks are done, you can open - http://localhost:3007/ **(ctrl/cmd + cli
 - `git clone https://github.com/deep-foundation/dev.git; cd dev; npm ci; npm run packages; npm run local;`
 - `npm run local-migrate;` with `npm run local` started
 
+## server usage
+
+```sh
+tee call-options.json << JSON
+{ "operation": "run", "envs": { "DEEPLINKS_PUBLIC_URL": "https://deeplinks.chatgpt.deep.foundation", "NEXT_PUBLIC_DEEPLINKS_URL": "https://deeplinks.chatgpt.deep.foundation", "NEXT_PUBLIC_GQL_PATH": "deeplinks.chatgpt.deep.foundation/gql", "NEXT_PUBLIC_GQL_SSL": "1", "NEXT_PUBLIC_DEEPLINKS_SERVER": "https://chatgpt.deep.foundation", "DEEPLINKS_HASURA_STORAGE_URL": "http://host.docker.internal:8000/" } }             
+JSON
+
+npm install --unsafe-perm -g @deep-foundation/deeplinks@latest
+export DEEPLINKS_CALL_OPTIONS=$(cat call-options.json); deeplinks
+```
+
 ## manual terminal methods
 
 ### gitpod
