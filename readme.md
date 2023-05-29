@@ -19,6 +19,13 @@ When all tasks are done, you can open - http://localhost:3007/ **(ctrl/cmd + cli
 ## server usage
 
 ```sh
+apt update
+apt install -y git curl docker.io docker-compose
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
+export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
+nvm install v16.20.0 && nvm use v16.20.0
+
 tee call-options.json << JSON
 { "operation": "run", "envs": { "DEEPLINKS_PUBLIC_URL": "https://deeplinks.chatgpt.deep.foundation", "NEXT_PUBLIC_DEEPLINKS_URL": "https://deeplinks.chatgpt.deep.foundation", "NEXT_PUBLIC_GQL_PATH": "deeplinks.chatgpt.deep.foundation/gql", "NEXT_PUBLIC_GQL_SSL": "1", "NEXT_PUBLIC_DEEPLINKS_SERVER": "https://chatgpt.deep.foundation", "DEEPLINKS_HASURA_STORAGE_URL": "http://host.docker.internal:8000/" } }             
 JSON
