@@ -18,6 +18,8 @@ When all tasks are done, you can open - http://localhost:3007/ **(ctrl/cmd + cli
 
 ## server usage
 
+- install
+
 ```sh
 apt update
 apt install -y git curl docker.io docker-compose
@@ -57,6 +59,11 @@ export HASURA_ADMIN_SECRET=$(node -e "console.log(require('crypto').randomBytes(
 }
 JSON
 export DEEPLINKS_CALL_OPTIONS=$(cat call-options.json); deeplinks
+```
+
+- uninstall
+```
+(cd dev && npm run docker-clear && rm /tmp/.migrate)
 ```
 
 ## manual terminal methods
