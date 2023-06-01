@@ -49,7 +49,7 @@ node configure-nginx.js --deepcase-domain chatgpt.deep.foundation --deeplinks-do
 npm run docker-clear
 cd ..
 
-tee call-options.json << JSON
+export HASURA_ADMIN_SECRET=$(node -e "console.log(require('crypto').randomBytes(32).toString('base64'));"); tee call-options.json << JSON
 {
   "operation": "run",
   "envs": {
@@ -59,7 +59,10 @@ tee call-options.json << JSON
     "NEXT_PUBLIC_GQL_SSL": "1",
     "NEXT_PUBLIC_DEEPLINKS_SERVER": "https://chatgpt.deep.foundation",
     "JWT_SECRET": "'{\"type\":\"HS256\",\"key\":\"$(node -e "console.log(require('crypto').randomBytes(50).toString('base64'));")\"}'",
-    "DEEPLINKS_HASURA_STORAGE_URL": "http://host.docker.internal:8000/"
+    "DEEPLINKS_HASURA_STORAGE_URL": "http://host.docker.internal:8000/",
+    "HASURA_GRAPHQL_ADMIN_SECRET": "$HASURA_ADMIN_SECRET",
+    "MIGRATIONS_HASURA_SECRET": "$HASURA_ADMIN_SECRET",
+    "DEEPLINKS_HASURA_SECRET": "$HASURA_ADMIN_SECRET"
   }
 }
 JSON
