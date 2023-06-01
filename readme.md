@@ -27,29 +27,11 @@ export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || pr
 nvm install v16.20.0 && nvm use v16.20.0
 npm i -g npm@latest
 
-npm install --unsafe-perm -g @deep-foundation/deeplinks@latest
-
-tee call-options.json << JSON
-{
-  "operation": "run",
-  "envs": {
-    "DEEPLINKS_PUBLIC_URL": "http://195.66.87.48:3006",
-    "NEXT_PUBLIC_DEEPLINKS_URL": "http://195.66.87.48:3006",
-    "NEXT_PUBLIC_GQL_PATH": "195.66.87.48:3006/gql",
-    "NEXT_PUBLIC_GQL_SSL": "0",
-    "NEXT_PUBLIC_DEEPLINKS_SERVER": "http://195.66.87.48:3007"
-  }
-}
-JSON
-export DEEPLINKS_CALL_OPTIONS=$(cat call-options.json); deeplinks
-
 git clone https://github.com/deep-foundation/dev
-cd dev
-node configure-nginx.js --deepcase-domain chatgpt.deep.foundation --deeplinks-domain deeplinks.chatgpt.deep.foundation --certbot-email drakonard@gmail.com
-npm run docker-clear
-cd ..
+(cd dev && node configure-nginx.js --deepcase-domain chatgpt.deep.foundation --deeplinks-domain deeplinks.chatgpt.deep.foundation --certbot-email drakonard@gmail.com)
 
-export HASURA_ADMIN_SECRET=$(node -e "console.log(require('crypto').randomBytes(32).toString('base64'));"); tee call-options.json << JSON
+npm install --unsafe-perm -g @deep-foundation/deeplinks@latest
+export HASURA_ADMIN_SECRET=$(node -e "console.log(require('crypto').randomBytes(24).toString('hex'));") && export POSTGRES_PASSWORD=$(node -e "console.log(require('crypto').randomBytes(24).toString('hex'));") && export MINIO_ACCESS_KEY=$(node -e "console.log(require('crypto').randomBytes(24).toString('hex'));") && export MINIO_SECRET_KEY=$(node -e "console.log(require('crypto').randomBytes(24).toString('hex'));"); tee call-options.json << JSON
 {
   "operation": "run",
   "envs": {
@@ -62,7 +44,15 @@ export HASURA_ADMIN_SECRET=$(node -e "console.log(require('crypto').randomBytes(
     "DEEPLINKS_HASURA_STORAGE_URL": "http://host.docker.internal:8000/",
     "HASURA_GRAPHQL_ADMIN_SECRET": "$HASURA_ADMIN_SECRET",
     "MIGRATIONS_HASURA_SECRET": "$HASURA_ADMIN_SECRET",
-    "DEEPLINKS_HASURA_SECRET": "$HASURA_ADMIN_SECRET"
+    "DEEPLINKS_HASURA_SECRET": "$HASURA_ADMIN_SECRET",
+    "POSTGRES_PASSWORD": "$POSTGRES_PASSWORD",
+    "HASURA_GRAPHQL_DATABASE_URL": "postgres://postgres:$POSTGRES_PASSWORD@postgres:5432/postgres",
+    "POSTGRES_MIGRATIONS_SOURCE": "postgres://postgres:$POSTGRES_PASSWORD@host.docker.internal:5432/postgres?sslmode=disable",
+    "RESTORE_VOLUME_FROM_SNAPSHOT": "0",
+    "MINIO_ROOT_USER": "$MINIO_ACCESS_KEY",
+    "MINIO_ROOT_PASSWORD": "$MINIO_SECRET_KEY",
+    "S3_ACCESS_KEY": "$MINIO_ACCESS_KEY",
+    "S3_SECRET_KEY": "$MINIO_SECRET_KEY"
   }
 }
 JSON
