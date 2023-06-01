@@ -41,3 +41,4 @@
 [submodule "packages/workflows"]
 	path = packages/workflows
 	url = https://github.com/deep-foundation/workflows
+	branch = main
