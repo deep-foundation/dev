@@ -23,14 +23,46 @@ apt update
 apt install -y git curl docker.io docker-compose
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
 export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 nvm install v16.20.0 && nvm use v16.20.0
-
-tee call-options.json << JSON
-{ "operation": "run", "envs": { "DEEPLINKS_PUBLIC_URL": "https://deeplinks.chatgpt.deep.foundation", "NEXT_PUBLIC_DEEPLINKS_URL": "https://deeplinks.chatgpt.deep.foundation", "NEXT_PUBLIC_GQL_PATH": "deeplinks.chatgpt.deep.foundation/gql", "NEXT_PUBLIC_GQL_SSL": "1", "NEXT_PUBLIC_DEEPLINKS_SERVER": "https://chatgpt.deep.foundation", "DEEPLINKS_HASURA_STORAGE_URL": "http://host.docker.internal:8000/" } }             
-JSON
+npm i -g npm@latest
 
 npm install --unsafe-perm -g @deep-foundation/deeplinks@latest
+
+tee call-options.json << JSON
+{
+  "operation": "run",
+  "envs": {
+    "DEEPLINKS_PUBLIC_URL": "http://195.66.87.48:3006",
+    "NEXT_PUBLIC_DEEPLINKS_URL": "http://195.66.87.48:3006",
+    "NEXT_PUBLIC_GQL_PATH": "195.66.87.48:3006/gql",
+    "NEXT_PUBLIC_GQL_SSL": "0",
+    "NEXT_PUBLIC_DEEPLINKS_SERVER": "http://195.66.87.48:3007"
+  }
+}
+JSON
+export DEEPLINKS_CALL_OPTIONS=$(cat call-options.json); deeplinks
+
+git clone https://github.com/deep-foundation/dev
+cd dev
+node configure-nginx.js --deepcase-domain chatgpt.deep.foundation --deeplinks-domain deeplinks.chatgpt.deep.foundation --certbot-email drakonard@gmail.com
+npm run docker-clear
+cd ..
+
+tee call-options.json << JSON
+{
+  "operation": "run",
+  "envs": {
+    "DEEPLINKS_PUBLIC_URL": "https://deeplinks.chatgpt.deep.foundation",
+    "NEXT_PUBLIC_DEEPLINKS_URL": "https://deeplinks.chatgpt.deep.foundation",
+    "NEXT_PUBLIC_GQL_PATH": "deeplinks.chatgpt.deep.foundation/gql",
+    "NEXT_PUBLIC_GQL_SSL": "1",
+    "NEXT_PUBLIC_DEEPLINKS_SERVER": "https://chatgpt.deep.foundation",
+    "JWT_SECRET": "'{\"type\":\"HS256\",\"key\":\"$(node -e "console.log(require('crypto').randomBytes(50).toString('base64'));")\"}'",
+    "DEEPLINKS_HASURA_STORAGE_URL": "http://host.docker.internal:8000/"
+  }
+}
+JSON
 export DEEPLINKS_CALL_OPTIONS=$(cat call-options.json); deeplinks
 ```
 
