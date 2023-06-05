@@ -2,6 +2,7 @@ const fs = require('fs');
 const { exec } = require('child_process');
 const util = require('util');
 const execAsync = util.promisify(exec);
+const { spawn } = require('child_process');
 
 // Read command line arguments
 const [, , ...args] = process.argv;
@@ -13,18 +14,23 @@ for (let i = 0; i < args.length - 1; i += 2) {
 
 const deepcaseDomain = options['--deepcase-domain'];
 const deeplinksDomain = options['--deeplinks-domain'];
+const certbotEmail = options['--certbot-email'];
 
-if (!deepcaseDomain || !deeplinksDomain) {
+if (!deepcaseDomain || !deeplinksDomain || !certbotEmail) {
   console.error('Error: Missing required options');
-  console.log('Usage: node configure_nginx.js --deepcase-domain chatgpt.deep.foundation --deepcase-domain deeplinks.chatgpt.deep.foundation');
+  console.log('Usage: node configure-nginx.js --deepcase-domain chatgpt.deep.foundation --deeplinks-domain deeplinks.chatgpt.deep.foundation --certbot-email your@email.com');
   process.exit(1);
 }
 
 const configWithoutCertificates = `
+map $http_upgrade $connection_upgrade {  
+  default upgrade;
+  ''      close;
+}
+
 server {
   charset utf-8;
   listen 80;
-  listen 443 ssl;
   server_name ${deepcaseDomain};
 
   location / {
@@ -49,11 +55,7 @@ server {
 server {
   charset utf-8;
   listen 80;
-  listen 443 ssl;
   server_name ${deeplinksDomain};
-  ssl_certificate         /etc/letsencrypt/live/${deeplinksDomain}/fullchain.pem;
-  ssl_certificate_key     /etc/letsencrypt/live/${deeplinksDomain}/privkey.pem;
-  ssl_trusted_certificate /etc/letsencrypt/live/${deeplinksDomain}/chain.pem;
 
   location / {
       proxy_http_version 1.1;
@@ -76,6 +78,11 @@ server {
 `;
 
 const configWithCertificates = `
+map $http_upgrade $connection_upgrade {  
+  default upgrade;
+  ''      close;
+}
+
 server {
   charset utf-8;
   listen 80;
@@ -134,14 +141,22 @@ server {
 `;
 
 const execCommand = async (command) => {
-  const { stdout, stderr } = await execAsync(command);
-  console.log(stdout);
-  console.error(stderr);
-
-  // process.stdin.on("data", data => {
-  //   data = data.toString().toUpperCase()
-  //   process.stdout.write(data + "\n")
-  // })
+  return new Promise((resolve, reject) => {
+    const childProcess = spawn(command, { 
+      stdio: 'inherit',
+      shell: true
+    });
+    childProcess.on('error', (error) => {
+      reject(error);
+    });
+    childProcess.on('exit', (code) => {
+      if (code === 0) {
+        resolve();
+      } else {
+        reject(new Error(`Command exited with code ${code}.`));
+      }
+    });
+  });
 };
 
 (async () => {
@@ -155,8 +170,8 @@ const execCommand = async (command) => {
 
     await execCommand('sudo systemctl restart nginx');
 
-    await execCommand(`certbot certonly --webroot --webroot-path=/var/www/html -d ${deepcaseDomain} -n`);
-    await execCommand(`certbot certonly --webroot --webroot-path=/var/www/html -d ${deeplinksDomain} -n`);
+    await execCommand(`certbot certonly --webroot --webroot-path=/var/www/html -d ${deepcaseDomain} -n --agree-tos -m ${certbotEmail}`);
+    await execCommand(`certbot certonly --webroot --webroot-path=/var/www/html -d ${deeplinksDomain} -n --agree-tos -m ${certbotEmail}`);
 
     fs.writeFileSync(`/etc/nginx/sites-available/deep`, configWithCertificates);
 

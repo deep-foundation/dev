@@ -2,26 +2,18 @@ const { spawn } = require('child_process');
 
 const execCommand = async (command) => {
   return new Promise((resolve, reject) => {
-    const [cmd, ...args] = command.split(' ');
-    const childProcess = spawn(cmd, args);
-
-    childProcess.stdout.on('data', (data) => {
-      process.stdout.write(data.toString());
+    const childProcess = spawn(command, { 
+      stdio: 'inherit',
+      shell: true
     });
-
-    childProcess.stderr.on('data', (data) => {
-      process.stderr.write(data.toString());
-    });
-
     childProcess.on('error', (error) => {
       reject(error);
     });
-
     childProcess.on('exit', (code) => {
       if (code === 0) {
         resolve();
       } else {
-        reject(new Error(`Command exited with code ${code}`));
+        reject(new Error(`Command exited with code ${code}.`));
       }
     });
   });
