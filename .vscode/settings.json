@@ -7,5 +7,6 @@
         "titleBar.activeBackground": "#181818",
         "titleBar.activeForeground": "#F9FAFF"
     },
-    "editor.wordWrap": "on"
+    "editor.wordWrap": "on",
+    "git.detectSubmodulesLimit": 9999
 }
