@@ -46,3 +46,7 @@
 	path = packages/workflows
 	url = https://github.com/deep-foundation/workflows.git
 	branch = main
+[submodule "packages/npm-packager"]
+	path = packages/npm-packager
+	url = https://github.com/deep-foundation/npm-packager.git
+	branch = main
