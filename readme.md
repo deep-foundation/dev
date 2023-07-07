@@ -12,7 +12,7 @@ When all tasks are done, you can open - http://localhost:3007/ **(ctrl/cmd + cli
 
 ## local usage
 
-- make sure to use node v16.20.0 (we recommend to use [nvm](https://github.com/nvm-sh/nvm#installing-and-updating))
+- make sure to use node v18.16.1 (we recommend to use [nvm](https://github.com/nvm-sh/nvm#installing-and-updating))
 - install docker and docker-compose
 - `git clone https://github.com/deep-foundation/dev.git; cd dev; npm ci; npm run packages; npm run local;`
 - `npm run local-migrate;` with `npm run local` started
@@ -27,7 +27,7 @@ apt install -y git curl docker.io docker-compose
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
 export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-nvm install v16.20.0 && nvm use v16.20.0
+nvm install v18.16.1 && nvm use v18.16.1
 npm i -g npm@latest
 
 git clone https://github.com/deep-foundation/dev
