@@ -80,7 +80,7 @@
     "ts-node": "^10.9.1"
   },
   "dependencies": {
-    "@deep-foundation/hasura": "0.0.39",
+    "@deep-foundation/hasura": "^0.0.46",
     "@types/gulp": "^4.0.8",
     "concurrently": "^5.3.0",
     "cross-env": "^7.0.3",
