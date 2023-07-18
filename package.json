@@ -81,7 +81,7 @@
   },
   "dependencies": {
     "@deep-foundation/hasura": "^0.0.46",
-    "@types/gulp": "^4.0.8",
+    "@types/gulp": "^4.0.12",
     "concurrently": "^5.3.0",
     "cross-env": "^7.0.3",
     "del": "^6.0.0",
