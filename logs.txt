@@ -1,0 +1,1054 @@
+
+> @deep-foundation/dev@0.0.21 gitpod-start
+> export NEXT_PUBLIC_ENGINES=0; export NEXT_PUBLIC_HIDEPATH=1; export npm_config_yes=true; export JWT_SECRET="{\"type\":\"HS256\",\"key\":\"3EK6FD+o0+c7tzBNVfjpMkNDi2yARAAKzQlk8O2IKoxQu4nF7EdAh8s3TwpHwrdWT6R\"}" export MIGRATIONS_ID_TYPE_SQL=bigint; export MIGRATIONS_ID_TYPE_GQL=bigint; export MIGRATIONS_HASURA_PATH=$(echo $(gp url 8080) | awk -F[/:] '{print $4}'); export DEEPLINKS_HASURA_PATH=$(echo $(gp url 8080) | awk -F[/:] '{print $4}'); export MIGRATIONS_HASURA_SSL=1; export DEEPLINKS_HASURA_SSL=1; export MIGRATIONS_HASURA_SECRET=myadminsecretkey; export DEEPLINKS_HASURA_SECRET=myadminsecretkey;  export NEXT_PUBLIC_DEEPLINKS_SERVER=https://$(echo $(gp url 3007) | awk -F[/:] '{print $4}'); export NEXT_PUBLIC_GQL_PATH=$(echo $(gp url 3006) | awk -F[/:] '{print $4}')/gql; export NEXT_PUBLIC_GQL_SSL=1 DEEPLINKS_HASURA_PATH=$(echo $(gp url 8080) | awk -F[/:] '{print $4}'); export DEEPLINKS_HASURA_SSL=1; export MIGRATIONS_DEEPLINKS_APP_URL=$(gp url 3007); export MIGRATIONS_DEEPLINKS_URL=$(gp url 3006); export DEEPLINKS_PUBLIC_URL=$(gp url 3006); export NEXT_PUBLIC_DEEPLINKS_URL=$(gp url 3006); export DOCKER_DEEPLINKS_URL=http://host.docker.internal:3006; export DEEPLINKS_ROUTE_HANDLERS_HOST=host.docker.internal; concurrently "npm run deepcase" "npm run deeplinks" "npm run gitpod-engine" "npm run sdk" "sleep 120 && npm run gitpod-hasura-reattach"
+
+[1] 
+[1] > @deep-foundation/dev@0.0.21 deeplinks
+[1] > cd packages/deeplinks && npm run dev
+[1] 
+[0] 
+[0] > @deep-foundation/dev@0.0.21 deepcase
+[0] > (cd packages/deepcase && npm run dev -- -p 3007)
+[0] 
+[3] 
+[3] > @deep-foundation/dev@0.0.21 sdk
+[3] > (cd packages/sdk; PORT=4000 npm run dev)
+[3] 
+[2] 
+[2] > @deep-foundation/dev@0.0.21 gitpod-engine
+[2] > cd packages/deeplinks && npm run start-engine-docker
+[2] 
+[0] 
+[0] > @deep-foundation/deepcase@0.1.0-beta.3 dev
+[0] > next dev "-p" "3007"
+[0] 
+[2] 
+[2] > @deep-foundation/deeplinks@0.0.226 start-engine-docker
+[2] > npm run start-engine-docker-core
+[2] 
+[3] 
+[3] > sdk@1.0.0 dev
+[3] > next dev
+[3] 
+[1] 
+[1] > @deep-foundation/deeplinks@0.0.226 dev
+[1] > (cd local && docker-compose down || true) && cross-env npm_config_yes=true JWT_SECRET="{\"type\":\"HS256\",\"key\":\"3EK6FD+o0+c7tzBNVfjpMkNDi2yARAAKzQlk8O2IKoxQu4nF7EdAh8s3TwpHwrdWT6R\"}" MIGRATIONS_HASURA_PATH=localhost:8080 MIGRATIONS_HASURA_SSL=0 MIGRATIONS_HASURA_SECRET=myadminsecretkey MIGRATIONS_DEEPLINKS_URL=http://host.docker.internal:3006 DEEPLINKS_HASURA_PATH=localhost:8080 DEEPLINKS_HASURA_SSL=0 DEEPLINKS_HASURA_SECRET=myadminsecretkey PORT=3006 npm run launch
+[1] 
+[3] sh: 1: next: not found
+[3] npm run sdk exited with code 127
+[1] time="2023-07-18T17:52:36Z" level=warning msg="The \"MOESIF_TOKEN\" variable is not set. Defaulting to a blank string."
+[1] time="2023-07-18T17:52:36Z" level=warning msg="The \"MIGRATIONS_RL_TABLE\" variable is not set. Defaulting to a blank string."
+[1] time="2023-07-18T17:52:36Z" level=warning msg="The \"MIGRATIONS_DATE_TYPE_SQL\" variable is not set. Defaulting to a blank string."
+[1] time="2023-07-18T17:52:36Z" level=warning msg="The \"DEEPLINKS_PORT\" variable is not set. Defaulting to a blank string."
+[1] time="2023-07-18T17:52:36Z" level=warning msg="The \"RESERVED_LIFETIME_MS\" variable is not set. Defaulting to a blank string."
+[1] time="2023-07-18T17:52:36Z" level=warning msg="The \"MIGRATIONS_SCHEMA\" variable is not set. Defaulting to a blank string."
+[1] time="2023-07-18T17:52:36Z" level=warning msg="The \"DEEPLINKS_HASURA_STORAGE_URL\" variable is not set. Defaulting to a blank string."
+[1] time="2023-07-18T17:52:36Z" level=warning msg="The \"DEFAULT_RL_CRON_SHEDULE\" variable is not set. Defaulting to a blank string."
+[1]  Network deep-network  Removing
+[1]  Network deep-network  Resource is still in use
+[2] 
+[2] > @deep-foundation/deeplinks@0.0.226 start-engine-docker-core
+[2] > cd ./node_modules/@deep-foundation/hasura && npm run docker
+[2] 
+[0] ready - started server on 0.0.0.0:3007, url: http://localhost:3007
+[1] 
+[1] > @deep-foundation/deeplinks@0.0.226 launch
+[1] > npm run package:build && node ./index.js;
+[1] 
+[2] 
+[2] > @deep-foundation/hasura@0.0.46 docker
+[2] > cross-env JWT_SECRET="{\"type\":\"HS256\",\"key\":\"3EK6FD+o0+c7tzBNVfjpMkNDi2yARAAKzQlk8O2IKoxQu4nF7EdAh8s3TwpHwrdWT6R\"}" HASURA_GRAPHQL_DATABASE_URL=postgres://postgres:postgrespassword@postgres:5432/postgres HASURA_GRAPHQL_ENABLE_CONSOLE=true HASURA_GRAPHQL_DEV_MODE=true HASURA_GRAPHQL_LOG_LEVEL=debug HASURA_GRAPHQL_ENABLED_LOG_TYPES="startup, http-log, webhook-log, websocket-log, query-log" HASURA_GRAPHQL_ADMIN_SECRET=myadminsecretkey HASURA_GRAPHQL_ENABLE_REMOTE_SCHEMA_PERMISSIONS=true HASURA_GRAPHQL_UNAUTHORIZED_ROLE=undefined POSTGRES_USER=postgres POSTGRES_PASSWORD=postgrespassword PGGSSENCMODE=disable PGSSLMODE=disable PGREQUIRESSL=0 MINIO_ROOT_USER=minioaccesskey MINIO_ROOT_PASSWORD=miniosecretkey HASURA_STORAGE_DEBUG=true HASURA_METADATA=1 HASURA_ENDPOINT=http://host.docker.internal:8080/v1 S3_ENDPOINT=http://host.docker.internal:9000 S3_ACCESS_KEY=minioaccesskey S3_SECRET_KEY=miniosecretkey S3_BUCKET=default S3_ROOT_FOLDER=default POSTGRES_MIGRATIONS=0 POSTGRES_MIGRATIONS_SOURCE=postgres://postgres:postgrespassword@host.docker.internal:5432/postgres?sslmode=disable npm run docker-local
+[2] 
+[0] [33mwarn[39m  - Invalid next.config.js options detected: 
+[0] [33mwarn[39m  -     The root value has an unexpected property, webpack5, which is not in the list of allowed properties (amp, analyticsId, assetPrefix, basePath, cleanDistDir, compiler, compress, configOrigin, crossOrigin, devIndicators, distDir, env, eslint, excludeDefaultMomentLocales, experimental, exportPathMap, generateBuildId, generateEtags, headers, httpAgentOptions, i18n, images, modularizeImports, onDemandEntries, optimizeFonts, output, outputFileTracing, pageExtensions, poweredByHeader, productionBrowserSourceMaps, publicRuntimeConfig, reactStrictMode, redirects, rewrites, sassOptions, serverRuntimeConfig, skipMiddlewareUrlNormalize, skipTrailingSlashRedirect, staticPageGenerationTimeout, swcMinify, target, trailingSlash, transpilePackages, typescript, useFileSystemPublicRoutes, webpack).
+[0] [33mwarn[39m  -     The root value has an unexpected property, future, which is not in the list of allowed properties (amp, analyticsId, assetPrefix, basePath, cleanDistDir, compiler, compress, configOrigin, crossOrigin, devIndicators, distDir, env, eslint, excludeDefaultMomentLocales, experimental, exportPathMap, generateBuildId, generateEtags, headers, httpAgentOptions, i18n, images, modularizeImports, onDemandEntries, optimizeFonts, output, outputFileTracing, pageExtensions, poweredByHeader, productionBrowserSourceMaps, publicRuntimeConfig, reactStrictMode, redirects, rewrites, sassOptions, serverRuntimeConfig, skipMiddlewareUrlNormalize, skipTrailingSlashRedirect, staticPageGenerationTimeout, swcMinify, target, trailingSlash, transpilePackages, typescript, useFileSystemPublicRoutes, webpack).
+[0] [33mwarn[39m  -     The root value has an unexpected property, strictMode, which is not in the list of allowed properties (amp, analyticsId, assetPrefix, basePath, cleanDistDir, compiler, compress, configOrigin, crossOrigin, devIndicators, distDir, env, eslint, excludeDefaultMomentLocales, experimental, exportPathMap, generateBuildId, generateEtags, headers, httpAgentOptions, i18n, images, modularizeImports, onDemandEntries, optimizeFonts, output, outputFileTracing, pageExtensions, poweredByHeader, productionBrowserSourceMaps, publicRuntimeConfig, reactStrictMode, redirects, rewrites, sassOptions, serverRuntimeConfig, skipMiddlewareUrlNormalize, skipTrailingSlashRedirect, staticPageGenerationTimeout, swcMinify, target, trailingSlash, transpilePackages, typescript, useFileSystemPublicRoutes, webpack).
+[0] [33mwarn[39m  - See more info here: https://nextjs.org/docs/messages/invalid-next-config
+[1] 
+[1] > @deep-foundation/deeplinks@0.0.226 package:build
+[1] > tsc --project tsconfig.json
+[1] 
+[2] 
+[2] > @deep-foundation/hasura@0.0.46 docker-local
+[2] > cd ./local && docker-compose -p deep up -d && cd ../
+[2] 
+[2] time="2023-07-18T17:52:37Z" level=warning msg="volume \"deep-db-data\" already exists but was not created by Docker Compose. Use `external: true` to use an existing volume"
+[2]  Container deep-minio  Running
+[2]  Container deep-postgres  Running
+[2]  Container deep-hasura  Running
+[2]  Container deep-hasura-storage  Running
+[2] npm run gitpod-engine exited with code 0
+[0] [35mevent[39m - compiled client and server successfully in 1918 ms (176 modules)
+[0] [36mwait[39m  - compiling / (client and server)...
+[0] warn  - The `app` directory is experimental. To enable, add `appDir: true` to your `next.config.js` configuration under `experimental`. See https://nextjs.org/docs/messages/experimental-app-dir-config
+[1] [HPM] Proxy created: /  -> http://localhost:8080
+[1] [HPM] Proxy rewrite rule created: "/gql" ~> "/v1/graphql"
+[1] [HPM] Subscribed to http-proxy events: [ 'error', 'close' ]
+[1] [HPM] Proxy created: /  -> http://localhost:8000
+[1] [HPM] Subscribed to http-proxy events: [ 'error', 'close' ]
+[1] [HPM] Proxy created: /  -> http://localhost:8080
+[1] [HPM] Subscribed to http-proxy events: [ 'error', 'close' ]
+[0] [35mevent[39m - compiled client and server successfully in 12s (3622 modules)
+[0] [33mwarn[39m  - The `app` directory is experimental. To enable, add `appDir: true` to your `next.config.js` configuration under `experimental`. See https://nextjs.org/docs/messages/experimental-app-dir-config
+[0] [33mwarn[39m  - The `app` directory is experimental. To enable, add `appDir: true` to your `next.config.js` configuration under `experimental`. See https://nextjs.org/docs/messages/experimental-app-dir-config
+[0] (node:129895) [DEP0128] DeprecationWarning: Invalid 'main' field in '/workspace/dev/packages/deepcase/node_modules/uid/package.json' of 'yes'. Please either fix that or report it to the module author
+[0] (Use `node --trace-deprecation ...` to show where the warning was created)
+[0] Warning: forwardRef render functions accept exactly two parameters: props and ref. Did you forget to use the ref parameter?
+[0] Warning: forwardRef render functions accept exactly two parameters: props and ref. Did you forget to use the ref parameter?
+[0] gqlPath 3006-deepfoundation-dev-d9dziqiocks.ws-eu101.gitpod.io/gql
+[0] gqlSsl true
+[0] [36mwait[39m  - compiling /api/deeplinks (client and server)...
+[0] [35mevent[39m - compiled successfully in 152 ms (59 modules)
+[0] __dirname /workspace/dev/packages/deepcase/app/server/pages/api
+[0] rootDir /workspace/dev/packages/deepcase
+[1] [HPM] Rewriting path from "/gql" to "/v1/graphql"
+[1] [HPM] POST /gql ~> http://localhost:8080
+[1] [HPM] Rewriting path from "/gql" to "/v1/graphql"
+[1] [HPM] POST /gql ~> http://localhost:8080
+[1] [HPM] Rewriting path from "/gql" to "/v1/graphql"
+[1] [HPM] POST /gql ~> http://localhost:8080
+[1] [HPM] Rewriting path from "/gql" to "/v1/graphql"
+[1] [HPM] POST /gql ~> http://localhost:8080
+[1] [HPM] Rewriting path from "/gql" to "/v1/graphql"
+[1] [HPM] GET /gql ~> http://localhost:8080
+[1] [HPM] Upgrading to WebSocket
+[1] [HPM] Rewriting path from "/gql" to "/v1/graphql"
+[1] [HPM] POST /gql ~> http://localhost:8080
+[0] [36mwait[39m  - compiling /api/healthz (client and server)...
+[0] [35mevent[39m - compiled successfully in 35 ms (60 modules)
+[0]  export PATH='/home/gitpod/.nix-profile/bin:/home/gitpod/.local/bin:/workspace/.cargo/bin:/home/gitpod/.pyenv/shims:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/workspace/go/bin:/home/gitpod/.nix-profile/bin:/workspace/dev/packages/deepcase/node_modules/.bin:/workspace/dev/packages/node_modules/.bin:/workspace/dev/node_modules/.bin:/workspace/node_modules/.bin:/node_modules/.bin:/workspace/dev/node_modules/npm/node_modules/@npmcli/run-script/lib/node-gyp-bin:/workspace/dev/node_modules/.bin:/workspace/node_modules/.bin:/node_modules/.bin:/workspace/dev/node_modules/npm/node_modules/@npmcli/run-script/lib/node-gyp-bin:/workspace/dev/node_modules/.bin:/workspace/node_modules/.bin:/node_modules/.bin:/home/gitpod/.nvm/versions/node/v18.16.1/lib/node_modules/npm/node_modules/@npmcli/run-script/lib/node-gyp-bin:/home/gitpod/.sdkman/candidates/maven/current/bin:/home/gitpod/.sdkman/candidates/java/current/bin:/home/gitpod/.sdkman/candidates/gradle/current/bin:/workspace/.cargo/bin:/home/gitpod/.rvm/gems/ruby-3.2.1/bin:/home/gitpod/.rvm/gems/ruby-3.2.1@global/bin:/home/gitpod/.rvm/rubies/ruby-3.2.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.0/bin:/workspace/go/bin:/home/gitpod/.nix-profile/bin:/ide/bin/remote-cli:/home/gitpod/go/bin:/home/gitpod/go-packages/bin:/home/gitpod/.nvm/versions/node/v18.16.0/bin:/home/gitpod/.yarn/bin:/home/gitpod/.pnpm:/home/gitpod/.pyenv/bin:/home/gitpod/.rvm/bin:/home/gitpod/.cargo/bin:/home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/sbin/:/home/gitpod/.local/bin:/usr/games:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin' && export DOCKERHOST=10.0.5.2 && export DEEPLINKS_PORT=3006 && export DEEPCASE_PORT=3007 && export DEEPLINKS_PUBLIC_URL=https://3006-deepfoundation-dev-d9dziqiocks.ws-eu101.gitpod.io && export DEEPLINKS_HASURA_STORAGE_URL=http://localhost:8000 && export RESTORE_VOLUME_FROM_SNAPSHOT=1 && export npm_config_yes=true && export JWT_SECRET='{"type":"HS256","key":"3EK6FD+o0+c7tzBNVfjpMkNDi2yARAAKzQlk8O2IKoxQu4nF7EdAh8s3TwpHwrdWT6R"}' && export HASURA_GRAPHQL_DATABASE_URL=postgres://postgres:postgrespassword@postgres:5432/postgres && export HASURA_GRAPHQL_ENABLE_CONSOLE=true && export HASURA_GRAPHQL_DEV_MODE=true && export HASURA_GRAPHQL_LOG_LEVEL=debug && export HASURA_GRAPHQL_ENABLED_LOG_TYPES=startup,http-log,webhook-log,websocket-log,query-log && export HASURA_GRAPHQL_ADMIN_SECRET=myadminsecretkey && export HASURA_GRAPHQL_ENABLE_REMOTE_SCHEMA_PERMISSIONS=true && export HASURA_GRAPHQL_UNAUTHORIZED_ROLE=undefined && export POSTGRES_USER=postgres && export POSTGRES_PASSWORD=postgrespassword && export PGGSSENCMODE=disable && export PGSSLMODE=disable && export PGREQUIRESSL=0 && export MINIO_ROOT_USER=minioaccesskey && export MINIO_ROOT_PASSWORD=miniosecretkey && export HASURA_STORAGE_DEBUG=true && export HASURA_METADATA=1 && export HASURA_ENDPOINT=http://host.docker.internal:8080/v1 && export S3_ENDPOINT=http://host.docker.internal:9000 && export S3_ACCESS_KEY=minioaccesskey && export S3_SECRET_KEY=miniosecretkey && export S3_BUCKET=default && export S3_ROOT_FOLDER=default && export POSTGRES_MIGRATIONS=0 && export POSTGRES_MIGRATIONS_SOURCE=postgres://postgres:postgrespassword@host.docker.internal:5432/postgres?sslmode=disable && export MIGRATIONS_ID_TYPE_SQL=bigint && export MIGRATIONS_ID_TYPE_GQL=bigint && export MIGRATIONS_HASURA_SECRET=myadminsecretkey && export DEEPLINKS_HASURA_SECRET=myadminsecretkey && export MIGRATIONS_SCHEMA=public && export MIGRATIONS_RL_TABLE=rl_example__links__reserved && export MIGRATIONS_DATE_TYPE_SQL=timestamp && export RESERVED_LIFETIME_MS=86400000 && export DOCKER_DEEPLINKS_URL=http://host.docker.internal:3006 && export MIGRATIONS_DIR=/tmp/deep && export MIGRATIONS_HASURA_PATH=$(gp url 8080) && export DEEPLINKS_HASURA_PATH=$(echo $(gp url 8080) | awk -F[/:] '{print $4}') && export MIGRATIONS_HASURA_SSL=1 && export DEEPLINKS_HASURA_SSL=1 && export NEXT_PUBLIC_GQL_SSL=1 && export NEXT_PUBLIC_DEEPLINKS_SERVER=https://$(echo $(gp url 3007) | awk -F[/:] '{print $4}') && export NEXT_PUBLIC_GQL_PATH=$(echo $(gp url 3006) | awk -F[/:] '{print $4}')/gql && export NEXT_PUBLIC_ENGINES=1 &&  docker version -f '{{json .}}'
+[0] MIGRATIONS_DIR /tmp/deep
+[0] existsSync deep true
+[0] existsSync logs true
+[0] __dirname /workspace/dev/packages/deepcase/app/server/pages/api
+[0] rootDir /workspace/dev/packages/deepcase
+[0]  export PATH='/home/gitpod/.nix-profile/bin:/home/gitpod/.local/bin:/workspace/.cargo/bin:/home/gitpod/.pyenv/shims:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/workspace/go/bin:/home/gitpod/.nix-profile/bin:/home/gitpod/.nix-profile/bin:/home/gitpod/.local/bin:/workspace/.cargo/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/workspace/go/bin:/home/gitpod/.nix-profile/bin:/workspace/dev/packages/deepcase/node_modules/.bin:/workspace/dev/packages/node_modules/.bin:/workspace/dev/node_modules/.bin:/workspace/node_modules/.bin:/node_modules/.bin:/workspace/dev/node_modules/npm/node_modules/@npmcli/run-script/lib/node-gyp-bin:/workspace/dev/node_modules/.bin:/workspace/node_modules/.bin:/node_modules/.bin:/workspace/dev/node_modules/npm/node_modules/@npmcli/run-script/lib/node-gyp-bin:/workspace/dev/node_modules/.bin:/workspace/node_modules/.bin:/node_modules/.bin:/home/gitpod/.nvm/versions/node/v18.16.1/lib/node_modules/npm/node_modules/@npmcli/run-script/lib/node-gyp-bin:/home/gitpod/.sdkman/candidates/maven/current/bin:/home/gitpod/.sdkman/candidates/java/current/bin:/home/gitpod/.sdkman/candidates/gradle/current/bin:/workspace/.cargo/bin:/home/gitpod/.rvm/gems/ruby-3.2.1/bin:/home/gitpod/.rvm/gems/ruby-3.2.1@global/bin:/home/gitpod/.rvm/rubies/ruby-3.2.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.0/bin:/workspace/go/bin:/home/gitpod/.nix-profile/bin:/ide/bin/remote-cli:/home/gitpod/go/bin:/home/gitpod/go-packages/bin:/home/gitpod/.nvm/versions/node/v18.16.0/bin:/home/gitpod/.yarn/bin:/home/gitpod/.pnpm:/home/gitpod/.pyenv/bin:/home/gitpod/.rvm/bin:/home/gitpod/.cargo/bin:/home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/sbin/:/home/gitpod/.local/bin:/usr/games:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin' && export DOCKERHOST=10.0.5.2 && export DEEPLINKS_PORT=3006 && export DEEPCASE_PORT=3007 && export DEEPLINKS_PUBLIC_URL=https://3006-deepfoundation-dev-d9dziqiocks.ws-eu101.gitpod.io && export DEEPLINKS_HASURA_STORAGE_URL=http://localhost:8000 && export RESTORE_VOLUME_FROM_SNAPSHOT=1 && export npm_config_yes=true && export JWT_SECRET='{"type":"HS256","key":"3EK6FD+o0+c7tzBNVfjpMkNDi2yARAAKzQlk8O2IKoxQu4nF7EdAh8s3TwpHwrdWT6R"}' && export HASURA_GRAPHQL_DATABASE_URL=postgres://postgres:postgrespassword@postgres:5432/postgres && export HASURA_GRAPHQL_ENABLE_CONSOLE=true && export HASURA_GRAPHQL_DEV_MODE=true && export HASURA_GRAPHQL_LOG_LEVEL=debug && export HASURA_GRAPHQL_ENABLED_LOG_TYPES=startup,http-log,webhook-log,websocket-log,query-log && export HASURA_GRAPHQL_ADMIN_SECRET=myadminsecretkey && export HASURA_GRAPHQL_ENABLE_REMOTE_SCHEMA_PERMISSIONS=true && export HASURA_GRAPHQL_UNAUTHORIZED_ROLE=undefined && export POSTGRES_USER=postgres && export POSTGRES_PASSWORD=postgrespassword && export PGGSSENCMODE=disable && export PGSSLMODE=disable && export PGREQUIRESSL=0 && export MINIO_ROOT_USER=minioaccesskey && export MINIO_ROOT_PASSWORD=miniosecretkey && export HASURA_STORAGE_DEBUG=true && export HASURA_METADATA=1 && export HASURA_ENDPOINT=http://host.docker.internal:8080/v1 && export S3_ENDPOINT=http://host.docker.internal:9000 && export S3_ACCESS_KEY=minioaccesskey && export S3_SECRET_KEY=miniosecretkey && export S3_BUCKET=default && export S3_ROOT_FOLDER=default && export POSTGRES_MIGRATIONS=0 && export POSTGRES_MIGRATIONS_SOURCE=postgres://postgres:postgrespassword@host.docker.internal:5432/postgres?sslmode=disable && export MIGRATIONS_ID_TYPE_SQL=bigint && export MIGRATIONS_ID_TYPE_GQL=bigint && export MIGRATIONS_HASURA_SECRET=myadminsecretkey && export DEEPLINKS_HASURA_SECRET=myadminsecretkey && export MIGRATIONS_SCHEMA=public && export MIGRATIONS_RL_TABLE=rl_example__links__reserved && export MIGRATIONS_DATE_TYPE_SQL=timestamp && export RESERVED_LIFETIME_MS=86400000 && export DOCKER_DEEPLINKS_URL=http://host.docker.internal:3006 && export MIGRATIONS_DIR=/tmp/deep && export MIGRATIONS_HASURA_PATH=$(gp url 8080) && export DEEPLINKS_HASURA_PATH=$(echo $(gp url 8080) | awk -F[/:] '{print $4}') && export MIGRATIONS_HASURA_SSL=1 && export DEEPLINKS_HASURA_SSL=1 && export NEXT_PUBLIC_GQL_SSL=1 && export NEXT_PUBLIC_DEEPLINKS_SERVER=https://$(echo $(gp url 3007) | awk -F[/:] '{print $4}') && export NEXT_PUBLIC_GQL_PATH=$(echo $(gp url 3006) | awk -F[/:] '{print $4}')/gql && export NEXT_PUBLIC_ENGINES=1 &&  docker-compose version --short
+[0] MIGRATIONS_DIR /tmp/deep
+[0] existsSync deep true
+[0] existsSync logs true
+[0]  export PATH='/home/gitpod/.nix-profile/bin:/home/gitpod/.local/bin:/workspace/.cargo/bin:/home/gitpod/.pyenv/shims:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/workspace/go/bin:/home/gitpod/.nix-profile/bin:/home/gitpod/.nix-profile/bin:/home/gitpod/.local/bin:/workspace/.cargo/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/workspace/go/bin:/home/gitpod/.nix-profile/bin:/home/gitpod/.nix-profile/bin:/home/gitpod/.local/bin:/workspace/.cargo/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/workspace/go/bin:/home/gitpod/.nix-profile/bin:/workspace/dev/packages/deepcase/node_modules/.bin:/workspace/dev/packages/node_modules/.bin:/workspace/dev/node_modules/.bin:/workspace/node_modules/.bin:/node_modules/.bin:/workspace/dev/node_modules/npm/node_modules/@npmcli/run-script/lib/node-gyp-bin:/workspace/dev/node_modules/.bin:/workspace/node_modules/.bin:/node_modules/.bin:/workspace/dev/node_modules/npm/node_modules/@npmcli/run-script/lib/node-gyp-bin:/workspace/dev/node_modules/.bin:/workspace/node_modules/.bin:/node_modules/.bin:/home/gitpod/.nvm/versions/node/v18.16.1/lib/node_modules/npm/node_modules/@npmcli/run-script/lib/node-gyp-bin:/home/gitpod/.sdkman/candidates/maven/current/bin:/home/gitpod/.sdkman/candidates/java/current/bin:/home/gitpod/.sdkman/candidates/gradle/current/bin:/workspace/.cargo/bin:/home/gitpod/.rvm/gems/ruby-3.2.1/bin:/home/gitpod/.rvm/gems/ruby-3.2.1@global/bin:/home/gitpod/.rvm/rubies/ruby-3.2.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.0/bin:/workspace/go/bin:/home/gitpod/.nix-profile/bin:/ide/bin/remote-cli:/home/gitpod/go/bin:/home/gitpod/go-packages/bin:/home/gitpod/.nvm/versions/node/v18.16.0/bin:/home/gitpod/.yarn/bin:/home/gitpod/.pnpm:/home/gitpod/.pyenv/bin:/home/gitpod/.rvm/bin:/home/gitpod/.cargo/bin:/home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/sbin/:/home/gitpod/.local/bin:/usr/games:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin' && export DOCKERHOST=10.0.5.2 && export DEEPLINKS_PORT=3006 && export DEEPCASE_PORT=3007 && export DEEPLINKS_PUBLIC_URL=https://3006-deepfoundation-dev-d9dziqiocks.ws-eu101.gitpod.io && export DEEPLINKS_HASURA_STORAGE_URL=http://localhost:8000 && export RESTORE_VOLUME_FROM_SNAPSHOT=1 && export npm_config_yes=true && export JWT_SECRET='{"type":"HS256","key":"3EK6FD+o0+c7tzBNVfjpMkNDi2yARAAKzQlk8O2IKoxQu4nF7EdAh8s3TwpHwrdWT6R"}' && export HASURA_GRAPHQL_DATABASE_URL=postgres://postgres:postgrespassword@postgres:5432/postgres && export HASURA_GRAPHQL_ENABLE_CONSOLE=true && export HASURA_GRAPHQL_DEV_MODE=true && export HASURA_GRAPHQL_LOG_LEVEL=debug && export HASURA_GRAPHQL_ENABLED_LOG_TYPES=startup,http-log,webhook-log,websocket-log,query-log && export HASURA_GRAPHQL_ADMIN_SECRET=myadminsecretkey && export HASURA_GRAPHQL_ENABLE_REMOTE_SCHEMA_PERMISSIONS=true && export HASURA_GRAPHQL_UNAUTHORIZED_ROLE=undefined && export POSTGRES_USER=postgres && export POSTGRES_PASSWORD=postgrespassword && export PGGSSENCMODE=disable && export PGSSLMODE=disable && export PGREQUIRESSL=0 && export MINIO_ROOT_USER=minioaccesskey && export MINIO_ROOT_PASSWORD=miniosecretkey && export HASURA_STORAGE_DEBUG=true && export HASURA_METADATA=1 && export HASURA_ENDPOINT=http://host.docker.internal:8080/v1 && export S3_ENDPOINT=http://host.docker.internal:9000 && export S3_ACCESS_KEY=minioaccesskey && export S3_SECRET_KEY=miniosecretkey && export S3_BUCKET=default && export S3_ROOT_FOLDER=default && export POSTGRES_MIGRATIONS=0 && export POSTGRES_MIGRATIONS_SOURCE=postgres://postgres:postgrespassword@host.docker.internal:5432/postgres?sslmode=disable && export MIGRATIONS_ID_TYPE_SQL=bigint && export MIGRATIONS_ID_TYPE_GQL=bigint && export MIGRATIONS_HASURA_SECRET=myadminsecretkey && export DEEPLINKS_HASURA_SECRET=myadminsecretkey && export MIGRATIONS_SCHEMA=public && export MIGRATIONS_RL_TABLE=rl_example__links__reserved && export MIGRATIONS_DATE_TYPE_SQL=timestamp && export RESERVED_LIFETIME_MS=86400000 && export DOCKER_DEEPLINKS_URL=http://host.docker.internal:3006 && export MIGRATIONS_DIR=/tmp/deep && export MIGRATIONS_HASURA_PATH=$(gp url 8080) && export DEEPLINKS_HASURA_PATH=$(echo $(gp url 8080) | awk -F[/:] '{print $4}') && export MIGRATIONS_HASURA_SSL=1 && export DEEPLINKS_HASURA_SSL=1 && export NEXT_PUBLIC_GQL_SSL=1 && export NEXT_PUBLIC_DEEPLINKS_SERVER=https://$(echo $(gp url 3007) | awk -F[/:] '{print $4}') && export NEXT_PUBLIC_GQL_PATH=$(echo $(gp url 3006) | awk -F[/:] '{print $4}')/gql && export NEXT_PUBLIC_ENGINES=1 &&  cd "/workspace/dev/packages/deepcase/node_modules/@deep-foundation/deeplinks" && npx rimraf /tmp/deep/.migrations && (docker rm -fv $(docker ps -a --filter name=deep- -q --format '{{ $a:= false }}{{ range $splited := (split .Names "-") }}{{ if eq "case" $splited }}{{$a = true}}{{ end }}{{ end }}{{ if eq $a false }}{{.ID}}{{end}}') || true) && (docker volume rm $(docker volume ls -q --filter name=deep-) || true) && (docker network rm $(docker network ls -q -f name=deep-) || true)
+[1] [HPM] Client disconnected
+[1] [HPM] Rewriting path from "/gql" to "/v1/graphql"
+[1] [HPM] GET /gql ~> http://localhost:8080
+[1] [HPM] Upgrading to WebSocket
+[1] [HPM] Error occurred while proxying request 3006-deepfoundation-dev-d9dziqiocks.ws-eu101.gitpod.io/v1/graphql to undefined [ECONNREFUSED] (https://nodejs.org/api/errors.html#errors_common_system_errors)
+[0] MIGRATIONS_DIR /tmp/deep
+[0] existsSync deep true
+[0] existsSync logs true
+[1] [HPM] Rewriting path from "/gql" to "/v1/graphql"
+[1] [HPM] GET /gql ~> http://localhost:8080
+[1] [HPM] Upgrading to WebSocket
+[1] [HPM] Error occurred while proxying request 3006-deepfoundation-dev-d9dziqiocks.ws-eu101.gitpod.io/v1/graphql to undefined [ECONNREFUSED] (https://nodejs.org/api/errors.html#errors_common_system_errors)
+[1] [HPM] Rewriting path from "/gql" to "/v1/graphql"
+[1] [HPM] GET /gql ~> http://localhost:8080
+[1] [HPM] Upgrading to WebSocket
+[1] [HPM] Error occurred while proxying request 3006-deepfoundation-dev-d9dziqiocks.ws-eu101.gitpod.io/v1/graphql to undefined [ECONNREFUSED] (https://nodejs.org/api/errors.html#errors_common_system_errors)
+[1] [HPM] Rewriting path from "/gql" to "/v1/graphql"
+[1] [HPM] GET /gql ~> http://localhost:8080
+[1] [HPM] Upgrading to WebSocket
+[1] [HPM] Error occurred while proxying request 3006-deepfoundation-dev-d9dziqiocks.ws-eu101.gitpod.io/v1/graphql to undefined [ECONNREFUSED] (https://nodejs.org/api/errors.html#errors_common_system_errors)
+[1] [HPM] Rewriting path from "/gql" to "/v1/graphql"
+[1] [HPM] POST /gql ~> http://localhost:8080
+[1] [HPM] Error occurred while proxying request 3006-deepfoundation-dev-d9dziqiocks.ws-eu101.gitpod.io/v1/graphql to http://localhost:8080/ [ECONNREFUSED] (https://nodejs.org/api/errors.html#errors_common_system_errors)
+[1] [HPM] Rewriting path from "/gql" to "/v1/graphql"
+[1] [HPM] GET /gql ~> http://localhost:8080
+[1] [HPM] Upgrading to WebSocket
+[1] [HPM] Error occurred while proxying request 3006-deepfoundation-dev-d9dziqiocks.ws-eu101.gitpod.io/v1/graphql to undefined [ECONNREFUSED] (https://nodejs.org/api/errors.html#errors_common_system_errors)
+[0]  export PATH='/home/gitpod/.nix-profile/bin:/home/gitpod/.local/bin:/workspace/.cargo/bin:/home/gitpod/.pyenv/shims:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/workspace/go/bin:/home/gitpod/.nix-profile/bin:/home/gitpod/.nix-profile/bin:/home/gitpod/.local/bin:/workspace/.cargo/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/workspace/go/bin:/home/gitpod/.nix-profile/bin:/home/gitpod/.nix-profile/bin:/home/gitpod/.local/bin:/workspace/.cargo/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/workspace/go/bin:/home/gitpod/.nix-profile/bin:/home/gitpod/.nix-profile/bin:/home/gitpod/.local/bin:/workspace/.cargo/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/workspace/go/bin:/home/gitpod/.nix-profile/bin:/workspace/dev/packages/deepcase/node_modules/.bin:/workspace/dev/packages/node_modules/.bin:/workspace/dev/node_modules/.bin:/workspace/node_modules/.bin:/node_modules/.bin:/workspace/dev/node_modules/npm/node_modules/@npmcli/run-script/lib/node-gyp-bin:/workspace/dev/node_modules/.bin:/workspace/node_modules/.bin:/node_modules/.bin:/workspace/dev/node_modules/npm/node_modules/@npmcli/run-script/lib/node-gyp-bin:/workspace/dev/node_modules/.bin:/workspace/node_modules/.bin:/node_modules/.bin:/home/gitpod/.nvm/versions/node/v18.16.1/lib/node_modules/npm/node_modules/@npmcli/run-script/lib/node-gyp-bin:/home/gitpod/.sdkman/candidates/maven/current/bin:/home/gitpod/.sdkman/candidates/java/current/bin:/home/gitpod/.sdkman/candidates/gradle/current/bin:/workspace/.cargo/bin:/home/gitpod/.rvm/gems/ruby-3.2.1/bin:/home/gitpod/.rvm/gems/ruby-3.2.1@global/bin:/home/gitpod/.rvm/rubies/ruby-3.2.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.0/bin:/workspace/go/bin:/home/gitpod/.nix-profile/bin:/ide/bin/remote-cli:/home/gitpod/go/bin:/home/gitpod/go-packages/bin:/home/gitpod/.nvm/versions/node/v18.16.0/bin:/home/gitpod/.yarn/bin:/home/gitpod/.pnpm:/home/gitpod/.pyenv/bin:/home/gitpod/.rvm/bin:/home/gitpod/.cargo/bin:/home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/sbin/:/home/gitpod/.local/bin:/usr/games:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin' && export DOCKERHOST=10.0.5.2 && export DEEPLINKS_PORT=3006 && export DEEPCASE_PORT=3007 && export DEEPLINKS_PUBLIC_URL=https://3006-deepfoundation-dev-d9dziqiocks.ws-eu101.gitpod.io && export DEEPLINKS_HASURA_STORAGE_URL=http://localhost:8000 && export RESTORE_VOLUME_FROM_SNAPSHOT=1 && export npm_config_yes=true && export JWT_SECRET='{"type":"HS256","key":"3EK6FD+o0+c7tzBNVfjpMkNDi2yARAAKzQlk8O2IKoxQu4nF7EdAh8s3TwpHwrdWT6R"}' && export HASURA_GRAPHQL_DATABASE_URL=postgres://postgres:postgrespassword@postgres:5432/postgres && export HASURA_GRAPHQL_ENABLE_CONSOLE=true && export HASURA_GRAPHQL_DEV_MODE=true && export HASURA_GRAPHQL_LOG_LEVEL=debug && export HASURA_GRAPHQL_ENABLED_LOG_TYPES=startup,http-log,webhook-log,websocket-log,query-log && export HASURA_GRAPHQL_ADMIN_SECRET=myadminsecretkey && export HASURA_GRAPHQL_ENABLE_REMOTE_SCHEMA_PERMISSIONS=true && export HASURA_GRAPHQL_UNAUTHORIZED_ROLE=undefined && export POSTGRES_USER=postgres && export POSTGRES_PASSWORD=postgrespassword && export PGGSSENCMODE=disable && export PGSSLMODE=disable && export PGREQUIRESSL=0 && export MINIO_ROOT_USER=minioaccesskey && export MINIO_ROOT_PASSWORD=miniosecretkey && export HASURA_STORAGE_DEBUG=true && export HASURA_METADATA=1 && export HASURA_ENDPOINT=http://host.docker.internal:8080/v1 && export S3_ENDPOINT=http://host.docker.internal:9000 && export S3_ACCESS_KEY=minioaccesskey && export S3_SECRET_KEY=miniosecretkey && export S3_BUCKET=default && export S3_ROOT_FOLDER=default && export POSTGRES_MIGRATIONS=0 && export POSTGRES_MIGRATIONS_SOURCE=postgres://postgres:postgrespassword@host.docker.internal:5432/postgres?sslmode=disable && export MIGRATIONS_ID_TYPE_SQL=bigint && export MIGRATIONS_ID_TYPE_GQL=bigint && export MIGRATIONS_HASURA_SECRET=myadminsecretkey && export DEEPLINKS_HASURA_SECRET=myadminsecretkey && export MIGRATIONS_SCHEMA=public && export MIGRATIONS_RL_TABLE=rl_example__links__reserved && export MIGRATIONS_DATE_TYPE_SQL=timestamp && export RESERVED_LIFETIME_MS=86400000 && export DOCKER_DEEPLINKS_URL=http://host.docker.internal:3006 && export MIGRATIONS_DIR=/tmp/deep && export MIGRATIONS_HASURA_PATH=$(gp url 8080) && export DEEPLINKS_HASURA_PATH=$(echo $(gp url 8080) | awk -F[/:] '{print $4}') && export MIGRATIONS_HASURA_SSL=1 && export DEEPLINKS_HASURA_SSL=1 && export NEXT_PUBLIC_GQL_SSL=1 && export NEXT_PUBLIC_DEEPLINKS_SERVER=https://$(echo $(gp url 3007) | awk -F[/:] '{print $4}') && export NEXT_PUBLIC_GQL_PATH=$(echo $(gp url 3006) | awk -F[/:] '{print $4}')/gql && export NEXT_PUBLIC_ENGINES=1 &&  docker version -f '{{json .}}'
+[0] MIGRATIONS_DIR /tmp/deep
+[0] existsSync deep true
+[0] existsSync logs true
+[0]  export PATH='/home/gitpod/.nix-profile/bin:/home/gitpod/.local/bin:/workspace/.cargo/bin:/home/gitpod/.pyenv/shims:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/workspace/go/bin:/home/gitpod/.nix-profile/bin:/home/gitpod/.nix-profile/bin:/home/gitpod/.local/bin:/workspace/.cargo/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/workspace/go/bin:/home/gitpod/.nix-profile/bin:/home/gitpod/.nix-profile/bin:/home/gitpod/.local/bin:/workspace/.cargo/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/workspace/go/bin:/home/gitpod/.nix-profile/bin:/home/gitpod/.nix-profile/bin:/home/gitpod/.local/bin:/workspace/.cargo/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/workspace/go/bin:/home/gitpod/.nix-profile/bin:/home/gitpod/.nix-profile/bin:/home/gitpod/.local/bin:/workspace/.cargo/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/workspace/go/bin:/home/gitpod/.nix-profile/bin:/workspace/dev/packages/deepcase/node_modules/.bin:/workspace/dev/packages/node_modules/.bin:/workspace/dev/node_modules/.bin:/workspace/node_modules/.bin:/node_modules/.bin:/workspace/dev/node_modules/npm/node_modules/@npmcli/run-script/lib/node-gyp-bin:/workspace/dev/node_modules/.bin:/workspace/node_modules/.bin:/node_modules/.bin:/workspace/dev/node_modules/npm/node_modules/@npmcli/run-script/lib/node-gyp-bin:/workspace/dev/node_modules/.bin:/workspace/node_modules/.bin:/node_modules/.bin:/home/gitpod/.nvm/versions/node/v18.16.1/lib/node_modules/npm/node_modules/@npmcli/run-script/lib/node-gyp-bin:/home/gitpod/.sdkman/candidates/maven/current/bin:/home/gitpod/.sdkman/candidates/java/current/bin:/home/gitpod/.sdkman/candidates/gradle/current/bin:/workspace/.cargo/bin:/home/gitpod/.rvm/gems/ruby-3.2.1/bin:/home/gitpod/.rvm/gems/ruby-3.2.1@global/bin:/home/gitpod/.rvm/rubies/ruby-3.2.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.0/bin:/workspace/go/bin:/home/gitpod/.nix-profile/bin:/ide/bin/remote-cli:/home/gitpod/go/bin:/home/gitpod/go-packages/bin:/home/gitpod/.nvm/versions/node/v18.16.0/bin:/home/gitpod/.yarn/bin:/home/gitpod/.pnpm:/home/gitpod/.pyenv/bin:/home/gitpod/.rvm/bin:/home/gitpod/.cargo/bin:/home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/sbin/:/home/gitpod/.local/bin:/usr/games:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin' && export DOCKERHOST=10.0.5.2 && export DEEPLINKS_PORT=3006 && export DEEPCASE_PORT=3007 && export DEEPLINKS_PUBLIC_URL=https://3006-deepfoundation-dev-d9dziqiocks.ws-eu101.gitpod.io && export DEEPLINKS_HASURA_STORAGE_URL=http://localhost:8000 && export RESTORE_VOLUME_FROM_SNAPSHOT=1 && export npm_config_yes=true && export JWT_SECRET='{"type":"HS256","key":"3EK6FD+o0+c7tzBNVfjpMkNDi2yARAAKzQlk8O2IKoxQu4nF7EdAh8s3TwpHwrdWT6R"}' && export HASURA_GRAPHQL_DATABASE_URL=postgres://postgres:postgrespassword@postgres:5432/postgres && export HASURA_GRAPHQL_ENABLE_CONSOLE=true && export HASURA_GRAPHQL_DEV_MODE=true && export HASURA_GRAPHQL_LOG_LEVEL=debug && export HASURA_GRAPHQL_ENABLED_LOG_TYPES=startup,http-log,webhook-log,websocket-log,query-log && export HASURA_GRAPHQL_ADMIN_SECRET=myadminsecretkey && export HASURA_GRAPHQL_ENABLE_REMOTE_SCHEMA_PERMISSIONS=true && export HASURA_GRAPHQL_UNAUTHORIZED_ROLE=undefined && export POSTGRES_USER=postgres && export POSTGRES_PASSWORD=postgrespassword && export PGGSSENCMODE=disable && export PGSSLMODE=disable && export PGREQUIRESSL=0 && export MINIO_ROOT_USER=minioaccesskey && export MINIO_ROOT_PASSWORD=miniosecretkey && export HASURA_STORAGE_DEBUG=true && export HASURA_METADATA=1 && export HASURA_ENDPOINT=http://host.docker.internal:8080/v1 && export S3_ENDPOINT=http://host.docker.internal:9000 && export S3_ACCESS_KEY=minioaccesskey && export S3_SECRET_KEY=miniosecretkey && export S3_BUCKET=default && export S3_ROOT_FOLDER=default && export POSTGRES_MIGRATIONS=0 && export POSTGRES_MIGRATIONS_SOURCE=postgres://postgres:postgrespassword@host.docker.internal:5432/postgres?sslmode=disable && export MIGRATIONS_ID_TYPE_SQL=bigint && export MIGRATIONS_ID_TYPE_GQL=bigint && export MIGRATIONS_HASURA_SECRET=myadminsecretkey && export DEEPLINKS_HASURA_SECRET=myadminsecretkey && export MIGRATIONS_SCHEMA=public && export MIGRATIONS_RL_TABLE=rl_example__links__reserved && export MIGRATIONS_DATE_TYPE_SQL=timestamp && export RESERVED_LIFETIME_MS=86400000 && export DOCKER_DEEPLINKS_URL=http://host.docker.internal:3006 && export MIGRATIONS_DIR=/tmp/deep && export MIGRATIONS_HASURA_PATH=$(gp url 8080) && export DEEPLINKS_HASURA_PATH=$(echo $(gp url 8080) | awk -F[/:] '{print $4}') && export MIGRATIONS_HASURA_SSL=1 && export DEEPLINKS_HASURA_SSL=1 && export NEXT_PUBLIC_GQL_SSL=1 && export NEXT_PUBLIC_DEEPLINKS_SERVER=https://$(echo $(gp url 3007) | awk -F[/:] '{print $4}') && export NEXT_PUBLIC_GQL_PATH=$(echo $(gp url 3006) | awk -F[/:] '{print $4}')/gql && export NEXT_PUBLIC_ENGINES=1 &&  docker-compose version --short
+[0] MIGRATIONS_DIR /tmp/deep
+[0] existsSync deep true
+[0] existsSync logs true
+[1] [HPM] Rewriting path from "/gql" to "/v1/graphql"
+[1] [HPM] GET /gql ~> http://localhost:8080
+[1] [HPM] Upgrading to WebSocket
+[1] [HPM] Error occurred while proxying request 3006-deepfoundation-dev-d9dziqiocks.ws-eu101.gitpod.io/v1/graphql to undefined [ECONNREFUSED] (https://nodejs.org/api/errors.html#errors_common_system_errors)
+[1] [HPM] Rewriting path from "/gql" to "/v1/graphql"
+[1] [HPM] GET /gql ~> http://localhost:8080
+[1] [HPM] Upgrading to WebSocket
+[1] [HPM] Error occurred while proxying request 3006-deepfoundation-dev-d9dziqiocks.ws-eu101.gitpod.io/v1/graphql to undefined [ECONNREFUSED] (https://nodejs.org/api/errors.html#errors_common_system_errors)
+[1] [HPM] Rewriting path from "/gql" to "/v1/graphql"
+[1] [HPM] GET /gql ~> http://localhost:8080
+[1] [HPM] Upgrading to WebSocket
+[1] [HPM] Error occurred while proxying request 3006-deepfoundation-dev-d9dziqiocks.ws-eu101.gitpod.io/v1/graphql to undefined [ECONNREFUSED] (https://nodejs.org/api/errors.html#errors_common_system_errors)
+[1] [HPM] Rewriting path from "/gql" to "/v1/graphql"
+[1] [HPM] GET /gql ~> http://localhost:8080
+[1] [HPM] Upgrading to WebSocket
+[1] [HPM] Error occurred while proxying request 3006-deepfoundation-dev-d9dziqiocks.ws-eu101.gitpod.io/v1/graphql to undefined [ECONNREFUSED] (https://nodejs.org/api/errors.html#errors_common_system_errors)
+[1] [HPM] Rewriting path from "/gql" to "/v1/graphql"
+[1] [HPM] GET /gql ~> http://localhost:8080
+[1] [HPM] Upgrading to WebSocket
+[1] [HPM] Error occurred while proxying request 3006-deepfoundation-dev-d9dziqiocks.ws-eu101.gitpod.io/v1/graphql to undefined [ECONNREFUSED] (https://nodejs.org/api/errors.html#errors_common_system_errors)
+[4] 
+[4] > @deep-foundation/dev@0.0.21 gitpod-hasura-reattach
+[4] > export REATTACH_HASURA_SECRET=myadminsecretkey; export REATTACH_HASURA_PATH=$(echo $(gp url 8080) | awk -F[/:] '{print $4}'); export REATTACH_HASURA_SSL=1; export REATTACH_DEEPLINKS_PATH=$(echo $(gp url 3006) | awk -F[/:] '{print $4}'); npx gulp gitpod:hasura:reattach
+[4] 
+[4] [17:54:37] Requiring external module ts-node/register
+[4] [17:54:38] Using gulpfile /workspace/dev/gulpfile.ts
+[4] [17:54:38] Starting 'gitpod:hasura:reattach'...
+[4] 3006-deepfoundation-dev-d9dziqiocks.ws-eu101.gitpod.io
+[4] error Not Found <!doctype html>
+[4] <!--
+[4]  Copyright (c) 2020 Gitpod GmbH. All rights reserved.
+[4]  Licensed under the GNU Affero General Public License (AGPL).
+[4]  See License.AGPL.txt in the project root for license information.
+[4] -->
+[4] 
+[4] <html lang="en">
+[4] 
+[4] <head>
+[4]   <meta charset="utf-8">
+[4]   <meta name="viewport"
+[4]     content="user-scalable=0, initial-scale=1, minimum-scale=1, width=device-width, height=device-height">
+[4]   <!-- PWA primary color -->
+[4]   <meta name="theme-color" content="#000000">
+[4]   <link rel="manifest" href="https://gitpod.io/manifest.webmanifest">
+[4]   <link rel="apple-touch-icon" type="image/png" href="https://gitpod.io/images/apple-touch-icon.png" sizes="180x180" />
+[4]   <link rel="icon" type="image/png" href="https://gitpod.io/images/gitpod-196x196.png" sizes="196x196" />
+[4]   <link rel="icon" type="image/svg+xml" href="https://gitpod.io/images/gitpod.svg" sizes="any" />
+[4]   <title>Workspace Port Not Found - Gitpod</title>
+[4]   <meta name="description"
+[4]     content="Describe your dev environment as code and get fully prebuilt, ready-to-code development environments for any GitLab, GitHub, and Bitbucket project.">
+[4]   <meta name="keywords"
+[4]     content="dev environment, development environment, devops, cloud ide, github ide, gitlab ide, javascript, online ide, web ide, code review">
+[4] </head>
+[4] 
+[4] <body>
+[4]   <noscript>
+[4]     You need to enable JavaScript to run this app.
+[4]   </noscript>
+[4]   <style>
+[4]     html {
+[4]       box-sizing: border-box;
+[4]       -webkit-font-smoothing: antialiased;
+[4]       -moz-osx-font-smoothing: grayscale;
+[4]     }
+[4] 
+[4]     body {
+[4]       margin: 0;
+[4]       font-family:
+[4]         system-ui,
+[4]         -apple-system,
+[4]         'Segoe UI',
+[4]         Roboto,
+[4]         Helvetica,
+[4]         Arial,
+[4]         sans-serif,
+[4]         'Apple Color Emoji',
+[4]         'Segoe UI Emoji';
+[4]     }
+[4] 
+[4]     *,
+[4]     *::before,
+[4]     *::after {
+[4]       box-sizing: inherit;
+[4]     }
+[4] 
+[4]     button {
+[4]       border: none;
+[4]       color: #78716C;
+[4]       font-weight:600;
+[4]       padding: 8px 16px;
+[4]       font-size: 16px;
+[4]       border-radius: 8px;
+[4]       cursor: pointer;
+[4]       background-color: #F5F5F4;
+[4]       height: 40px;
+[4]     }
+[4] 
+[4]     button:hover {
+[4]       background-color: #E5E5E4;
+[4]     }
+[4] 
+[4]     .title {
+[4]       font-style: normal;
+[4]       font-weight: bold;
+[4]       font-size: 32px;
+[4]       line-height: 40px;
+[4]       text-align: center;
+[4]       letter-spacing: -0.01em;
+[4]       color: #78716C;
+[4]       margin-block-start: 48px;
+[4]       margin-block-end: 0;
+[4]     }
+[4] 
+[4]     .text {
+[4]       font-style: normal;
+[4]       font-weight: 500;
+[4]       font-size: 18px;
+[4]       line-height: 28px;
+[4]       max-width: 500px;
+[4]       margin-block-start: 8px;
+[4]       margin-bottom: 32px;
+[4]       text-align: center;
+[4]       letter-spacing: 0.04em;
+[4]       color: #A8A29E;
+[4]     }
+[4] 
+[4]   </style>
+[4]   <div id="root" style="display: flex; align-items: center; height: 100vh;">
+[4]     <div style="max-width: 64em; margin: auto; padding: 6em 2em; text-align: center;">
+[4]       <div class="sorry">
+[4]         <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+[4]           <path fill-rule="evenodd" clip-rule="evenodd"
+[4]             d="M37.496 3.18719C39.2305 6.21936 38.176 10.082 35.1406 11.8147L16.2669 22.5882C15.7681 22.873 15.4601 23.4033 15.4601 23.9778V40.89C15.4601 41.4644 15.7681 41.9948 16.2669 42.2796L31.2068 50.8076C31.6984 51.0882 32.3016 51.0882 32.7932 50.8076L47.733 42.2796C48.2319 41.9948 48.5399 41.4644 48.5399 40.89V30.372L35.1106 37.9411C32.0658 39.6573 28.2049 38.5828 26.4869 35.5412C24.769 32.4997 25.8446 28.6428 28.8894 26.9267L48.1049 16.0963C53.958 12.7972 61.2 17.0218 61.2 23.7353V42.1741C61.2 46.4929 58.8834 50.4806 55.1297 52.6233L37.9772 62.4143C34.2734 64.5286 29.7265 64.5286 26.0227 62.4143L8.87028 52.6233C5.11656 50.4806 2.79999 46.4929 2.79999 42.1741V22.6937C2.79999 18.3749 5.11656 14.3872 8.87028 12.2445L28.8594 0.834231C31.8948 -0.898439 35.7615 0.155016 37.496 3.18719Z"
+[4]             fill="url(#paint0_linear)" />
+[4]           <defs>
+[4]             <linearGradient id="paint0_linear" x1="46.7553" y1="9.67805" x2="16.825" y2="56.7825"
+[4]               gradientUnits="userSpaceOnUse">
+[4]               <stop stop-color="#FFB45B" />
+[4]               <stop offset="1" stop-color="#FF8A00" />
+[4]             </linearGradient>
+[4]           </defs>
+[4]         </svg>
+[4]         <h2 class="title">Port <span id="port"></span> Not Found</h2>
+[4]         <p class="text">Please make sure this port is exposed and your application is up and running.</p>
+[4]         <button class="secondary" id="refresh" tabindex="0" type="button">
+[4]           <span>Try Again</span>
+[4]         </button>
+[4]       </div>
+[4]     </div>
+[4]   </div>
+[4]   <script>
+[4]     let port = parseInt(window.location.hostname.split('-')[0], 10);
+[4]     if (port) {
+[4]       document.getElementById('port').textContent = port;
+[4]     }
+[4]     document.getElementById('refresh').addEventListener('click', function () {
+[4]       window.location.reload(true);
+[4]     });
+[4]     window.setInterval('window.location.reload(true);', 5000);
+[4]   </script>
+[4] </body>
+[4] 
+[4] </html>
+[4] 
+[4] error Not Found <!doctype html>
+[4] <!--
+[4]  Copyright (c) 2020 Gitpod GmbH. All rights reserved.
+[4]  Licensed under the GNU Affero General Public License (AGPL).
+[4]  See License.AGPL.txt in the project root for license information.
+[4] -->
+[4] 
+[4] <html lang="en">
+[4] 
+[4] <head>
+[4]   <meta charset="utf-8">
+[4]   <meta name="viewport"
+[4]     content="user-scalable=0, initial-scale=1, minimum-scale=1, width=device-width, height=device-height">
+[4]   <!-- PWA primary color -->
+[4]   <meta name="theme-color" content="#000000">
+[4]   <link rel="manifest" href="https://gitpod.io/manifest.webmanifest">
+[4]   <link rel="apple-touch-icon" type="image/png" href="https://gitpod.io/images/apple-touch-icon.png" sizes="180x180" />
+[4]   <link rel="icon" type="image/png" href="https://gitpod.io/images/gitpod-196x196.png" sizes="196x196" />
+[4]   <link rel="icon" type="image/svg+xml" href="https://gitpod.io/images/gitpod.svg" sizes="any" />
+[4]   <title>Workspace Port Not Found - Gitpod</title>
+[4]   <meta name="description"
+[4]     content="Describe your dev environment as code and get fully prebuilt, ready-to-code development environments for any GitLab, GitHub, and Bitbucket project.">
+[4]   <meta name="keywords"
+[4]     content="dev environment, development environment, devops, cloud ide, github ide, gitlab ide, javascript, online ide, web ide, code review">
+[4] </head>
+[4] 
+[4] <body>
+[4]   <noscript>
+[4]     You need to enable JavaScript to run this app.
+[4]   </noscript>
+[4]   <style>
+[4]     html {
+[4]       box-sizing: border-box;
+[4]       -webkit-font-smoothing: antialiased;
+[4]       -moz-osx-font-smoothing: grayscale;
+[4]     }
+[4] 
+[4]     body {
+[4]       margin: 0;
+[4]       font-family:
+[4]         system-ui,
+[4]         -apple-system,
+[4]         'Segoe UI',
+[4]         Roboto,
+[4]         Helvetica,
+[4]         Arial,
+[4]         sans-serif,
+[4]         'Apple Color Emoji',
+[4]         'Segoe UI Emoji';
+[4]     }
+[4] 
+[4]     *,
+[4]     *::before,
+[4]     *::after {
+[4]       box-sizing: inherit;
+[4]     }
+[4] 
+[4]     button {
+[4]       border: none;
+[4]       color: #78716C;
+[4]       font-weight:600;
+[4]       padding: 8px 16px;
+[4]       font-size: 16px;
+[4]       border-radius: 8px;
+[4]       cursor: pointer;
+[4]       background-color: #F5F5F4;
+[4]       height: 40px;
+[4]     }
+[4] 
+[4]     button:hover {
+[4]       background-color: #E5E5E4;
+[4]     }
+[4] 
+[4]     .title {
+[4]       font-style: normal;
+[4]       font-weight: bold;
+[4]       font-size: 32px;
+[4]       line-height: 40px;
+[4]       text-align: center;
+[4]       letter-spacing: -0.01em;
+[4]       color: #78716C;
+[4]       margin-block-start: 48px;
+[4]       margin-block-end: 0;
+[4]     }
+[4] 
+[4]     .text {
+[4]       font-style: normal;
+[4]       font-weight: 500;
+[4]       font-size: 18px;
+[4]       line-height: 28px;
+[4]       max-width: 500px;
+[4]       margin-block-start: 8px;
+[4]       margin-bottom: 32px;
+[4]       text-align: center;
+[4]       letter-spacing: 0.04em;
+[4]       color: #A8A29E;
+[4]     }
+[4] 
+[4]   </style>
+[4]   <div id="root" style="display: flex; align-items: center; height: 100vh;">
+[4]     <div style="max-width: 64em; margin: auto; padding: 6em 2em; text-align: center;">
+[4]       <div class="sorry">
+[4]         <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+[4]           <path fill-rule="evenodd" clip-rule="evenodd"
+[4]             d="M37.496 3.18719C39.2305 6.21936 38.176 10.082 35.1406 11.8147L16.2669 22.5882C15.7681 22.873 15.4601 23.4033 15.4601 23.9778V40.89C15.4601 41.4644 15.7681 41.9948 16.2669 42.2796L31.2068 50.8076C31.6984 51.0882 32.3016 51.0882 32.7932 50.8076L47.733 42.2796C48.2319 41.9948 48.5399 41.4644 48.5399 40.89V30.372L35.1106 37.9411C32.0658 39.6573 28.2049 38.5828 26.4869 35.5412C24.769 32.4997 25.8446 28.6428 28.8894 26.9267L48.1049 16.0963C53.958 12.7972 61.2 17.0218 61.2 23.7353V42.1741C61.2 46.4929 58.8834 50.4806 55.1297 52.6233L37.9772 62.4143C34.2734 64.5286 29.7265 64.5286 26.0227 62.4143L8.87028 52.6233C5.11656 50.4806 2.79999 46.4929 2.79999 42.1741V22.6937C2.79999 18.3749 5.11656 14.3872 8.87028 12.2445L28.8594 0.834231C31.8948 -0.898439 35.7615 0.155016 37.496 3.18719Z"
+[4]             fill="url(#paint0_linear)" />
+[4]           <defs>
+[4]             <linearGradient id="paint0_linear" x1="46.7553" y1="9.67805" x2="16.825" y2="56.7825"
+[4]               gradientUnits="userSpaceOnUse">
+[4]               <stop stop-color="#FFB45B" />
+[4]               <stop offset="1" stop-color="#FF8A00" />
+[4]             </linearGradient>
+[4]           </defs>
+[4]         </svg>
+[4]         <h2 class="title">Port <span id="port"></span> Not Found</h2>
+[4]         <p class="text">Please make sure this port is exposed and your application is up and running.</p>
+[4]         <button class="secondary" id="refresh" tabindex="0" type="button">
+[4]           <span>Try Again</span>
+[4]         </button>
+[4]       </div>
+[4]     </div>
+[4]   </div>
+[4]   <script>
+[4]     let port = parseInt(window.location.hostname.split('-')[0], 10);
+[4]     if (port) {
+[4]       document.getElementById('port').textContent = port;
+[4]     }
+[4]     document.getElementById('refresh').addEventListener('click', function () {
+[4]       window.location.reload(true);
+[4]     });
+[4]     window.setInterval('window.location.reload(true);', 5000);
+[4]   </script>
+[4] </body>
+[4] 
+[4] </html>
+[4] 
+[4] remote_schemas undefined
+[4] actions undefined
+[4] custom_types undefined
+[4] cron_triggers undefined
+[4] error Not Found <!doctype html>
+[4] <!--
+[4]  Copyright (c) 2020 Gitpod GmbH. All rights reserved.
+[4]  Licensed under the GNU Affero General Public License (AGPL).
+[4]  See License.AGPL.txt in the project root for license information.
+[4] -->
+[4] 
+[4] <html lang="en">
+[4] 
+[4] <head>
+[4]   <meta charset="utf-8">
+[4]   <meta name="viewport"
+[4]     content="user-scalable=0, initial-scale=1, minimum-scale=1, width=device-width, height=device-height">
+[4]   <!-- PWA primary color -->
+[4]   <meta name="theme-color" content="#000000">
+[4]   <link rel="manifest" href="https://gitpod.io/manifest.webmanifest">
+[4]   <link rel="apple-touch-icon" type="image/png" href="https://gitpod.io/images/apple-touch-icon.png" sizes="180x180" />
+[4]   <link rel="icon" type="image/png" href="https://gitpod.io/images/gitpod-196x196.png" sizes="196x196" />
+[4]   <link rel="icon" type="image/svg+xml" href="https://gitpod.io/images/gitpod.svg" sizes="any" />
+[4]   <title>Workspace Port Not Found - Gitpod</title>
+[4]   <meta name="description"
+[4]     content="Describe your dev environment as code and get fully prebuilt, ready-to-code development environments for any GitLab, GitHub, and Bitbucket project.">
+[4]   <meta name="keywords"
+[4]     content="dev environment, development environment, devops, cloud ide, github ide, gitlab ide, javascript, online ide, web ide, code review">
+[4] </head>
+[4] 
+[4] <body>
+[4]   <noscript>
+[4]     You need to enable JavaScript to run this app.
+[4]   </noscript>
+[4]   <style>
+[4]     html {
+[4]       box-sizing: border-box;
+[4]       -webkit-font-smoothing: antialiased;
+[4]       -moz-osx-font-smoothing: grayscale;
+[4]     }
+[4] 
+[4]     body {
+[4]       margin: 0;
+[4]       font-family:
+[4]         system-ui,
+[4]         -apple-system,
+[4]         'Segoe UI',
+[4]         Roboto,
+[4]         Helvetica,
+[4]         Arial,
+[4]         sans-serif,
+[4]         'Apple Color Emoji',
+[4]         'Segoe UI Emoji';
+[4]     }
+[4] 
+[4]     *,
+[4]     *::before,
+[4]     *::after {
+[4]       box-sizing: inherit;
+[4]     }
+[4] 
+[4]     button {
+[4]       border: none;
+[4]       color: #78716C;
+[4]       font-weight:600;
+[4]       padding: 8px 16px;
+[4]       font-size: 16px;
+[4]       border-radius: 8px;
+[4]       cursor: pointer;
+[4]       background-color: #F5F5F4;
+[4]       height: 40px;
+[4]     }
+[4] 
+[4]     button:hover {
+[4]       background-color: #E5E5E4;
+[4]     }
+[4] 
+[4]     .title {
+[4]       font-style: normal;
+[4]       font-weight: bold;
+[4]       font-size: 32px;
+[4]       line-height: 40px;
+[4]       text-align: center;
+[4]       letter-spacing: -0.01em;
+[4]       color: #78716C;
+[4]       margin-block-start: 48px;
+[4]       margin-block-end: 0;
+[4]     }
+[4] 
+[4]     .text {
+[4]       font-style: normal;
+[4]       font-weight: 500;
+[4]       font-size: 18px;
+[4]       line-height: 28px;
+[4]       max-width: 500px;
+[4]       margin-block-start: 8px;
+[4]       margin-bottom: 32px;
+[4]       text-align: center;
+[4]       letter-spacing: 0.04em;
+[4]       color: #A8A29E;
+[4]     }
+[4] 
+[4]   </style>
+[4]   <div id="root" style="display: flex; align-items: center; height: 100vh;">
+[4]     <div style="max-width: 64em; margin: auto; padding: 6em 2em; text-align: center;">
+[4]       <div class="sorry">
+[4]         <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+[4]           <path fill-rule="evenodd" clip-rule="evenodd"
+[4]             d="M37.496 3.18719C39.2305 6.21936 38.176 10.082 35.1406 11.8147L16.2669 22.5882C15.7681 22.873 15.4601 23.4033 15.4601 23.9778V40.89C15.4601 41.4644 15.7681 41.9948 16.2669 42.2796L31.2068 50.8076C31.6984 51.0882 32.3016 51.0882 32.7932 50.8076L47.733 42.2796C48.2319 41.9948 48.5399 41.4644 48.5399 40.89V30.372L35.1106 37.9411C32.0658 39.6573 28.2049 38.5828 26.4869 35.5412C24.769 32.4997 25.8446 28.6428 28.8894 26.9267L48.1049 16.0963C53.958 12.7972 61.2 17.0218 61.2 23.7353V42.1741C61.2 46.4929 58.8834 50.4806 55.1297 52.6233L37.9772 62.4143C34.2734 64.5286 29.7265 64.5286 26.0227 62.4143L8.87028 52.6233C5.11656 50.4806 2.79999 46.4929 2.79999 42.1741V22.6937C2.79999 18.3749 5.11656 14.3872 8.87028 12.2445L28.8594 0.834231C31.8948 -0.898439 35.7615 0.155016 37.496 3.18719Z"
+[4]             fill="url(#paint0_linear)" />
+[4]           <defs>
+[4]             <linearGradient id="paint0_linear" x1="46.7553" y1="9.67805" x2="16.825" y2="56.7825"
+[4]               gradientUnits="userSpaceOnUse">
+[4]               <stop stop-color="#FFB45B" />
+[4]               <stop offset="1" stop-color="#FF8A00" />
+[4]             </linearGradient>
+[4]           </defs>
+[4]         </svg>
+[4]         <h2 class="title">Port <span id="port"></span> Not Found</h2>
+[4]         <p class="text">Please make sure this port is exposed and your application is up and running.</p>
+[4]         <button class="secondary" id="refresh" tabindex="0" type="button">
+[4]           <span>Try Again</span>
+[4]         </button>
+[4]       </div>
+[4]     </div>
+[4]   </div>
+[4]   <script>
+[4]     let port = parseInt(window.location.hostname.split('-')[0], 10);
+[4]     if (port) {
+[4]       document.getElementById('port').textContent = port;
+[4]     }
+[4]     document.getElementById('refresh').addEventListener('click', function () {
+[4]       window.location.reload(true);
+[4]     });
+[4]     window.setInterval('window.location.reload(true);', 5000);
+[4]   </script>
+[4] </body>
+[4] 
+[4] </html>
+[4] 
+[4] [17:54:38] Finished 'gitpod:hasura:reattach' after 109 ms
+[4] sleep 120 && npm run gitpod-hasura-reattach exited with code 0
+[1] [HPM] Rewriting path from "/gql" to "/v1/graphql"
+[1] [HPM] GET /gql ~> http://localhost:8080
+[1] [HPM] Upgrading to WebSocket
+[1] [HPM] Error occurred while proxying request 3006-deepfoundation-dev-d9dziqiocks.ws-eu101.gitpod.io/v1/graphql to undefined [ECONNREFUSED] (https://nodejs.org/api/errors.html#errors_common_system_errors)
+[1] [HPM] Rewriting path from "/gql" to "/v1/graphql"
+[1] [HPM] GET /gql ~> http://localhost:8080
+[1] [HPM] Upgrading to WebSocket
+[1] [HPM] Error occurred while proxying request 3006-deepfoundation-dev-d9dziqiocks.ws-eu101.gitpod.io/v1/graphql to undefined [ECONNREFUSED] (https://nodejs.org/api/errors.html#errors_common_system_errors)
+[0]  export PATH='/home/gitpod/.nix-profile/bin:/home/gitpod/.local/bin:/workspace/.cargo/bin:/home/gitpod/.pyenv/shims:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/workspace/go/bin:/home/gitpod/.nix-profile/bin:/home/gitpod/.nix-profile/bin:/home/gitpod/.local/bin:/workspace/.cargo/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/workspace/go/bin:/home/gitpod/.nix-profile/bin:/home/gitpod/.nix-profile/bin:/home/gitpod/.local/bin:/workspace/.cargo/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/workspace/go/bin:/home/gitpod/.nix-profile/bin:/home/gitpod/.nix-profile/bin:/home/gitpod/.local/bin:/workspace/.cargo/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/workspace/go/bin:/home/gitpod/.nix-profile/bin:/home/gitpod/.nix-profile/bin:/home/gitpod/.local/bin:/workspace/.cargo/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/workspace/go/bin:/home/gitpod/.nix-profile/bin:/home/gitpod/.nix-profile/bin:/home/gitpod/.local/bin:/workspace/.cargo/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/workspace/go/bin:/home/gitpod/.nix-profile/bin:/workspace/dev/packages/deepcase/node_modules/.bin:/workspace/dev/packages/node_modules/.bin:/workspace/dev/node_modules/.bin:/workspace/node_modules/.bin:/node_modules/.bin:/workspace/dev/node_modules/npm/node_modules/@npmcli/run-script/lib/node-gyp-bin:/workspace/dev/node_modules/.bin:/workspace/node_modules/.bin:/node_modules/.bin:/workspace/dev/node_modules/npm/node_modules/@npmcli/run-script/lib/node-gyp-bin:/workspace/dev/node_modules/.bin:/workspace/node_modules/.bin:/node_modules/.bin:/home/gitpod/.nvm/versions/node/v18.16.1/lib/node_modules/npm/node_modules/@npmcli/run-script/lib/node-gyp-bin:/home/gitpod/.sdkman/candidates/maven/current/bin:/home/gitpod/.sdkman/candidates/java/current/bin:/home/gitpod/.sdkman/candidates/gradle/current/bin:/workspace/.cargo/bin:/home/gitpod/.rvm/gems/ruby-3.2.1/bin:/home/gitpod/.rvm/gems/ruby-3.2.1@global/bin:/home/gitpod/.rvm/rubies/ruby-3.2.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.0/bin:/workspace/go/bin:/home/gitpod/.nix-profile/bin:/ide/bin/remote-cli:/home/gitpod/go/bin:/home/gitpod/go-packages/bin:/home/gitpod/.nvm/versions/node/v18.16.0/bin:/home/gitpod/.yarn/bin:/home/gitpod/.pnpm:/home/gitpod/.pyenv/bin:/home/gitpod/.rvm/bin:/home/gitpod/.cargo/bin:/home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/sbin/:/home/gitpod/.local/bin:/usr/games:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin' && export DOCKERHOST=10.0.5.2 && export DEEPLINKS_PORT=3006 && export DEEPCASE_PORT=3007 && export DEEPLINKS_PUBLIC_URL=https://3006-deepfoundation-dev-d9dziqiocks.ws-eu101.gitpod.io && export DEEPLINKS_HASURA_STORAGE_URL=http://localhost:8000 && export RESTORE_VOLUME_FROM_SNAPSHOT=1 && export npm_config_yes=true && export JWT_SECRET='{"type":"HS256","key":"3EK6FD+o0+c7tzBNVfjpMkNDi2yARAAKzQlk8O2IKoxQu4nF7EdAh8s3TwpHwrdWT6R"}' && export HASURA_GRAPHQL_DATABASE_URL=postgres://postgres:postgrespassword@postgres:5432/postgres && export HASURA_GRAPHQL_ENABLE_CONSOLE=true && export HASURA_GRAPHQL_DEV_MODE=true && export HASURA_GRAPHQL_LOG_LEVEL=debug && export HASURA_GRAPHQL_ENABLED_LOG_TYPES=startup,http-log,webhook-log,websocket-log,query-log && export HASURA_GRAPHQL_ADMIN_SECRET=myadminsecretkey && export HASURA_GRAPHQL_ENABLE_REMOTE_SCHEMA_PERMISSIONS=true && export HASURA_GRAPHQL_UNAUTHORIZED_ROLE=undefined && export POSTGRES_USER=postgres && export POSTGRES_PASSWORD=postgrespassword && export PGGSSENCMODE=disable && export PGSSLMODE=disable && export PGREQUIRESSL=0 && export MINIO_ROOT_USER=minioaccesskey && export MINIO_ROOT_PASSWORD=miniosecretkey && export HASURA_STORAGE_DEBUG=true && export HASURA_METADATA=1 && export HASURA_ENDPOINT=http://host.docker.internal:8080/v1 && export S3_ENDPOINT=http://host.docker.internal:9000 && export S3_ACCESS_KEY=minioaccesskey && export S3_SECRET_KEY=miniosecretkey && export S3_BUCKET=default && export S3_ROOT_FOLDER=default && export POSTGRES_MIGRATIONS=0 && export POSTGRES_MIGRATIONS_SOURCE=postgres://postgres:postgrespassword@host.docker.internal:5432/postgres?sslmode=disable && export MIGRATIONS_ID_TYPE_SQL=bigint && export MIGRATIONS_ID_TYPE_GQL=bigint && export MIGRATIONS_HASURA_SECRET=myadminsecretkey && export DEEPLINKS_HASURA_SECRET=myadminsecretkey && export MIGRATIONS_SCHEMA=public && export MIGRATIONS_RL_TABLE=rl_example__links__reserved && export MIGRATIONS_DATE_TYPE_SQL=timestamp && export RESERVED_LIFETIME_MS=86400000 && export DOCKER_DEEPLINKS_URL=http://host.docker.internal:3006 && export MIGRATIONS_DIR=/tmp/deep && export MIGRATIONS_HASURA_PATH=$(gp url 8080) && export DEEPLINKS_HASURA_PATH=$(echo $(gp url 8080) | awk -F[/:] '{print $4}') && export MIGRATIONS_HASURA_SSL=1 && export DEEPLINKS_HASURA_SSL=1 && export NEXT_PUBLIC_GQL_SSL=1 && export NEXT_PUBLIC_DEEPLINKS_SERVER=https://$(echo $(gp url 3007) | awk -F[/:] '{print $4}') && export NEXT_PUBLIC_GQL_PATH=$(echo $(gp url 3006) | awk -F[/:] '{print $4}')/gql && export NEXT_PUBLIC_ENGINES=1 &&  cd "/workspace/dev/packages/deepcase/node_modules/@deep-foundation/hasura/local/" && docker-compose -p deep stop postgres hasura && docker volume create deep-db-data && docker pull deepf/deeplinks:main
+[1] [HPM] Rewriting path from "/gql" to "/v1/graphql"
+[1] [HPM] GET /gql ~> http://localhost:8080
+[1] [HPM] Upgrading to WebSocket
+[1] [HPM] Error occurred while proxying request 3006-deepfoundation-dev-d9dziqiocks.ws-eu101.gitpod.io/v1/graphql to undefined [ECONNREFUSED] (https://nodejs.org/api/errors.html#errors_common_system_errors)
+[1] [HPM] Rewriting path from "/gql" to "/v1/graphql"
+[1] [HPM] GET /gql ~> http://localhost:8080
+[1] [HPM] Upgrading to WebSocket
+[1] [HPM] Error occurred while proxying request 3006-deepfoundation-dev-d9dziqiocks.ws-eu101.gitpod.io/v1/graphql to undefined [ECONNREFUSED] (https://nodejs.org/api/errors.html#errors_common_system_errors)
+[0] MIGRATIONS_DIR /tmp/deep
+[0] existsSync deep true
+[0] existsSync logs true
+[0]  export PATH='/home/gitpod/.nix-profile/bin:/home/gitpod/.local/bin:/workspace/.cargo/bin:/home/gitpod/.pyenv/shims:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/workspace/go/bin:/home/gitpod/.nix-profile/bin:/home/gitpod/.nix-profile/bin:/home/gitpod/.local/bin:/workspace/.cargo/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/workspace/go/bin:/home/gitpod/.nix-profile/bin:/home/gitpod/.nix-profile/bin:/home/gitpod/.local/bin:/workspace/.cargo/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/workspace/go/bin:/home/gitpod/.nix-profile/bin:/home/gitpod/.nix-profile/bin:/home/gitpod/.local/bin:/workspace/.cargo/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/workspace/go/bin:/home/gitpod/.nix-profile/bin:/home/gitpod/.nix-profile/bin:/home/gitpod/.local/bin:/workspace/.cargo/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/workspace/go/bin:/home/gitpod/.nix-profile/bin:/home/gitpod/.nix-profile/bin:/home/gitpod/.local/bin:/workspace/.cargo/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/workspace/go/bin:/home/gitpod/.nix-profile/bin:/home/gitpod/.nix-profile/bin:/home/gitpod/.local/bin:/workspace/.cargo/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/workspace/go/bin:/home/gitpod/.nix-profile/bin:/workspace/dev/packages/deepcase/node_modules/.bin:/workspace/dev/packages/node_modules/.bin:/workspace/dev/node_modules/.bin:/workspace/node_modules/.bin:/node_modules/.bin:/workspace/dev/node_modules/npm/node_modules/@npmcli/run-script/lib/node-gyp-bin:/workspace/dev/node_modules/.bin:/workspace/node_modules/.bin:/node_modules/.bin:/workspace/dev/node_modules/npm/node_modules/@npmcli/run-script/lib/node-gyp-bin:/workspace/dev/node_modules/.bin:/workspace/node_modules/.bin:/node_modules/.bin:/home/gitpod/.nvm/versions/node/v18.16.1/lib/node_modules/npm/node_modules/@npmcli/run-script/lib/node-gyp-bin:/home/gitpod/.sdkman/candidates/maven/current/bin:/home/gitpod/.sdkman/candidates/java/current/bin:/home/gitpod/.sdkman/candidates/gradle/current/bin:/workspace/.cargo/bin:/home/gitpod/.rvm/gems/ruby-3.2.1/bin:/home/gitpod/.rvm/gems/ruby-3.2.1@global/bin:/home/gitpod/.rvm/rubies/ruby-3.2.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.0/bin:/workspace/go/bin:/home/gitpod/.nix-profile/bin:/ide/bin/remote-cli:/home/gitpod/go/bin:/home/gitpod/go-packages/bin:/home/gitpod/.nvm/versions/node/v18.16.0/bin:/home/gitpod/.yarn/bin:/home/gitpod/.pnpm:/home/gitpod/.pyenv/bin:/home/gitpod/.rvm/bin:/home/gitpod/.cargo/bin:/home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/sbin/:/home/gitpod/.local/bin:/usr/games:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin' && export DOCKERHOST=10.0.5.2 && export DEEPLINKS_PORT=3006 && export DEEPCASE_PORT=3007 && export DEEPLINKS_PUBLIC_URL=https://3006-deepfoundation-dev-d9dziqiocks.ws-eu101.gitpod.io && export DEEPLINKS_HASURA_STORAGE_URL=http://localhost:8000 && export RESTORE_VOLUME_FROM_SNAPSHOT=1 && export npm_config_yes=true && export JWT_SECRET='{"type":"HS256","key":"3EK6FD+o0+c7tzBNVfjpMkNDi2yARAAKzQlk8O2IKoxQu4nF7EdAh8s3TwpHwrdWT6R"}' && export HASURA_GRAPHQL_DATABASE_URL=postgres://postgres:postgrespassword@postgres:5432/postgres && export HASURA_GRAPHQL_ENABLE_CONSOLE=true && export HASURA_GRAPHQL_DEV_MODE=true && export HASURA_GRAPHQL_LOG_LEVEL=debug && export HASURA_GRAPHQL_ENABLED_LOG_TYPES=startup,http-log,webhook-log,websocket-log,query-log && export HASURA_GRAPHQL_ADMIN_SECRET=myadminsecretkey && export HASURA_GRAPHQL_ENABLE_REMOTE_SCHEMA_PERMISSIONS=true && export HASURA_GRAPHQL_UNAUTHORIZED_ROLE=undefined && export POSTGRES_USER=postgres && export POSTGRES_PASSWORD=postgrespassword && export PGGSSENCMODE=disable && export PGSSLMODE=disable && export PGREQUIRESSL=0 && export MINIO_ROOT_USER=minioaccesskey && export MINIO_ROOT_PASSWORD=miniosecretkey && export HASURA_STORAGE_DEBUG=true && export HASURA_METADATA=1 && export HASURA_ENDPOINT=http://host.docker.internal:8080/v1 && export S3_ENDPOINT=http://host.docker.internal:9000 && export S3_ACCESS_KEY=minioaccesskey && export S3_SECRET_KEY=miniosecretkey && export S3_BUCKET=default && export S3_ROOT_FOLDER=default && export POSTGRES_MIGRATIONS=0 && export POSTGRES_MIGRATIONS_SOURCE=postgres://postgres:postgrespassword@host.docker.internal:5432/postgres?sslmode=disable && export MIGRATIONS_ID_TYPE_SQL=bigint && export MIGRATIONS_ID_TYPE_GQL=bigint && export MIGRATIONS_HASURA_SECRET=myadminsecretkey && export DEEPLINKS_HASURA_SECRET=myadminsecretkey && export MIGRATIONS_SCHEMA=public && export MIGRATIONS_RL_TABLE=rl_example__links__reserved && export MIGRATIONS_DATE_TYPE_SQL=timestamp && export RESERVED_LIFETIME_MS=86400000 && export DOCKER_DEEPLINKS_URL=http://host.docker.internal:3006 && export MIGRATIONS_DIR=/tmp/deep && export MIGRATIONS_HASURA_PATH=$(gp url 8080) && export DEEPLINKS_HASURA_PATH=$(echo $(gp url 8080) | awk -F[/:] '{print $4}') && export MIGRATIONS_HASURA_SSL=1 && export DEEPLINKS_HASURA_SSL=1 && export NEXT_PUBLIC_GQL_SSL=1 && export NEXT_PUBLIC_DEEPLINKS_SERVER=https://$(echo $(gp url 3007) | awk -F[/:] '{print $4}') && export NEXT_PUBLIC_GQL_PATH=$(echo $(gp url 3006) | awk -F[/:] '{print $4}')/gql && export NEXT_PUBLIC_ENGINES=1 &&  cd "/workspace/dev/packages/deepcase/node_modules/@deep-foundation/hasura/local/"  && mkdir -p /tmp/deep && docker run -v "/tmp/deep":/migrations -v deep-db-data:/data --rm --name links --entrypoint "sh" deepf/deeplinks:main -c "cd / && tar xf /backup/volume.tar --strip 1 && cp /backup/.migrate /migrations/.migrate"
+[1] [HPM] Rewriting path from "/gql" to "/v1/graphql"
+[1] [HPM] GET /gql ~> http://localhost:8080
+[1] [HPM] Upgrading to WebSocket
+[1] [HPM] Error occurred while proxying request 3006-deepfoundation-dev-d9dziqiocks.ws-eu101.gitpod.io/v1/graphql to undefined [ECONNREFUSED] (https://nodejs.org/api/errors.html#errors_common_system_errors)
+[0] MIGRATIONS_DIR /tmp/deep
+[0] existsSync deep true
+[0] existsSync logs true
+[0]  export PATH='/home/gitpod/.nix-profile/bin:/home/gitpod/.local/bin:/workspace/.cargo/bin:/home/gitpod/.pyenv/shims:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/workspace/go/bin:/home/gitpod/.nix-profile/bin:/home/gitpod/.nix-profile/bin:/home/gitpod/.local/bin:/workspace/.cargo/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/workspace/go/bin:/home/gitpod/.nix-profile/bin:/home/gitpod/.nix-profile/bin:/home/gitpod/.local/bin:/workspace/.cargo/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/workspace/go/bin:/home/gitpod/.nix-profile/bin:/home/gitpod/.nix-profile/bin:/home/gitpod/.local/bin:/workspace/.cargo/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/workspace/go/bin:/home/gitpod/.nix-profile/bin:/home/gitpod/.nix-profile/bin:/home/gitpod/.local/bin:/workspace/.cargo/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/workspace/go/bin:/home/gitpod/.nix-profile/bin:/home/gitpod/.nix-profile/bin:/home/gitpod/.local/bin:/workspace/.cargo/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/workspace/go/bin:/home/gitpod/.nix-profile/bin:/home/gitpod/.nix-profile/bin:/home/gitpod/.local/bin:/workspace/.cargo/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/workspace/go/bin:/home/gitpod/.nix-profile/bin:/home/gitpod/.nix-profile/bin:/home/gitpod/.local/bin:/workspace/.cargo/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/workspace/go/bin:/home/gitpod/.nix-profile/bin:/workspace/dev/packages/deepcase/node_modules/.bin:/workspace/dev/packages/node_modules/.bin:/workspace/dev/node_modules/.bin:/workspace/node_modules/.bin:/node_modules/.bin:/workspace/dev/node_modules/npm/node_modules/@npmcli/run-script/lib/node-gyp-bin:/workspace/dev/node_modules/.bin:/workspace/node_modules/.bin:/node_modules/.bin:/workspace/dev/node_modules/npm/node_modules/@npmcli/run-script/lib/node-gyp-bin:/workspace/dev/node_modules/.bin:/workspace/node_modules/.bin:/node_modules/.bin:/home/gitpod/.nvm/versions/node/v18.16.1/lib/node_modules/npm/node_modules/@npmcli/run-script/lib/node-gyp-bin:/home/gitpod/.sdkman/candidates/maven/current/bin:/home/gitpod/.sdkman/candidates/java/current/bin:/home/gitpod/.sdkman/candidates/gradle/current/bin:/workspace/.cargo/bin:/home/gitpod/.rvm/gems/ruby-3.2.1/bin:/home/gitpod/.rvm/gems/ruby-3.2.1@global/bin:/home/gitpod/.rvm/rubies/ruby-3.2.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.0/bin:/workspace/go/bin:/home/gitpod/.nix-profile/bin:/ide/bin/remote-cli:/home/gitpod/go/bin:/home/gitpod/go-packages/bin:/home/gitpod/.nvm/versions/node/v18.16.0/bin:/home/gitpod/.yarn/bin:/home/gitpod/.pnpm:/home/gitpod/.pyenv/bin:/home/gitpod/.rvm/bin:/home/gitpod/.cargo/bin:/home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/sbin/:/home/gitpod/.local/bin:/usr/games:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin' && export DOCKERHOST=10.0.5.2 && export DEEPLINKS_PORT=3006 && export DEEPCASE_PORT=3007 && export DEEPLINKS_PUBLIC_URL=https://3006-deepfoundation-dev-d9dziqiocks.ws-eu101.gitpod.io && export DEEPLINKS_HASURA_STORAGE_URL=http://localhost:8000 && export RESTORE_VOLUME_FROM_SNAPSHOT=1 && export npm_config_yes=true && export JWT_SECRET='{"type":"HS256","key":"3EK6FD+o0+c7tzBNVfjpMkNDi2yARAAKzQlk8O2IKoxQu4nF7EdAh8s3TwpHwrdWT6R"}' && export HASURA_GRAPHQL_DATABASE_URL=postgres://postgres:postgrespassword@postgres:5432/postgres && export HASURA_GRAPHQL_ENABLE_CONSOLE=true && export HASURA_GRAPHQL_DEV_MODE=true && export HASURA_GRAPHQL_LOG_LEVEL=debug && export HASURA_GRAPHQL_ENABLED_LOG_TYPES=startup,http-log,webhook-log,websocket-log,query-log && export HASURA_GRAPHQL_ADMIN_SECRET=myadminsecretkey && export HASURA_GRAPHQL_ENABLE_REMOTE_SCHEMA_PERMISSIONS=true && export HASURA_GRAPHQL_UNAUTHORIZED_ROLE=undefined && export POSTGRES_USER=postgres && export POSTGRES_PASSWORD=postgrespassword && export PGGSSENCMODE=disable && export PGSSLMODE=disable && export PGREQUIRESSL=0 && export MINIO_ROOT_USER=minioaccesskey && export MINIO_ROOT_PASSWORD=miniosecretkey && export HASURA_STORAGE_DEBUG=true && export HASURA_METADATA=1 && export HASURA_ENDPOINT=http://host.docker.internal:8080/v1 && export S3_ENDPOINT=http://host.docker.internal:9000 && export S3_ACCESS_KEY=minioaccesskey && export S3_SECRET_KEY=miniosecretkey && export S3_BUCKET=default && export S3_ROOT_FOLDER=default && export POSTGRES_MIGRATIONS=0 && export POSTGRES_MIGRATIONS_SOURCE=postgres://postgres:postgrespassword@host.docker.internal:5432/postgres?sslmode=disable && export MIGRATIONS_ID_TYPE_SQL=bigint && export MIGRATIONS_ID_TYPE_GQL=bigint && export MIGRATIONS_HASURA_SECRET=myadminsecretkey && export DEEPLINKS_HASURA_SECRET=myadminsecretkey && export MIGRATIONS_SCHEMA=public && export MIGRATIONS_RL_TABLE=rl_example__links__reserved && export MIGRATIONS_DATE_TYPE_SQL=timestamp && export RESERVED_LIFETIME_MS=86400000 && export DOCKER_DEEPLINKS_URL=http://host.docker.internal:3006 && export MIGRATIONS_DIR=/tmp/deep && export MIGRATIONS_HASURA_PATH=$(gp url 8080) && export DEEPLINKS_HASURA_PATH=$(echo $(gp url 8080) | awk -F[/:] '{print $4}') && export MIGRATIONS_HASURA_SSL=1 && export DEEPLINKS_HASURA_SSL=1 && export NEXT_PUBLIC_GQL_SSL=1 && export NEXT_PUBLIC_DEEPLINKS_SERVER=https://$(echo $(gp url 3007) | awk -F[/:] '{print $4}') && export NEXT_PUBLIC_GQL_PATH=$(echo $(gp url 3006) | awk -F[/:] '{print $4}')/gql && export NEXT_PUBLIC_ENGINES=1 &&  cd "/workspace/dev/packages/deepcase/node_modules/@deep-foundation/hasura/local/"  && npm run docker-local && npx -q wait-on --timeout 100000 http-get://localhost:8080/healthz && cd "/workspace/dev/packages/deepcase/node_modules/@deep-foundation/deeplinks" 
+[0] MIGRATIONS_DIR /tmp/deep
+[0] existsSync deep true
+[0] existsSync logs true
+[1] [HPM] Rewriting path from "/gql" to "/v1/graphql"
+[1] [HPM] POST /gql ~> http://localhost:8080
+[1] [HPM] Rewriting path from "/gql" to "/v1/graphql"
+[1] [HPM] GET /gql ~> http://localhost:8080
+[1] [HPM] Upgrading to WebSocket
+[1] [HPM] Rewriting path from "/gql" to "/v1/graphql"
+[1] [HPM] POST /gql ~> http://localhost:8080
+[1] [HPM] Rewriting path from "/gql" to "/v1/graphql"
+[1] [HPM] POST /gql ~> http://localhost:8080
+[1] [HPM] Rewriting path from "/gql" to "/v1/graphql"
+[1] [HPM] POST /gql ~> http://localhost:8080
+[1] [HPM] Rewriting path from "/gql" to "/v1/graphql"
+[1] [HPM] POST /gql ~> http://localhost:8080
+[0]  export PATH='/home/gitpod/.nix-profile/bin:/home/gitpod/.local/bin:/workspace/.cargo/bin:/home/gitpod/.pyenv/shims:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/workspace/go/bin:/home/gitpod/.nix-profile/bin:/home/gitpod/.nix-profile/bin:/home/gitpod/.local/bin:/workspace/.cargo/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/workspace/go/bin:/home/gitpod/.nix-profile/bin:/home/gitpod/.nix-profile/bin:/home/gitpod/.local/bin:/workspace/.cargo/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/workspace/go/bin:/home/gitpod/.nix-profile/bin:/home/gitpod/.nix-profile/bin:/home/gitpod/.local/bin:/workspace/.cargo/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/workspace/go/bin:/home/gitpod/.nix-profile/bin:/home/gitpod/.nix-profile/bin:/home/gitpod/.local/bin:/workspace/.cargo/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/workspace/go/bin:/home/gitpod/.nix-profile/bin:/home/gitpod/.nix-profile/bin:/home/gitpod/.local/bin:/workspace/.cargo/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/workspace/go/bin:/home/gitpod/.nix-profile/bin:/home/gitpod/.nix-profile/bin:/home/gitpod/.local/bin:/workspace/.cargo/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/workspace/go/bin:/home/gitpod/.nix-profile/bin:/home/gitpod/.nix-profile/bin:/home/gitpod/.local/bin:/workspace/.cargo/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/workspace/go/bin:/home/gitpod/.nix-profile/bin:/home/gitpod/.nix-profile/bin:/home/gitpod/.local/bin:/workspace/.cargo/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/workspace/go/bin:/home/gitpod/.nix-profile/bin:/workspace/dev/packages/deepcase/node_modules/.bin:/workspace/dev/packages/node_modules/.bin:/workspace/dev/node_modules/.bin:/workspace/node_modules/.bin:/node_modules/.bin:/workspace/dev/node_modules/npm/node_modules/@npmcli/run-script/lib/node-gyp-bin:/workspace/dev/node_modules/.bin:/workspace/node_modules/.bin:/node_modules/.bin:/workspace/dev/node_modules/npm/node_modules/@npmcli/run-script/lib/node-gyp-bin:/workspace/dev/node_modules/.bin:/workspace/node_modules/.bin:/node_modules/.bin:/home/gitpod/.nvm/versions/node/v18.16.1/lib/node_modules/npm/node_modules/@npmcli/run-script/lib/node-gyp-bin:/home/gitpod/.sdkman/candidates/maven/current/bin:/home/gitpod/.sdkman/candidates/java/current/bin:/home/gitpod/.sdkman/candidates/gradle/current/bin:/workspace/.cargo/bin:/home/gitpod/.rvm/gems/ruby-3.2.1/bin:/home/gitpod/.rvm/gems/ruby-3.2.1@global/bin:/home/gitpod/.rvm/rubies/ruby-3.2.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.0/bin:/workspace/go/bin:/home/gitpod/.nix-profile/bin:/ide/bin/remote-cli:/home/gitpod/go/bin:/home/gitpod/go-packages/bin:/home/gitpod/.nvm/versions/node/v18.16.0/bin:/home/gitpod/.yarn/bin:/home/gitpod/.pnpm:/home/gitpod/.pyenv/bin:/home/gitpod/.rvm/bin:/home/gitpod/.cargo/bin:/home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/sbin/:/home/gitpod/.local/bin:/usr/games:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin' && export DOCKERHOST=10.0.5.2 && export DEEPLINKS_PORT=3006 && export DEEPCASE_PORT=3007 && export DEEPLINKS_PUBLIC_URL=https://3006-deepfoundation-dev-d9dziqiocks.ws-eu101.gitpod.io && export DEEPLINKS_HASURA_STORAGE_URL=http://localhost:8000 && export RESTORE_VOLUME_FROM_SNAPSHOT=1 && export npm_config_yes=true && export JWT_SECRET='{"type":"HS256","key":"3EK6FD+o0+c7tzBNVfjpMkNDi2yARAAKzQlk8O2IKoxQu4nF7EdAh8s3TwpHwrdWT6R"}' && export HASURA_GRAPHQL_DATABASE_URL=postgres://postgres:postgrespassword@postgres:5432/postgres && export HASURA_GRAPHQL_ENABLE_CONSOLE=true && export HASURA_GRAPHQL_DEV_MODE=true && export HASURA_GRAPHQL_LOG_LEVEL=debug && export HASURA_GRAPHQL_ENABLED_LOG_TYPES=startup,http-log,webhook-log,websocket-log,query-log && export HASURA_GRAPHQL_ADMIN_SECRET=myadminsecretkey && export HASURA_GRAPHQL_ENABLE_REMOTE_SCHEMA_PERMISSIONS=true && export HASURA_GRAPHQL_UNAUTHORIZED_ROLE=undefined && export POSTGRES_USER=postgres && export POSTGRES_PASSWORD=postgrespassword && export PGGSSENCMODE=disable && export PGSSLMODE=disable && export PGREQUIRESSL=0 && export MINIO_ROOT_USER=minioaccesskey && export MINIO_ROOT_PASSWORD=miniosecretkey && export HASURA_STORAGE_DEBUG=true && export HASURA_METADATA=1 && export HASURA_ENDPOINT=http://host.docker.internal:8080/v1 && export S3_ENDPOINT=http://host.docker.internal:9000 && export S3_ACCESS_KEY=minioaccesskey && export S3_SECRET_KEY=miniosecretkey && export S3_BUCKET=default && export S3_ROOT_FOLDER=default && export POSTGRES_MIGRATIONS=0 && export POSTGRES_MIGRATIONS_SOURCE=postgres://postgres:postgrespassword@host.docker.internal:5432/postgres?sslmode=disable && export MIGRATIONS_ID_TYPE_SQL=bigint && export MIGRATIONS_ID_TYPE_GQL=bigint && export MIGRATIONS_HASURA_SECRET=myadminsecretkey && export DEEPLINKS_HASURA_SECRET=myadminsecretkey && export MIGRATIONS_SCHEMA=public && export MIGRATIONS_RL_TABLE=rl_example__links__reserved && export MIGRATIONS_DATE_TYPE_SQL=timestamp && export RESERVED_LIFETIME_MS=86400000 && export DOCKER_DEEPLINKS_URL=http://host.docker.internal:3006 && export MIGRATIONS_DIR=/tmp/deep && export MIGRATIONS_HASURA_PATH=$(gp url 8080) && export DEEPLINKS_HASURA_PATH=$(echo $(gp url 8080) | awk -F[/:] '{print $4}') && export MIGRATIONS_HASURA_SSL=1 && export DEEPLINKS_HASURA_SSL=1 && export NEXT_PUBLIC_GQL_SSL=1 && export NEXT_PUBLIC_DEEPLINKS_SERVER=https://$(echo $(gp url 3007) | awk -F[/:] '{print $4}') && export NEXT_PUBLIC_GQL_PATH=$(echo $(gp url 3006) | awk -F[/:] '{print $4}')/gql && export NEXT_PUBLIC_ENGINES=1 &&  docker version -f '{{json .}}'
+[0] MIGRATIONS_DIR /tmp/deep
+[0] existsSync deep true
+[0] existsSync logs true
+[1] [HPM] Rewriting path from "/gql" to "/v1/graphql"
+[1] [HPM] POST /gql ~> http://localhost:8080
+[0]  export PATH='/home/gitpod/.nix-profile/bin:/home/gitpod/.local/bin:/workspace/.cargo/bin:/home/gitpod/.pyenv/shims:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/workspace/go/bin:/home/gitpod/.nix-profile/bin:/home/gitpod/.nix-profile/bin:/home/gitpod/.local/bin:/workspace/.cargo/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/workspace/go/bin:/home/gitpod/.nix-profile/bin:/home/gitpod/.nix-profile/bin:/home/gitpod/.local/bin:/workspace/.cargo/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/workspace/go/bin:/home/gitpod/.nix-profile/bin:/home/gitpod/.nix-profile/bin:/home/gitpod/.local/bin:/workspace/.cargo/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/workspace/go/bin:/home/gitpod/.nix-profile/bin:/home/gitpod/.nix-profile/bin:/home/gitpod/.local/bin:/workspace/.cargo/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/workspace/go/bin:/home/gitpod/.nix-profile/bin:/home/gitpod/.nix-profile/bin:/home/gitpod/.local/bin:/workspace/.cargo/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/workspace/go/bin:/home/gitpod/.nix-profile/bin:/home/gitpod/.nix-profile/bin:/home/gitpod/.local/bin:/workspace/.cargo/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/workspace/go/bin:/home/gitpod/.nix-profile/bin:/home/gitpod/.nix-profile/bin:/home/gitpod/.local/bin:/workspace/.cargo/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/workspace/go/bin:/home/gitpod/.nix-profile/bin:/home/gitpod/.nix-profile/bin:/home/gitpod/.local/bin:/workspace/.cargo/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/workspace/go/bin:/home/gitpod/.nix-profile/bin:/home/gitpod/.nix-profile/bin:/home/gitpod/.local/bin:/workspace/.cargo/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/workspace/go/bin:/home/gitpod/.nix-profile/bin:/workspace/dev/packages/deepcase/node_modules/.bin:/workspace/dev/packages/node_modules/.bin:/workspace/dev/node_modules/.bin:/workspace/node_modules/.bin:/node_modules/.bin:/workspace/dev/node_modules/npm/node_modules/@npmcli/run-script/lib/node-gyp-bin:/workspace/dev/node_modules/.bin:/workspace/node_modules/.bin:/node_modules/.bin:/workspace/dev/node_modules/npm/node_modules/@npmcli/run-script/lib/node-gyp-bin:/workspace/dev/node_modules/.bin:/workspace/node_modules/.bin:/node_modules/.bin:/home/gitpod/.nvm/versions/node/v18.16.1/lib/node_modules/npm/node_modules/@npmcli/run-script/lib/node-gyp-bin:/home/gitpod/.sdkman/candidates/maven/current/bin:/home/gitpod/.sdkman/candidates/java/current/bin:/home/gitpod/.sdkman/candidates/gradle/current/bin:/workspace/.cargo/bin:/home/gitpod/.rvm/gems/ruby-3.2.1/bin:/home/gitpod/.rvm/gems/ruby-3.2.1@global/bin:/home/gitpod/.rvm/rubies/ruby-3.2.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.0/bin:/workspace/go/bin:/home/gitpod/.nix-profile/bin:/ide/bin/remote-cli:/home/gitpod/go/bin:/home/gitpod/go-packages/bin:/home/gitpod/.nvm/versions/node/v18.16.0/bin:/home/gitpod/.yarn/bin:/home/gitpod/.pnpm:/home/gitpod/.pyenv/bin:/home/gitpod/.rvm/bin:/home/gitpod/.cargo/bin:/home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/sbin/:/home/gitpod/.local/bin:/usr/games:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin:/home/gitpod/.nvm/versions/node/v18.16.1/bin' && export DOCKERHOST=10.0.5.2 && export DEEPLINKS_PORT=3006 && export DEEPCASE_PORT=3007 && export DEEPLINKS_PUBLIC_URL=https://3006-deepfoundation-dev-d9dziqiocks.ws-eu101.gitpod.io && export DEEPLINKS_HASURA_STORAGE_URL=http://localhost:8000 && export RESTORE_VOLUME_FROM_SNAPSHOT=1 && export npm_config_yes=true && export JWT_SECRET='{"type":"HS256","key":"3EK6FD+o0+c7tzBNVfjpMkNDi2yARAAKzQlk8O2IKoxQu4nF7EdAh8s3TwpHwrdWT6R"}' && export HASURA_GRAPHQL_DATABASE_URL=postgres://postgres:postgrespassword@postgres:5432/postgres && export HASURA_GRAPHQL_ENABLE_CONSOLE=true && export HASURA_GRAPHQL_DEV_MODE=true && export HASURA_GRAPHQL_LOG_LEVEL=debug && export HASURA_GRAPHQL_ENABLED_LOG_TYPES=startup,http-log,webhook-log,websocket-log,query-log && export HASURA_GRAPHQL_ADMIN_SECRET=myadminsecretkey && export HASURA_GRAPHQL_ENABLE_REMOTE_SCHEMA_PERMISSIONS=true && export HASURA_GRAPHQL_UNAUTHORIZED_ROLE=undefined && export POSTGRES_USER=postgres && export POSTGRES_PASSWORD=postgrespassword && export PGGSSENCMODE=disable && export PGSSLMODE=disable && export PGREQUIRESSL=0 && export MINIO_ROOT_USER=minioaccesskey && export MINIO_ROOT_PASSWORD=miniosecretkey && export HASURA_STORAGE_DEBUG=true && export HASURA_METADATA=1 && export HASURA_ENDPOINT=http://host.docker.internal:8080/v1 && export S3_ENDPOINT=http://host.docker.internal:9000 && export S3_ACCESS_KEY=minioaccesskey && export S3_SECRET_KEY=miniosecretkey && export S3_BUCKET=default && export S3_ROOT_FOLDER=default && export POSTGRES_MIGRATIONS=0 && export POSTGRES_MIGRATIONS_SOURCE=postgres://postgres:postgrespassword@host.docker.internal:5432/postgres?sslmode=disable && export MIGRATIONS_ID_TYPE_SQL=bigint && export MIGRATIONS_ID_TYPE_GQL=bigint && export MIGRATIONS_HASURA_SECRET=myadminsecretkey && export DEEPLINKS_HASURA_SECRET=myadminsecretkey && export MIGRATIONS_SCHEMA=public && export MIGRATIONS_RL_TABLE=rl_example__links__reserved && export MIGRATIONS_DATE_TYPE_SQL=timestamp && export RESERVED_LIFETIME_MS=86400000 && export DOCKER_DEEPLINKS_URL=http://host.docker.internal:3006 && export MIGRATIONS_DIR=/tmp/deep && export MIGRATIONS_HASURA_PATH=$(gp url 8080) && export DEEPLINKS_HASURA_PATH=$(echo $(gp url 8080) | awk -F[/:] '{print $4}') && export MIGRATIONS_HASURA_SSL=1 && export DEEPLINKS_HASURA_SSL=1 && export NEXT_PUBLIC_GQL_SSL=1 && export NEXT_PUBLIC_DEEPLINKS_SERVER=https://$(echo $(gp url 3007) | awk -F[/:] '{print $4}') && export NEXT_PUBLIC_GQL_PATH=$(echo $(gp url 3006) | awk -F[/:] '{print $4}')/gql && export NEXT_PUBLIC_ENGINES=1 &&  docker-compose version --short
+[0] MIGRATIONS_DIR /tmp/deep
+[0] existsSync deep true
+[0] existsSync logs true
+[1] [HPM] Rewriting path from "/gql" to "/v1/graphql"
+[1] [HPM] GET /gql ~> http://localhost:8080
+[1] [HPM] Upgrading to WebSocket
+[1] [HPM] Rewriting path from "/gql" to "/v1/graphql"
+[1] [HPM] GET /gql ~> http://localhost:8080
+[1] [HPM] Upgrading to WebSocket
+[1] [HPM] Rewriting path from "/gql" to "/v1/graphql"
+[1] [HPM] GET /gql ~> http://localhost:8080
+[1] [HPM] Upgrading to WebSocket
+[1] [HPM] Client disconnected
+[1] [HPM] Client disconnected
+[1] [HPM] Rewriting path from "/gql" to "/v1/graphql"
+[1] [HPM] GET /gql ~> http://localhost:8080
+[1] [HPM] Upgrading to WebSocket
+[1] [HPM] Rewriting path from "/gql" to "/v1/graphql"
+[1] [HPM] GET /gql ~> http://localhost:8080
+[1] [HPM] Upgrading to WebSocket
+[1] [HPM] Client disconnected
+[1] [HPM] Client disconnected
+[1] [HPM] Rewriting path from "/gql" to "/v1/graphql"
+[1] [HPM] GET /gql ~> http://localhost:8080
+[1] [HPM] Upgrading to WebSocket
+[1] [HPM] Rewriting path from "/gql" to "/v1/graphql"
+[1] [HPM] GET /gql ~> http://localhost:8080
+[1] [HPM] Upgrading to WebSocket
+[1] [HPM] Client disconnected
+[1] [HPM] Client disconnected
+[1] [HPM] Client disconnected
+[1] [HPM] Client disconnected
+[1] [HPM] Rewriting path from "/gql" to "/v1/graphql"
+[1] [HPM] GET /gql ~> http://localhost:8080
+[1] [HPM] Upgrading to WebSocket
+[1] [HPM] Rewriting path from "/gql" to "/v1/graphql"
+[1] [HPM] GET /gql ~> http://localhost:8080
+[1] [HPM] Upgrading to WebSocket
+[1] [HPM] Client disconnected
+[1] [HPM] Client disconnected
+[1] [HPM] Rewriting path from "/gql" to "/v1/graphql"
+[1] [HPM] GET /gql ~> http://localhost:8080
+[1] [HPM] Upgrading to WebSocket
+[1] [HPM] Rewriting path from "/gql" to "/v1/graphql"
+[1] [HPM] GET /gql ~> http://localhost:8080
+[1] [HPM] Upgrading to WebSocket
+[1] [HPM] Client disconnected
+[1] [HPM] Client disconnected
+[1] [HPM] Rewriting path from "/gql" to "/v1/graphql"
+[1] [HPM] GET /gql ~> http://localhost:8080
+[1] [HPM] Upgrading to WebSocket
+[1] [HPM] Rewriting path from "/gql" to "/v1/graphql"
+[1] [HPM] GET /gql ~> http://localhost:8080
+[1] [HPM] Upgrading to WebSocket
+[1] [HPM] Client disconnected
+[1] [HPM] Client disconnected
+[1] [HPM] Rewriting path from "/gql" to "/v1/graphql"
+[1] [HPM] GET /gql ~> http://localhost:8080
+[1] [HPM] Upgrading to WebSocket
+[1] [HPM] Rewriting path from "/gql" to "/v1/graphql"
+[1] [HPM] GET /gql ~> http://localhost:8080
+[1] [HPM] Upgrading to WebSocket
+[1] [HPM] Client disconnected
+[1] [HPM] Client disconnected
+[1] [HPM] Rewriting path from "/gql" to "/v1/graphql"
+[1] [HPM] GET /gql ~> http://localhost:8080
+[1] [HPM] Upgrading to WebSocket
+[1] [HPM] Rewriting path from "/gql" to "/v1/graphql"
+[1] [HPM] GET /gql ~> http://localhost:8080
+[1] [HPM] Upgrading to WebSocket
+[1] [HPM] Client disconnected
+[1] [HPM] Client disconnected
+[1] [HPM] Rewriting path from "/gql" to "/v1/graphql"
+[1] [HPM] GET /gql ~> http://localhost:8080
+[1] [HPM] Upgrading to WebSocket
+[1] [HPM] Rewriting path from "/gql" to "/v1/graphql"
+[1] [HPM] GET /gql ~> http://localhost:8080
+[1] [HPM] Upgrading to WebSocket
+[1] [HPM] Client disconnected
+[1] [HPM] Rewriting path from "/gql" to "/v1/graphql"
+[1] [HPM] GET /gql ~> http://localhost:8080
+[1] [HPM] Upgrading to WebSocket
+[1] [HPM] Client disconnected
+[1] [HPM] Rewriting path from "/gql" to "/v1/graphql"
+[1] [HPM] GET /gql ~> http://localhost:8080
+[1] [HPM] Upgrading to WebSocket
+[1] [HPM] Rewriting path from "/gql" to "/v1/graphql"
+[1] [HPM] GET /gql ~> http://localhost:8080
+[1] [HPM] Upgrading to WebSocket
+[0] [36mwait[39m  - compiling...
+[0] [35mevent[39m - compiled client and server successfully in 1365 ms (3481 modules)
+[1] [HPM] Client disconnected
+[1] [HPM] Client disconnected
+[1] [HPM] Rewriting path from "/gql" to "/v1/graphql"
+[1] [HPM] GET /gql ~> http://localhost:8080
+[1] [HPM] Upgrading to WebSocket
+[1] [HPM] Rewriting path from "/gql" to "/v1/graphql"
+[1] [HPM] GET /gql ~> http://localhost:8080
+[1] [HPM] Upgrading to WebSocket
+[1] [HPM] Client disconnected
+[1] [HPM] Client disconnected
+[1] [HPM] Client disconnected
+[1] [HPM] Rewriting path from "/gql" to "/v1/graphql"
+[1] [HPM] GET /gql ~> http://localhost:8080
+[1] [HPM] Upgrading to WebSocket
+[1] [HPM] Rewriting path from "/gql" to "/v1/graphql"
+[1] [HPM] GET /gql ~> http://localhost:8080
+[1] [HPM] Upgrading to WebSocket
+[0] [36mwait[39m  - compiling...
+[0] [35mevent[39m - compiled client and server successfully in 1525 ms (3481 modules)
+[0] [36mwait[39m  - compiling...
+[0] [35mevent[39m - compiled client and server successfully in 884 ms (3481 modules)
+[0] [36mwait[39m  - compiling...
+[0] warn  - The `app` directory is experimental. To enable, add `appDir: true` to your `next.config.js` configuration under `experimental`. See https://nextjs.org/docs/messages/experimental-app-dir-config
+[0] [31merror[39m - ./node_modules/@deep-foundation/deeplinks/imports/client-handler.js
+[0] Module build failed: Error: ENOENT: no such file or directory, open '/workspace/dev/packages/deepcase/node_modules/@deep-foundation/deeplinks/imports/client-handler.js'
+[0] 
+[0] Import trace for requested module:
+[0] ./node_modules/@deep-foundation/deeplinks/imports/client-handler.js
+[0] ./imports/client-handler.tsx
+[0] ./imports/cyto/editor.tsx
+[0] ./imports/cyto/graph.tsx
+[0] [36mwait[39m  - compiling...
+[0] [35mevent[39m - compiled client and server successfully in 1642 ms (3481 modules)
+[0] [36mwait[39m  - compiling...
+[0] [35mevent[39m - compiled client and server successfully in 1410 ms (3481 modules)
+[0] [36mwait[39m  - compiling...
+[0] [35mevent[39m - compiled client and server successfully in 1435 ms (3481 modules)
+[1] [HPM] Client disconnected
+[1] [HPM] Client disconnected
+[0] [36mwait[39m  - compiling / (client and server)...
+[1] [HPM] Rewriting path from "/gql" to "/v1/graphql"
+[1] [HPM] GET /gql ~> http://localhost:8080
+[1] [HPM] Upgrading to WebSocket
+[1] [HPM] Rewriting path from "/gql" to "/v1/graphql"
+[1] [HPM] GET /gql ~> http://localhost:8080
+[1] [HPM] Upgrading to WebSocket
+[0] [35mevent[39m - compiled client and server successfully in 872 ms (3622 modules)
+[0] Warning: forwardRef render functions accept exactly two parameters: props and ref. Did you forget to use the ref parameter?
+[0] Warning: forwardRef render functions accept exactly two parameters: props and ref. Did you forget to use the ref parameter?
+[0] Can not register `cxtmenu` for `core` since `cxtmenu` already exists in the prototype and can not be overridden
+[0] Can not register `edgeConnections` for `core` since `edgeConnections` already exists in the prototype and can not be overridden
+[0] Can not register `edgehandles` for `core` since `edgehandles` already exists in the prototype and can not be overridden
+[0] gqlPath 3006-deepfoundation-dev-d9dziqiocks.ws-eu101.gitpod.io/gql
+[0] gqlSsl true
+[1] [HPM] Client disconnected
+[1] [HPM] Client disconnected
+[0] [36mwait[39m  - compiling...
+[0] [35mevent[39m - compiled client and server successfully in 888 ms (3481 modules)
+[0] [36mwait[39m  - compiling...
+[0] [35mevent[39m - compiled client and server successfully in 1600 ms (3481 modules)
+[0] [36mwait[39m  - compiling /api/deeplinks (client and server)...
+[1] [HPM] Rewriting path from "/gql" to "/v1/graphql"
+[1] [HPM] POST /gql ~> http://localhost:8080
+[1] [HPM] Rewriting path from "/gql" to "/v1/graphql"
+[1] [HPM] POST /gql ~> http://localhost:8080
+[1] [HPM] Rewriting path from "/gql" to "/v1/graphql"
+[1] [HPM] POST /gql ~> http://localhost:8080
+[1] [HPM] Rewriting path from "/gql" to "/v1/graphql"
+[1] [HPM] POST /gql ~> http://localhost:8080
+[1] [HPM] Rewriting path from "/gql" to "/v1/graphql"
+[1] [HPM] GET /gql ~> http://localhost:8080
+[1] [HPM] Upgrading to WebSocket
+[0] warn  - The `app` directory is experimental. To enable, add `appDir: true` to your `next.config.js` configuration under `experimental`. See https://nextjs.org/docs/messages/experimental-app-dir-config
+[0] [33mwarn[39m  - ./node_modules/@deep-foundation/deeplinks/node_modules/cross-spawn/index.js
+[0] Module not found: Can't resolve 'spawn-sync' in '/workspace/dev/packages/deepcase/node_modules/@deep-foundation/deeplinks/node_modules/cross-spawn'
+[0] 
+[0] Import trace for requested module:
+[0] ./node_modules/@deep-foundation/deeplinks/node_modules/cross-spawn/index.js
+[0] ./node_modules/@deep-foundation/deeplinks/node_modules/execa/index.js
+[0] ./node_modules/@deep-foundation/deeplinks/node_modules/shell-env/index.js
+[0] ./node_modules/@deep-foundation/deeplinks/node_modules/shell-path/index.js
+[0] ./node_modules/@deep-foundation/deeplinks/node_modules/fix-path/index.js
+[0] ./node_modules/@deep-foundation/deeplinks/imports/engine.js
+[0] [31merror[39m - Error [ERR_REQUIRE_ESM]: require() of ES Module /workspace/dev/packages/deepcase/node_modules/internal-ip/index.js from /workspace/dev/packages/deepcase/app/server/pages/api/deeplinks.js not supported.
+[0] index.js is treated as an ES module file as it is a .js file whose nearest parent package.json contains "type": "module" which declares all .js files in that package scope as ES modules.
+[0] Instead rename index.js to end in .cjs, change the requiring code to use dynamic import() which is available in all CommonJS modules, or change "type": "module" to "type": "commonjs" in /workspace/dev/packages/deepcase/node_modules/internal-ip/package.json to treat all .js files as CommonJS (using .mjs for all ES modules instead).
+[0] 
+[0]     at internal-ip (/workspace/dev/packages/deepcase/app/server/pages/api/deeplinks.js:33:18)
+[0]     at __webpack_require__ (/workspace/dev/packages/deepcase/app/server/webpack-api-runtime.js:33:42)
+[0]     at eval (webpack-internal:///(api)/./node_modules/@deep-foundation/deeplinks/imports/engine.js:12:69)
+[0]     at __webpack_require__.a (/workspace/dev/packages/deepcase/app/server/webpack-api-runtime.js:97:13)
+[0]     at eval (webpack-internal:///(api)/./node_modules/@deep-foundation/deeplinks/imports/engine.js:2:21)
+[0]     at (api)/./node_modules/@deep-foundation/deeplinks/imports/engine.js (/workspace/dev/packages/deepcase/app/server/pages/api/deeplinks.js:448:1)
+[0]     at __webpack_require__ (/workspace/dev/packages/deepcase/app/server/webpack-api-runtime.js:33:42)
+[0]     at eval (webpack-internal:///(api)/./pages/api/deeplinks.ts:6:99)
+[0]     at __webpack_require__.a (/workspace/dev/packages/deepcase/app/server/webpack-api-runtime.js:97:13)
+[0]     at eval (webpack-internal:///(api)/./pages/api/deeplinks.ts:1:21)
+[0]     at (api)/./pages/api/deeplinks.ts (/workspace/dev/packages/deepcase/app/server/pages/api/deeplinks.js:437:1)
+[0]     at __webpack_require__ (/workspace/dev/packages/deepcase/app/server/webpack-api-runtime.js:33:42)
+[0]     at __webpack_exec__ (/workspace/dev/packages/deepcase/app/server/pages/api/deeplinks.js:458:39)
+[0]     at /workspace/dev/packages/deepcase/app/server/pages/api/deeplinks.js:459:28
+[0]     at Object.<anonymous> (/workspace/dev/packages/deepcase/app/server/pages/api/deeplinks.js:462:3)
+[0]     at DevServer.runApi (/workspace/dev/packages/deepcase/node_modules/next/dist/server/next-server.js:660:34)
+[0]     at DevServer.handleApiRequest (/workspace/dev/packages/deepcase/node_modules/next/dist/server/next-server.js:1189:21)
+[0]     at Object.fn (/workspace/dev/packages/deepcase/node_modules/next/dist/server/next-server.js:1132:46)
+[0]     at async Router.execute (/workspace/dev/packages/deepcase/node_modules/next/dist/server/router.js:315:32)
+[0]     at async DevServer.runImpl (/workspace/dev/packages/deepcase/node_modules/next/dist/server/base-server.js:604:29)
+[0]     at async DevServer.run (/workspace/dev/packages/deepcase/node_modules/next/dist/server/dev/next-dev-server.js:922:20)
+[0]     at async DevServer.handleRequestImpl (/workspace/dev/packages/deepcase/node_modules/next/dist/server/base-server.js:533:20) {
+[0]   digest: undefined
+[0] }
+[0] warn  - The `app` directory is experimental. To enable, add `appDir: true` to your `next.config.js` configuration under `experimental`. See https://nextjs.org/docs/messages/experimental-app-dir-config
+[0] [33mwarn[39m  - ./node_modules/@deep-foundation/deeplinks/node_modules/cross-spawn/index.js
+[0] Module not found: Can't resolve 'spawn-sync' in '/workspace/dev/packages/deepcase/node_modules/@deep-foundation/deeplinks/node_modules/cross-spawn'
+[0] 
+[0] Import trace for requested module:
+[0] ./node_modules/@deep-foundation/deeplinks/node_modules/cross-spawn/index.js
+[0] ./node_modules/@deep-foundation/deeplinks/node_modules/execa/index.js
+[0] ./node_modules/@deep-foundation/deeplinks/node_modules/shell-env/index.js
+[0] ./node_modules/@deep-foundation/deeplinks/node_modules/shell-path/index.js
+[0] ./node_modules/@deep-foundation/deeplinks/node_modules/fix-path/index.js
+[0] ./node_modules/@deep-foundation/deeplinks/imports/engine.js
+[0] [36mwait[39m  - compiling /_error (client and server)...
+[1] [HPM] Rewriting path from "/gql" to "/v1/graphql"
+[1] [HPM] POST /gql ~> http://localhost:8080
+[0] warn  - The `app` directory is experimental. To enable, add `appDir: true` to your `next.config.js` configuration under `experimental`. See https://nextjs.org/docs/messages/experimental-app-dir-config
+[0] [33mwarn[39m  - ./node_modules/@deep-foundation/deeplinks/node_modules/cross-spawn/index.js
+[0] Module not found: Can't resolve 'spawn-sync' in '/workspace/dev/packages/deepcase/node_modules/@deep-foundation/deeplinks/node_modules/cross-spawn'
+[0] 
+[0] Import trace for requested module:
+[0] ./node_modules/@deep-foundation/deeplinks/node_modules/cross-spawn/index.js
+[0] ./node_modules/@deep-foundation/deeplinks/node_modules/execa/index.js
+[0] ./node_modules/@deep-foundation/deeplinks/node_modules/shell-env/index.js
+[0] ./node_modules/@deep-foundation/deeplinks/node_modules/shell-path/index.js
+[0] ./node_modules/@deep-foundation/deeplinks/node_modules/fix-path/index.js
+[0] ./node_modules/@deep-foundation/deeplinks/imports/engine.js
+[1] [HPM] Client disconnected
+[0] warn  - The `app` directory is experimental. To enable, add `appDir: true` to your `next.config.js` configuration under `experimental`. See https://nextjs.org/docs/messages/experimental-app-dir-config
+[0] [33mwarn[39m  - ./node_modules/@deep-foundation/deeplinks/node_modules/cross-spawn/index.js
+[0] Module not found: Can't resolve 'spawn-sync' in '/workspace/dev/packages/deepcase/node_modules/@deep-foundation/deeplinks/node_modules/cross-spawn'
+[0] 
+[0] Import trace for requested module:
+[0] ./node_modules/@deep-foundation/deeplinks/node_modules/cross-spawn/index.js
+[0] ./node_modules/@deep-foundation/deeplinks/node_modules/execa/index.js
+[0] ./node_modules/@deep-foundation/deeplinks/node_modules/shell-env/index.js
+[0] ./node_modules/@deep-foundation/deeplinks/node_modules/shell-path/index.js
+[0] ./node_modules/@deep-foundation/deeplinks/node_modules/fix-path/index.js
+[0] ./node_modules/@deep-foundation/deeplinks/imports/engine.js
+[0] [36mwait[39m  - compiling / (client and server)...
+[0] [35mevent[39m - compiled client and server successfully in 444 ms (3622 modules)
+[0] Warning: forwardRef render functions accept exactly two parameters: props and ref. Did you forget to use the ref parameter?
+[0] Warning: forwardRef render functions accept exactly two parameters: props and ref. Did you forget to use the ref parameter?
+[0] Can not register `cxtmenu` for `core` since `cxtmenu` already exists in the prototype and can not be overridden
+[0] Can not register `edgeConnections` for `core` since `edgeConnections` already exists in the prototype and can not be overridden
+[0] Can not register `edgehandles` for `core` since `edgehandles` already exists in the prototype and can not be overridden
+[0] gqlPath 3006-deepfoundation-dev-d9dziqiocks.ws-eu101.gitpod.io/gql
+[0] gqlSsl true
+[0] [36mwait[39m  - compiling /api/deeplinks (client and server)...
+[0] warn  - The `app` directory is experimental. To enable, add `appDir: true` to your `next.config.js` configuration under `experimental`. See https://nextjs.org/docs/messages/experimental-app-dir-config
+[0] [33mwarn[39m  - ./node_modules/@deep-foundation/deeplinks/node_modules/cross-spawn/index.js
+[0] Module not found: Can't resolve 'spawn-sync' in '/workspace/dev/packages/deepcase/node_modules/@deep-foundation/deeplinks/node_modules/cross-spawn'
+[0] 
+[0] Import trace for requested module:
+[0] ./node_modules/@deep-foundation/deeplinks/node_modules/cross-spawn/index.js
+[0] ./node_modules/@deep-foundation/deeplinks/node_modules/execa/index.js
+[0] ./node_modules/@deep-foundation/deeplinks/node_modules/shell-env/index.js
+[0] ./node_modules/@deep-foundation/deeplinks/node_modules/shell-path/index.js
+[0] ./node_modules/@deep-foundation/deeplinks/node_modules/fix-path/index.js
+[0] ./node_modules/@deep-foundation/deeplinks/imports/engine.js
+[0] [31merror[39m - Error [ERR_REQUIRE_ESM]: require() of ES Module /workspace/dev/packages/deepcase/node_modules/internal-ip/index.js from /workspace/dev/packages/deepcase/app/server/pages/api/deeplinks.js not supported.
+[0] index.js is treated as an ES module file as it is a .js file whose nearest parent package.json contains "type": "module" which declares all .js files in that package scope as ES modules.
+[0] Instead rename index.js to end in .cjs, change the requiring code to use dynamic import() which is available in all CommonJS modules, or change "type": "module" to "type": "commonjs" in /workspace/dev/packages/deepcase/node_modules/internal-ip/package.json to treat all .js files as CommonJS (using .mjs for all ES modules instead).
+[0] 
+[0]     at internal-ip (/workspace/dev/packages/deepcase/app/server/pages/api/deeplinks.js:33:18)
+[0]     at __webpack_require__ (/workspace/dev/packages/deepcase/app/server/webpack-api-runtime.js:33:42)
+[0]     at eval (webpack-internal:///(api)/./node_modules/@deep-foundation/deeplinks/imports/engine.js:12:69)
+[0]     at __webpack_require__.a (/workspace/dev/packages/deepcase/app/server/webpack-api-runtime.js:97:13)
+[0]     at eval (webpack-internal:///(api)/./node_modules/@deep-foundation/deeplinks/imports/engine.js:2:21)
+[0]     at (api)/./node_modules/@deep-foundation/deeplinks/imports/engine.js (/workspace/dev/packages/deepcase/app/server/pages/api/deeplinks.js:448:1)
+[0]     at __webpack_require__ (/workspace/dev/packages/deepcase/app/server/webpack-api-runtime.js:33:42)
+[0]     at eval (webpack-internal:///(api)/./pages/api/deeplinks.ts:6:99)
+[0]     at __webpack_require__.a (/workspace/dev/packages/deepcase/app/server/webpack-api-runtime.js:97:13)
+[0]     at eval (webpack-internal:///(api)/./pages/api/deeplinks.ts:1:21)
+[0]     at (api)/./pages/api/deeplinks.ts (/workspace/dev/packages/deepcase/app/server/pages/api/deeplinks.js:437:1)
+[0]     at __webpack_require__ (/workspace/dev/packages/deepcase/app/server/webpack-api-runtime.js:33:42)
+[0]     at __webpack_exec__ (/workspace/dev/packages/deepcase/app/server/pages/api/deeplinks.js:458:39)
+[0]     at /workspace/dev/packages/deepcase/app/server/pages/api/deeplinks.js:459:28
+[0]     at Object.<anonymous> (/workspace/dev/packages/deepcase/app/server/pages/api/deeplinks.js:462:3)
+[0]     at DevServer.runApi (/workspace/dev/packages/deepcase/node_modules/next/dist/server/next-server.js:660:34)
+[0]     at DevServer.handleApiRequest (/workspace/dev/packages/deepcase/node_modules/next/dist/server/next-server.js:1189:21)
+[0]     at Object.fn (/workspace/dev/packages/deepcase/node_modules/next/dist/server/next-server.js:1132:46)
+[0]     at async Router.execute (/workspace/dev/packages/deepcase/node_modules/next/dist/server/router.js:315:32)
+[0]     at async DevServer.runImpl (/workspace/dev/packages/deepcase/node_modules/next/dist/server/base-server.js:604:29)
+[0]     at async DevServer.run (/workspace/dev/packages/deepcase/node_modules/next/dist/server/dev/next-dev-server.js:922:20)
+[0]     at async DevServer.handleRequestImpl (/workspace/dev/packages/deepcase/node_modules/next/dist/server/base-server.js:533:20) {
+[0]   digest: undefined
+[0] }
+[0] warn  - The `app` directory is experimental. To enable, add `appDir: true` to your `next.config.js` configuration under `experimental`. See https://nextjs.org/docs/messages/experimental-app-dir-config
+[0] [33mwarn[39m  - ./node_modules/@deep-foundation/deeplinks/node_modules/cross-spawn/index.js
+[0] Module not found: Can't resolve 'spawn-sync' in '/workspace/dev/packages/deepcase/node_modules/@deep-foundation/deeplinks/node_modules/cross-spawn'
+[0] 
+[0] Import trace for requested module:
+[0] ./node_modules/@deep-foundation/deeplinks/node_modules/cross-spawn/index.js
+[0] ./node_modules/@deep-foundation/deeplinks/node_modules/execa/index.js
+[0] ./node_modules/@deep-foundation/deeplinks/node_modules/shell-env/index.js
+[0] ./node_modules/@deep-foundation/deeplinks/node_modules/shell-path/index.js
+[0] ./node_modules/@deep-foundation/deeplinks/node_modules/fix-path/index.js
+[0] ./node_modules/@deep-foundation/deeplinks/imports/engine.js
+[0] [36mwait[39m  - compiling /_error (client and server)...
+[1] [HPM] Rewriting path from "/gql" to "/v1/graphql"
+[1] [HPM] POST /gql ~> http://localhost:8080
+[1] [HPM] Rewriting path from "/gql" to "/v1/graphql"
+[1] [HPM] POST /gql ~> http://localhost:8080
+[1] [HPM] Rewriting path from "/gql" to "/v1/graphql"
+[1] [HPM] GET /gql ~> http://localhost:8080
+[1] [HPM] Upgrading to WebSocket
+[0] warn  - The `app` directory is experimental. To enable, add `appDir: true` to your `next.config.js` configuration under `experimental`. See https://nextjs.org/docs/messages/experimental-app-dir-config
+[0] [33mwarn[39m  - ./node_modules/@deep-foundation/deeplinks/node_modules/cross-spawn/index.js
+[0] Module not found: Can't resolve 'spawn-sync' in '/workspace/dev/packages/deepcase/node_modules/@deep-foundation/deeplinks/node_modules/cross-spawn'
+[0] 
+[0] Import trace for requested module:
+[0] ./node_modules/@deep-foundation/deeplinks/node_modules/cross-spawn/index.js
+[0] ./node_modules/@deep-foundation/deeplinks/node_modules/execa/index.js
+[0] ./node_modules/@deep-foundation/deeplinks/node_modules/shell-env/index.js
+[0] ./node_modules/@deep-foundation/deeplinks/node_modules/shell-path/index.js
+[0] ./node_modules/@deep-foundation/deeplinks/node_modules/fix-path/index.js
+[0] ./node_modules/@deep-foundation/deeplinks/imports/engine.js
+[1] [HPM] Rewriting path from "/gql" to "/v1/graphql"
+[1] [HPM] POST /gql ~> http://localhost:8080
+[1] [HPM] Rewriting path from "/gql" to "/v1/graphql"
+[1] [HPM] POST /gql ~> http://localhost:8080
+[1] [HPM] Rewriting path from "/gql" to "/v1/graphql"
+[1] [HPM] POST /gql ~> http://localhost:8080
+[0] warn  - The `app` directory is experimental. To enable, add `appDir: true` to your `next.config.js` configuration under `experimental`. See https://nextjs.org/docs/messages/experimental-app-dir-config
+[0] [33mwarn[39m  - ./node_modules/@deep-foundation/deeplinks/node_modules/cross-spawn/index.js
+[0] Module not found: Can't resolve 'spawn-sync' in '/workspace/dev/packages/deepcase/node_modules/@deep-foundation/deeplinks/node_modules/cross-spawn'
+[0] 
+[0] Import trace for requested module:
+[0] ./node_modules/@deep-foundation/deeplinks/node_modules/cross-spawn/index.js
+[0] ./node_modules/@deep-foundation/deeplinks/node_modules/execa/index.js
+[0] ./node_modules/@deep-foundation/deeplinks/node_modules/shell-env/index.js
+[0] ./node_modules/@deep-foundation/deeplinks/node_modules/shell-path/index.js
+[0] ./node_modules/@deep-foundation/deeplinks/node_modules/fix-path/index.js
+[0] ./node_modules/@deep-foundation/deeplinks/imports/engine.js
+[0] [36mwait[39m  - compiling / (client and server)...
+[0] warn  - The `app` directory is experimental. To enable, add `appDir: true` to your `next.config.js` configuration under `experimental`. See https://nextjs.org/docs/messages/experimental-app-dir-config
+[0] [33mwarn[39m  - ./node_modules/@deep-foundation/deeplinks/node_modules/cross-spawn/index.js
+[0] Module not found: Can't resolve 'spawn-sync' in '/workspace/dev/packages/deepcase/node_modules/@deep-foundation/deeplinks/node_modules/cross-spawn'
+[0] 
+[0] Import trace for requested module:
+[0] ./node_modules/@deep-foundation/deeplinks/node_modules/cross-spawn/index.js
+[0] ./node_modules/@deep-foundation/deeplinks/node_modules/execa/index.js
+[0] ./node_modules/@deep-foundation/deeplinks/node_modules/shell-env/index.js
+[0] ./node_modules/@deep-foundation/deeplinks/node_modules/shell-path/index.js
+[0] ./node_modules/@deep-foundation/deeplinks/node_modules/fix-path/index.js
+[0] ./node_modules/@deep-foundation/deeplinks/imports/engine.js
+[0] Warning: forwardRef render functions accept exactly two parameters: props and ref. Did you forget to use the ref parameter?
+[0] Warning: forwardRef render functions accept exactly two parameters: props and ref. Did you forget to use the ref parameter?
+[0] Can not register `cxtmenu` for `core` since `cxtmenu` already exists in the prototype and can not be overridden
+[0] Can not register `edgeConnections` for `core` since `edgeConnections` already exists in the prototype and can not be overridden
+[0] Can not register `edgehandles` for `core` since `edgehandles` already exists in the prototype and can not be overridden
+[0] gqlPath 3006-deepfoundation-dev-d9dziqiocks.ws-eu101.gitpod.io/gql
+[0] gqlSsl true
+[1] [HPM] Client disconnected
+[0] [31merror[39m - Error [ERR_REQUIRE_ESM]: require() of ES Module /workspace/dev/packages/deepcase/node_modules/internal-ip/index.js from /workspace/dev/packages/deepcase/app/server/pages/api/deeplinks.js not supported.
+[0] index.js is treated as an ES module file as it is a .js file whose nearest parent package.json contains "type": "module" which declares all .js files in that package scope as ES modules.
+[0] Instead rename index.js to end in .cjs, change the requiring code to use dynamic import() which is available in all CommonJS modules, or change "type": "module" to "type": "commonjs" in /workspace/dev/packages/deepcase/node_modules/internal-ip/package.json to treat all .js files as CommonJS (using .mjs for all ES modules instead).
+[0] 
+[0]     at internal-ip (/workspace/dev/packages/deepcase/app/server/pages/api/deeplinks.js:33:18)
+[0]     at __webpack_require__ (/workspace/dev/packages/deepcase/app/server/webpack-api-runtime.js:33:42)
+[0]     at eval (webpack-internal:///(api)/./node_modules/@deep-foundation/deeplinks/imports/engine.js:12:69)
+[0]     at __webpack_require__.a (/workspace/dev/packages/deepcase/app/server/webpack-api-runtime.js:97:13)
+[0]     at eval (webpack-internal:///(api)/./node_modules/@deep-foundation/deeplinks/imports/engine.js:2:21)
+[0]     at (api)/./node_modules/@deep-foundation/deeplinks/imports/engine.js (/workspace/dev/packages/deepcase/app/server/pages/api/deeplinks.js:448:1)
+[0]     at __webpack_require__ (/workspace/dev/packages/deepcase/app/server/webpack-api-runtime.js:33:42)
+[0]     at eval (webpack-internal:///(api)/./pages/api/deeplinks.ts:6:99)
+[0]     at __webpack_require__.a (/workspace/dev/packages/deepcase/app/server/webpack-api-runtime.js:97:13)
+[0]     at eval (webpack-internal:///(api)/./pages/api/deeplinks.ts:1:21)
+[0]     at (api)/./pages/api/deeplinks.ts (/workspace/dev/packages/deepcase/app/server/pages/api/deeplinks.js:437:1)
+[0]     at __webpack_require__ (/workspace/dev/packages/deepcase/app/server/webpack-api-runtime.js:33:42)
+[0]     at __webpack_exec__ (/workspace/dev/packages/deepcase/app/server/pages/api/deeplinks.js:458:39)
+[0]     at /workspace/dev/packages/deepcase/app/server/pages/api/deeplinks.js:459:28
+[0]     at Object.<anonymous> (/workspace/dev/packages/deepcase/app/server/pages/api/deeplinks.js:462:3)
+[0]     at DevServer.runApi (/workspace/dev/packages/deepcase/node_modules/next/dist/server/next-server.js:660:34)
+[0]     at DevServer.handleApiRequest (/workspace/dev/packages/deepcase/node_modules/next/dist/server/next-server.js:1189:21)
+[0]     at Object.fn (/workspace/dev/packages/deepcase/node_modules/next/dist/server/next-server.js:1132:46)
+[0]     at async Router.execute (/workspace/dev/packages/deepcase/node_modules/next/dist/server/router.js:315:32)
+[0]     at async DevServer.runImpl (/workspace/dev/packages/deepcase/node_modules/next/dist/server/base-server.js:604:29)
+[0]     at async DevServer.run (/workspace/dev/packages/deepcase/node_modules/next/dist/server/dev/next-dev-server.js:922:20)
+[0]     at async DevServer.handleRequestImpl (/workspace/dev/packages/deepcase/node_modules/next/dist/server/base-server.js:533:20) {
+[0]   digest: undefined
+[0] }
+[1] [HPM] Rewriting path from "/gql" to "/v1/graphql"
+[1] [HPM] POST /gql ~> http://localhost:8080
+[1] [HPM] Rewriting path from "/gql" to "/v1/graphql"
+[1] [HPM] POST /gql ~> http://localhost:8080
+[1] [HPM] Rewriting path from "/gql" to "/v1/graphql"
+[1] [HPM] POST /gql ~> http://localhost:8080
+[1] [HPM] Rewriting path from "/gql" to "/v1/graphql"
+[1] [HPM] POST /gql ~> http://localhost:8080
+[1] [HPM] Rewriting path from "/gql" to "/v1/graphql"
+[1] [HPM] GET /gql ~> http://localhost:8080
+[1] [HPM] Upgrading to WebSocket
+[1] [HPM] Rewriting path from "/gql" to "/v1/graphql"
+[1] [HPM] POST /gql ~> http://localhost:8080
