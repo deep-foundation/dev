@@ -61,7 +61,7 @@ export HASURA_ADMIN_SECRET=$(node -e "console.log(require('crypto').randomBytes(
   }
 }
 JSON
-export DEEPLINKS_CALL_OPTIONS=$(cat call-options.json) export DEBUG="deeplinks:*"; deeplinks
+export DEEPLINKS_CALL_OPTIONS=$(cat call-options.json) export DEBUG="deeplinks:engine:*,deeplinks:migrations:*"; deeplinks
 ```
 
 - uninstall
