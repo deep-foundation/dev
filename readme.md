@@ -66,7 +66,7 @@ export DEEPLINKS_CALL_OPTIONS=$(cat call-options.json) export DEBUG="deeplinks:*
 
 - uninstall
 ```
-(cd dev && npm run docker-clear && rm /tmp/.migrate)
+(cd dev && npm run docker-clear && rm /tmp/deep/.migrate)
 ```
 
 ## manual terminal methods
