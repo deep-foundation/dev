@@ -52,6 +52,7 @@ export HASURA_ADMIN_SECRET=$(node -e "console.log(require('crypto').randomBytes(
     "HASURA_GRAPHQL_DATABASE_URL": "postgres://postgres:$POSTGRES_PASSWORD@postgres:5432/postgres",
     "POSTGRES_MIGRATIONS_SOURCE": "postgres://postgres:$POSTGRES_PASSWORD@host.docker.internal:5432/postgres?sslmode=disable",
     "RESTORE_VOLUME_FROM_SNAPSHOT": "0",
+    "MANUAL_MIGRATIONS": "1",
     "MINIO_ROOT_USER": "$MINIO_ACCESS_KEY",
     "MINIO_ROOT_PASSWORD": "$MINIO_SECRET_KEY",
     "S3_ACCESS_KEY": "$MINIO_ACCESS_KEY",
