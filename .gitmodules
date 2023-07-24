@@ -46,3 +46,11 @@
 	path = packages/npm-packager
 	url = https://github.com/deep-foundation/npm-packager
 	branch = main
+[submodule "packages/deepcase"]
+	path = packages/deepcase
+	url = https://github.com/deep-foundation/deepcase
+	branch = main
+[submodule "packages/deepcase-app"]
+	path = packages/deepcase-app
+	url = https://github.com/deep-foundation/deepcase-app
+	branch = main
