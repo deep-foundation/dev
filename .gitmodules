@@ -6,6 +6,26 @@
 	path = packages/deeplinks
 	url = https://github.com/deep-foundation/deeplinks.git
 	branch = main
+[submodule "packages/deepcase"]
+	path = packages/deepcase
+	url = https://github.com/deep-foundation/deepcase
+	branch = main
+[submodule "packages/deepcase-app"]
+	path = packages/deepcase-app
+	url = https://github.com/deep-foundation/deepcase-app
+	branch = main
+[submodule "packages/deep-memo"]
+	path = packages/deep-memo
+	url = https://github.com/deep-foundation/deep-memo.git
+	branch = main
+[submodule "packages/sdk"]
+	path = packages/sdk
+	url = https://github.com/deep-foundation/sdk.git
+	branch = main
+[submodule "packages/gh-pages"]
+	path = packages/gh-pages
+	url = https://github.com/deep-foundation/deepcase.github.io.git
+	branch = main
 [submodule "packages/materialized-path"]
 	path = packages/materialized-path
 	url = https://github.com/deep-foundation/materialized-path.git
@@ -18,10 +38,6 @@
 	path = packages/react-hasura
 	url = https://github.com/deep-foundation/react-hasura.git
 	branch = main
-[submodule "packages/gh-pages"]
-	path = packages/gh-pages
-	url = https://github.com/deep-foundation/deepcase.github.io.git
-	branch = main
 [submodule "packages/js-docker-isolation-provider"]
 	path = packages/js-docker-isolation-provider
 	url = https://github.com/deep-foundation/js-docker-isolation-provider.git
@@ -30,14 +46,6 @@
 	path = packages/python-docker-isolation-provider
 	url = https://github.com/deep-foundation/python-docker-isolation-provider.git
 	branch = main
-[submodule "packages/deep-memo"]
-	path = packages/deep-memo
-	url = https://github.com/deep-foundation/deep-memo.git
-	branch = main
-[submodule "packages/sdk"]
-	path = packages/sdk
-	url = https://github.com/deep-foundation/sdk.git
-	branch = main
 [submodule "packages/workflows"]
 	path = packages/workflows
 	url = https://github.com/deep-foundation/workflows.git
@@ -45,12 +53,4 @@
 [submodule "packages/npm-packager"]
 	path = packages/npm-packager
 	url = https://github.com/deep-foundation/npm-packager
-	branch = main
-[submodule "packages/deepcase"]
-	path = packages/deepcase
-	url = https://github.com/deep-foundation/deepcase
-	branch = main
-[submodule "packages/deepcase-app"]
-	path = packages/deepcase-app
-	url = https://github.com/deep-foundation/deepcase-app
 	branch = main
