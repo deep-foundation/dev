@@ -14,10 +14,6 @@
 	path = packages/deepcase-app
 	url = https://github.com/deep-foundation/deepcase-app
 	branch = main
-[submodule "packages/deep-memo"]
-	path = packages/deep-memo
-	url = https://github.com/deep-foundation/deep-memo.git
-	branch = main
 [submodule "packages/sdk"]
 	path = packages/sdk
 	url = https://github.com/deep-foundation/sdk.git
