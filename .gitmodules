@@ -53,3 +53,6 @@
 [submodule "packages/deep-memo-app"]
 	path = packages/deep-memo-app
 	url = https://github.com/deep-foundation/deep-memo-app
+[submodule "packages/deep-memo"]
+	path = packages/deep-memo
+	url = https://github.com/deep-foundation/deep-memo
