@@ -50,3 +50,6 @@
 	path = packages/npm-packager
 	url = https://github.com/deep-foundation/npm-packager
 	branch = main
+[submodule "packages/deep-memo-app"]
+	path = packages/deep-memo-app
+	url = https://github.com/deep-foundation/deep-memo-app
