@@ -17,7 +17,7 @@ When all tasks are done, you can open - http://localhost:3007/ **(ctrl/cmd + cli
 - `git clone https://github.com/deep-foundation/dev.git; cd dev; npm ci; npm run packages; npm run local;`
 - `npm run local-migrate;` with `npm run local` started
 
-## server usage
+## server usage with domain
 
 - install
 
@@ -66,6 +66,60 @@ export DEEPLINKS_CALL_OPTIONS=$(cat call-options.json) export DEBUG="deeplinks:e
 
 - uninstall
 ```
+(cd dev && npm run docker-clear && rm /tmp/deep/.migrate)
+```
+
+## server usage with IP (unsafe use only for tests)
+
+- install
+
+```sh
+apt update
+apt install -y git curl docker.io docker-compose
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
+export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+nvm install v18.16.1 && nvm use v18.16.1
+npm i -g npm@latest
+
+export deepcase_domain="HOST_IP:3007"
+export deeplinks_domain="HOST_IP:3006"
+
+npm rm --unsafe-perm -g @deep-foundation/deeplinks
+npm install --unsafe-perm -g @deep-foundation/deeplinks@latest
+
+export HASURA_ADMIN_SECRET=$(node -e "console.log(require('crypto').randomBytes(24).toString('hex'));") && export POSTGRES_PASSWORD=$(node -e "console.log(require('crypto').randomBytes(24).toString('hex'));") && export MINIO_ACCESS_KEY=$(node -e "console.log(require('crypto').randomBytes(24).toString('hex'));") && export MINIO_SECRET_KEY=$(node -e "console.log(require('crypto').randomBytes(24).toString('hex'));"); tee call-options.json << JSON
+{
+  "operation": "run",
+  "envs": {
+    "DEEPLINKS_PUBLIC_URL": "http://$deeplinks_domain",
+    "NEXT_PUBLIC_DEEPLINKS_URL": "http://$deeplinks_domain",
+    "NEXT_PUBLIC_GQL_PATH": "$deeplinks_domain/gql",
+    "NEXT_PUBLIC_GQL_SSL": "0",
+    "NEXT_PUBLIC_DEEPLINKS_SERVER": "http://$deepcase_domain",
+    "JWT_SECRET": "'{\"type\":\"HS256\",\"key\":\"$(node -e "console.log(require('crypto').randomBytes(50).toString('base64'));")\"}'",
+    "DEEPLINKS_HASURA_STORAGE_URL": "http://host.docker.internal:8000/",
+    "HASURA_GRAPHQL_ADMIN_SECRET": "$HASURA_ADMIN_SECRET",
+    "MIGRATIONS_HASURA_SECRET": "$HASURA_ADMIN_SECRET",
+    "DEEPLINKS_HASURA_SECRET": "$HASURA_ADMIN_SECRET",
+    "POSTGRES_PASSWORD": "$POSTGRES_PASSWORD",
+    "HASURA_GRAPHQL_DATABASE_URL": "postgres://postgres:$POSTGRES_PASSWORD@postgres:5432/postgres",
+    "POSTGRES_MIGRATIONS_SOURCE": "postgres://postgres:$POSTGRES_PASSWORD@host.docker.internal:5432/postgres?sslmode=disable",
+    "RESTORE_VOLUME_FROM_SNAPSHOT": "0",
+    "MANUAL_MIGRATIONS": "1",
+    "MINIO_ROOT_USER": "$MINIO_ACCESS_KEY",
+    "MINIO_ROOT_PASSWORD": "$MINIO_SECRET_KEY",
+    "S3_ACCESS_KEY": "$MINIO_ACCESS_KEY",
+    "S3_SECRET_KEY": "$MINIO_SECRET_KEY"
+  }
+}
+JSON
+export DEEPLINKS_CALL_OPTIONS=$(cat call-options.json) export DEBUG="deeplinks:engine:*,deeplinks:migrations:*"; deeplinks
+```
+
+- uninstall
+```
+git clone https://github.com/deep-foundation/dev
 (cd dev && npm run docker-clear && rm /tmp/deep/.migrate)
 ```
 
