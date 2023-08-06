@@ -71,6 +71,10 @@ export DEEPLINKS_CALL_OPTIONS=$(cat call-options.json) export DEBUG="deeplinks:e
 
 ## server usage with IP (unsafe use only for tests)
 
+Here is how you can install deep on the server without SSL and without a domain (after all, why without SSL?).
+Replace HOST_IP with your host's IP.
+And take care to open ports 3006 and 3007, for example, using the ufw package on Ubuntu (https://www.digitalocean.com/community/tutorials/how-to-set-up-a-firewall-with-ufw-on-ubuntu-20-04) sudo ufw allow 3006 and sudo ufw allow 3007
+
 - install
 
 ```sh
