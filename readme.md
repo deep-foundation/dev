@@ -79,7 +79,7 @@ export DEEPLINKS_CALL_OPTIONS=$(cat call-options.json) export DEBUG="deeplinks:e
 
 - uninstall
 ```
-(cd dev && npm run docker-clear && rm /tmp/deep/.migrate)
+(cd dev && (npm run docker-clear || true) && rm -f /tmp/deep/.migrate)
 ```
 
 ## server usage with IP (unsafe use only for tests)
