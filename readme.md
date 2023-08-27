@@ -25,6 +25,8 @@ HTTP port for cerbot to be able to authenticate the domain ownership
 
 HTTP or HTTPS to make nginx work correctly and make the Deep itself accessable
 
+If `docker run hello-world` does not work logout or restart machine. Continue only if this commands works without errors.
+
 - install
 
 ```sh
