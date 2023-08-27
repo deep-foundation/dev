@@ -141,6 +141,7 @@ server {
 `;
 
 const execCommand = async (command) => {
+  console.log('Executing:', command, '...');
   return new Promise((resolve, reject) => {
     const childProcess = spawn(command, { 
       stdio: 'inherit',
@@ -163,6 +164,9 @@ const execCommand = async (command) => {
   try {
     await execCommand('sudo apt-get update && sudo apt-get install -y nginx certbot');
 
+    await execCommand('sudo touch /etc/nginx/sites-available/deep');
+    await execCommand('sudo chmod 777 /etc/nginx/sites-available/deep');
+
     fs.writeFileSync(`/etc/nginx/sites-available/deep`, configWithoutCertificates);
     await execCommand(`sudo ln -sf /etc/nginx/sites-available/deep /etc/nginx/sites-enabled/`);
 
@@ -170,8 +174,8 @@ const execCommand = async (command) => {
 
     await execCommand('sudo systemctl restart nginx');
 
-    await execCommand(`certbot certonly --webroot --webroot-path=/var/www/html -d ${deepcaseDomain} -n --agree-tos -m ${certbotEmail}`);
-    await execCommand(`certbot certonly --webroot --webroot-path=/var/www/html -d ${deeplinksDomain} -n --agree-tos -m ${certbotEmail}`);
+    await execCommand(`sudo certbot certonly --webroot --webroot-path=/var/www/html -d ${deepcaseDomain} -n --agree-tos -m ${certbotEmail}`);
+    await execCommand(`sudo certbot certonly --webroot --webroot-path=/var/www/html -d ${deeplinksDomain} -n --agree-tos -m ${certbotEmail}`);
 
     fs.writeFileSync(`/etc/nginx/sites-available/deep`, configWithCertificates);
 
