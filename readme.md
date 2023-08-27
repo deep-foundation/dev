@@ -19,6 +19,10 @@ When all tasks are done, you can open - http://localhost:3007/ **(ctrl/cmd + cli
 
 ## server usage with domain
 
+- make this ports port is accessable from the machine to internet
+** HTTP port for cerbot to be able to authenticate the domain ownership
+** HTTP or HTTPS to make nginx work correctly and make the Deep itself accessable
+
 - install
 
 ```sh
