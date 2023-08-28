@@ -30,8 +30,8 @@ If `docker run hello-world` does not work logout or restart machine. Continue on
 - install
 
 ```sh
-apt update
-apt install -y git curl docker.io docker-compose
+sudo apt update
+sudo apt install -y git curl docker.io docker-compose
 
 sudo groupadd docker
 sudo usermod -aG docker $USER
