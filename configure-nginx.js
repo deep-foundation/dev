@@ -84,8 +84,15 @@ map $http_upgrade $connection_upgrade {
 }
 
 server {
+  listen 80 default_server;
+
+  server_name _;
+
+  return 301 https://$host$request_uri;
+}
+
+server {
   charset utf-8;
-  listen 80;
   listen 443 ssl;
   server_name ${deepcaseDomain};
   ssl_certificate         /etc/letsencrypt/live/${deepcaseDomain}/fullchain.pem;
@@ -113,7 +120,6 @@ server {
 
 server {
   charset utf-8;
-  listen 80;
   listen 443 ssl;
   server_name ${deeplinksDomain};
   ssl_certificate         /etc/letsencrypt/live/${deeplinksDomain}/fullchain.pem;
