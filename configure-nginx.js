@@ -84,9 +84,9 @@ map $http_upgrade $connection_upgrade {
 }
 
 server {
-  listen 80 default_server;
+  listen 80;
 
-  server_name _;
+  server_name ${deepcaseDomain};
 
   return 301 https://$host$request_uri;
 }
@@ -116,6 +116,14 @@ server {
       default_type    "text/plain";
       try_files       $uri =404;
   }
+}
+
+server {
+  listen 80;
+
+  server_name ${deeplinksDomain};
+
+  return 301 https://$host$request_uri;
 }
 
 server {
