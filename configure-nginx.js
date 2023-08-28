@@ -18,7 +18,7 @@ const certbotEmail = options['--certbot-email'];
 
 if (!deepcaseDomain || !deeplinksDomain || !certbotEmail) {
   console.error('Error: Missing required options');
-  console.log('Usage: node configure-nginx.js --deepcase-domain chatgpt.deep.foundation --deeplinks-domain deeplinks.chatgpt.deep.foundation --certbot-email your@email.com');
+  console.log('Usage: node configure-nginx.js --deepcase-domain chatgpt.deep.foundation --deeplinks-domain deeplinks.chatgpt.deep.foundation --certbot-email drakonard@gmail.com');
   process.exit(1);
 }
 
