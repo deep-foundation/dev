@@ -3,39 +3,40 @@ const { exec } = require('child_process');
 const util = require('util');
 const execAsync = util.promisify(exec);
 const { spawn } = require('child_process');
+const { program } = require('commander');
 
-// Read command line arguments
-const [, , ...args] = process.argv;
+// Usage: node configure-nginx.js --configurations "deep.deep.foundation 3007" "deeplinks.deep.foundation 3006" "hasura.deep.foundation 8080" --certbot-email drakonard@gmail.com
 
-const options = {};
-for (let i = 0; i < args.length - 1; i += 2) {
-  options[args[i]] = args[i + 1];
-}
+program
+  .option('-c, --configurations <configurations...>', 'specify configurations')
+  .option('-e, --certbot-email <cerbot-email>', 'specify certbot email');
+program.parse();
+const options = program.opts();
 
-const deepcaseDomain = options['--deepcase-domain'];
-const deeplinksDomain = options['--deeplinks-domain'];
-const certbotEmail = options['--certbot-email'];
+const configurations = options.configurations.map(c => {
+  const parts = c.split(' ');
+  return {
+    domain: parts[0],
+    port: parts[1]
+  }
+});
+const certbotEmail = options.certbotEmail;
 
-if (!deepcaseDomain || !deeplinksDomain || !certbotEmail) {
-  console.error('Error: Missing required options');
-  console.log('Usage: node configure-nginx.js --deepcase-domain chatgpt.deep.foundation --deeplinks-domain deeplinks.chatgpt.deep.foundation --certbot-email drakonard@gmail.com');
-  process.exit(1);
-}
-
-const configWithoutCertificates = `
+const configWithoutCertificates = (configurations) => `
 map $http_upgrade $connection_upgrade {  
   default upgrade;
   ''      close;
 }
+${configurations.map(c => `
 
 server {
   charset utf-8;
   listen 80;
-  server_name ${deepcaseDomain};
+  server_name ${c.domain};
 
   location / {
       proxy_http_version 1.1;
-      proxy_pass http://127.0.0.1:3007;
+      proxy_pass http://127.0.0.1:${c.port};
       proxy_set_header Host $host;
       proxy_set_header Connection $connection_upgrade;
       proxy_set_header Upgrade $http_upgrade;
@@ -50,43 +51,21 @@ server {
       default_type    "text/plain";
       try_files       $uri =404;
   }
-}
+}`).join('')}
 
-server {
-  charset utf-8;
-  listen 80;
-  server_name ${deeplinksDomain};
-
-  location / {
-      proxy_http_version 1.1;
-      proxy_pass http://127.0.0.1:3006;
-      proxy_set_header Host $host;
-      proxy_set_header Connection $connection_upgrade;
-      proxy_set_header Upgrade $http_upgrade;
-      proxy_set_header X-Forwarded-Proto $scheme;
-      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_set_header X-Real-IP $remote_addr;
-  }
-
-  # ACME challenge
-  location ^~ /.well-known {
-      alias           /var/www/html/.well-known/;
-      default_type    "text/plain";
-      try_files       $uri =404;
-  }
-}
 `;
 
-const configWithCertificates = `
+const configWithCertificates = (configurations) => `
 map $http_upgrade $connection_upgrade {  
   default upgrade;
   ''      close;
 }
+${configurations.map(c => `
 
 server {
   listen 80;
 
-  server_name ${deepcaseDomain};
+  server_name ${c.domain};
 
   return 301 https://$host$request_uri;
 }
@@ -94,14 +73,14 @@ server {
 server {
   charset utf-8;
   listen 443 ssl;
-  server_name ${deepcaseDomain};
-  ssl_certificate         /etc/letsencrypt/live/${deepcaseDomain}/fullchain.pem;
-  ssl_certificate_key     /etc/letsencrypt/live/${deepcaseDomain}/privkey.pem;
-  ssl_trusted_certificate /etc/letsencrypt/live/${deepcaseDomain}/chain.pem;
+  server_name ${c.domain};
+  ssl_certificate         /etc/letsencrypt/live/${c.domain}/fullchain.pem;
+  ssl_certificate_key     /etc/letsencrypt/live/${c.domain}/privkey.pem;
+  ssl_trusted_certificate /etc/letsencrypt/live/${c.domain}/chain.pem;
 
   location / {
       proxy_http_version 1.1;
-      proxy_pass http://127.0.0.1:3007;
+      proxy_pass http://127.0.0.1:${c.port};
       proxy_set_header Host $host;
       proxy_set_header Connection $connection_upgrade;
       proxy_set_header Upgrade $http_upgrade;
@@ -116,42 +95,8 @@ server {
       default_type    "text/plain";
       try_files       $uri =404;
   }
-}
+}`).join('')}
 
-server {
-  listen 80;
-
-  server_name ${deeplinksDomain};
-
-  return 301 https://$host$request_uri;
-}
-
-server {
-  charset utf-8;
-  listen 443 ssl;
-  server_name ${deeplinksDomain};
-  ssl_certificate         /etc/letsencrypt/live/${deeplinksDomain}/fullchain.pem;
-  ssl_certificate_key     /etc/letsencrypt/live/${deeplinksDomain}/privkey.pem;
-  ssl_trusted_certificate /etc/letsencrypt/live/${deeplinksDomain}/chain.pem;
-
-  location / {
-      proxy_http_version 1.1;
-      proxy_pass http://127.0.0.1:3006;
-      proxy_set_header Host $host;
-      proxy_set_header Connection $connection_upgrade;
-      proxy_set_header Upgrade $http_upgrade;
-      proxy_set_header X-Forwarded-Proto $scheme;
-      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_set_header X-Real-IP $remote_addr;
-  }
-
-  # ACME challenge
-  location ^~ /.well-known {
-      alias           /var/www/html/.well-known/;
-      default_type    "text/plain";
-      try_files       $uri =404;
-  }
-}
 `;
 
 const execCommand = async (command) => {
@@ -181,17 +126,19 @@ const execCommand = async (command) => {
     await execCommand('sudo touch /etc/nginx/sites-available/deep');
     await execCommand('sudo chmod 777 /etc/nginx/sites-available/deep');
 
-    fs.writeFileSync(`/etc/nginx/sites-available/deep`, configWithoutCertificates);
+    fs.writeFileSync(`/etc/nginx/sites-available/deep`, configWithoutCertificates(configurations));
+    
     await execCommand(`sudo ln -sf /etc/nginx/sites-available/deep /etc/nginx/sites-enabled/`);
 
     await execCommand('sudo nginx -t');
 
     await execCommand('sudo systemctl restart nginx');
 
-    await execCommand(`sudo certbot certonly --webroot --webroot-path=/var/www/html -d ${deepcaseDomain} -n --agree-tos -m ${certbotEmail}`);
-    await execCommand(`sudo certbot certonly --webroot --webroot-path=/var/www/html -d ${deeplinksDomain} -n --agree-tos -m ${certbotEmail}`);
+    for (const configuration of configurations) {
+      await execCommand(`sudo certbot certonly --webroot --webroot-path=/var/www/html -d ${configuration.domain} -n --agree-tos -m ${certbotEmail}`);
+    }
 
-    fs.writeFileSync(`/etc/nginx/sites-available/deep`, configWithCertificates);
+    fs.writeFileSync(`/etc/nginx/sites-available/deep`, configWithCertificates(configurations));
 
     await execCommand('sudo nginx -t');
 

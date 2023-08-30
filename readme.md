@@ -44,7 +44,7 @@ nvm install 18 && nvm use 18 && nvm alias default 18
 npm i -g npm@latest
 
 git clone https://github.com/deep-foundation/dev
-(cd dev && node configure-nginx.js --deepcase-domain chatgpt.deep.foundation --deeplinks-domain deeplinks.chatgpt.deep.foundation --certbot-email drakonard@gmail.com)
+(cd dev && npm ci && node configure-nginx.js --configurations "chatgpt.deep.foundation 3007" "deeplinks.chatgpt.deep.foundation 3006" --certbot-email drakonard@gmail.com)
 
 npm rm --unsafe-perm -g @deep-foundation/deeplinks
 npm install --unsafe-perm -g @deep-foundation/deeplinks@latest
