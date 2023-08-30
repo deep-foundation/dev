@@ -5,25 +5,13 @@ const execAsync = util.promisify(exec);
 const { spawn } = require('child_process');
 const { program } = require('commander');
 
+// Usage: node configure-nginx-multiple-configurations.js --configurations "deep.deep.foundation 3007" "deeplinks.deep.foundation 3006" "hasura.deep.foundation 8080" --certbot-email drakonard@gmail.com
+
 program
   .option('-c, --configurations <configurations...>', 'specify configurations')
   .option('-e, --certbot-email <cerbot-email>', 'specify certbot email');
-
 program.parse();
-
 const options = program.opts();
-
-// const configurationsValues = options['--configuration'];
-// const certbotEmailValues = options['--certbot-email'];
-
-// if (configurationsValues?.length <= 0 || certbotEmailValues?.length <= 0) {
-//   console.error('Error: Missing required options');
-//   console.log('Usage: node configure-nginx-with-hasura.js --configurations "deep.deep.foundation 3007" "deeplinks.deep.foundation 3006" "hasura.deep.foundation 8080" --certbot-email drakonard@gmail.com');
-//   process.exit(1);
-// }
-
-// const configurations = configurationsValues
-// const certbotEmail = certbotEmailValues[0];
 
 const configurations = options.configurations.map(c => {
   const parts = c.split(' ');
@@ -39,8 +27,8 @@ map $http_upgrade $connection_upgrade {
   default upgrade;
   ''      close;
 }
-
 ${configurations.map(c => `
+
 server {
   charset utf-8;
   listen 80;
@@ -72,8 +60,8 @@ map $http_upgrade $connection_upgrade {
   default upgrade;
   ''      close;
 }
-
 ${configurations.map(c => `
+
 server {
   listen 80;
 
@@ -139,6 +127,7 @@ const execCommand = async (command) => {
     await execCommand('sudo chmod 777 /etc/nginx/sites-available/deep');
 
     fs.writeFileSync(`/etc/nginx/sites-available/deep`, configWithoutCertificates(configurations));
+    
     await execCommand(`sudo ln -sf /etc/nginx/sites-available/deep /etc/nginx/sites-enabled/`);
 
     await execCommand('sudo nginx -t');
