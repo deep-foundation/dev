@@ -77,6 +77,15 @@ JSON
 export DEEPLINKS_CALL_OPTIONS=$(cat call-options.json) export DEBUG="deeplinks:engine:*,deeplinks:migrations:*"; deeplinks
 ```
 
+- update
+
+```
+npm rm --unsafe-perm -g @deep-foundation/deeplinks
+npm install --unsafe-perm -g @deep-foundation/deeplinks@latest
+
+export DEEPLINKS_CALL_OPTIONS=$(cat call-options.json) export DEBUG="deeplinks:engine:*,deeplinks:migrations:*"; deeplinks
+```
+
 - uninstall
 ```
 (cd dev && (npm run docker-clear || true) && rm -f /tmp/deep/.migrate)
