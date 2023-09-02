@@ -91,9 +91,18 @@ export DEEPLINKS_CALL_OPTIONS=$(cat call-options.json) export DEBUG="deeplinks:e
 ```
 
 ### Uninstall
+
+If you don't have `dev` directory clone it like this:
+```
+git clone https://github.com/deep-foundation/dev
+```
+
+Than execute:
+
 ```
 (cd dev && (npm run docker-clear || true) && rm -f /tmp/deep/.migrate)
 npm rm --unsafe-perm -g @deep-foundation/deeplinks
+rm -rf dev
 ```
 
 ## Server usage with IP (unsafe use only for tests)
@@ -177,9 +186,18 @@ export DEEPLINKS_CALL_OPTIONS=$(cat call-options.json) export DEBUG="deeplinks:e
 ```
 
 ### Uninstall
+
+If you don't have `dev` directory clone it like this:
 ```
 git clone https://github.com/deep-foundation/dev
-(cd dev && npm run docker-clear && rm /tmp/deep/.migrate)
+```
+
+Than execute:
+
+```
+(cd dev && (npm run docker-clear || true) && rm -f /tmp/deep/.migrate)
+npm rm --unsafe-perm -g @deep-foundation/deeplinks
+rm -rf dev
 ```
 
 ## Manual terminal methods
