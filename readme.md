@@ -3,21 +3,21 @@
 [![Gitpod](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/deep-foundation/dev) 
 [![Discord](https://badgen.net/badge/icon/discord?icon=discord&label&color=purple)](https://discord.gg/deep-foundation)
 
-## gitpod usage
+## Gitpod usage
 
 Everything starts automatically. Just watch the terminal.
 
 When all tasks are done, you can open - http://localhost:3007/ **(ctrl/cmd + click by link)**
 
 
-## local usage
+## Local usage
 
 - make sure to use node 18 (we recommend to use [nvm](https://github.com/nvm-sh/nvm#installing-and-updating))
 - install docker and docker-compose
 - `git clone https://github.com/deep-foundation/dev.git; cd dev; npm ci; npm run packages; npm run local;`
 - `npm run local-migrate;` with `npm run local` started
 
-## server usage with domain
+## Server usage with domain
 
 - make this ports port is accessable from the internet to a machine:
   
@@ -27,7 +27,7 @@ HTTP or HTTPS to make nginx work correctly and make the Deep itself accessable
 
 If `docker run hello-world` does not work logout or restart machine. Continue only if this command works without errors.
 
-- install
+### Install
 
 ```sh
 sudo apt update
@@ -77,7 +77,7 @@ JSON
 export DEEPLINKS_CALL_OPTIONS=$(cat call-options.json) export DEBUG="deeplinks:engine:*,deeplinks:migrations:*"; deeplinks
 ```
 
-- update
+### Update
 
 ```
 npm rm --unsafe-perm -g @deep-foundation/deeplinks
@@ -86,18 +86,19 @@ npm install --unsafe-perm -g @deep-foundation/deeplinks@latest
 export DEEPLINKS_CALL_OPTIONS=$(cat call-options.json) export DEBUG="deeplinks:engine:*,deeplinks:migrations:*"; deeplinks
 ```
 
-- uninstall
+### Uninstall
 ```
 (cd dev && (npm run docker-clear || true) && rm -f /tmp/deep/.migrate)
+npm rm --unsafe-perm -g @deep-foundation/deeplinks
 ```
 
-## server usage with IP (unsafe use only for tests)
+## Server usage with IP (unsafe use only for tests)
 
 Here is how you can install deep on the server without SSL and without a domain (after all, why without SSL?).
 Replace HOST_IP with your host's IP.
 And take care to open ports 3006 and 3007, for example, using the ufw package on Ubuntu (https://www.digitalocean.com/community/tutorials/how-to-set-up-a-firewall-with-ufw-on-ubuntu-20-04) sudo ufw allow 3006 and sudo ufw allow 3007
 
-- install
+### Install
 
 ```sh
 apt update
@@ -143,15 +144,24 @@ JSON
 export DEEPLINKS_CALL_OPTIONS=$(cat call-options.json) export DEBUG="deeplinks:engine:*,deeplinks:migrations:*"; deeplinks
 ```
 
-- uninstall
+### Update
+
+```
+npm rm --unsafe-perm -g @deep-foundation/deeplinks
+npm install --unsafe-perm -g @deep-foundation/deeplinks@latest
+
+export DEEPLINKS_CALL_OPTIONS=$(cat call-options.json) export DEBUG="deeplinks:engine:*,deeplinks:migrations:*"; deeplinks
+```
+
+### Uninstall
 ```
 git clone https://github.com/deep-foundation/dev
 (cd dev && npm run docker-clear && rm /tmp/deep/.migrate)
 ```
 
-## manual terminal methods
+## Manual terminal methods
 
-### gitpod
+### Gitpod
 
 Automatic
 
@@ -167,7 +177,7 @@ Manual
 - `npm ci; npm run git-shh-to-https; npm run packages` before all, only ONCE PER GITPOD CONTAINER!
 - `npm ci; npm run git-shh-to-https; npm run gitpod` gitpod start up
 
-### local
+### Local
 
 Automatic
 
@@ -178,11 +188,11 @@ Manual
 
 - `npm ci && npm run packages` before all, only ONCE PER GITPOD CONTAINER!
 
-### useful
+### Useful
 
 - `npm run rm-migrates` to delete all .migrate artifacts of npm migrate package
 
-## unsafe gulp methods
+## Unsafe gulp methods
 
 - **attention! before work checkout to branch from detached commits in each needed submodule**
 - `npm run gulp -- packages:get` clone and install all packages **starts automatically in workspace**
