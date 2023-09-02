@@ -19,7 +19,9 @@ When all tasks are done, you can open - http://localhost:3007/ **(ctrl/cmd + cli
 
 ## Server usage with domain
 
-- make this ports port is accessable from the internet to a machine:
+### Preparation
+
+Make this ports port is accessable from the internet to a machine:
   
 HTTP port for cerbot to be able to authenticate the domain ownership
 
@@ -96,15 +98,32 @@ npm rm --unsafe-perm -g @deep-foundation/deeplinks
 
 ## Server usage with IP (unsafe use only for tests)
 
+### Preparation
+
 Here is how you can install deep on the server without SSL and without a domain (after all, why without SSL?).
+
 Replace HOST_IP with your host's IP.
-And take care to open ports 3006 and 3007, for example, using the ufw package on Ubuntu (https://www.digitalocean.com/community/tutorials/how-to-set-up-a-firewall-with-ufw-on-ubuntu-20-04) sudo ufw allow 3006 and sudo ufw allow 3007
+
+Take care to open ports 3006 and 3007, for example, using [the ufw package on Ubuntu](https://www.digitalocean.com/community/tutorials/how-to-set-up-a-firewall-with-ufw-on-ubuntu-20-04).
+
+For example:
+```
+sudo ufw allow 3006
+sudo ufw allow 3007
+```
+
+If `docker run hello-world` does not work logout or restart machine. Continue only if this command works without errors.
 
 ### Install
 
 ```sh
-apt update
-apt install -y git curl docker.io docker-compose
+sudo apt update
+sudo apt install -y git curl docker.io docker-compose
+
+sudo groupadd docker
+sudo usermod -aG docker $USER
+docker run hello-world
+
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
 export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
