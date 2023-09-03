@@ -23,7 +23,7 @@
 		3006,
 		8080
 	],
-	"postStartCommand": {
+	"onCreateCommand": {
 		// "nvm download": ["nvm", "install", "18.16.1"],
 		"test": ["chmod", "+x", "test.sh"],
 		"test2": ["./test.sh"] 
