@@ -9,14 +9,25 @@
 		"ghcr.io/devcontainers/features/git:1": {},
 		"ghcr.io/devcontainers-contrib/features/npm-package:1": {},
 		"ghcr.io/wxw-matt/devcontainer-features/command_runner:0": {},
-		"ghcr.io/devcontainers/features/node:1": {}
-	}
+		"ghcr.io/devcontainers/features/node:1": {},
+		"ghcr.io/devcontainers-contrib/features/bash-command:1": {}
+	},
 
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	// "features": {},
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
-	// "forwardPorts": [],
+	"forwardPorts": [
+		3007,
+		4000,
+		3006,
+		8080
+	],
+	"postStartCommand": {
+		// "nvm download": ["nvm", "install", "18.16.1"],
+		"test": ["chmod", "+x", "test.sh"],
+		"test2": ["./test.sh"] 
+	}
 
 	// Use 'postCreateCommand' to run commands after the container is created.
 	// "postCreateCommand": "uname -a",
