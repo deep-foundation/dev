@@ -40,7 +40,7 @@ sudo apt install -y git curl docker.io docker-compose
 sudo groupadd docker
 sudo usermod -aG docker $USER
 docker run hello-world
-docker rm angry_jemison
+docker rm $(docker ps -a -q --filter "ancestor=hello-world")
 
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
 export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
@@ -141,7 +141,7 @@ sudo apt install -y git curl docker.io docker-compose
 sudo groupadd docker
 sudo usermod -aG docker $USER
 docker run hello-world
-docker rm angry_jemison
+docker rm $(docker ps -a -q --filter "ancestor=hello-world")
 
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
 export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
