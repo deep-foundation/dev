@@ -107,7 +107,7 @@ git clone https://github.com/deep-foundation/dev
 Than execute:
 
 ```
-(cd dev && (npm run docker-clear || true) && rm -f /tmp/deep/.migrate)
+(cd dev && npm ci && (npm run docker-clear || true) && rm -f /tmp/deep/.migrate)
 npm rm --unsafe-perm -g @deep-foundation/deeplinks
 rm -rf dev
 ```
@@ -206,7 +206,7 @@ git clone https://github.com/deep-foundation/dev
 Than execute:
 
 ```
-(cd dev && (npm run docker-clear || true) && rm -f /tmp/deep/.migrate)
+(cd dev && npm ci && (npm run docker-clear || true) && rm -f /tmp/deep/.migrate)
 npm rm --unsafe-perm -g @deep-foundation/deeplinks
 rm -rf dev
 ```
