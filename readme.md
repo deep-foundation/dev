@@ -48,22 +48,26 @@ export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || pr
 nvm install 18 && nvm use 18 && nvm alias default 18
 npm i -g npm@latest
 
+export DEEPCASE_HOST="chatgpt.deep.foundation"
+export DEEPLINKS_HOST="deeplinks.chatgpt.deep.foundation"
+
 git clone https://github.com/deep-foundation/dev
-(cd dev && npm ci && node configure-nginx.js --configurations "chatgpt.deep.foundation 3007" "deeplinks.chatgpt.deep.foundation 3006" --certbot-email drakonard@gmail.com)
+(cd dev && npm ci && node configure-nginx.js --configurations "$DEEPCASE_HOST 3007" "$DEEPLINKS_HOST 3006" --certbot-email drakonard@gmail.com)
 
 npm rm --unsafe-perm -g @deep-foundation/deeplinks
 npm install --unsafe-perm -g @deep-foundation/deeplinks@latest
+
 export HASURA_ADMIN_SECRET=$(node -e "console.log(require('crypto').randomBytes(24).toString('hex'));") && export POSTGRES_PASSWORD=$(node -e "console.log(require('crypto').randomBytes(24).toString('hex'));") && export MINIO_ACCESS_KEY=$(node -e "console.log(require('crypto').randomBytes(24).toString('hex'));") && export MINIO_SECRET_KEY=$(node -e "console.log(require('crypto').randomBytes(24).toString('hex'));"); tee call-options.json << JSON
 {
   "operation": "run",
   "envs": {
-    "DEEPLINKS_PUBLIC_URL": "https://deeplinks.chatgpt.deep.foundation",
-    "NEXT_PUBLIC_DEEPLINKS_URL": "https://deeplinks.chatgpt.deep.foundation",
-    "NEXT_PUBLIC_GQL_PATH": "deeplinks.chatgpt.deep.foundation/gql",
+    "DEEPLINKS_PUBLIC_URL": "https://$DEEPLINKS_HOST",
+    "NEXT_PUBLIC_DEEPLINKS_URL": "https://$DEEPLINKS_HOST",
+    "NEXT_PUBLIC_GQL_PATH": "$DEEPLINKS_HOST/gql",
     "NEXT_PUBLIC_GQL_SSL": "1",
+    "NEXT_PUBLIC_DEEPLINKS_SERVER": "https://$DEEPCASE_HOST",
     "NEXT_PUBLIC_ENGINES_ROUTE": "0",
     "NEXT_PUBLIC_DISABLE_CONNECTOR": "1",
-    "NEXT_PUBLIC_DEEPLINKS_SERVER": "https://chatgpt.deep.foundation",
     "JWT_SECRET": "'{\"type\":\"HS256\",\"key\":\"$(node -e "console.log(require('crypto').randomBytes(50).toString('base64'));")\"}'",
     "DEEPLINKS_HASURA_STORAGE_URL": "http://host.docker.internal:8000/",
     "HASURA_GRAPHQL_ADMIN_SECRET": "$HASURA_ADMIN_SECRET",
@@ -145,8 +149,9 @@ export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || pr
 nvm install 18 && nvm use 18 && nvm alias default 18
 npm i -g npm@latest
 
-export deepcase_domain="HOST_IP:3007"
-export deeplinks_domain="HOST_IP:3006"
+export HOST_IP="185.105.118.59"
+export DEEPCASE_HOST="$HOST_IP:3007"
+export DEEPLINKS_HOST="$HOST_IP:3006"
 
 npm rm --unsafe-perm -g @deep-foundation/deeplinks
 npm install --unsafe-perm -g @deep-foundation/deeplinks@latest
@@ -155,11 +160,11 @@ export HASURA_ADMIN_SECRET=$(node -e "console.log(require('crypto').randomBytes(
 {
   "operation": "run",
   "envs": {
-    "DEEPLINKS_PUBLIC_URL": "http://$deeplinks_domain",
-    "NEXT_PUBLIC_DEEPLINKS_URL": "http://$deeplinks_domain",
-    "NEXT_PUBLIC_GQL_PATH": "$deeplinks_domain/gql",
+    "DEEPLINKS_PUBLIC_URL": "http://$DEEPLINKS_HOST",
+    "NEXT_PUBLIC_DEEPLINKS_URL": "http://$DEEPLINKS_HOST",
+    "NEXT_PUBLIC_GQL_PATH": "$DEEPLINKS_HOST/gql",
     "NEXT_PUBLIC_GQL_SSL": "0",
-    "NEXT_PUBLIC_DEEPLINKS_SERVER": "http://$deepcase_domain",
+    "NEXT_PUBLIC_DEEPLINKS_SERVER": "http://$DEEPCASE_HOST",
     "NEXT_PUBLIC_ENGINES_ROUTE": "0",
     "NEXT_PUBLIC_DISABLE_CONNECTOR": "1",
     "JWT_SECRET": "'{\"type\":\"HS256\",\"key\":\"$(node -e "console.log(require('crypto').randomBytes(50).toString('base64'));")\"}'",
