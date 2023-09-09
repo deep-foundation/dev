@@ -51,8 +51,8 @@ npm i -g npm@latest
 export DEEPCASE_HOST="chatgpt.deep.foundation"
 export DEEPLINKS_HOST="deeplinks.chatgpt.deep.foundation"
 
-git clone https://github.com/deep-foundation/dev
-(cd dev && npm ci && node configure-nginx.js --configurations "$DEEPCASE_HOST 3007" "$DEEPLINKS_HOST 3006" --certbot-email drakonard@gmail.com)
+git clone https://github.com/deep-foundation/dev && (cd dev && npm ci)
+(cd dev && node configure-nginx.js --configurations "$DEEPCASE_HOST 3007" "$DEEPLINKS_HOST 3006" --certbot-email drakonard@gmail.com)
 
 npm rm --unsafe-perm -g @deep-foundation/deeplinks
 npm install --unsafe-perm -g @deep-foundation/deeplinks@latest
@@ -101,13 +101,13 @@ export DEEPLINKS_CALL_OPTIONS=$(cat call-options.json) export DEBUG="deeplinks:e
 
 If you don't have `dev` directory clone it like this:
 ```
-git clone https://github.com/deep-foundation/dev
+git clone https://github.com/deep-foundation/dev && (cd dev && npm ci)
 ```
 
 Than execute:
 
 ```
-(cd dev && npm ci && (npm run docker-clear || true) && rm -f /tmp/deep/.migrate)
+(cd dev && (npm run docker-clear || true) && rm -f /tmp/deep/.migrate)
 npm rm --unsafe-perm -g @deep-foundation/deeplinks
 rm -rf dev
 ```
@@ -200,13 +200,13 @@ export DEEPLINKS_CALL_OPTIONS=$(cat call-options.json) export DEBUG="deeplinks:e
 
 If you don't have `dev` directory clone it like this:
 ```
-git clone https://github.com/deep-foundation/dev
+git clone https://github.com/deep-foundation/dev && (cd dev && npm ci)
 ```
 
 Than execute:
 
 ```
-(cd dev && npm ci && (npm run docker-clear || true) && rm -f /tmp/deep/.migrate)
+(cd dev && (npm run docker-clear || true) && rm -f /tmp/deep/.migrate)
 npm rm --unsafe-perm -g @deep-foundation/deeplinks
 rm -rf dev
 ```
