@@ -27,7 +27,9 @@ HTTP port for cerbot to be able to authenticate the domain ownership
 
 HTTP or HTTPS to make nginx work correctly and make the Deep itself accessable
 
-If `docker run hello-world` does not work logout or restart machine. Continue only if this command works without errors.
+If `docker run hello-world` does not work without `sudo` try relogin or if it does not help then try to restart machine. 
+
+**Continue only if `docker run hello-world` works without `sudo` and errors.**
 
 ### Install
 
@@ -122,7 +124,9 @@ sudo ufw allow 3006
 sudo ufw allow 3007
 ```
 
-If `docker run hello-world` does not work logout or restart machine. Continue only if this command works without errors.
+If `docker run hello-world` does not work without `sudo` try relogin or if it does not help then try to restart machine. 
+
+**Continue only if `docker run hello-world` works without `sudo` and errors.**
 
 ### Install
 
