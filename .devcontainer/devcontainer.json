@@ -1,8 +1,5 @@
-// For format details, see https://aka.ms/devcontainer.json. For config options, see the
-// README at: https://github.com/devcontainers/templates/tree/main/src/ubuntu
 {
 	"name": "Ubuntu",
-	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
 	"image": "mcr.microsoft.com/devcontainers/base:jammy",
 	"features": {
 		"ghcr.io/devcontainers/features/docker-in-docker:2": {},
@@ -12,11 +9,6 @@
 		"ghcr.io/devcontainers/features/node:1": {},
 		"ghcr.io/devcontainers-contrib/features/bash-command:1": {}
 	},
-
-	// Features to add to the dev container. More info: https://containers.dev/features.
-	// "features": {},
-
-	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	"forwardPorts": [
 		3007,
 		4000,
@@ -24,16 +16,22 @@
 		8080
 	],
 	"onCreateCommand": {
-		"test": ["chmod", "+x", "prepare-codespace.sh"],
-		"test2": ["./prepare-codespace.sh"] 
+		"add_prepare_command": ["chmod", "+x", ".devcontainer/prepare-codespace.sh"],
+		"prepare": [".devcontainer/prepare-codespace.sh"] 
+	},
+	"postStartCommand": {
+		"add_prepare_command": ["chmod", "+x", ".devcontainer/start-codespace.sh"],
+		"prepare": [".devcontainer/start-codespace.sh"] 
+	},
+	"portsAttributes": {
+		"3006": {
+			"label": "Deep.Links"
+		},
+		"3007": {
+			"label": "Deep.Case"
+		},
+		"8080": {
+			"label": "Hasura"
+		}
 	}
-
-	// Use 'postCreateCommand' to run commands after the container is created.
-	// "postCreateCommand": "uname -a",
-
-	// Configure tool-specific properties.
-	// "customizations": {},
-
-	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
-	// "remoteUser": "root"
 }
