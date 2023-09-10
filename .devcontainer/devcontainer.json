@@ -1,3 +1,9 @@
 {
-  "forwardPorts": [3007, 3006, 8080]
+  "name": "Node.js",
+  // Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:0-18-bullseye",
+  "features": {},
+  "forwardPorts": [3007, 3006, 8080],
+  "initializeCommand": "{ npm i -g npm; npm ci; npm run codespaces-init; docker pull deepf/deeplinks:main; docker run -v $(pwd)/packages/deeplinks:/deeplinks --rm --name links --entrypoint \"sh\" deepf/deeplinks:main -c \"cp -r /snapshots/* /deeplinks/snapshots/ && chown -R 33333:33333 /deeplinks/snapshots/\"; (cd packages/deeplinks && npm run snapshot:last); npm install -g concurrently; npm run gitpod-engine; npm cache clean --force; };",
+  "postCreateCommand": "(cd packages/deeplinks; if git merge-base --is-ancestor origin/main main; then echo ''; else ( echo 'NEED TO PULL DEEPLINKS!'; git checkout main; git pull; cd ../../; npm run apply-deeplinks); fi) && (cd packages/deepcase-app; if (git merge-base --is-ancestor origin/main main); then echo ''; else ( echo 'NEED TO PULL DEEPCASE!'; git checkout main; git pull; npm ci); fi) && npm run codespaces-start;",
 }
