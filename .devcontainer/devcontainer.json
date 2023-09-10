@@ -24,9 +24,8 @@
 		8080
 	],
 	"onCreateCommand": {
-		// "nvm download": ["nvm", "install", "18.16.1"],
 		"test": ["chmod", "+x", "test.sh"],
-		"test2": ["./test.sh"] 
+		"test2": ["./prepare-codespace.sh"] 
 	}
 
 	// Use 'postCreateCommand' to run commands after the container is created.
