@@ -24,7 +24,7 @@
 		8080
 	],
 	"onCreateCommand": {
-		"test": ["chmod", "+x", "test.sh"],
+		"test": ["chmod", "+x", "prepare-codespace.sh"],
 		"test2": ["./prepare-codespace.sh"] 
 	}
 
