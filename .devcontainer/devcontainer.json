@@ -1,0 +1,37 @@
+{
+	"name": "Ubuntu",
+	"image": "mcr.microsoft.com/devcontainers/base:jammy",
+	"features": {
+		"ghcr.io/devcontainers/features/docker-in-docker:2": {},
+		"ghcr.io/devcontainers/features/git:1": {},
+		"ghcr.io/devcontainers-contrib/features/npm-package:1": {},
+		"ghcr.io/wxw-matt/devcontainer-features/command_runner:0": {},
+		"ghcr.io/devcontainers/features/node:1": {},
+		"ghcr.io/devcontainers-contrib/features/bash-command:1": {}
+	},
+	"forwardPorts": [
+		3007,
+		4000,
+		3006,
+		8080
+	],
+	"onCreateCommand": {
+		"add_prepare_command": ["chmod", "+x", ".devcontainer/prepare-codespace.sh"],
+		"prepare": [".devcontainer/prepare-codespace.sh"] 
+	},
+	"postStartCommand": {
+		"add_prepare_command": ["chmod", "+x", ".devcontainer/start-codespace.sh"],
+		"prepare": [".devcontainer/start-codespace.sh"] 
+	},
+	"portsAttributes": {
+		"3006": {
+			"label": "Deep.Links"
+		},
+		"3007": {
+			"label": "Deep.Case"
+		},
+		"8080": {
+			"label": "Hasura"
+		}
+	}
+}
