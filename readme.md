@@ -3,6 +3,9 @@
 [![Gitpod](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/deep-foundation/dev) 
 [![Discord](https://badgen.net/badge/icon/discord?icon=discord&label&color=purple)](https://discord.gg/deep-foundation)
 
+## Deep Architecture
+
+![IMG_1373](https://github.com/deep-foundation/dev/assets/1431904/8eb44328-5181-43ec-9445-417bbb6cfd83)
 
 ## Codespace usage
 
@@ -16,19 +19,11 @@ When all tasks are done, you can open - your Deep.Case
 
 ![image](https://github.com/CEHR2005/dev/assets/8792220/a45a046c-bec0-473b-8883-3e4e41c4ef83)
 
-
-## Deep Architecture
-
-![IMG_1373](https://github.com/deep-foundation/dev/assets/1431904/8eb44328-5181-43ec-9445-417bbb6cfd83)
-
-
-
 ## Gitpod usage
 
 Everything starts automatically. Just watch the terminal.
 
 When all tasks are done, you can open - http://localhost:3007/ **(ctrl/cmd + click by link)**
-
 
 ## Local usage
 
