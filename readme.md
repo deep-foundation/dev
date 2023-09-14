@@ -13,7 +13,8 @@ Everything starts automatically. You just neet to make port 3007 public.
 
 When all tasks are done, you can open - your Deep.Case
 
-![image](https://github.com/CEHR2005/dev/assets/8792220/c920201d-c802-4bae-8a21-4f8725014d51)
+![image](https://github.com/CEHR2005/dev/assets/8792220/a45a046c-bec0-473b-8883-3e4e41c4ef83)
+
 
 
 ## Gitpod usage
