@@ -3,6 +3,7 @@
 [![Gitpod](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/deep-foundation/dev) 
 [![Discord](https://badgen.net/badge/icon/discord?icon=discord&label&color=purple)](https://discord.gg/deep-foundation)
 
+
 ## Codespace usage
 
 Everything starts automatically. You just neet to make port 3007 public.
@@ -14,6 +15,11 @@ Everything starts automatically. You just neet to make port 3007 public.
 When all tasks are done, you can open - your Deep.Case
 
 ![image](https://github.com/CEHR2005/dev/assets/8792220/a45a046c-bec0-473b-8883-3e4e41c4ef83)
+
+
+## Deep Architecture
+
+![IMG_1373](https://github.com/deep-foundation/dev/assets/1431904/8eb44328-5181-43ec-9445-417bbb6cfd83)
 
 
 
@@ -102,12 +108,16 @@ JSON
 export DEEPLINKS_CALL_OPTIONS=$(cat call-options.json) export DEBUG="deeplinks:engine:*,deeplinks:migrations:*"; deeplinks
 ```
 
-### Update
+### Restore/Update
 
+Optional - update deeplinks.
 ```
 npm rm --unsafe-perm -g @deep-foundation/deeplinks
 npm install --unsafe-perm -g @deep-foundation/deeplinks@latest
+```
 
+Restore/update using installed deeplinks command.
+```
 export DEEPLINKS_CALL_OPTIONS=$(cat call-options.json) export DEBUG="deeplinks:engine:*,deeplinks:migrations:*"; deeplinks
 ```
 
@@ -201,12 +211,16 @@ JSON
 export DEEPLINKS_CALL_OPTIONS=$(cat call-options.json) export DEBUG="deeplinks:engine:*,deeplinks:migrations:*"; deeplinks
 ```
 
-### Update
+### Restore/Update
 
+Optional - update deeplinks.
 ```
 npm rm --unsafe-perm -g @deep-foundation/deeplinks
 npm install --unsafe-perm -g @deep-foundation/deeplinks@latest
+```
 
+Restore/update using installed deeplinks command.
+```
 export DEEPLINKS_CALL_OPTIONS=$(cat call-options.json) export DEBUG="deeplinks:engine:*,deeplinks:migrations:*"; deeplinks
 ```
 
