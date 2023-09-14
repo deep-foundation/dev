@@ -7,7 +7,7 @@
 
 ![IMG_1373](https://github.com/deep-foundation/dev/assets/1431904/8eb44328-5181-43ec-9445-417bbb6cfd83)
 
-## Codespace usage
+## Codespaces usage
 
 Everything starts automatically. You just neet to make port 3007 public.
 
