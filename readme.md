@@ -93,12 +93,16 @@ JSON
 export DEEPLINKS_CALL_OPTIONS=$(cat call-options.json) export DEBUG="deeplinks:engine:*,deeplinks:migrations:*"; deeplinks
 ```
 
-### Update
+### Restore/Update
 
+Optional - update deeplinks.
 ```
 npm rm --unsafe-perm -g @deep-foundation/deeplinks
 npm install --unsafe-perm -g @deep-foundation/deeplinks@latest
+```
 
+Restore/update using installed deeplinks command.
+```
 export DEEPLINKS_CALL_OPTIONS=$(cat call-options.json) export DEBUG="deeplinks:engine:*,deeplinks:migrations:*"; deeplinks
 ```
 
@@ -192,12 +196,16 @@ JSON
 export DEEPLINKS_CALL_OPTIONS=$(cat call-options.json) export DEBUG="deeplinks:engine:*,deeplinks:migrations:*"; deeplinks
 ```
 
-### Update
+### Restore/Update
 
+Optional - update deeplinks.
 ```
 npm rm --unsafe-perm -g @deep-foundation/deeplinks
 npm install --unsafe-perm -g @deep-foundation/deeplinks@latest
+```
 
+Restore/update using installed deeplinks command.
+```
 export DEEPLINKS_CALL_OPTIONS=$(cat call-options.json) export DEBUG="deeplinks:engine:*,deeplinks:migrations:*"; deeplinks
 ```
 
