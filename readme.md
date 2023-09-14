@@ -7,13 +7,23 @@
 
 ![IMG_1373](https://github.com/deep-foundation/dev/assets/1431904/8eb44328-5181-43ec-9445-417bbb6cfd83)
 
+## Codespaces usage
+
+Everything starts automatically. You just neet to make port 3007 public.
+
+[Open Port](https://docs.github.com/en/codespaces/developing-in-codespaces/forwarding-ports-in-your-codespace#sharing-a-port)
+
+![image](https://github.com/CEHR2005/dev/assets/8792220/6157e4c4-ac6a-4ff8-8d13-487737765b7b)
+
+When all tasks are done, you can open - your Deep.Case
+
+![image](https://github.com/CEHR2005/dev/assets/8792220/a45a046c-bec0-473b-8883-3e4e41c4ef83)
 
 ## Gitpod usage
 
 Everything starts automatically. Just watch the terminal.
 
 When all tasks are done, you can open - http://localhost:3007/ **(ctrl/cmd + click by link)**
-
 
 ## Local usage
 
