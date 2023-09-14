@@ -5,11 +5,14 @@
 
 ## Codespace usage
 
-Everything starts automatically. Just watch the terminal.
-You need to make ports 3007 and 3006 public 
-[![Open Port](https://docs.github.com/en/codespaces/developing-in-codespaces/forwarding-ports-in-your-codespace#sharing-a-port)
-![image](https://github.com/CEHR2005/dev/assets/8792220/66a7c262-965b-439c-9e56-9d44a80835ed)
+Everything starts automatically. You just neet to make port 3007 public.
+
+[Open Port](https://docs.github.com/en/codespaces/developing-in-codespaces/forwarding-ports-in-your-codespace#sharing-a-port)
+
+![image](https://github.com/CEHR2005/dev/assets/8792220/ba9f77df-0675-443f-b34b-986b5449eccb)
+
 When all tasks are done, you can open - your Deep.Case
+
 ![image](https://github.com/CEHR2005/dev/assets/8792220/c920201d-c802-4bae-8a21-4f8725014d51)
 
 
