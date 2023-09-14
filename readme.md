@@ -3,6 +3,16 @@
 [![Gitpod](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/deep-foundation/dev) 
 [![Discord](https://badgen.net/badge/icon/discord?icon=discord&label&color=purple)](https://discord.gg/deep-foundation)
 
+## Codespace usage
+
+Everything starts automatically. Just watch the terminal.
+You need to make ports 3007 and 3006 public 
+[![Open Port](https://docs.github.com/en/codespaces/developing-in-codespaces/forwarding-ports-in-your-codespace#sharing-a-port)
+![image](https://github.com/CEHR2005/dev/assets/8792220/66a7c262-965b-439c-9e56-9d44a80835ed)
+When all tasks are done, you can open - your Deep.Case
+![image](https://github.com/CEHR2005/dev/assets/8792220/c920201d-c802-4bae-8a21-4f8725014d51)
+
+
 ## Gitpod usage
 
 Everything starts automatically. Just watch the terminal.
