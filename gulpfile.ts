@@ -129,7 +129,7 @@ gulp.task('packages:ci', async () => {
   const packages = Object.keys(modules);
   for (let i = 0; i < packages.length; i++) {
     const currentPackage = process.platform === 'win32' ? packages[i].replace('/', '\\') : packages[i];
-    parts.push(`echo "${currentPackage} npm ci" && cd ${__dirname}${delimetr}${currentPackage} && npm ci`);
+    if (currentPackage !== 'python-docker-isolation-provider' && currentPackage !== 'workflows') parts.push(`echo "${currentPackage} npm ci" && cd ${__dirname}${delimetr}${currentPackage} && npm ci`);
   }
   const command = parts.join(` && cd ..${delimetr}.. && `);
   console.log('command', command);
