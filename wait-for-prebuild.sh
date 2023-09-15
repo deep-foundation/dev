@@ -7,7 +7,7 @@ echo ""
 
 printf "Waiting for prebuild"
 
-until [ -f /tmp/prebuild-is-ready.txt ]
+until [ -f prebuild-is-ready.txt ]
 do
      sleep 5
      printf "."
