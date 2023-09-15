@@ -105,5 +105,9 @@
     "simple-git": "^2.45.0",
     "subscriptions-transport-ws": "^0.11.0",
     "typescript": "^4.9.5"
-  }
+  },
+  "workspaces": [
+    "./packages/deepcase-app",
+    "./packages/deepcase"
+  ]
 }
