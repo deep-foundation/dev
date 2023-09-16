@@ -1,3 +1,6 @@
+if [ ! -f prebuild-is-ready.txt ]
+then
+
 echo "==================================================================================================="
 echo ""
 echo "Looks like prebuild is not ready yet or GitPod was unable to pull prebuild from the cloud."
@@ -6,14 +9,16 @@ echo ""
 echo "==================================================================================================="
 echo ""
 
-printf "Waiting for prebuild"
+echo "Waiting for prebuild"
 
 until [ -f prebuild-is-ready.txt ]
 do
-     sleep 5
-     printf "."
+     sleep 10
+     printf "▇"
 done
 
 echo ""
 echo "Prebuild is ready."
 exit
+
+fi
