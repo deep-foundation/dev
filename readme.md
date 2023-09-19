@@ -72,7 +72,11 @@ git clone https://github.com/deep-foundation/dev && (cd dev && npm ci)
 npm rm --unsafe-perm -g @deep-foundation/deeplinks
 npm install --unsafe-perm -g @deep-foundation/deeplinks@latest
 
-export HASURA_ADMIN_SECRET=$(node -e "console.log(require('crypto').randomBytes(24).toString('hex'));") && export POSTGRES_PASSWORD=$(node -e "console.log(require('crypto').randomBytes(24).toString('hex'));") && export MINIO_ACCESS_KEY=$(node -e "console.log(require('crypto').randomBytes(24).toString('hex'));") && export MINIO_SECRET_KEY=$(node -e "console.log(require('crypto').randomBytes(24).toString('hex'));"); tee call-options.json << JSON
+export HASURA_ADMIN_SECRET=$(node -e "console.log(require('crypto').randomBytes(24).toString('hex'));")
+export POSTGRES_PASSWORD=$(node -e "console.log(require('crypto').randomBytes(24).toString('hex'));")
+export MINIO_ACCESS_KEY=$(node -e "console.log(require('crypto').randomBytes(24).toString('hex'));")
+export MINIO_SECRET_KEY=$(node -e "console.log(require('crypto').randomBytes(24).toString('hex'));")
+tee call-options.json << JSON
 {
   "operation": "run",
   "envs": {
@@ -100,7 +104,10 @@ export HASURA_ADMIN_SECRET=$(node -e "console.log(require('crypto').randomBytes(
   }
 }
 JSON
-export DEEPLINKS_CALL_OPTIONS=$(cat call-options.json) export DEBUG="deeplinks:engine:*,deeplinks:migrations:*"; deeplinks
+
+export DEEPLINKS_CALL_OPTIONS=$(cat call-options.json)
+export DEBUG="deeplinks:engine:*,deeplinks:migrations:*"
+deeplinks
 ```
 
 ### Restore/Update
@@ -113,7 +120,9 @@ npm install --unsafe-perm -g @deep-foundation/deeplinks@latest
 
 Restore/update using installed deeplinks command.
 ```
-export DEEPLINKS_CALL_OPTIONS=$(cat call-options.json) export DEBUG="deeplinks:engine:*,deeplinks:migrations:*"; deeplinks
+export DEEPLINKS_CALL_OPTIONS=$(cat call-options.json)
+export DEBUG="deeplinks:engine:*,deeplinks:migrations:*"
+deeplinks
 ```
 
 ### Uninstall
@@ -175,7 +184,11 @@ export DEEPLINKS_HOST="$HOST_IP:3006"
 npm rm --unsafe-perm -g @deep-foundation/deeplinks
 npm install --unsafe-perm -g @deep-foundation/deeplinks@latest
 
-export HASURA_ADMIN_SECRET=$(node -e "console.log(require('crypto').randomBytes(24).toString('hex'));") && export POSTGRES_PASSWORD=$(node -e "console.log(require('crypto').randomBytes(24).toString('hex'));") && export MINIO_ACCESS_KEY=$(node -e "console.log(require('crypto').randomBytes(24).toString('hex'));") && export MINIO_SECRET_KEY=$(node -e "console.log(require('crypto').randomBytes(24).toString('hex'));"); tee call-options.json << JSON
+export HASURA_ADMIN_SECRET=$(node -e "console.log(require('crypto').randomBytes(24).toString('hex'));")
+export POSTGRES_PASSWORD=$(node -e "console.log(require('crypto').randomBytes(24).toString('hex'));")
+export MINIO_ACCESS_KEY=$(node -e "console.log(require('crypto').randomBytes(24).toString('hex'));")
+export MINIO_SECRET_KEY=$(node -e "console.log(require('crypto').randomBytes(24).toString('hex'));")
+tee call-options.json << JSON
 {
   "operation": "run",
   "envs": {
@@ -203,7 +216,10 @@ export HASURA_ADMIN_SECRET=$(node -e "console.log(require('crypto').randomBytes(
   }
 }
 JSON
-export DEEPLINKS_CALL_OPTIONS=$(cat call-options.json) export DEBUG="deeplinks:engine:*,deeplinks:migrations:*"; deeplinks
+
+export DEEPLINKS_CALL_OPTIONS=$(cat call-options.json)
+export DEBUG="deeplinks:engine:*,deeplinks:migrations:*"
+deeplinks
 ```
 
 ### Restore/Update
@@ -216,7 +232,9 @@ npm install --unsafe-perm -g @deep-foundation/deeplinks@latest
 
 Restore/update using installed deeplinks command.
 ```
-export DEEPLINKS_CALL_OPTIONS=$(cat call-options.json) export DEBUG="deeplinks:engine:*,deeplinks:migrations:*"; deeplinks
+export DEEPLINKS_CALL_OPTIONS=$(cat call-options.json)
+export DEBUG="deeplinks:engine:*,deeplinks:migrations:*"
+deeplinks
 ```
 
 ### Uninstall
