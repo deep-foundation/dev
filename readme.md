@@ -48,6 +48,7 @@ If `docker run hello-world` does not work without `sudo` try relogin or if it do
 
 ### Install
 
+Install and check docker
 ```sh
 sudo apt update
 sudo apt install -y git curl docker.io docker-compose
@@ -56,7 +57,10 @@ sudo groupadd docker
 sudo usermod -aG docker $USER
 docker run hello-world
 docker rm $(docker ps -a -q --filter "ancestor=hello-world")
+```
 
+Install deep
+```sh
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
 export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
@@ -162,6 +166,7 @@ If `docker run hello-world` does not work without `sudo` try relogin or if it do
 
 ### Install
 
+Install and check docker
 ```sh
 sudo apt update
 sudo apt install -y git curl docker.io docker-compose
@@ -170,7 +175,13 @@ sudo groupadd docker
 sudo usermod -aG docker $USER
 docker run hello-world
 docker rm $(docker ps -a -q --filter "ancestor=hello-world")
+```
 
+After docker installation it may be required to move files to another drive (for example on azure VMs).
+
+Install deep
+
+```sh
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
 export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
