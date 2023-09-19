@@ -131,7 +131,7 @@ npm rm --unsafe-perm -g @deep-foundation/deeplinks
 rm -rf dev
 ```
 
-## Server usage with IP (unsafe use only for tests)
+## Server usage with IP (unsafe use only for tests or local installation)
 
 ### Preparation
 
