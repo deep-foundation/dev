@@ -177,13 +177,12 @@ export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || pr
 nvm install 18 && nvm use 18 && nvm alias default 18
 npm i -g npm@latest
 
-export HOST_IP="185.105.118.59"
-export DEEPCASE_HOST="$HOST_IP:3007"
-export DEEPLINKS_HOST="$HOST_IP:3006"
-
 npm rm --unsafe-perm -g @deep-foundation/deeplinks
 npm install --unsafe-perm -g @deep-foundation/deeplinks@latest
 
+export HOST_IP="185.105.118.59"
+export DEEPCASE_HOST="$HOST_IP:3007"
+export DEEPLINKS_HOST="$HOST_IP:3006"
 export HASURA_ADMIN_SECRET=$(node -e "console.log(require('crypto').randomBytes(24).toString('hex'));")
 export POSTGRES_PASSWORD=$(node -e "console.log(require('crypto').randomBytes(24).toString('hex'));")
 export MINIO_ACCESS_KEY=$(node -e "console.log(require('crypto').randomBytes(24).toString('hex'));")
