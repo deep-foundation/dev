@@ -118,6 +118,13 @@ deeplinks
 docker ps -a
 ```
 
+### Restart
+
+```
+sudo systemctl stop docker
+sudo systemctl start docker
+```
+
 ### Restore/Update
 
 Optional - update deeplinks.
