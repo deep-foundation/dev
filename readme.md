@@ -109,9 +109,13 @@ tee call-options.json << JSON
 }
 JSON
 
+docker ps -a
+
 export DEEPLINKS_CALL_OPTIONS=$(cat call-options.json)
 export DEBUG="deeplinks:engine:*,deeplinks:migrations:*"
 deeplinks
+
+docker ps -a
 ```
 
 ### Restore/Update
