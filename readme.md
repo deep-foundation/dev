@@ -373,3 +373,11 @@ ON
 ORDER BY 
   pg_total_relation_size(pg_class.oid) DESC;
 ```
+
+### JS Docker Isolation Provider
+
+#### Get container logs:
+
+```sh
+docker logs $(docker ps -a -q --filter "ancestor=deepf/js-docker-isolation-provider:main")
+```
