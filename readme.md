@@ -120,9 +120,17 @@ docker ps -a
 
 ### Restart
 
+Entire docker
+
 ```
 sudo systemctl stop docker
 sudo systemctl start docker
+```
+
+Single docker container
+
+```
+docker restart deep-links
 ```
 
 ### Restore/Update
