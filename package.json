@@ -7,7 +7,7 @@
     "url": "https://github.com/deep-foundation/dev/issues"
   },
   "homepage": "https://github.com/deep-foundation/dev#readme",
-  "sync": "(cd packages && for d in */; do (cd $d && git checkout main && git pull --no-rebase && git commit -m 'sync' && git push); done)"
+  "sync": "(cd packages && for d in */; do (cd $d && git checkout main && git pull --no-rebase && git commit -m 'sync' && git push); done)",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/deep-foundation/dev.git"
