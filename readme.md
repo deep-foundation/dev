@@ -143,7 +143,10 @@ npm install --unsafe-perm -g @deep-foundation/deeplinks@latest
 
 Update deeplinks and deepcase images
 ```
-docker stop deep-case deep-links && docker rm deep-case deep-links && docker image pull deepf/deepcase:main && docker image pull deepf/deeplinks:main
+docker stop deep-case deep-links
+docker rm deep-case deep-links
+docker image pull deepf/deepcase:main
+docker image pull deepf/deeplinks:main
 ```
 
 Restore/update using installed deeplinks command.
