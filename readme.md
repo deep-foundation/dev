@@ -29,7 +29,18 @@ When all tasks are done, you can open - http://localhost:3007/ **(ctrl/cmd + cli
 
 - make sure to use node 18 (we recommend to use [nvm](https://github.com/nvm-sh/nvm#installing-and-updating))
 - install docker and docker-compose
-- `git clone https://github.com/deep-foundation/dev.git; cd dev; npm ci; npm run packages; npm run local;`
+
+```sh
+git clone https://github.com/deep-foundation/dev.git
+cd dev
+npm ci
+rm -rf packages/deepcase
+rm -rf packages/deepcase-app
+npm run packages
+
+npm run local
+```
+
 - `npm run local-migrate;` with `npm run local` started
 
 ## Server usage with domain
