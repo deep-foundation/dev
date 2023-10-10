@@ -336,6 +336,7 @@ Manual
 ### Workspaces
 
 - `npm run workspace-install --workspace_arg=deepcase --package_arg=emoji-picker-react` to install package in `deepcase` workspace (this command update `package-lock.json` in both `dev` and `package/deepcase` folders).
+- `npm run workspace-install --workspace_arg=deepcase-app --package_arg="@deep-foundation/deepcase@latest"` to update `deepcase` in `deepcase-app`.
 
 ## Unsafe gulp methods
 
