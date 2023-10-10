@@ -1,3 +1,17 @@
+sleep 2
+
+if [ ! -f prebuild-is-started.txt ]
+then
+
+echo "Prebuild force start..."
+
+./prebuild.sh
+
+echo "Prebuild is ready."
+exit
+
+fi
+
 if [ ! -f prebuild-is-ready.txt ]
 then
 

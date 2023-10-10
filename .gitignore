@@ -3,3 +3,4 @@ node_modules
 .DS_Store
 .vscode/settings.json
 prebuild-is-ready.txt
+prebuild-is-started.txt
