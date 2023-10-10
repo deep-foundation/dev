@@ -333,6 +333,10 @@ Manual
 
 - `npm run rm-migrates` to delete all .migrate artifacts of npm migrate package
 
+### Workspaces
+
+- `npm run workspace-install --workspace_arg=deepcase --package_arg=emoji-picker-react` to install package in `deepcase` workspace (this command update `package-lock.json` in both `dev` and `package/deepcase` folders).
+
 ## Unsafe gulp methods
 
 - **attention! before work checkout to branch from detached commits in each needed submodule**
