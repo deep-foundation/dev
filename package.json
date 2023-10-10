@@ -80,7 +80,8 @@
     "gitpod-reinit": "npm run docker-clear; npm run rm-migrates; npm run gitpod-engine;",
     "gitpod-hasura-reattach": "export REATTACH_HASURA_SECRET=myadminsecretkey; export REATTACH_HASURA_PATH=$(echo $(gp url 8080) | awk -F[/:] '{print $4}'); export REATTACH_HASURA_SSL=1; export REATTACH_DEEPLINKS_PATH=$(echo $(gp url 3006) | awk -F[/:] '{print $4}'); npx gulp gitpod:hasura:reattach",
     "codespaces-hasura-reattach": "export REATTACH_HASURA_SECRET=myadminsecretkey; export REATTACH_HASURA_PATH=localhost:8080; export REATTACH_HASURA_SSL=0; export REATTACH_DEEPLINKS_PATH=host.docker.internal:3006; npx gulp gitpod:hasura:reattach",
-    "sync": "(cd packages && for d in */; do (cd $d && git checkout main && git pull --no-rebase); done) && git add . && git commit -m 'sync' && git push"
+    "sync": "(cd packages && for d in */; do (cd $d && git checkout main && git pull --no-rebase); done) && git add . && git commit -m 'sync' && git push",
+    "workspace-install": "(npm i ${npm_config_package_arg} -w \"packages/${npm_config_workspace_arg}\") && (cd \"packages/${npm_config_workspace_arg}\" && npm i --package-lock-only --workspaces false)"
   },
   "repository": {
     "type": "git",
