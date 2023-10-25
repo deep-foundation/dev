@@ -130,6 +130,7 @@ gulp.task('packages:ci', async () => {
   for (let i = 0; i < packages.length; i++) {
     const currentPackage = process.platform === 'win32' ? packages[i].replace('/', '\\') : packages[i];
     if (
+      !currentPackage.includes('deeplinks') &&
       !currentPackage.includes('deepcase') &&
       !currentPackage.includes('python-docker-isolation-provider') &&
       !currentPackage.includes('workflows')
