@@ -25,5 +25,5 @@ vscode:
     - ms-azuretools.vscode-docker
 
 tasks:
-  - init: ./prebuild.sh
-  - command: ./wait-for-prebuild.sh && npm run gitpod-start;
+  - init: ./prebuild.sh | tee gitpod-prebuild.log.txt
+  - command: ./wait-for-prebuild.sh && (npm run gitpod-start | tee gitpod-start.log.txt);
