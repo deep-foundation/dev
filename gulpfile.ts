@@ -168,7 +168,7 @@ const gitBranches = async () => {
   const packages = Object.keys(modules);
   for (let i = 0; i < packages.length; i++) {
     const currentPackage = process.platform === 'win32' ? packages[i].replace('/', '\\') : packages[i];
-    const part = `cd ${__dirname}${delimetr}${currentPackage} && [ "$(git log -n 1 --pretty=format:"%H")" == "$(git log -n 1 ${modules?.[currentPackage]?.branch || 'main'} --pretty=format:"%H")" ] && git checkout ${modules?.[currentPackage]?.branch || 'main'}`;
+    const part = `cd ${__dirname}${delimetr}${currentPackage} && ../../checkout-on-same-commit.sh ${modules?.[currentPackage]?.branch || 'main'}`;
     commands.push(part);
   }
   await concurrently(commands);
