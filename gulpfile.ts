@@ -118,8 +118,8 @@ gulp.task('package:delete', async () => {
 
 gulp.task('packages:get', async () => {
   await git.submoduleInit();
-  await git.submoduleUpdate();
-  await gitBranches();
+  // await git.submoduleUpdate();
+  // await gitBranches();
 });
 
 gulp.task('packages:ci', async () => {
