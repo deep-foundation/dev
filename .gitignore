@@ -4,3 +4,5 @@ node_modules
 .vscode/settings.json
 prebuild-is-ready.txt
 prebuild-is-started.txt
+gitpod-prebuild.log.txt
+gitpod-start.log.txt
