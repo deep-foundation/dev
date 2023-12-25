@@ -335,7 +335,7 @@ Manual
 
 ### Workspaces
 
-- `npm run workspace-install --workspace_arg=deeplink --package_arg="@deep-foundation/hasura@latest"` to update `hasura` in `deeplinks`.
+- `npm run workspace-install --workspace_arg=deeplinks --package_arg="@deep-foundation/hasura@latest"` to update `hasura` in `deeplinks`.
 - `npm run workspace-install --workspace_arg=deepcase --package_arg=emoji-picker-react` to install package in `deepcase` workspace (this command update `package-lock.json` in both `dev` and `package/deepcase` folders).
 - `npm run workspace-install --workspace_arg=deepcase --package_arg="@deep-foundation/deeplinks@latest"` to update `deeplinks` in `deepcase`.
 - `npm run workspace-install --workspace_arg=deepcase-app --package_arg="@deep-foundation/deepcase@latest"` to update `deepcase` in `deepcase-app`.
