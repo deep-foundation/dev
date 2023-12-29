@@ -83,8 +83,8 @@
     "sync": "(cd packages && for d in */; do (cd $d && git checkout main && git pull --no-rebase); done) && git add . && git commit -m 'sync' && git push",
     "workspace-install": "(npm i ${npm_config_package_arg} -w \"packages/${npm_config_workspace_arg}\") && (cd \"packages/${npm_config_workspace_arg}\" && npm i --package-lock-only --workspaces false)",
     "workspace-install-dev": "(npm i ${npm_config_package_arg} --save-dev -w \"packages/${npm_config_workspace_arg}\") && (cd \"packages/${npm_config_workspace_arg}\" && npm i --package-lock-only --workspaces false)",
-    "workspace-remove": "(npm rm ${npm_config_package_arg} -w \"packages/${npm_config_workspace_arg}\") && (cd \"packages/${npm_config_workspace_arg}\" && npm rm --package-lock-only --workspaces false)",
-    "workspace-remove-dev": "(npm rm ${npm_config_package_arg} --save-dev -w \"packages/${npm_config_workspace_arg}\") && (cd \"packages/${npm_config_workspace_arg}\" && npm rm --package-lock-only --workspaces false)"
+    "workspace-remove": "(npm rm ${npm_config_package_arg} -w \"packages/${npm_config_workspace_arg}\") && (cd \"packages/${npm_config_workspace_arg}\" && npm i --package-lock-only --workspaces false)",
+    "workspace-remove-dev": "(npm rm ${npm_config_package_arg} --save-dev -w \"packages/${npm_config_workspace_arg}\") && (cd \"packages/${npm_config_workspace_arg}\" && npm i --package-lock-only --workspaces false)"
   },
   "repository": {
     "type": "git",
