@@ -19,9 +19,11 @@ It is also possible to open 3007 port manually, to do it open PORTS tab and sele
 
 ## Codespaces usage
 
-Everything starts automatically. You just neet to make port 3007 public.
+Everything starts automatically. 
 
-[Open Port](https://docs.github.com/en/codespaces/developing-in-codespaces/forwarding-ports-in-your-codespace#sharing-a-port)
+When all tasks are done, you can open - http://localhost:3007/ **(ctrl/cmd + click by link)**
+
+You may need to [make port](https://docs.github.com/en/codespaces/developing-in-codespaces/forwarding-ports-in-your-codespace#sharing-a-port) 3007 public.
 
 ![image](https://github.com/CEHR2005/dev/assets/8792220/6157e4c4-ac6a-4ff8-8d13-487737765b7b)
 
@@ -51,7 +53,7 @@ When all tasks are done, you can open - your Deep.Case
   npm run local
   npm run local-migrate
   ```
-### Launching/Restart
+### Launch/Restart
 ```
 npm run local
 ```
