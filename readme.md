@@ -35,7 +35,7 @@ When all tasks are done, you can open - http://localhost:3007/ **(ctrl/cmd + cli
   ```bash
   echo 'docker compose --compatibility "$@"' | sudo tee -a /usr/local/bin/docker-compose && sudo chmod +x /usr/local/bin/docker-compose
   ```
-- Run this script
+- Run this script to initialize and launch deep
   ```sh
   git clone https://github.com/deep-foundation/dev.git
   cd dev
@@ -44,6 +44,7 @@ When all tasks are done, you can open - http://localhost:3007/ **(ctrl/cmd + cli
   rm -rf packages/deepcase-app
   rm -rf packages/deeplinks
   npm run packages
+  npm run local
   npm run local-migrate
   ```
 ### Launching
