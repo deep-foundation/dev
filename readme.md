@@ -11,7 +11,7 @@
 
 Everything starts automatically. Just watch the terminal.
 
-When all tasks are done, you can open Deep in browser: http://localhost:3007/ **(ctrl/cmd + click by link)**
+When all tasks are done, you can open Deep.Case App in browser: http://localhost:3007/ **(ctrl/cmd + click by link)**
 
 It is also possible to open 3007 port manually, to do it open `PORTS` tab and select link for `3007` port.
 
@@ -21,7 +21,7 @@ It is also possible to open 3007 port manually, to do it open `PORTS` tab and se
 
 Everything starts automatically. 
 
-When all tasks are done, you can open Deep in browser: http://localhost:3007/ **(ctrl/cmd + click by link)**
+When all tasks are done, you can open Deep.Case App in browser: http://localhost:3007/ **(ctrl/cmd + click by link)**
 
 You may need to [make port](https://docs.github.com/en/codespaces/developing-in-codespaces/forwarding-ports-in-your-codespace#sharing-a-port) 3007 public.
 
@@ -60,7 +60,7 @@ npm run local
 
 ### Open
 
-When all tasks are done, you can open Deep in browser: http://localhost:3007/ (ctrl/cmd + click by link)
+When all tasks are done, you can open Deep.Case App in browser: http://localhost:3007/ (ctrl/cmd + click by link)
 
 ## Server usage with domain
 
