@@ -28,7 +28,13 @@ When all tasks are done, you can open - http://localhost:3007/ **(ctrl/cmd + cli
 ## Local usage
 
 - make sure to use node 18 (we recommend to use [nvm](https://github.com/nvm-sh/nvm#installing-and-updating))
-- install docker and docker-compose
+- install docker and docker-compose  
+If you have Docker Desktop with `docker compose` (not `docker-compose`) you should enable this setting in Docker Desktop:
+![image](https://github.com/deep-foundation/dev/assets/66206278/a860fef9-0c5b-4569-9a94-0b42257bac42)
+Or use this command (if your are on linux):
+```bash
+echo 'docker compose --compatibility "$@"' | sudo tee -a /usr/local/bin/docker-compose && sudo chmod +x /usr/local/bin/docker-compose
+```
 
 ```sh
 git clone https://github.com/deep-foundation/dev.git
