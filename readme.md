@@ -36,6 +36,7 @@ cd dev
 npm ci
 rm -rf packages/deepcase
 rm -rf packages/deepcase-app
+rm -rf packages/deeplinks
 npm run packages
 
 npm run local
