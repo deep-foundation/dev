@@ -7,6 +7,16 @@
 
 ![IMG_1373](https://github.com/deep-foundation/dev/assets/1431904/8eb44328-5181-43ec-9445-417bbb6cfd83)
 
+## Gitpod usage
+
+Everything starts automatically. Just watch the terminal.
+
+When all tasks are done, you can open - http://localhost:3007/ **(ctrl/cmd + click by link)**
+
+It is also possible to open 3007 port manually, to do it open PORTS tab and select link to 3007 port.
+
+![image](https://github.com/deep-foundation/dev/assets/1431904/3bb62a4a-4d9f-4612-92c8-a4e9c3404c75)
+
 ## Codespaces usage
 
 Everything starts automatically. You just neet to make port 3007 public.
@@ -18,12 +28,6 @@ Everything starts automatically. You just neet to make port 3007 public.
 When all tasks are done, you can open - your Deep.Case
 
 ![image](https://github.com/CEHR2005/dev/assets/8792220/a45a046c-bec0-473b-8883-3e4e41c4ef83)
-
-## Gitpod usage
-
-Everything starts automatically. Just watch the terminal.
-
-When all tasks are done, you can open - http://localhost:3007/ **(ctrl/cmd + click by link)**
 
 ## Local usage
 ### Installation
@@ -47,7 +51,7 @@ When all tasks are done, you can open - http://localhost:3007/ **(ctrl/cmd + cli
   npm run local
   npm run local-migrate
   ```
-### Launching
+### Launching/Restart
 ```
 npm run local
 ```
