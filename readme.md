@@ -321,6 +321,12 @@ rm -rf dev
 
 ## Manual terminal methods
 
+### Docker control
+
+- `npm run docker-deep-start` start all deep docker containers
+- `npm run docker-deep-stop` stop all deep docker containers
+- `npm run docker-clear` remove (!!WARNING!!) ALL docker containers and volumes in docker
+
 ### Gitpod
 
 Automatic
