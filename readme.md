@@ -9,6 +9,8 @@
 
 ## Gitpod usage
 
+### Start
+
 Everything starts automatically. Just watch the terminal.
 
 When all tasks are done, you can open Deep.Case App in browser: http://localhost:3007/ **(ctrl/cmd + click by link)**
@@ -16,6 +18,17 @@ When all tasks are done, you can open Deep.Case App in browser: http://localhost
 It is also possible to open 3007 port manually, to do it open `PORTS` tab and select link for `3007` port.
 
 ![image](https://github.com/deep-foundation/dev/assets/1431904/3bb62a4a-4d9f-4612-92c8-a4e9c3404c75)
+
+### Update
+
+GitPod may fail to load prebuild, in that case it is recommended to use these sequence of actions in existing GitPod instance (use it multiple times, remember GitPod still may fail):
+
+1. Press `CTRL+C` in `Gitpod Task 2: bash` terminal. Or stop active `npm run gitpod-start` command.
+2. Execute 
+```
+npm run gitpod-update
+```
+1. Press `↑` in `Gitpod Task 2: bash` terminal and restart `npm run gitpod-start` command.
 
 ## Codespaces usage
 
