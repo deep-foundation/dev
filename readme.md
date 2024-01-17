@@ -21,7 +21,7 @@ It is also possible to open 3007 port manually, to do it open `PORTS` tab and se
 
 ### Update
 
-GitPod may fail to load prebuild, in that case it is recommended to use these sequence of actions in existing GitPod instance (use it multiple times, remember GitPod still may fail):
+GitPod may fail to load prebuild, in that case it is recommended to use these sequence of actions in existing GitPod instance (use GitPod instance multiple times, remember GitPod still may fail):
 
 1. Press `CTRL+C` in `Gitpod Task 2: bash` terminal. Or stop active `npm run gitpod-start` command.
 2. Execute 
