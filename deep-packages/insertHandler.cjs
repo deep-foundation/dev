@@ -1,4 +1,6 @@
-exports.insertHandler = async ({deep,fileTypeLinkId, fileName, handlerName, handleName, triggerTypeLinkId, code, supportsId, handleOperationTypeLinkId, containTypeLinkId, packageId, handlerTypeLinkId}) => {
+exports.insertHandler = async (param) => {
+  console.log('insertHandler', {param})  
+  const {deep,fileTypeLinkId, fileName, handlerName, handleName, triggerTypeLinkId, code, supportsId, handleOperationTypeLinkId, containTypeLinkId, packageId, handlerTypeLinkId} = param;
     return await deep.insert({
         type_id: fileTypeLinkId,
         in: {

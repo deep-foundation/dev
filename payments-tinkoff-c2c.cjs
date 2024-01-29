@@ -73,7 +73,7 @@ for (const requiredEnvVariableName of requiredEnvVariableNames) {
   }
 }
 
-const packageName = "@deep-foundation/payments-tinkoff-c2b";
+const packageName = "@deep-foundation/payments-tinkoff-c2c";
 
 const allCreatedLinkIds = [];
 
@@ -95,7 +95,13 @@ const installPackage = async () => {
   const admin = await guestDeep.login({
     linkId: await guestDeep.id('deep', 'admin'),
   });
-  const deep = new DeepClient({ deep: guestDeep, ...admin });
+  const adminDeep = new DeepClient({ deep: guestDeep, ...admin });
+  await adminDeep.insert({
+    type_id: deep.idLocal("@deep-foundation/core", "Join"),
+    from_id: guestDeep.linkId,
+    to_id: adminDeep.linkId
+  })
+  const deep = guestDeep;
 
   try {
     const User = await deep.id('@deep-foundation/core', 'User');
@@ -551,7 +557,7 @@ const installPackage = async () => {
     console.log({ incomeTypeId });
     debugger;
 
-    await insertTinkoffPayInsertHandler({packageName,deep, containTypeId, fileTypeId: syncTextFileTypeId, handleInsertTypeId, handlerTypeId, notificationUrl: process.env.PAYMENTS_C2B_NOTIFICATION_URL, packageId, supportsId: dockerSupportsJs, userEmail: process.env.PAYMENTS_C2B_EMAIL, userPhone: process.env.PAYMENTS_C2B_PHONE_NUMBER, dockerSupportsJsId, payTypeId});
+    await insertTinkoffPayInsertHandler({packageName,deep, containTypeId, fileTypeLinkId: syncTextFileTypeId, handleInsertTypeId, handlerTypeId, notificationUrl: process.env.PAYMENTS_C2B_NOTIFICATION_URL, packageId, supportsId: dockerSupportsJs, userEmail: process.env.PAYMENTS_C2B_EMAIL, userPhone: process.env.PAYMENTS_C2B_PHONE_NUMBER, dockerSupportsJsId, payTypeId, handleInsertTypeLinkId: handleInsertTypeId, containTypeLinkId: containTypeId, handlerTypeLinkId: handlerTypeId, payTypeLinkId: payTypeId, });
 
     const tinkoffNotificationOnConfirmedCode = `
 const TinkoffProvider = await deep.id("${packageName}", "TinkoffProvider");
@@ -715,7 +721,7 @@ const incomeLinkId = incomeLinkInsertQuery.data[0].id;
 console.log({ incomeLinkId });
   `;
 
-    await insertTinkoffNotificationHandler({packageName,packageId,deep, adminId: await deep.id('deep', 'admin'), containTypeId, fileTypeId: syncTextFileTypeId, handleRouteTypeId, handlerTypeId, notificationPort: process.env.PAYMENTS_C2B_NOTIFICATION_PORT, notificationRoute: process.env.PAYMENTS_C2B_NOTIFICATION_ROUTE, portTypeId, routerListeningTypeId, routerStringUseTypeId, routerTypeId, routeTypeId, supportsId: dockerSupportsJsId, onConfirmedCode: tinkoffNotificationOnConfirmedCode});
+    await insertTinkoffNotificationHandler({packageName,packageId,deep, adminId: await deep.id('deep', 'admin'), containTypeId, fileTypeId: syncTextFileTypeId, handleRouteTypeId, handlerTypeId, notificationPort: process.env.PAYMENTS_C2B_NOTIFICATION_PORT, notificationRoute: process.env.PAYMENTS_C2B_NOTIFICATION_ROUTE, portTypeId, routerListeningTypeId, routerStringUseTypeId, routerTypeId, routeTypeId, supportsId: dockerSupportsJsId, onConfirmedCode: tinkoffNotificationOnConfirmedCode, fileTypeLinkId: syncTextFileTypeId, handleRouteTypeLinkId: handleRouteTypeId, handlerTypeLinkId: handlerTypeId, portTypeLinkId: portTypeId, routerListeningTypeLinkId:routerListeningTypeId, routerStringUseTypeLinkId: routerStringUseTypeId, routerTypeLinkId: routerTypeId, routeTypeLinkId:routeTypeId, containTypeLinkId: containTypeId});
 
     const callTests = async () => {
       console.log('callTests-start');
@@ -1412,9 +1418,20 @@ console.log({ incomeLinkId });
     };
 
     await callTests();
+    await deep.delete({
+      up: {
+        parent_id: deep.linkId,
+        tree_id: deep.idLocal("@deep-foundation/core", "containTree")
+      }
+    })
 
   } catch (error) {
-    await deep.delete(allCreatedLinkIds);
+    await deep.delete({
+      up: {
+        parent_id: deep.linkId,
+        tree_id: deep.idLocal("@deep-foundation/core", "containTree")
+      }
+    })
     console.log(error);
     process.exit(1);
   }

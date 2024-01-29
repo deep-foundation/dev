@@ -2,7 +2,9 @@ const {insertNotificationHandler: baseInsertNotificationHandler} = require("../.
 const {handlersDependencies} = require("./handlersDependencies.cjs");
 const {confirm} = require("./confirm.cjs");
 
-exports.insertTinkoffNotificationHandler = async ({packageName, packageId, deep, notificationPort, notificationRoute, portTypeLinkId, routerListeningTypeLinkId, routerTypeLinkId, routerStringUseTypeLinkId, routeTypeLinkId, handleRouteTypeLinkId, handlerTypeLinkId, supportsId, containTypeLinkId,  adminId, fileTypeLinkId, onConfirmedCode}) => {
+exports.insertTinkoffNotificationHandler = async (param) => {
+  console.log('insertTinkoffNotificationHandler' , {param})
+  const {packageName, packageId, deep, notificationPort, notificationRoute, portTypeLinkId, routerListeningTypeLinkId, routerTypeLinkId, routerStringUseTypeLinkId, routeTypeLinkId, handleRouteTypeLinkId, handlerTypeLinkId, supportsId, containTypeLinkId,  adminId, fileTypeLinkId, onConfirmedCode} = param;
     const code = `
 async (
   req,

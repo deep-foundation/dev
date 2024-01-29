@@ -2,7 +2,9 @@ const { insertHandler } = require("../../insertHandler.cjs");
 const {handlersDependencies} = require("./handlersDependencies.cjs");
 const {init} = require("./init.cjs");
 
-exports.insertTinkoffPayInsertHandler = async ({packageName, deep, notificationUrl, userEmail, userPhone, fileTypeLinkId, containTypeLinkId, packageId, dockerSupportsJsId,  handleInsertTypeLinkId, handlerTypeLinkId, payTypeLinkId}) => {
+exports.insertTinkoffPayInsertHandler = async (param) => {
+  console.log({param})
+  const {packageName, deep, notificationUrl, userEmail, userPhone, fileTypeLinkId, containTypeLinkId, packageId, dockerSupportsJsId,  handleInsertTypeLinkId, handlerTypeLinkId, payTypeLinkId} = param;
     const code = `
 async ({ deep, require, data: { newLink, triggeredByLinkId } }) => {
   ${handlersDependencies}
