@@ -1,0 +1,12 @@
+{
+    "workbench.colorTheme": "Nebula Oni (Pegasus)",
+    "editor.tabSize": 2,
+    "files.autoSave": "off",
+    "workbench.colorCustomizations": {
+        "activityBar.background": "#181818",
+        "titleBar.activeBackground": "#181818",
+        "titleBar.activeForeground": "#F9FAFF"
+    },
+    "editor.wordWrap": "on",
+    "git.detectSubmodulesLimit": 9999
+}

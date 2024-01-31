@@ -5,7 +5,7 @@ FROM gitpod/workspace-full
 # RUN brew install bastet
 #
 # More information: https://www.gitpod.io/docs/config-docker/
-RUN bash -c 'VERSION="14.15.0" \
+RUN bash -c 'VERSION="18" \
     && source $HOME/.nvm/nvm.sh && nvm install $VERSION \
     && nvm use $VERSION && nvm alias default $VERSION'
 

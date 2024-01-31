@@ -1,0 +1,10 @@
+name: Npm Build
+
+on:
+  pull_request:
+    types: [opened, reopened, edited, synchronize]
+  workflow_dispatch:
+
+jobs:
+  main:
+    uses: deep-foundation/workflows/.github/workflows/npm-build.yml@main
