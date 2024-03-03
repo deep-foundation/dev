@@ -54,6 +54,21 @@ When all tasks are done, you can open Deep.Case App using `PORTS` tab:
   ```bash
   echo 'docker compose --compatibility "$@"' | sudo tee -a /usr/local/bin/docker-compose && sudo chmod +x /usr/local/bin/docker-compose
   ```
+  [Install docker on Ubuntu](https://docs.docker.com/engine/install/ubuntu/) or use this commands:
+  ```bash
+  sudo apt update
+  sudo apt install -y git curl docker.io docker-compose
+
+  sudo groupadd docker
+  sudo usermod -aG docker $USER
+  ```
+
+  These commands must be able to run without `sudo`, if it is not the case restart computer or relogin as user.
+  ```bash
+  docker run hello-world
+  docker rm $(docker ps -a -q --filter "ancestor=hello-world")
+  ```
+
 - Run this script to initialize and launch deep
   ```sh
   git clone https://github.com/deep-foundation/dev.git
@@ -64,6 +79,9 @@ When all tasks are done, you can open Deep.Case App using `PORTS` tab:
   rm -rf packages/deeplinks
   npm run packages
   npm run local
+  ```
+  Run migrations while `npm run local` is executed.
+  ```
   npm run local-migrate
   ```
 ### Launch/Restart
@@ -98,6 +116,10 @@ sudo apt install -y git curl docker.io docker-compose
 
 sudo groupadd docker
 sudo usermod -aG docker $USER
+```
+
+These commands must be able to run without `sudo`, if it is not the case restart computer or relogin as user.
+```bash
 docker run hello-world
 docker rm $(docker ps -a -q --filter "ancestor=hello-world")
 ```
