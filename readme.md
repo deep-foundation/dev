@@ -60,7 +60,7 @@ When all tasks are done, you can open Deep.Case App using `PORTS` tab:
   sudo apt install -y git curl docker.io docker-compose
 
   sudo groupadd docker
-  sudo usermod -aG docker $USER
+  sudo usermod -aG docker $(whoami)
   ```
 
   These commands must be able to run without `sudo`, if it is not the case restart computer or relogin as user.
@@ -115,7 +115,7 @@ sudo apt update
 sudo apt install -y git curl docker.io docker-compose
 
 sudo groupadd docker
-sudo usermod -aG docker $USER
+sudo usermod -aG docker $(whoami)
 ```
 
 These commands must be able to run without `sudo`, if it is not the case restart computer or relogin as user.
@@ -264,7 +264,7 @@ sudo apt update
 sudo apt install -y git curl docker.io docker-compose
 
 sudo groupadd docker
-sudo usermod -aG docker $USER
+sudo usermod -aG docker $(whoami)
 docker run hello-world
 docker rm $(docker ps -a -q --filter "ancestor=hello-world")
 ```
