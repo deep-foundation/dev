@@ -419,8 +419,16 @@ Manual
 
 ### JS Docker Isolation Provider
 
-#### Get container logs:
+#### Get container logs to console:
 
-```sh
+```bash
 docker logs $(docker ps -a -q --filter "ancestor=deepf/js-docker-isolation-provider:main")
+```
+
+#### Get container logs to file:
+
+Sometimes console cannot output the full logs so it might be helpful to store the entire container's logs as file. It can be done like this:
+
+```bash
+docker logs $(docker ps -a -q --filter "ancestor=deepf/js-docker-isolation-provider:main") > log.txt
 ```
