@@ -421,7 +421,7 @@ Manual
 
 #### Get container logs to console:
 
-```sh
+```bash
 docker logs $(docker ps -a -q --filter "ancestor=deepf/js-docker-isolation-provider:main")
 ```
 
@@ -429,6 +429,6 @@ docker logs $(docker ps -a -q --filter "ancestor=deepf/js-docker-isolation-provi
 
 Sometimes console cannot output the full logs so it might be helpful to store the entire container's logs as file. It can be done like this:
 
-```
+```bash
 docker logs $(docker ps -a -q --filter "ancestor=deepf/js-docker-isolation-provider:main") > log.txt
 ```
