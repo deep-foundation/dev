@@ -421,4 +421,4 @@ If `package.json` and `package-lock.json` was updated in submodule/workspace sep
 
 ### [Deep.Links](https://github.com/deep-foundation/deeplinks#dignostics)
 ### [PostgreSQL](https://github.com/deep-foundation/hasura/blob/main/README.md#postgresql)
-### [JS Docker Isolation Provider][https://github.com/deep-foundation/js-docker-isolation-provider/blob/main/README.md#diagnostics]
+### [JS Docker Isolation Provider](https://github.com/deep-foundation/js-docker-isolation-provider/blob/main/README.md#diagnostics)
