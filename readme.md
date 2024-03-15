@@ -397,7 +397,7 @@ Manual
 
 If dependencies are updated in workspaces (`deeplinks`, `deepcase`, `deepcase-app`), we must use these specific commands to make GitPod and GitHub Actions to work correclty in these packages.
 
-If `package.json` and `package-lock.json` was updated in submodule/workspace separately and committed, please make sure you also executed `npm i` after pull, or just use `npm run gitpod-update` command.
+If `package.json` and `package-lock.json` was updated in submodule/workspace separately and committed, please make sure you also executed `npm run sync` (which also executes `npm i` in dev repository, and it also commits all changes in all submodules/workspaces), or to test it locally you may use `npm run gitpod-update` command.
 
 - `npm run workspace-install --workspace_arg=deeplinks --package_arg="@deep-foundation/hasura@latest"` to update `hasura` in `deeplinks`.
 - `npm run workspace-install --workspace_arg=deeplinks --package_arg="@deep-foundation/npm-packager@latest"` to update `npm-packager` in `deeplinks`.
