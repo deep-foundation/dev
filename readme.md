@@ -9,6 +9,8 @@
 
 ## Gitpod usage
 
+### Start
+
 Everything starts automatically. Just watch the terminal.
 
 When all tasks are done, you can open Deep.Case App in browser: http://localhost:3007/ **(ctrl/cmd + click by link)**
@@ -16,6 +18,17 @@ When all tasks are done, you can open Deep.Case App in browser: http://localhost
 It is also possible to open 3007 port manually, to do it open `PORTS` tab and select link for `3007` port.
 
 ![image](https://github.com/deep-foundation/dev/assets/1431904/3bb62a4a-4d9f-4612-92c8-a4e9c3404c75)
+
+### Update
+
+GitPod may fail to load prebuild, in that case it is recommended to use these sequence of actions in existing GitPod instance (use GitPod instance multiple times, remember GitPod still may fail):
+
+1. Press `CTRL+C` in `Gitpod Task 2: bash` terminal. Or stop active `npm run gitpod-start` command.
+2. Execute 
+```
+npm run gitpod-update
+```
+1. Press `↑` in `Gitpod Task 2: bash` terminal and restart `npm run gitpod-start` command.
 
 ## Codespaces usage
 
@@ -41,6 +54,21 @@ When all tasks are done, you can open Deep.Case App using `PORTS` tab:
   ```bash
   echo 'docker compose --compatibility "$@"' | sudo tee -a /usr/local/bin/docker-compose && sudo chmod +x /usr/local/bin/docker-compose
   ```
+  [Install docker on Ubuntu](https://docs.docker.com/engine/install/ubuntu/) or use this commands:
+  ```bash
+  sudo apt update
+  sudo apt install -y git curl docker.io docker-compose
+
+  sudo groupadd docker
+  sudo usermod -aG docker $(whoami)
+  ```
+
+  These commands must be able to run without `sudo`, if it is not the case restart computer or relogin as user.
+  ```bash
+  docker run hello-world
+  docker rm $(docker ps -a -q --filter "ancestor=hello-world")
+  ```
+
 - Run this script to initialize and launch deep
   ```sh
   git clone https://github.com/deep-foundation/dev.git
@@ -51,6 +79,9 @@ When all tasks are done, you can open Deep.Case App using `PORTS` tab:
   rm -rf packages/deeplinks
   npm run packages
   npm run local
+  ```
+  Run migrations while `npm run local` is executed.
+  ```
   npm run local-migrate
   ```
 ### Launch/Restart
@@ -84,7 +115,11 @@ sudo apt update
 sudo apt install -y git curl docker.io docker-compose
 
 sudo groupadd docker
-sudo usermod -aG docker $USER
+sudo usermod -aG docker $(whoami)
+```
+
+These commands must be able to run without `sudo`, if it is not the case restart computer or relogin as user.
+```bash
 docker run hello-world
 docker rm $(docker ps -a -q --filter "ancestor=hello-world")
 ```
@@ -229,7 +264,7 @@ sudo apt update
 sudo apt install -y git curl docker.io docker-compose
 
 sudo groupadd docker
-sudo usermod -aG docker $USER
+sudo usermod -aG docker $(whoami)
 docker run hello-world
 docker rm $(docker ps -a -q --filter "ancestor=hello-world")
 ```
@@ -321,6 +356,12 @@ rm -rf dev
 
 ## Manual terminal methods
 
+### Docker control
+
+- `npm run docker-deep-start` start all deep docker containers
+- `npm run docker-deep-stop` stop all deep docker containers
+- `npm run docker-clear` remove (!!WARNING!!) ALL docker containers and volumes in docker
+
 ### Gitpod
 
 Automatic
@@ -354,7 +395,12 @@ Manual
 
 ### Workspaces
 
+If dependencies are updated in workspaces (`deeplinks`, `deepcase`, `deepcase-app`), we must use these specific commands to make GitPod and GitHub Actions to work correclty in these packages.
+
+If `package.json` and `package-lock.json` was updated in submodule/workspace separately and committed, please make sure you also executed `npm i` after pull, or just use `npm run gitpod-update` command.
+
 - `npm run workspace-install --workspace_arg=deeplinks --package_arg="@deep-foundation/hasura@latest"` to update `hasura` in `deeplinks`.
+- `npm run workspace-install --workspace_arg=deeplinks --package_arg="@deep-foundation/npm-packager@latest"` to update `npm-packager` in `deeplinks`.
 - `npm run workspace-install --workspace_arg=deepcase --package_arg=emoji-picker-react` to install package in `deepcase` workspace (this command update `package-lock.json` in both `dev` and `package/deepcase` folders).
 - `npm run workspace-install --workspace_arg=deepcase --package_arg="@deep-foundation/deeplinks@latest"` to update `deeplinks` in `deepcase`.
 - `npm run workspace-install --workspace_arg=deepcase-app --package_arg="@deep-foundation/deepcase@latest"` to update `deepcase` in `deepcase-app`.
@@ -378,8 +424,16 @@ Manual
 
 ### JS Docker Isolation Provider
 
-#### Get container logs:
+#### Get container logs to console:
 
-```sh
+```bash
 docker logs $(docker ps -a -q --filter "ancestor=deepf/js-docker-isolation-provider:main")
+```
+
+#### Get container logs to file:
+
+Sometimes console cannot output the full logs so it might be helpful to store the entire container's logs as file. It can be done like this:
+
+```bash
+docker logs $(docker ps -a -q --filter "ancestor=deepf/js-docker-isolation-provider:main") > log.txt
 ```
