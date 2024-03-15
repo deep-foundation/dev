@@ -421,19 +421,4 @@ If `package.json` and `package-lock.json` was updated in submodule/workspace sep
 
 ### [Deep.Links](https://github.com/deep-foundation/deeplinks#dignostics)
 ### [PostgreSQL](https://github.com/deep-foundation/hasura/blob/main/README.md#postgresql)
-
-### JS Docker Isolation Provider
-
-#### Get container logs to console:
-
-```bash
-docker logs $(docker ps -a -q --filter "ancestor=deepf/js-docker-isolation-provider:main")
-```
-
-#### Get container logs to file:
-
-Sometimes console cannot output the full logs so it might be helpful to store the entire container's logs as file. It can be done like this:
-
-```bash
-docker logs $(docker ps -a -q --filter "ancestor=deepf/js-docker-isolation-provider:main") > log.txt
-```
+### [JS Docker Isolation Provider][https://github.com/deep-foundation/js-docker-isolation-provider/blob/main/README.md#diagnostics]
