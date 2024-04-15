@@ -24,7 +24,7 @@
     "local-engine": "cd packages/hasura && npm run docker",
     "electron-dev": "(cross-env npm_config_yes=true NEXT_PUBLIC_ENGINES=1 MIGRATIONS_ID_TYPE_SQL=bigint MIGRATIONS_ID_TYPE_GQL=bigint MIGRATIONS_HASURA_PATH=localhost:8080 MIGRATIONS_HASURA_SSL=0 MIGRATIONS_HASURA_SECRET=myadminsecretkey NEXT_PUBLIC_DEEPLINKS_SERVER=http://localhost:3007 NEXT_PUBLIC_GQL_PATH=localhost:3006/gql NEXT_PUBLIC_GQL_SSL=0 DEEPLINKS_HASURA_PATH=localhost:8080 DEEPLINKS_HASURA_SSL=0 MIGRATIONS_DEEPLINKS_APP_URL=http://host.docker.internal:3007 MIGRATIONS_DEEPLINKS_URL=http://host.docker.internal:3006 NEXT_PUBLIC_DEEPLINKS_URL=http://localhost:3006 DEEPLINKS_PUBLIC_URL=http://localhost:3006 npm run electron-dev-core)",
     "electron-dev-core": "cd packages/deepcase-app && npx cap copy electron && npm run electron-dev",
-    "electron-build-mac": "APPLEIDPASS=$(security find-generic-password -w -a menzorg@gmail.com) APPLEID=menzorg@gmail.com CSC_NAME='ABRAKAR, OOO (8ZG6TUT4AY)' npm run electron-build-unix",
+    "electron-build-mac": "APPLEIDPASS=$(security find-generic-password -w -a ivansglazunov@gmail.com) APPLEID=ivansglazunov@gmail.com CSC_NAME='Deep Foundation (XXXXXXXXXX)' npm run electron-build-unix",
     "electron-build-unix": "npm run apply-all && npm run electron-next-build-unix && npm run electron-build-pack",
     "electron-build-windows": "npm run apply-all && npm run electron-next-build-windows && npm run electron-build-pack",
     "electron-next-build-unix": "(cross-env MIGRATIONS_DIR=/tmp/.migrate && npm run electron-build-core)",
