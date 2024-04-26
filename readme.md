@@ -105,7 +105,7 @@ Make this ports port is accessable from the internet to a machine:
 * HTTP (80) or HTTPS (443) to make nginx work correctly and make the Deep itself accessable.
 
 #### Install docker
-```sh
+```bash
 sudo apt update
 sudo apt install -y git curl docker.io docker-compose
 
@@ -123,15 +123,30 @@ docker rm $(docker ps -a -q --filter "ancestor=hello-world")
 
 **Continue only if `docker run hello-world` works without `sudo` and errors.**
 
-### Install
+#### Install nvm
 
-```sh
+```bash
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
 export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-nvm install 18 && nvm alias default 18 && nvm use default
-npm i -g npm@latest
+```
 
+#### Install node
+
+```bash
+nvm install 18 && nvm alias default 18 && nvm use default
+```
+
+#### Update npm
+
+```bash
+npm i -g npm@latest
+```
+
+### Install Deep
+
+#### Install
+```bash
 export DEEPCASE_HOST="chatgpt.deep.foundation"
 export DEEPLINKS_HOST="deeplinks.chatgpt.deep.foundation"
 
