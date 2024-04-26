@@ -97,19 +97,14 @@ When all tasks are done, you can open Deep.Case App in browser: http://localhost
 
 ### Preparation
 
+Make sure you have virtual machine or server that is connected to the internet.
+Then if you would like to use a domain name please make sure DNS server of this domain configurated to point to the public API of your server.
+
 Make this ports port is accessable from the internet to a machine:
-  
-HTTP port for cerbot to be able to authenticate the domain ownership
+* HTTP (80) port for cerbot to be able to authenticate the domain ownership.
+* HTTP (80) or HTTPS (443) to make nginx work correctly and make the Deep itself accessable.
 
-HTTP or HTTPS to make nginx work correctly and make the Deep itself accessable
-
-If `docker run hello-world` does not work without `sudo` try relogin or if it does not help then try to restart machine. 
-
-**Continue only if `docker run hello-world` works without `sudo` and errors.**
-
-### Install
-
-Install and check docker
+#### Install docker
 ```sh
 sudo apt update
 sudo apt install -y git curl docker.io docker-compose
@@ -118,13 +113,20 @@ sudo groupadd docker
 sudo usermod -aG docker $(whoami)
 ```
 
+#### Check docker
+
 These commands must be able to run without `sudo`, if it is not the case restart computer or relogin as user.
 ```bash
 docker run hello-world
 docker rm $(docker ps -a -q --filter "ancestor=hello-world")
 ```
 
-Install deep
+If `docker run hello-world` does not work without `sudo` try relogin or if it does not help then try to restart machine. 
+
+**Continue only if `docker run hello-world` works without `sudo` and errors.**
+
+### Install
+
 ```sh
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
 export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
