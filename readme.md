@@ -145,7 +145,6 @@ npm i -g npm@latest
 
 ### Install Deep
 
-#### Install
 ```bash
 export DEEPCASE_HOST="chatgpt.deep.foundation"
 export DEEPLINKS_HOST="deeplinks.chatgpt.deep.foundation"
