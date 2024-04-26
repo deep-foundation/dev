@@ -65,9 +65,9 @@ When all tasks are done, you can open Deep.Case App using `PORTS` tab:
 
   These commands must be able to run without `sudo`, if it is not the case restart computer or relogin as user.
   ```bash
+  docker run hello-world
   docker rm $(docker ps -a -q --filter "ancestor=hello-world")
   docker image rm hello-world
-  docker run hello-world
   ```
 
 - Run this script to initialize and launch deep
