@@ -252,9 +252,12 @@ deeplinks
 ```
 
 #### Check that deep instance is installed correctly
+
 ```bash
 docker ps -a
 ```
+
+Make sure that all containers have status "Up".
 
 ### Restart
 
@@ -280,7 +283,7 @@ npm rm --unsafe-perm -g @deep-foundation/deeplinks
 npm install --unsafe-perm -g @deep-foundation/deeplinks@latest
 ```
 
-#### Update deeplinks and deepcase images
+#### Delete previous versions of docker images (optional)
 ```bash
 docker stop deep-case deep-links
 docker rm deep-case deep-links
