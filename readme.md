@@ -121,8 +121,6 @@ docker run hello-world
 docker rm $(docker ps -a -q --filter "ancestor=hello-world")
 ```
 
-If `docker run hello-world` does not work without `sudo` try relogin or if it does not help then try to restart machine. 
-
 **Continue only if `docker run hello-world` works without `sudo` and errors.**
 
 ### Install
@@ -131,7 +129,7 @@ If `docker run hello-world` does not work without `sudo` try relogin or if it do
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
 export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-nvm install 18 && nvm use 18 && nvm alias default 18
+nvm install 18 && nvm alias default 18 && nvm use default
 npm i -g npm@latest
 
 export DEEPCASE_HOST="chatgpt.deep.foundation"
@@ -279,7 +277,7 @@ Install deep
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
 export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-nvm install 18 && nvm use 18 && nvm alias default 18
+nvm install 18 && nvm alias default 18 && nvm use default
 npm i -g npm@latest
 
 npm rm --unsafe-perm -g @deep-foundation/deeplinks
