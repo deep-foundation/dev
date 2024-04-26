@@ -65,8 +65,9 @@ When all tasks are done, you can open Deep.Case App using `PORTS` tab:
 
   These commands must be able to run without `sudo`, if it is not the case restart computer or relogin as user.
   ```bash
-  docker run hello-world
   docker rm $(docker ps -a -q --filter "ancestor=hello-world")
+  docker image rm hello-world
+  docker run hello-world
   ```
 
 - Run this script to initialize and launch deep
@@ -129,6 +130,7 @@ These commands must be able to run without `sudo`, if it is not the case restart
 ```bash
 docker run hello-world
 docker rm $(docker ps -a -q --filter "ancestor=hello-world")
+docker run hello-world
 ```
 
 **Continue only if `docker run hello-world` works without `sudo` and errors.**
@@ -169,11 +171,17 @@ export DEEPLINKS_HOST="deeplinks.chatgpt.deep.foundation"
 #### Install and configure nginx (to support domain with SSL)
 
 ```bash
-git clone https://github.com/deep-foundation/dev && (cd dev && npm ci)
-(cd dev && node configure-nginx.js --configurations "$DEEPCASE_HOST 3007" "$DEEPLINKS_HOST 3006" --certbot-email drakonard@gmail.com)
+mkdir nginx
+cd nginx
+wget https://raw.githubusercontent.com/deep-foundation/dev/main/configure-nginx.js
+npm i commander
+node configure-nginx.js --configurations "$DEEPCASE_HOST 3007" "$DEEPLINKS_HOST 3006" --certbot-email drakonard@gmail.com
+cd ..
 ```
 
 #### Configure deep (to support IP without SSL)
+
+Do not execute this step if you selected steps for domain with SSL before.
 
 ```bash
 export GQL_SSL="0"
