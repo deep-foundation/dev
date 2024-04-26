@@ -93,16 +93,26 @@ npm run local
 
 When all tasks are done, you can open Deep.Case App in browser: http://localhost:3007/ (ctrl/cmd + click by link)
 
-## Server usage with domain
+## Server usage
 
 ### Preparation
 
 Make sure you have virtual machine or server that is connected to the internet.
-Then if you would like to use a domain name please make sure DNS server of this domain configurated to point to the public API of your server.
 
-Make this ports port is accessable from the internet to a machine:
-* HTTP (80) port for cerbot to be able to authenticate the domain ownership.
-* HTTP (80) or HTTPS (443) to make nginx work correctly and make the Deep itself accessable.
+If you would like to use domain and SSL, make sure:
+* DNS server of this domain configurated to point to the public IP of your server;
+* HTTP (80) port for cerbot is accessable from the internet to be able to authenticate the domain ownership;
+* HTTP (80) and HTTPS (443) porst are accessible from the internet to make nginx work correctly and make the Deep itself accessable.
+
+If you would like to use IP without SSL, make sure:
+* Ports 3006 and 3007 are open, for example, using [the ufw package on Ubuntu](https://www.digitalocean.com/community/tutorials/how-to-set-up-a-firewall-with-ufw-on-ubuntu-20-04):
+  ```
+  sudo ufw allow 3006
+  sudo ufw allow 3007
+  ```
+
+Note that access via IP is not secure (there is no way to issue SSL certificate to IP address), that means it can be only used for development purposes with no sensetive data.
+
 
 #### Install docker
 ```bash
@@ -122,6 +132,8 @@ docker rm $(docker ps -a -q --filter "ancestor=hello-world")
 ```
 
 **Continue only if `docker run hello-world` works without `sudo` and errors.**
+
+After docker installation it may be required to move files to another drive (for example on azure VMs).
 
 #### Install nvm
 
@@ -143,18 +155,44 @@ nvm install 18 && nvm alias default 18 && nvm use default
 npm i -g npm@latest
 ```
 
-### Install Deep
+### Installation
+
+#### Configure deep (to support domain with SSL)
 
 ```bash
+export GQL_SSL="1"
+export PROTOCOL="https"
 export DEEPCASE_HOST="chatgpt.deep.foundation"
 export DEEPLINKS_HOST="deeplinks.chatgpt.deep.foundation"
+```
 
+#### Install and configure nginx (to support domain with SSL)
+
+```bash
 git clone https://github.com/deep-foundation/dev && (cd dev && npm ci)
 (cd dev && node configure-nginx.js --configurations "$DEEPCASE_HOST 3007" "$DEEPLINKS_HOST 3006" --certbot-email drakonard@gmail.com)
+```
 
+#### Configure deep (to support IP without SSL)
+
+```bash
+export GQL_SSL="0"
+export PROTOCOL="http"
+export HOST_IP="185.105.118.59"
+export DEEPCASE_HOST="$HOST_IP:3007"
+export DEEPLINKS_HOST="$HOST_IP:3006"
+```
+
+#### Install deeplinks global command
+
+```bash
 npm rm --unsafe-perm -g @deep-foundation/deeplinks
 npm install --unsafe-perm -g @deep-foundation/deeplinks@latest
+```
 
+#### Make your Deep instance configurations (aka `call-options.json`)
+
+```bash
 export HASURA_ADMIN_SECRET=$(node -e "console.log(require('crypto').randomBytes(24).toString('hex'));")
 export POSTGRES_PASSWORD=$(node -e "console.log(require('crypto').randomBytes(24).toString('hex'));")
 export MINIO_ACCESS_KEY=$(node -e "console.log(require('crypto').randomBytes(24).toString('hex'));")
@@ -163,11 +201,11 @@ tee call-options.json << JSON
 {
   "operation": "run",
   "envs": {
-    "DEEPLINKS_PUBLIC_URL": "https://$DEEPLINKS_HOST",
-    "NEXT_PUBLIC_DEEPLINKS_URL": "https://$DEEPLINKS_HOST",
+    "DEEPLINKS_PUBLIC_URL": "${PROTOCOL}://$DEEPLINKS_HOST",
+    "NEXT_PUBLIC_DEEPLINKS_URL": "${PROTOCOL}://$DEEPLINKS_HOST",
     "NEXT_PUBLIC_GQL_PATH": "$DEEPLINKS_HOST/gql",
-    "NEXT_PUBLIC_GQL_SSL": "1",
-    "NEXT_PUBLIC_DEEPLINKS_SERVER": "https://$DEEPCASE_HOST",
+    "NEXT_PUBLIC_GQL_SSL": "${GQL_SSL}",
+    "NEXT_PUBLIC_DEEPLINKS_SERVER": "${PROTOCOL}://$DEEPCASE_HOST",
     "NEXT_PUBLIC_ENGINES_ROUTE": "0",
     "NEXT_PUBLIC_DISABLE_CONNECTOR": "1",
     "JWT_SECRET": "'{\"type\":\"HS256\",\"key\":\"$(node -e "console.log(require('crypto').randomBytes(50).toString('base64'));")\"}'",
@@ -187,49 +225,64 @@ tee call-options.json << JSON
   }
 }
 JSON
+```
 
+#### Check that no other deep instances installed at the moment
+
+```bash
 docker ps -a
+```
 
+On fresh/clean server this list should be empty. If you have any previously installed deep instances, make sure the data is backed up and previous version of deep is uninstalled before proceed.
+
+#### Install your own deep instance
+
+```bash
 export DEEPLINKS_CALL_OPTIONS=$(cat call-options.json)
 export DEBUG="deeplinks:engine:*,deeplinks:migrations:*"
 deeplinks
+```
 
+#### Check that deep instance is installed correctly
+```bash
 docker ps -a
 ```
 
 ### Restart
 
-Entire docker
+#### Entire docker
 
-```
+```bash
 sudo systemctl stop docker
 sudo systemctl start docker
 ```
 
-Single docker container
+#### Single docker container
 
-```
+```bash
 docker restart deep-links
 ```
 
 ### Restore/Update
 
-Optional - update deeplinks.
-```
+#### Update deeplinks (optional)
+
+```bash
 npm rm --unsafe-perm -g @deep-foundation/deeplinks
 npm install --unsafe-perm -g @deep-foundation/deeplinks@latest
 ```
 
-Update deeplinks and deepcase images
-```
+#### Update deeplinks and deepcase images
+```bash
 docker stop deep-case deep-links
 docker rm deep-case deep-links
 docker image pull deepf/deepcase:main
 docker image pull deepf/deeplinks:main
 ```
 
-Restore/update using installed deeplinks command.
-```
+#### Restore/update using installed deeplinks command
+
+```bash
 export DEEPLINKS_CALL_OPTIONS=$(cat call-options.json)
 export DEBUG="deeplinks:engine:*,deeplinks:migrations:*"
 deeplinks
@@ -238,131 +291,14 @@ deeplinks
 ### Uninstall
 
 If you don't have `dev` directory clone it like this:
-```
+
+```bash
 git clone https://github.com/deep-foundation/dev && (cd dev && npm ci)
 ```
 
-Than execute:
+Then execute:
 
-```
-(cd dev && (npm run docker-clear || true) && rm -f /tmp/deep/.migrate)
-npm rm --unsafe-perm -g @deep-foundation/deeplinks
-rm -rf dev
-```
-
-## Server usage with IP (unsafe use only for tests or local installation)
-
-### Preparation
-
-Here is how you can install deep on the server without SSL and without a domain (after all, why without SSL?).
-
-Replace HOST_IP with your host's IP.
-
-Take care to open ports 3006 and 3007, for example, using [the ufw package on Ubuntu](https://www.digitalocean.com/community/tutorials/how-to-set-up-a-firewall-with-ufw-on-ubuntu-20-04).
-
-For example:
-```
-sudo ufw allow 3006
-sudo ufw allow 3007
-```
-
-If `docker run hello-world` does not work without `sudo` try relogin or if it does not help then try to restart machine. 
-
-**Continue only if `docker run hello-world` works without `sudo` and errors.**
-
-### Install
-
-Install and check docker
-```sh
-sudo apt update
-sudo apt install -y git curl docker.io docker-compose
-
-sudo groupadd docker
-sudo usermod -aG docker $(whoami)
-docker run hello-world
-docker rm $(docker ps -a -q --filter "ancestor=hello-world")
-```
-
-After docker installation it may be required to move files to another drive (for example on azure VMs).
-
-Install deep
-
-```sh
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
-export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-nvm install 18 && nvm alias default 18 && nvm use default
-npm i -g npm@latest
-
-npm rm --unsafe-perm -g @deep-foundation/deeplinks
-npm install --unsafe-perm -g @deep-foundation/deeplinks@latest
-
-export HOST_IP="185.105.118.59"
-export DEEPCASE_HOST="$HOST_IP:3007"
-export DEEPLINKS_HOST="$HOST_IP:3006"
-export HASURA_ADMIN_SECRET=$(node -e "console.log(require('crypto').randomBytes(24).toString('hex'));")
-export POSTGRES_PASSWORD=$(node -e "console.log(require('crypto').randomBytes(24).toString('hex'));")
-export MINIO_ACCESS_KEY=$(node -e "console.log(require('crypto').randomBytes(24).toString('hex'));")
-export MINIO_SECRET_KEY=$(node -e "console.log(require('crypto').randomBytes(24).toString('hex'));")
-tee call-options.json << JSON
-{
-  "operation": "run",
-  "envs": {
-    "DEEPLINKS_PUBLIC_URL": "http://$DEEPLINKS_HOST",
-    "NEXT_PUBLIC_DEEPLINKS_URL": "http://$DEEPLINKS_HOST",
-    "NEXT_PUBLIC_GQL_PATH": "$DEEPLINKS_HOST/gql",
-    "NEXT_PUBLIC_GQL_SSL": "0",
-    "NEXT_PUBLIC_DEEPLINKS_SERVER": "http://$DEEPCASE_HOST",
-    "NEXT_PUBLIC_ENGINES_ROUTE": "0",
-    "NEXT_PUBLIC_DISABLE_CONNECTOR": "1",
-    "JWT_SECRET": "'{\"type\":\"HS256\",\"key\":\"$(node -e "console.log(require('crypto').randomBytes(50).toString('base64'));")\"}'",
-    "DEEPLINKS_HASURA_STORAGE_URL": "http://host.docker.internal:8000/",
-    "HASURA_GRAPHQL_ADMIN_SECRET": "$HASURA_ADMIN_SECRET",
-    "MIGRATIONS_HASURA_SECRET": "$HASURA_ADMIN_SECRET",
-    "DEEPLINKS_HASURA_SECRET": "$HASURA_ADMIN_SECRET",
-    "POSTGRES_PASSWORD": "$POSTGRES_PASSWORD",
-    "HASURA_GRAPHQL_DATABASE_URL": "postgres://postgres:$POSTGRES_PASSWORD@postgres:5432/postgres",
-    "POSTGRES_MIGRATIONS_SOURCE": "postgres://postgres:$POSTGRES_PASSWORD@host.docker.internal:5432/postgres?sslmode=disable",
-    "RESTORE_VOLUME_FROM_SNAPSHOT": "0",
-    "MANUAL_MIGRATIONS": "1",
-    "MINIO_ROOT_USER": "$MINIO_ACCESS_KEY",
-    "MINIO_ROOT_PASSWORD": "$MINIO_SECRET_KEY",
-    "S3_ACCESS_KEY": "$MINIO_ACCESS_KEY",
-    "S3_SECRET_KEY": "$MINIO_SECRET_KEY"
-  }
-}
-JSON
-
-export DEEPLINKS_CALL_OPTIONS=$(cat call-options.json)
-export DEBUG="deeplinks:engine:*,deeplinks:migrations:*"
-deeplinks
-```
-
-### Restore/Update
-
-Optional - update deeplinks.
-```
-npm rm --unsafe-perm -g @deep-foundation/deeplinks
-npm install --unsafe-perm -g @deep-foundation/deeplinks@latest
-```
-
-Restore/update using installed deeplinks command.
-```
-export DEEPLINKS_CALL_OPTIONS=$(cat call-options.json)
-export DEBUG="deeplinks:engine:*,deeplinks:migrations:*"
-deeplinks
-```
-
-### Uninstall
-
-If you don't have `dev` directory clone it like this:
-```
-git clone https://github.com/deep-foundation/dev && (cd dev && npm ci)
-```
-
-Than execute:
-
-```
+```bash
 (cd dev && (npm run docker-clear || true) && rm -f /tmp/deep/.migrate)
 npm rm --unsafe-perm -g @deep-foundation/deeplinks
 rm -rf dev
