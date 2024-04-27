@@ -284,9 +284,14 @@ npm install --unsafe-perm -g @deep-foundation/deeplinks@latest
 ```
 
 #### Delete previous versions of docker images (optional)
+
+Sometimes it is not require to delete previous versions of docker images, sometimes this is the only way to make update work.
+
 ```bash
 docker stop deep-case deep-links
 docker rm deep-case deep-links
+docker image rm deepf/deeplinks:main
+docker image rm deepf/deepcase:main
 docker image pull deepf/deepcase:main
 docker image pull deepf/deeplinks:main
 ```
