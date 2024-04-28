@@ -58,7 +58,9 @@ When all tasks are done, you can open Deep.Case App using `PORTS` tab:
   ```bash
   sudo apt update
   sudo apt install -y git curl docker.io docker-compose
-
+  ```
+  Optionally set up docker group and add user to this group (it may be done automatically on installation):
+  ```
   sudo groupadd docker
   sudo usermod -aG docker $(whoami)
   ```
@@ -119,7 +121,12 @@ Note that access via IP is not secure (there is no way to issue SSL certificate 
 ```bash
 sudo apt update
 sudo apt install -y git curl docker.io docker-compose
+```
 
+#### Add docker group (optional)
+Sometimes this action is not done on docker's installation via apt/apt-get or you may need to add access for docker to another user.
+
+```bash
 sudo groupadd docker
 sudo usermod -aG docker $(whoami)
 ```
@@ -130,7 +137,7 @@ These commands must be able to run without `sudo`, if it is not the case restart
 ```bash
 docker run hello-world
 docker rm $(docker ps -a -q --filter "ancestor=hello-world")
-docker run hello-world
+docker image rm hello-world
 ```
 
 **Continue only if `docker run hello-world` works without `sudo` and errors.**
