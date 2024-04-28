@@ -248,7 +248,7 @@ JSON
 docker ps -a
 ```
 
-On fresh/clean server this list should be empty. If you have any previously installed deep instances, make sure the data is backed up and previous version of deep is uninstalled before proceed.
+On fresh/clean server this list should be empty. If you have any previously installed deep instances, make sure the data is backed up.
 
 #### Install your own deep instance
 
