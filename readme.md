@@ -313,18 +313,29 @@ deeplinks
 
 ### Uninstall
 
-If you don't have `dev` directory clone it like this:
+Remove docker containers:
 
 ```bash
-git clone https://github.com/deep-foundation/dev && (cd dev && npm ci)
+docker stop $(docker ps -a --format "{{.Names}}" | grep '^deep-.*$')
+docker rm $(docker ps -a --format "{{.Names}}" | grep '^deep-.*$')
 ```
 
-Then execute:
+Remove unused volumes (**may destroy you data, it is irreversible operation**, this step is optional):
 
 ```bash
-(cd dev && (npm run docker-clear || true) && rm -f /tmp/deep/.migrate)
+docker volume prune -af
+```
+
+Remove migrations state (should be executed only if you deleted volumes):
+
+```bash
+rm -f /tmp/deep/.migrate
+```
+
+Remove `deeplinks` global command:
+
+```bash
 npm rm --unsafe-perm -g @deep-foundation/deeplinks
-rm -rf dev
 ```
 
 ## Manual terminal methods
