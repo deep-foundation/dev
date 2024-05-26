@@ -6,3 +6,5 @@ prebuild-is-ready.txt
 prebuild-is-started.txt
 gitpod-prebuild.log.txt
 gitpod-start.log.txt
+local.log.txt
+packages.log.txt
