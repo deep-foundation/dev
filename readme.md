@@ -77,8 +77,8 @@ When all tasks are done, you can open Deep.Case App using `PORTS` tab:
   git clone https://github.com/deep-foundation/dev.git --depth=1
   cd dev
   npm ci
-  npm run packages
-  npm run local
+  npm run packages | tee packages.log.txt
+  npm run local | tee local.log.txt
   ```
   Run migrations while `npm run local` is executed (for example in separate terminal or `screen`).
   ```
