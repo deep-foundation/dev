@@ -74,7 +74,7 @@ When all tasks are done, you can open Deep.Case App using `PORTS` tab:
 
 - Run this script to initialize and launch deep
   ```sh
-  git clone https://github.com/deep-foundation/dev.git
+  git clone https://github.com/deep-foundation/dev.git --depth=1
   cd dev
   npm ci
   rm -rf packages/deepcase
