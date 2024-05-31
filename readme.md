@@ -181,7 +181,10 @@ wget https://raw.githubusercontent.com/deep-foundation/dev/main/configure-nginx.
 npm i commander
 node configure-nginx.js --configurations "$DEEPCASE_HOST 3007" "$DEEPLINKS_HOST 3006" --certbot-email drakonard@gmail.com
 cd ..
+rm -rf nginx
 ```
+
+This command can be used to update the certificate once it expires (every 3 months). It may be a good idea to add it as `sh` script to cron.
 
 #### Configure deep (to support IP without SSL)
 
