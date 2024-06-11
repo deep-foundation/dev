@@ -76,6 +76,7 @@ When all tasks are done, you can open Deep.Case App using `PORTS` tab:
   ```sh
   git clone https://github.com/deep-foundation/dev.git --depth=1
   cd dev
+  npm i -g npm@latest
   npm ci
   npm run packages | tee packages.log.txt
   npm run local | tee local.log.txt
