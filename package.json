@@ -15,7 +15,7 @@
     "codespaces-prepare": "npm run gitpod-prepare",
     "gitpod-prepare": "npm run git-shh-to-https && sudo apt update && (yes | sudo apt install screen) && (yes | sudo apt install rsync) && (yes | sudo apt install net-tools) && screen -S docker -d -m sudo docker-up",
     "packages": "rm -rf packages/deepcase && rm -rf packages/deepcase-app && rm -rf packages/deeplinks && (npx gulp packages:get) && (npx gulp packages:ci) && npm ci",
-    "packages:refresh": "(cd packages && for d in */; do (cd $d && (npm run package:refresh && git add . && git commit -m 'refresh' && git push) || true); done); rm -rf node_modules && rm -f package-lock.json && npm i && git add . && git commit -m 'refresh' && git push",
+    "packages:refresh": "(cd packages && for d in */; do (cd $d && git checkout main && (npm run package:refresh && git add . && git commit -m 'refresh' && git push) || true); done); rm -rf packages/deepcase/node_modules && rm -rf packages/deepcase-app/node_modules && rm -rf packages/deeplinks/node_modules && rm -rf node_modules && rm -f package-lock.json && npm i && npm ci && git add . && git commit -m 'refresh' && git push",
     "packages-ci": "(cd packages && for d in */; do (cd $d && npm ci); done)",
     "deepcase": "(cd packages/deepcase-app && npm run dev -- -p 3007)",
     "deepcase-build": "cd packages/deepcase-app && cross-env ASSET_PREFIX='.' npm run build && npm run export && npx rimraf electron/app && npx cap copy electron",
