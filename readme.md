@@ -103,7 +103,7 @@ Make sure you have virtual machine or server that is connected to the internet.
 If you would like to use domain and SSL, make sure:
 * DNS server of this domain configurated to point to the public IP of your server;
 * HTTP (80) port for cerbot is accessable from the internet to be able to authenticate the domain ownership;
-* HTTP (80) and HTTPS (443) porst are accessible from the internet to make nginx work correctly and make the Deep itself accessable.
+* HTTP (80) and HTTPS (443) ports are accessible from the internet to make nginx work correctly and make the Deep itself accessable.
 
 If you would like to use IP without SSL, make sure:
 * Ports 3006 and 3007 are open, for example, using [the ufw package on Ubuntu](https://www.digitalocean.com/community/tutorials/how-to-set-up-a-firewall-with-ufw-on-ubuntu-20-04):
