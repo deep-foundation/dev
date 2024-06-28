@@ -1,0 +1,2456 @@
+Listening 40285 port
+http call options {
+  jwt: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwczovL2hhc3VyYS5pby9qd3QvY2xhaW1zIjp7IngtaGFzdXJhLWFsbG93ZWQtcm9sZXMiOlsiYWRtaW4iXSwieC1oYXN1cmEtZGVmYXVsdC1yb2xlIjoiYWRtaW4iLCJ4LWhhc3VyYS11c2VyLWlkIjoiMTc3MiJ9LCJpYXQiOjE3MTk1NzgwMDh9.0qZdG69EXP_L5DHW_UJd51YNTRR1WycSv2Fjt1G4o6o',
+  code: 'async (req, res, next, { deep, require, gql }) => {\n' +
+    "    const { PassThrough, Readable } = require('stream');\n" +
+    "    const express = require('express');\n" +
+    "    const http = require('http');\n" +
+    "    const ApolloServer = require('apollo-server-express').ApolloServer;\n" +
+    "    const { ApolloServerPluginDrainHttpServer, ApolloServerPluginLandingPageGraphQLPlayground } = require('apollo-server-core');\n" +
+    "    const axios = require('axios');\n" +
+    "    const ffmpeg = require('fluent-ffmpeg');\n" +
+    "    const FormData = require('form-data');\n" +
+    '\n' +
+    '    function base64ToStream(base64String) {\n' +
+    "        const base64Data = base64String.replace(/^data:[^;]+;base64,/, '');\n" +
+    "        const binaryData = Buffer.from(base64Data, 'base64');\n" +
+    '        const stream = new Readable();\n' +
+    '\n' +
+    '        stream.push(binaryData);\n' +
+    '        stream.push(null);\n' +
+    '\n' +
+    '        return stream;\n' +
+    '    }\n' +
+    '\n' +
+    '    const typeDefs = `\n' +
+    '        input Voice {\n' +
+    '            id: Int!\n' +
+    '            record: String!\n' +
+    '            duration: Float!\n' +
+    '            mimeType: String!\n' +
+    '        }\n' +
+    '        type Query { deepmemo_upload(voice: Voice!): String }\n' +
+    '    `;\n' +
+    '\n' +
+    '    const resolvers = {\n' +
+    '        Query: { deepmemo_upload: async (parent, { voice: {\n' +
+    '            id, record, duration, mimeType\n' +
+    '        } }, contextValue, info) => {\n' +
+    '            let inputFormat;\n' +
+    "            if (mimeType.includes('audio/webm')) {\n" +
+    "                inputFormat = 'webm';\n" +
+    "            } else if (mimeType.includes('audio/aac')) {\n" +
+    "                inputFormat = 'aac';\n" +
+    "            } else if (mimeType.includes('audio/mp4')) {\n" +
+    "                inputFormat = 'mp4';\n" +
+    "            } else return 'not supported type';\n" +
+    '            return new Promise((res, rej) => {\n' +
+    '                    const stream = new PassThrough();\n' +
+    '                    let chunkData = [];\n' +
+    "                    stream.on('data', chunk => {\n" +
+    '                        chunkData.push(chunk);\n' +
+    '                    });\n' +
+    '                    ffmpeg()\n' +
+    '                        .input(base64ToStream(record))\n' +
+    '                        .inputFormat(inputFormat)\n' +
+    '                        // .output(stream)\n' +
+    "                        .outputFormat('mp3')\n" +
+    "                        .on('end', () => {\n" +
+    '                            stream.end();\n' +
+    '                            const byteArray = Buffer.concat(chunkData);\n' +
+    '                            const form = new FormData();\n' +
+    "                            form.append('file', byteArray, { type: 'audio/mp3', filename: `${id}.mp3` });\n" +
+    '                            axios.post(`http://${deep.client.path.slice(0, -4)}/file`, form, {\n' +
+    '                                headers: {\n' +
+    '                                    linkId: id,\n' +
+    '                                    Authorization: contextValue?.headers?.authorization,\n' +
+    "                                    // 'Content-Length': dataAsString.length,\n" +
+    "                                    // 'Content-Type': 'multipart/form-data'\n" +
+    "                                    // 'Content-Type': 'audio/mp3',\n" +
+    '                                    ...form.getHeaders(),\n' +
+    '                                },\n' +
+    '                            })\n' +
+    '                                .then((r) => {\n' +
+    "                                    res('done');\n" +
+    '                                })\n' +
+    '                                .catch((e) => {\n' +
+    '                                    console.error(e);\n' +
+    "                                    rej('error');\n" +
+    '                                });\n' +
+    '                        })\n' +
+    '                        .pipe(stream, { end: true });\n' +
+    '                        // .run();\n' +
+    '                // });\n' +
+    '            });\n' +
+    '        } },\n' +
+    '    };\n' +
+    '    \n' +
+    '    const context = ({ req }) => { return { headers: req.headers }; };\n' +
+    '    \n' +
+    '    const generateApolloServer = () => {\n' +
+    '        return new ApolloServer({\n' +
+    '            introspection: true,\n' +
+    '            typeDefs, \n' +
+    '            resolvers,\n' +
+    '            context,\n' +
+    '            plugins: [\n' +
+    '                ApolloServerPluginLandingPageGraphQLPlayground(),\n' +
+    '            ],\n' +
+    '        });\n' +
+    '    };\n' +
+    '\n' +
+    '    const router = express.Router();\n' +
+    '    const apolloServer = generateApolloServer();\n' +
+    '    await apolloServer.start();\n' +
+    "    apolloServer.applyMiddleware({ app: router, path: '/' });\n" +
+    '    router.handle(req, res);\n' +
+    '}',
+  data: {
+    routeString: '/deepmemo-upload',
+    path: '/http-call',
+    originalUrl: '/deepmemo-upload?query=%7B__typename%7D',
+    baseUrl: '/deepmemo-upload',
+    handlerId: 1758,
+    routeId: 1761,
+    router: 1759
+  }
+}
+http call result undefined
+http call options {
+  jwt: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwczovL2hhc3VyYS5pby9qd3QvY2xhaW1zIjp7IngtaGFzdXJhLWFsbG93ZWQtcm9sZXMiOlsiYWRtaW4iXSwieC1oYXN1cmEtZGVmYXVsdC1yb2xlIjoiYWRtaW4iLCJ4LWhhc3VyYS11c2VyLWlkIjoiMTc3MiJ9LCJpYXQiOjE3MTk1NzgwMDh9.0qZdG69EXP_L5DHW_UJd51YNTRR1WycSv2Fjt1G4o6o',
+  code: 'async (req, res, next, { deep, require, gql }) => {\n' +
+    "    const { PassThrough, Readable } = require('stream');\n" +
+    "    const express = require('express');\n" +
+    "    const http = require('http');\n" +
+    "    const ApolloServer = require('apollo-server-express').ApolloServer;\n" +
+    "    const { ApolloServerPluginDrainHttpServer, ApolloServerPluginLandingPageGraphQLPlayground } = require('apollo-server-core');\n" +
+    "    const axios = require('axios');\n" +
+    "    const ffmpeg = require('fluent-ffmpeg');\n" +
+    "    const FormData = require('form-data');\n" +
+    '\n' +
+    '    function base64ToStream(base64String) {\n' +
+    "        const base64Data = base64String.replace(/^data:[^;]+;base64,/, '');\n" +
+    "        const binaryData = Buffer.from(base64Data, 'base64');\n" +
+    '        const stream = new Readable();\n' +
+    '\n' +
+    '        stream.push(binaryData);\n' +
+    '        stream.push(null);\n' +
+    '\n' +
+    '        return stream;\n' +
+    '    }\n' +
+    '\n' +
+    '    const typeDefs = `\n' +
+    '        input Voice {\n' +
+    '            id: Int!\n' +
+    '            record: String!\n' +
+    '            duration: Float!\n' +
+    '            mimeType: String!\n' +
+    '        }\n' +
+    '        type Query { deepmemo_upload(voice: Voice!): String }\n' +
+    '    `;\n' +
+    '\n' +
+    '    const resolvers = {\n' +
+    '        Query: { deepmemo_upload: async (parent, { voice: {\n' +
+    '            id, record, duration, mimeType\n' +
+    '        } }, contextValue, info) => {\n' +
+    '            let inputFormat;\n' +
+    "            if (mimeType.includes('audio/webm')) {\n" +
+    "                inputFormat = 'webm';\n" +
+    "            } else if (mimeType.includes('audio/aac')) {\n" +
+    "                inputFormat = 'aac';\n" +
+    "            } else if (mimeType.includes('audio/mp4')) {\n" +
+    "                inputFormat = 'mp4';\n" +
+    "            } else return 'not supported type';\n" +
+    '            return new Promise((res, rej) => {\n' +
+    '                    const stream = new PassThrough();\n' +
+    '                    let chunkData = [];\n' +
+    "                    stream.on('data', chunk => {\n" +
+    '                        chunkData.push(chunk);\n' +
+    '                    });\n' +
+    '                    ffmpeg()\n' +
+    '                        .input(base64ToStream(record))\n' +
+    '                        .inputFormat(inputFormat)\n' +
+    '                        // .output(stream)\n' +
+    "                        .outputFormat('mp3')\n" +
+    "                        .on('end', () => {\n" +
+    '                            stream.end();\n' +
+    '                            const byteArray = Buffer.concat(chunkData);\n' +
+    '                            const form = new FormData();\n' +
+    "                            form.append('file', byteArray, { type: 'audio/mp3', filename: `${id}.mp3` });\n" +
+    '                            axios.post(`http://${deep.client.path.slice(0, -4)}/file`, form, {\n' +
+    '                                headers: {\n' +
+    '                                    linkId: id,\n' +
+    '                                    Authorization: contextValue?.headers?.authorization,\n' +
+    "                                    // 'Content-Length': dataAsString.length,\n" +
+    "                                    // 'Content-Type': 'multipart/form-data'\n" +
+    "                                    // 'Content-Type': 'audio/mp3',\n" +
+    '                                    ...form.getHeaders(),\n' +
+    '                                },\n' +
+    '                            })\n' +
+    '                                .then((r) => {\n' +
+    "                                    res('done');\n" +
+    '                                })\n' +
+    '                                .catch((e) => {\n' +
+    '                                    console.error(e);\n' +
+    "                                    rej('error');\n" +
+    '                                });\n' +
+    '                        })\n' +
+    '                        .pipe(stream, { end: true });\n' +
+    '                        // .run();\n' +
+    '                // });\n' +
+    '            });\n' +
+    '        } },\n' +
+    '    };\n' +
+    '    \n' +
+    '    const context = ({ req }) => { return { headers: req.headers }; };\n' +
+    '    \n' +
+    '    const generateApolloServer = () => {\n' +
+    '        return new ApolloServer({\n' +
+    '            introspection: true,\n' +
+    '            typeDefs, \n' +
+    '            resolvers,\n' +
+    '            context,\n' +
+    '            plugins: [\n' +
+    '                ApolloServerPluginLandingPageGraphQLPlayground(),\n' +
+    '            ],\n' +
+    '        });\n' +
+    '    };\n' +
+    '\n' +
+    '    const router = express.Router();\n' +
+    '    const apolloServer = generateApolloServer();\n' +
+    '    await apolloServer.start();\n' +
+    "    apolloServer.applyMiddleware({ app: router, path: '/' });\n" +
+    '    router.handle(req, res);\n' +
+    '}',
+  data: {
+    routeString: '/deepmemo-upload',
+    path: '/http-call',
+    originalUrl: '/deepmemo-upload?query=%7B__typename%7D',
+    baseUrl: '/deepmemo-upload',
+    handlerId: 1758,
+    routeId: 1761,
+    router: 1759
+  }
+}
+http call result undefined
+http call options {
+  jwt: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwczovL2hhc3VyYS5pby9qd3QvY2xhaW1zIjp7IngtaGFzdXJhLWFsbG93ZWQtcm9sZXMiOlsiYWRtaW4iXSwieC1oYXN1cmEtZGVmYXVsdC1yb2xlIjoiYWRtaW4iLCJ4LWhhc3VyYS11c2VyLWlkIjoiMTc3MiJ9LCJpYXQiOjE3MTk1NzgwMDh9.0qZdG69EXP_L5DHW_UJd51YNTRR1WycSv2Fjt1G4o6o',
+  code: 'async (req, res, next, { deep, require, gql }) => {\n' +
+    "    const { PassThrough, Readable } = require('stream');\n" +
+    "    const express = require('express');\n" +
+    "    const http = require('http');\n" +
+    "    const ApolloServer = require('apollo-server-express').ApolloServer;\n" +
+    "    const { ApolloServerPluginDrainHttpServer, ApolloServerPluginLandingPageGraphQLPlayground } = require('apollo-server-core');\n" +
+    "    const axios = require('axios');\n" +
+    "    const ffmpeg = require('fluent-ffmpeg');\n" +
+    "    const FormData = require('form-data');\n" +
+    '\n' +
+    '    function base64ToStream(base64String) {\n' +
+    "        const base64Data = base64String.replace(/^data:[^;]+;base64,/, '');\n" +
+    "        const binaryData = Buffer.from(base64Data, 'base64');\n" +
+    '        const stream = new Readable();\n' +
+    '\n' +
+    '        stream.push(binaryData);\n' +
+    '        stream.push(null);\n' +
+    '\n' +
+    '        return stream;\n' +
+    '    }\n' +
+    '\n' +
+    '    const typeDefs = `\n' +
+    '        input Voice {\n' +
+    '            id: Int!\n' +
+    '            record: String!\n' +
+    '            duration: Float!\n' +
+    '            mimeType: String!\n' +
+    '        }\n' +
+    '        type Query { deepmemo_upload(voice: Voice!): String }\n' +
+    '    `;\n' +
+    '\n' +
+    '    const resolvers = {\n' +
+    '        Query: { deepmemo_upload: async (parent, { voice: {\n' +
+    '            id, record, duration, mimeType\n' +
+    '        } }, contextValue, info) => {\n' +
+    '            let inputFormat;\n' +
+    "            if (mimeType.includes('audio/webm')) {\n" +
+    "                inputFormat = 'webm';\n" +
+    "            } else if (mimeType.includes('audio/aac')) {\n" +
+    "                inputFormat = 'aac';\n" +
+    "            } else if (mimeType.includes('audio/mp4')) {\n" +
+    "                inputFormat = 'mp4';\n" +
+    "            } else return 'not supported type';\n" +
+    '            return new Promise((res, rej) => {\n' +
+    '                    const stream = new PassThrough();\n' +
+    '                    let chunkData = [];\n' +
+    "                    stream.on('data', chunk => {\n" +
+    '                        chunkData.push(chunk);\n' +
+    '                    });\n' +
+    '                    ffmpeg()\n' +
+    '                        .input(base64ToStream(record))\n' +
+    '                        .inputFormat(inputFormat)\n' +
+    '                        // .output(stream)\n' +
+    "                        .outputFormat('mp3')\n" +
+    "                        .on('end', () => {\n" +
+    '                            stream.end();\n' +
+    '                            const byteArray = Buffer.concat(chunkData);\n' +
+    '                            const form = new FormData();\n' +
+    "                            form.append('file', byteArray, { type: 'audio/mp3', filename: `${id}.mp3` });\n" +
+    '                            axios.post(`http://${deep.client.path.slice(0, -4)}/file`, form, {\n' +
+    '                                headers: {\n' +
+    '                                    linkId: id,\n' +
+    '                                    Authorization: contextValue?.headers?.authorization,\n' +
+    "                                    // 'Content-Length': dataAsString.length,\n" +
+    "                                    // 'Content-Type': 'multipart/form-data'\n" +
+    "                                    // 'Content-Type': 'audio/mp3',\n" +
+    '                                    ...form.getHeaders(),\n' +
+    '                                },\n' +
+    '                            })\n' +
+    '                                .then((r) => {\n' +
+    "                                    res('done');\n" +
+    '                                })\n' +
+    '                                .catch((e) => {\n' +
+    '                                    console.error(e);\n' +
+    "                                    rej('error');\n" +
+    '                                });\n' +
+    '                        })\n' +
+    '                        .pipe(stream, { end: true });\n' +
+    '                        // .run();\n' +
+    '                // });\n' +
+    '            });\n' +
+    '        } },\n' +
+    '    };\n' +
+    '    \n' +
+    '    const context = ({ req }) => { return { headers: req.headers }; };\n' +
+    '    \n' +
+    '    const generateApolloServer = () => {\n' +
+    '        return new ApolloServer({\n' +
+    '            introspection: true,\n' +
+    '            typeDefs, \n' +
+    '            resolvers,\n' +
+    '            context,\n' +
+    '            plugins: [\n' +
+    '                ApolloServerPluginLandingPageGraphQLPlayground(),\n' +
+    '            ],\n' +
+    '        });\n' +
+    '    };\n' +
+    '\n' +
+    '    const router = express.Router();\n' +
+    '    const apolloServer = generateApolloServer();\n' +
+    '    await apolloServer.start();\n' +
+    "    apolloServer.applyMiddleware({ app: router, path: '/' });\n" +
+    '    router.handle(req, res);\n' +
+    '}',
+  data: {
+    routeString: '/deepmemo-upload',
+    path: '/http-call',
+    originalUrl: '/deepmemo-upload?query=%7B__typename%7D',
+    baseUrl: '/deepmemo-upload',
+    handlerId: 1758,
+    routeId: 1761,
+    router: 1759
+  }
+}
+http call result undefined
+http call options {
+  jwt: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwczovL2hhc3VyYS5pby9qd3QvY2xhaW1zIjp7IngtaGFzdXJhLWFsbG93ZWQtcm9sZXMiOlsiYWRtaW4iXSwieC1oYXN1cmEtZGVmYXVsdC1yb2xlIjoiYWRtaW4iLCJ4LWhhc3VyYS11c2VyLWlkIjoiMTc3MiJ9LCJpYXQiOjE3MTk1NzgwMDh9.0qZdG69EXP_L5DHW_UJd51YNTRR1WycSv2Fjt1G4o6o',
+  code: 'async (req, res, next, { deep, require, gql }) => {\n' +
+    "    const { PassThrough, Readable } = require('stream');\n" +
+    "    const express = require('express');\n" +
+    "    const http = require('http');\n" +
+    "    const ApolloServer = require('apollo-server-express').ApolloServer;\n" +
+    "    const { ApolloServerPluginDrainHttpServer, ApolloServerPluginLandingPageGraphQLPlayground } = require('apollo-server-core');\n" +
+    "    const axios = require('axios');\n" +
+    "    const ffmpeg = require('fluent-ffmpeg');\n" +
+    "    const FormData = require('form-data');\n" +
+    '\n' +
+    '    function base64ToStream(base64String) {\n' +
+    "        const base64Data = base64String.replace(/^data:[^;]+;base64,/, '');\n" +
+    "        const binaryData = Buffer.from(base64Data, 'base64');\n" +
+    '        const stream = new Readable();\n' +
+    '\n' +
+    '        stream.push(binaryData);\n' +
+    '        stream.push(null);\n' +
+    '\n' +
+    '        return stream;\n' +
+    '    }\n' +
+    '\n' +
+    '    const typeDefs = `\n' +
+    '        input Voice {\n' +
+    '            id: Int!\n' +
+    '            record: String!\n' +
+    '            duration: Float!\n' +
+    '            mimeType: String!\n' +
+    '        }\n' +
+    '        type Query { deepmemo_upload(voice: Voice!): String }\n' +
+    '    `;\n' +
+    '\n' +
+    '    const resolvers = {\n' +
+    '        Query: { deepmemo_upload: async (parent, { voice: {\n' +
+    '            id, record, duration, mimeType\n' +
+    '        } }, contextValue, info) => {\n' +
+    '            let inputFormat;\n' +
+    "            if (mimeType.includes('audio/webm')) {\n" +
+    "                inputFormat = 'webm';\n" +
+    "            } else if (mimeType.includes('audio/aac')) {\n" +
+    "                inputFormat = 'aac';\n" +
+    "            } else if (mimeType.includes('audio/mp4')) {\n" +
+    "                inputFormat = 'mp4';\n" +
+    "            } else return 'not supported type';\n" +
+    '            return new Promise((res, rej) => {\n' +
+    '                    const stream = new PassThrough();\n' +
+    '                    let chunkData = [];\n' +
+    "                    stream.on('data', chunk => {\n" +
+    '                        chunkData.push(chunk);\n' +
+    '                    });\n' +
+    '                    ffmpeg()\n' +
+    '                        .input(base64ToStream(record))\n' +
+    '                        .inputFormat(inputFormat)\n' +
+    '                        // .output(stream)\n' +
+    "                        .outputFormat('mp3')\n" +
+    "                        .on('end', () => {\n" +
+    '                            stream.end();\n' +
+    '                            const byteArray = Buffer.concat(chunkData);\n' +
+    '                            const form = new FormData();\n' +
+    "                            form.append('file', byteArray, { type: 'audio/mp3', filename: `${id}.mp3` });\n" +
+    '                            axios.post(`http://${deep.client.path.slice(0, -4)}/file`, form, {\n' +
+    '                                headers: {\n' +
+    '                                    linkId: id,\n' +
+    '                                    Authorization: contextValue?.headers?.authorization,\n' +
+    "                                    // 'Content-Length': dataAsString.length,\n" +
+    "                                    // 'Content-Type': 'multipart/form-data'\n" +
+    "                                    // 'Content-Type': 'audio/mp3',\n" +
+    '                                    ...form.getHeaders(),\n' +
+    '                                },\n' +
+    '                            })\n' +
+    '                                .then((r) => {\n' +
+    "                                    res('done');\n" +
+    '                                })\n' +
+    '                                .catch((e) => {\n' +
+    '                                    console.error(e);\n' +
+    "                                    rej('error');\n" +
+    '                                });\n' +
+    '                        })\n' +
+    '                        .pipe(stream, { end: true });\n' +
+    '                        // .run();\n' +
+    '                // });\n' +
+    '            });\n' +
+    '        } },\n' +
+    '    };\n' +
+    '    \n' +
+    '    const context = ({ req }) => { return { headers: req.headers }; };\n' +
+    '    \n' +
+    '    const generateApolloServer = () => {\n' +
+    '        return new ApolloServer({\n' +
+    '            introspection: true,\n' +
+    '            typeDefs, \n' +
+    '            resolvers,\n' +
+    '            context,\n' +
+    '            plugins: [\n' +
+    '                ApolloServerPluginLandingPageGraphQLPlayground(),\n' +
+    '            ],\n' +
+    '        });\n' +
+    '    };\n' +
+    '\n' +
+    '    const router = express.Router();\n' +
+    '    const apolloServer = generateApolloServer();\n' +
+    '    await apolloServer.start();\n' +
+    "    apolloServer.applyMiddleware({ app: router, path: '/' });\n" +
+    '    router.handle(req, res);\n' +
+    '}',
+  data: {
+    routeString: '/deepmemo-upload',
+    path: '/http-call',
+    originalUrl: '/deepmemo-upload?query=%7B__typename%7D',
+    baseUrl: '/deepmemo-upload',
+    handlerId: 1758,
+    routeId: 1761,
+    router: 1759
+  }
+}
+http call result undefined
+http call options {
+  jwt: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwczovL2hhc3VyYS5pby9qd3QvY2xhaW1zIjp7IngtaGFzdXJhLWFsbG93ZWQtcm9sZXMiOlsiYWRtaW4iXSwieC1oYXN1cmEtZGVmYXVsdC1yb2xlIjoiYWRtaW4iLCJ4LWhhc3VyYS11c2VyLWlkIjoiMTc3MiJ9LCJpYXQiOjE3MTk1NzgwMDh9.0qZdG69EXP_L5DHW_UJd51YNTRR1WycSv2Fjt1G4o6o',
+  code: 'async (req, res, next, { deep, require, gql }) => {\n' +
+    "    const { PassThrough, Readable } = require('stream');\n" +
+    "    const express = require('express');\n" +
+    "    const http = require('http');\n" +
+    "    const ApolloServer = require('apollo-server-express').ApolloServer;\n" +
+    "    const { ApolloServerPluginDrainHttpServer, ApolloServerPluginLandingPageGraphQLPlayground } = require('apollo-server-core');\n" +
+    "    const axios = require('axios');\n" +
+    "    const ffmpeg = require('fluent-ffmpeg');\n" +
+    "    const FormData = require('form-data');\n" +
+    '\n' +
+    '    function base64ToStream(base64String) {\n' +
+    "        const base64Data = base64String.replace(/^data:[^;]+;base64,/, '');\n" +
+    "        const binaryData = Buffer.from(base64Data, 'base64');\n" +
+    '        const stream = new Readable();\n' +
+    '\n' +
+    '        stream.push(binaryData);\n' +
+    '        stream.push(null);\n' +
+    '\n' +
+    '        return stream;\n' +
+    '    }\n' +
+    '\n' +
+    '    const typeDefs = `\n' +
+    '        input Voice {\n' +
+    '            id: Int!\n' +
+    '            record: String!\n' +
+    '            duration: Float!\n' +
+    '            mimeType: String!\n' +
+    '        }\n' +
+    '        type Query { deepmemo_upload(voice: Voice!): String }\n' +
+    '    `;\n' +
+    '\n' +
+    '    const resolvers = {\n' +
+    '        Query: { deepmemo_upload: async (parent, { voice: {\n' +
+    '            id, record, duration, mimeType\n' +
+    '        } }, contextValue, info) => {\n' +
+    '            let inputFormat;\n' +
+    "            if (mimeType.includes('audio/webm')) {\n" +
+    "                inputFormat = 'webm';\n" +
+    "            } else if (mimeType.includes('audio/aac')) {\n" +
+    "                inputFormat = 'aac';\n" +
+    "            } else if (mimeType.includes('audio/mp4')) {\n" +
+    "                inputFormat = 'mp4';\n" +
+    "            } else return 'not supported type';\n" +
+    '            return new Promise((res, rej) => {\n' +
+    '                    const stream = new PassThrough();\n' +
+    '                    let chunkData = [];\n' +
+    "                    stream.on('data', chunk => {\n" +
+    '                        chunkData.push(chunk);\n' +
+    '                    });\n' +
+    '                    ffmpeg()\n' +
+    '                        .input(base64ToStream(record))\n' +
+    '                        .inputFormat(inputFormat)\n' +
+    '                        // .output(stream)\n' +
+    "                        .outputFormat('mp3')\n" +
+    "                        .on('end', () => {\n" +
+    '                            stream.end();\n' +
+    '                            const byteArray = Buffer.concat(chunkData);\n' +
+    '                            const form = new FormData();\n' +
+    "                            form.append('file', byteArray, { type: 'audio/mp3', filename: `${id}.mp3` });\n" +
+    '                            axios.post(`http://${deep.client.path.slice(0, -4)}/file`, form, {\n' +
+    '                                headers: {\n' +
+    '                                    linkId: id,\n' +
+    '                                    Authorization: contextValue?.headers?.authorization,\n' +
+    "                                    // 'Content-Length': dataAsString.length,\n" +
+    "                                    // 'Content-Type': 'multipart/form-data'\n" +
+    "                                    // 'Content-Type': 'audio/mp3',\n" +
+    '                                    ...form.getHeaders(),\n' +
+    '                                },\n' +
+    '                            })\n' +
+    '                                .then((r) => {\n' +
+    "                                    res('done');\n" +
+    '                                })\n' +
+    '                                .catch((e) => {\n' +
+    '                                    console.error(e);\n' +
+    "                                    rej('error');\n" +
+    '                                });\n' +
+    '                        })\n' +
+    '                        .pipe(stream, { end: true });\n' +
+    '                        // .run();\n' +
+    '                // });\n' +
+    '            });\n' +
+    '        } },\n' +
+    '    };\n' +
+    '    \n' +
+    '    const context = ({ req }) => { return { headers: req.headers }; };\n' +
+    '    \n' +
+    '    const generateApolloServer = () => {\n' +
+    '        return new ApolloServer({\n' +
+    '            introspection: true,\n' +
+    '            typeDefs, \n' +
+    '            resolvers,\n' +
+    '            context,\n' +
+    '            plugins: [\n' +
+    '                ApolloServerPluginLandingPageGraphQLPlayground(),\n' +
+    '            ],\n' +
+    '        });\n' +
+    '    };\n' +
+    '\n' +
+    '    const router = express.Router();\n' +
+    '    const apolloServer = generateApolloServer();\n' +
+    '    await apolloServer.start();\n' +
+    "    apolloServer.applyMiddleware({ app: router, path: '/' });\n" +
+    '    router.handle(req, res);\n' +
+    '}',
+  data: {
+    routeString: '/deepmemo-upload',
+    path: '/http-call',
+    originalUrl: '/deepmemo-upload?query=%7B__typename%7D',
+    baseUrl: '/deepmemo-upload',
+    handlerId: 1758,
+    routeId: 1761,
+    router: 1759
+  }
+}
+http call result undefined
+call options {
+  code: 'async ({ data: { newLink: replyLink, triggeredByLinkId }, deep, require }) => {\n' +
+    '  console.log({triggeredByLinkId})\n' +
+    '  const startTime = Date.now();\n' +
+    '  const PACKAGE_NAME = `@deep-foundation/chatgpt-azure`;\n' +
+    "  const axios = require('axios');\n" +
+    '\n' +
+    "  const { Configuration, OpenAIApi } = require('openai');\n" +
+    "  const chatGPTTypeLinkId = await deep.id(PACKAGE_NAME, 'ChatGPT');\n" +
+    "  const conversationTypeLinkId = await deep.id(PACKAGE_NAME, 'Conversation');\n" +
+    "  const apiKeyTypeLinkId = await deep.id('@deep-foundation/openai', 'ApiKey');\n" +
+    "  const usesApiKeyTypeLinkId = await deep.id('@deep-foundation/openai', 'UsesApiKey');\n" +
+    "  const modelTypeLinkId = await deep.id('@deep-foundation/openai', 'Model');\n" +
+    "  const usesModelTypeLinkId = await deep.id('@deep-foundation/openai', 'UsesModel');\n" +
+    "  const messageTypeLinkId = await deep.id('@deep-foundation/messaging', 'Message');\n" +
+    "  const replyTypeLinkId = await deep.id('@deep-foundation/chatgpt-azure', 'Reply');\n" +
+    "  const authorTypeLinkId = await deep.id('@deep-foundation/messaging', 'Author');\n" +
+    "  const containTypeLinkId = await deep.id('@deep-foundation/core', 'Contain');\n" +
+    "  const messagingTreeId = await deep.id('@deep-foundation/messaging', 'messagingTree');\n" +
+    "  const systemTypeLinkId = await deep.id('@deep-foundation/chatgpt-azure', 'System');\n" +
+    '  const tokensTypeLinkId = await deep.id("@deep-foundation/tokens", "Tokens")\n' +
+    '  const providedByTypeLinkId = await deep.id("@deep-foundation/chatgpt-azure", "ProvidedBy")\n' +
+    '  const reservedIds = await deep.reserve(1);\n' +
+    '  const chatGPTMessageLinkId = reservedIds.pop();\n' +
+    '  let systemMessageId;\n' +
+    '  let model;\n' +
+    '  let systemMessage;\n' +
+    '  await deep.await(replyLink.from_id)\n' +
+    '  const { data: [messageLink] } = await deep.select({\n' +
+    '    id: replyLink.from_id,\n' +
+    '    _not: {\n' +
+    '      out: {\n' +
+    '        to_id: chatGPTTypeLinkId,\n' +
+    '        type_id: authorTypeLinkId,\n' +
+    '      },\n' +
+    '    },\n' +
+    '  });\n' +
+    '  if (!messageLink) {\n' +
+    "    return 'No need to react to message of this reply.';\n" +
+    '  }\n' +
+    '  if (!messageLink.value?.value) {\n' +
+    '    throw new Error(`Message ##${messageLink.id} must have a value`);\n' +
+    '  }\n' +
+    '  const message = messageLink.value.value;\n' +
+    '\n' +
+    '  const apiKeyLink = await getTokenLink();\n' +
+    '  const apiKey = apiKeyLink.value.value;\n' +
+    '  const configuration = new Configuration({\n' +
+    '    apiKey: apiKey,\n' +
+    '  });\n' +
+    '  const openai = new OpenAIApi(configuration);\n' +
+    '\n' +
+    '  const { data: conversationLink } = await deep.select({\n' +
+    '    tree_id: { _eq: messagingTreeId },\n' +
+    '    parent: { type_id: { _in: [conversationTypeLinkId, messageTypeLinkId] } },\n' +
+    '    link: { id: { _eq: replyLink.from_id } },\n' +
+    '  }, {\n' +
+    "    table: 'tree',\n" +
+    '    variables: { order_by: { depth: "asc" } },\n' +
+    '    returning: `\n' +
+    '    id\n' +
+    '    depth\n' +
+    '    root_id\n' +
+    '    parent_id\n' +
+    '    link_id\n' +
+    '    parent {\n' +
+    '      id\n' +
+    '      from_id\n' +
+    '      type_id\n' +
+    '      to_id\n' +
+    '      value\n' +
+    '      author: out (where: { type_id: { _eq: ${authorTypeLinkId}} }) { \n' +
+    '        id\n' +
+    '        from_id\n' +
+    '        type_id\n' +
+    '        to_id\n' +
+    '      }\n' +
+    '      tokens: out (where: { type_id: { _eq: ${tokensTypeLinkId}} }) { \n' +
+    '      id\n' +
+    '      from_id\n' +
+    '      type_id\n' +
+    '      to_id\n' +
+    '      value\n' +
+    '      }\n' +
+    '    }`\n' +
+    '  })\n' +
+    '  if (!conversationLink) {\n' +
+    "    throw new Error('A conversationLink link is not found');\n" +
+    '  }\n' +
+    '  const currentConversation = conversationLink.find(\n' +
+    '    (link) => link.parent.type_id === conversationTypeLinkId\n' +
+    '  );\n' +
+    '\n' +
+    '  conversationLink.forEach((link) => {\n' +
+    '    if (link.parent.author && link.parent.author.length > 0) {\n' +
+    '      link.parent.author = link.parent.author[0];\n' +
+    '    }\n' +
+    '  });\n' +
+    '\n' +
+    '  const {\n' +
+    '    data: [linkedModel],\n' +
+    '  } = await deep.select({\n' +
+    '    type_id: modelTypeLinkId,\n' +
+    '    in: {\n' +
+    '      type_id: usesModelTypeLinkId,\n' +
+    '      from_id: currentConversation.parent.id,\n' +
+    '    },\n' +
+    '  });\n' +
+    '\n' +
+    '\n' +
+    '  const usedModelSelectData = {\n' +
+    '    type_id: modelTypeLinkId,\n' +
+    '    in: {\n' +
+    '      type_id: usesModelTypeLinkId,\n' +
+    '      from_id: triggeredByLinkId,\n' +
+    '    },\n' +
+    '  }\n' +
+    '  const {\n' +
+    '    data: [userLinkedModel],\n' +
+    '  } = await deep.select(usedModelSelectData, {\n' +
+    '    returning: `\n' +
+    '      id\n' +
+    '      value\n' +
+    '      in(where: { type_id: { _eq: ${usesModelTypeLinkId} } }) {\n' +
+    '        id\n' +
+    '        type_id\n' +
+    '        from_id\n' +
+    '        to_id\n' +
+    '        value\n' +
+    '      }\n' +
+    '      tokens: out(where: { type_id: { _eq: ${tokensTypeLinkId} } }) {\n' +
+    '        id\n' +
+    '        from_id\n' +
+    '        to_id\n' +
+    '        value\n' +
+    '      }\n' +
+    '      endpointLink: out(where: { type_id: { _eq: ${providedByTypeLinkId} } }) {\n' +
+    '        id\n' +
+    '        from_id\n' +
+    '        to_id\n' +
+    '        endpoint: to {\n' +
+    '          id\n' +
+    '          value\n' +
+    '        }\n' +
+    '      }\n' +
+    '    `\n' +
+    '  }); \n' +
+    '  if(!userLinkedModel) {\n' +
+    '    throw new Error(`Failed to find used model. Select data: ${JSON.stringify(usedModelSelectData, null, 2)}`)\n' +
+    '  }\n' +
+    '  let MAX_TOKENS\n' +
+    '  console.log({userLinkedModel})\n' +
+    '  if (!userLinkedModel.tokens?.[0]?.value?.value) {\n' +
+    '    throw new Error("Token limit for the model is not specified.");\n' +
+    '  } else if (userLinkedModel.tokens?.[0]?.value?.value) {\n' +
+    '    MAX_TOKENS = userLinkedModel.tokens[0].value.value;\n' +
+    '  }\n' +
+    '\n' +
+    '  if (!userLinkedModel.endpointLink?.[0]?.endpoint?.value?.value) {\n' +
+    '    throw new Error("Endpoint for the model is not specified.");\n' +
+    '  }\n' +
+    '  const API_ENDPOINT = userLinkedModel.endpointLink[0].endpoint.value?.value;\n' +
+    '\n' +
+    '  if (!linkedModel && !userLinkedModel) {\n' +
+    '    throw new Error("Before using azure-GPT, create a model, tokens, and an endpoint links.");\n' +
+    '  } else if (\n' +
+    '    (linkedModel &&\n' +
+    '      linkedModel.value?.value &&\n' +
+    '      userLinkedModel &&\n' +
+    '      userLinkedModel.value?.value) ||\n' +
+    '    (linkedModel && linkedModel.value?.value)\n' +
+    '  ) {\n' +
+    '    model = linkedModel.value.value;\n' +
+    '  } else {\n' +
+    '    if (!userLinkedModel) {\n' +
+    '      throw new Error(`A link with type ##${userLinkedModel} is not found`);\n' +
+    '    }\n' +
+    '    if (!userLinkedModel.value?.value) {\n' +
+    '      throw new Error(`Linked model with user ##${userLinkedModel.id} must have a value`);\n' +
+    '    } else {\n' +
+    '      model = userLinkedModel.value.value;\n' +
+    '    }\n' +
+    '  }\n' +
+    '  const messageLinks = conversationLink\n' +
+    '    .map(item => item.parent)\n' +
+    '    .filter(link => link && link.type_id === messageTypeLinkId);\n' +
+    '  let allMessages = await getMessages({ messageLinks });\n' +
+    '  const messagesToSend = [...allMessages];\n' +
+    '\n' +
+    '  const { data: userLinkedSystemMessageLinks } = await deep.select({\n' +
+    '    type_id: systemTypeLinkId,\n' +
+    '    to_id: triggeredByLinkId,\n' +
+    '  }, { returning: `id message: from{ id value} conversation:to{id}` });\n' +
+    '\n' +
+    '  const { data: conversationLinkedSystemMessageLink } = await deep.select({\n' +
+    '    type_id: systemTypeLinkId,\n' +
+    '    to_id: currentConversation.parent.id,\n' +
+    '  }, { returning: `id message: from{ id value} conversation:to{id}` });\n' +
+    '\n' +
+    '  if (conversationLinkedSystemMessageLink && conversationLinkedSystemMessageLink.length > 0) {\n' +
+    '    const systemMessageLink = conversationLinkedSystemMessageLink[0];\n' +
+    '    if (!systemMessageLink.message?.value?.value) {\n' +
+    '      throw new Error(`System message with link to conversation ##${systemMessageLink.id} must have a value`);\n' +
+    '    } else {\n' +
+    '      systemMessage = systemMessageLink.message.value.value;\n' +
+    '      systemMessageId = systemMessageLink.message;\n' +
+    '      await deep.await(systemMessageId.id)\n' +
+    '\n' +
+    '    }\n' +
+    '  } else if (userLinkedSystemMessageLinks && userLinkedSystemMessageLinks.length > 0) {\n' +
+    '    if (userLinkedSystemMessageLinks.length > 1) {\n' +
+    '      throw new Error("Multiple system messages linked to the user are found");\n' +
+    '    }\n' +
+    '\n' +
+    '    const userLinkedSystemMessageLink = userLinkedSystemMessageLinks[0];\n' +
+    '\n' +
+    '    if (!userLinkedSystemMessageLink.message?.value?.value) {\n' +
+    '      throw new Error(`System message with link to user ##${userLinkedSystemMessageLink.id} must have a value`);\n' +
+    '    } else {\n' +
+    '      systemMessage = userLinkedSystemMessageLink.message.value.value;\n' +
+    '      systemMessageId = userLinkedSystemMessageLink.message;\n' +
+    '      await deep.await(systemMessageId.id)\n' +
+    '    }\n' +
+    '  }\n' +
+    '\n' +
+    '  if (systemMessage) {\n' +
+    '    const { data: tokensLinkedToSystemMessage } = await deep.select({\n' +
+    '      type_id: tokensTypeLinkId,\n' +
+    '      from_id: systemMessageId.id,\n' +
+    '      to_id: systemMessageId.id,\n' +
+    '    });\n' +
+    '    if (!tokensLinkedToSystemMessage[0]?.value?.value) {\n' +
+    '      throw new Error(`System message does not contain tokens`);\n' +
+    '    } else if (tokensLinkedToSystemMessage[0]?.value?.value) {\n' +
+    '      let tokenCount = tokensLinkedToSystemMessage[0].value?.value;\n' +
+    '      messagesToSend.unshift({\n' +
+    '        role: "system",\n' +
+    '        content: systemMessage,\n' +
+    '        tokens: tokenCount,\n' +
+    '      });\n' +
+    '    }\n' +
+    '  }\n' +
+    '\n' +
+    '  const tokenLimit = MAX_TOKENS * 7 / 8;\n' +
+    '  let totalTokens = 0;\n' +
+    '  let messagesToSendToOpenAI = [];\n' +
+    '\n' +
+    '  for (let i = messagesToSend.length - 1; i >= 0; i--) {\n' +
+    '    const message = messagesToSend[i];\n' +
+    '\n' +
+    '    console.log({message})\n' +
+    "    if (message.role === 'system' || totalTokens + message.tokens <= tokenLimit) {\n" +
+    '      messagesToSendToOpenAI.unshift({ role: message.role, content: message.content });\n' +
+    '      totalTokens += message.tokens;\n' +
+    '    } else {\n' +
+    '      break;\n' +
+    '    }\n' +
+    '  }\n' +
+    '  let response;\n' +
+    '\n' +
+    '  try {\n' +
+    '    response = await axios.post(API_ENDPOINT, {\n' +
+    '      messages: [...messagesToSendToOpenAI]\n' +
+    '    }, {\n' +
+    '      headers: {\n' +
+    "        'Content-Type': 'application/json',\n" +
+    "        'api-key': apiKey\n" +
+    '      }\n' +
+    '    });\n' +
+    '  } catch (error) {\n' +
+    "    console.error('Error making API call:', error.response ? error.response.data : error.message);\n" +
+    '  }\n' +
+    '\n' +
+    '  const content = response.data.choices[0]?.message?.content;\n' +
+    '\n' +
+    '  await deep.serial({\n' +
+    '    operations: [\n' +
+    '      {\n' +
+    "        table: 'links',\n" +
+    "        type: 'insert',\n" +
+    '        objects: {\n' +
+    '          id: chatGPTMessageLinkId,\n' +
+    '          type_id: messageTypeLinkId,\n' +
+    '          out: {\n' +
+    '            data: [\n' +
+    '              {\n' +
+    '                type_id: authorTypeLinkId,\n' +
+    '                to_id: chatGPTTypeLinkId,\n' +
+    '              },\n' +
+    '            ],\n' +
+    '          },\n' +
+    '        },\n' +
+    '      },\n' +
+    '      {\n' +
+    "        table: 'strings',\n" +
+    "        type: 'insert',\n" +
+    '        objects: {\n' +
+    '          link_id: chatGPTMessageLinkId,\n' +
+    '          value: content\n' +
+    '        }\n' +
+    '      },\n' +
+    '      {\n' +
+    "        table: 'links',\n" +
+    "        type: 'insert',\n" +
+    '        objects: {\n' +
+    '          type_id: replyTypeLinkId,\n' +
+    '          from_id: chatGPTMessageLinkId,\n' +
+    '          to_id: replyLink.from_id,\n' +
+    '        },\n' +
+    '      },\n' +
+    '    ],\n' +
+    '  });\n' +
+    '\n' +
+    '  async function getMessages({ messageLinks }) {\n' +
+    '    return Promise.all(\n' +
+    '      messageLinks.map(async (link) => {\n' +
+    '        const tokens = link.tokens?.length > 0 ? link.tokens[0].value.value : undefined;\n' +
+    '        return {\n' +
+    '          role: await getMessageRole({'... 2697 more characters,
+  container: {
+    name: 'deep-138d60d2a0fd040bfe13e80d143de80d',
+    host: 'localhost',
+    port: 40285,
+    options: {
+      publish: true,
+      forceRestart: true,
+      handler: 'deepf/js-docker-isolation-provider:main',
+      forcePort: 40285,
+      forceName: 'deep-138d60d2a0fd040bfe13e80d143de80d'
+    }
+  },
+  jwt: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwczovL2hhc3VyYS5pby9qd3QvY2xhaW1zIjp7IngtaGFzdXJhLWFsbG93ZWQtcm9sZXMiOlsiYWRtaW4iXSwieC1oYXN1cmEtZGVmYXVsdC1yb2xlIjoiYWRtaW4iLCJ4LWhhc3VyYS11c2VyLWlkIjoiMTIwOCJ9LCJpYXQiOjE3MTk1ODE2MzJ9.WMZChnW6UPnzSdfraJhfbkHkjWsKfNASnA-KwaqZs3Y',
+  secret: 'myadminsecretkey',
+  data: {
+    triggeredByLinkId: 1208,
+    oldLink: null,
+    newLink: {
+      from_id: 2276,
+      type_id: 1191,
+      id: 2282,
+      to_id: 2261,
+      value: null
+    },
+    promiseId: 2283,
+    deeplinksUrl: 'https://3006-deepfoundation-dev-qrmjcgwtq6w.ws-eu114.gitpod.io'
+  }
+}
+{ triggeredByLinkId: 1208 }
+http call options {
+  jwt: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwczovL2hhc3VyYS5pby9qd3QvY2xhaW1zIjp7IngtaGFzdXJhLWFsbG93ZWQtcm9sZXMiOlsiYWRtaW4iXSwieC1oYXN1cmEtZGVmYXVsdC1yb2xlIjoiYWRtaW4iLCJ4LWhhc3VyYS11c2VyLWlkIjoiMTc3MiJ9LCJpYXQiOjE3MTk1NzgwMDh9.0qZdG69EXP_L5DHW_UJd51YNTRR1WycSv2Fjt1G4o6o',
+  code: 'async (req, res, next, { deep, require, gql }) => {\n' +
+    "    const { PassThrough, Readable } = require('stream');\n" +
+    "    const express = require('express');\n" +
+    "    const http = require('http');\n" +
+    "    const ApolloServer = require('apollo-server-express').ApolloServer;\n" +
+    "    const { ApolloServerPluginDrainHttpServer, ApolloServerPluginLandingPageGraphQLPlayground } = require('apollo-server-core');\n" +
+    "    const axios = require('axios');\n" +
+    "    const ffmpeg = require('fluent-ffmpeg');\n" +
+    "    const FormData = require('form-data');\n" +
+    '\n' +
+    '    function base64ToStream(base64String) {\n' +
+    "        const base64Data = base64String.replace(/^data:[^;]+;base64,/, '');\n" +
+    "        const binaryData = Buffer.from(base64Data, 'base64');\n" +
+    '        const stream = new Readable();\n' +
+    '\n' +
+    '        stream.push(binaryData);\n' +
+    '        stream.push(null);\n' +
+    '\n' +
+    '        return stream;\n' +
+    '    }\n' +
+    '\n' +
+    '    const typeDefs = `\n' +
+    '        input Voice {\n' +
+    '            id: Int!\n' +
+    '            record: String!\n' +
+    '            duration: Float!\n' +
+    '            mimeType: String!\n' +
+    '        }\n' +
+    '        type Query { deepmemo_upload(voice: Voice!): String }\n' +
+    '    `;\n' +
+    '\n' +
+    '    const resolvers = {\n' +
+    '        Query: { deepmemo_upload: async (parent, { voice: {\n' +
+    '            id, record, duration, mimeType\n' +
+    '        } }, contextValue, info) => {\n' +
+    '            let inputFormat;\n' +
+    "            if (mimeType.includes('audio/webm')) {\n" +
+    "                inputFormat = 'webm';\n" +
+    "            } else if (mimeType.includes('audio/aac')) {\n" +
+    "                inputFormat = 'aac';\n" +
+    "            } else if (mimeType.includes('audio/mp4')) {\n" +
+    "                inputFormat = 'mp4';\n" +
+    "            } else return 'not supported type';\n" +
+    '            return new Promise((res, rej) => {\n' +
+    '                    const stream = new PassThrough();\n' +
+    '                    let chunkData = [];\n' +
+    "                    stream.on('data', chunk => {\n" +
+    '                        chunkData.push(chunk);\n' +
+    '                    });\n' +
+    '                    ffmpeg()\n' +
+    '                        .input(base64ToStream(record))\n' +
+    '                        .inputFormat(inputFormat)\n' +
+    '                        // .output(stream)\n' +
+    "                        .outputFormat('mp3')\n" +
+    "                        .on('end', () => {\n" +
+    '                            stream.end();\n' +
+    '                            const byteArray = Buffer.concat(chunkData);\n' +
+    '                            const form = new FormData();\n' +
+    "                            form.append('file', byteArray, { type: 'audio/mp3', filename: `${id}.mp3` });\n" +
+    '                            axios.post(`http://${deep.client.path.slice(0, -4)}/file`, form, {\n' +
+    '                                headers: {\n' +
+    '                                    linkId: id,\n' +
+    '                                    Authorization: contextValue?.headers?.authorization,\n' +
+    "                                    // 'Content-Length': dataAsString.length,\n" +
+    "                                    // 'Content-Type': 'multipart/form-data'\n" +
+    "                                    // 'Content-Type': 'audio/mp3',\n" +
+    '                                    ...form.getHeaders(),\n' +
+    '                                },\n' +
+    '                            })\n' +
+    '                                .then((r) => {\n' +
+    "                                    res('done');\n" +
+    '                                })\n' +
+    '                                .catch((e) => {\n' +
+    '                                    console.error(e);\n' +
+    "                                    rej('error');\n" +
+    '                                });\n' +
+    '                        })\n' +
+    '                        .pipe(stream, { end: true });\n' +
+    '                        // .run();\n' +
+    '                // });\n' +
+    '            });\n' +
+    '        } },\n' +
+    '    };\n' +
+    '    \n' +
+    '    const context = ({ req }) => { return { headers: req.headers }; };\n' +
+    '    \n' +
+    '    const generateApolloServer = () => {\n' +
+    '        return new ApolloServer({\n' +
+    '            introspection: true,\n' +
+    '            typeDefs, \n' +
+    '            resolvers,\n' +
+    '            context,\n' +
+    '            plugins: [\n' +
+    '                ApolloServerPluginLandingPageGraphQLPlayground(),\n' +
+    '            ],\n' +
+    '        });\n' +
+    '    };\n' +
+    '\n' +
+    '    const router = express.Router();\n' +
+    '    const apolloServer = generateApolloServer();\n' +
+    '    await apolloServer.start();\n' +
+    "    apolloServer.applyMiddleware({ app: router, path: '/' });\n" +
+    '    router.handle(req, res);\n' +
+    '}',
+  data: {
+    routeString: '/deepmemo-upload',
+    path: '/http-call',
+    originalUrl: '/deepmemo-upload?query=%7B__typename%7D',
+    baseUrl: '/deepmemo-upload',
+    handlerId: 1758,
+    routeId: 1761,
+    router: 1759
+  }
+}
+http call result undefined
+call result No need to react to message of this reply.
+http call options {
+  jwt: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwczovL2hhc3VyYS5pby9qd3QvY2xhaW1zIjp7IngtaGFzdXJhLWFsbG93ZWQtcm9sZXMiOlsiYWRtaW4iXSwieC1oYXN1cmEtZGVmYXVsdC1yb2xlIjoiYWRtaW4iLCJ4LWhhc3VyYS11c2VyLWlkIjoiMTc3MiJ9LCJpYXQiOjE3MTk1NzgwMDh9.0qZdG69EXP_L5DHW_UJd51YNTRR1WycSv2Fjt1G4o6o',
+  code: 'async (req, res, next, { deep, require, gql }) => {\n' +
+    "    const { PassThrough, Readable } = require('stream');\n" +
+    "    const express = require('express');\n" +
+    "    const http = require('http');\n" +
+    "    const ApolloServer = require('apollo-server-express').ApolloServer;\n" +
+    "    const { ApolloServerPluginDrainHttpServer, ApolloServerPluginLandingPageGraphQLPlayground } = require('apollo-server-core');\n" +
+    "    const axios = require('axios');\n" +
+    "    const ffmpeg = require('fluent-ffmpeg');\n" +
+    "    const FormData = require('form-data');\n" +
+    '\n' +
+    '    function base64ToStream(base64String) {\n' +
+    "        const base64Data = base64String.replace(/^data:[^;]+;base64,/, '');\n" +
+    "        const binaryData = Buffer.from(base64Data, 'base64');\n" +
+    '        const stream = new Readable();\n' +
+    '\n' +
+    '        stream.push(binaryData);\n' +
+    '        stream.push(null);\n' +
+    '\n' +
+    '        return stream;\n' +
+    '    }\n' +
+    '\n' +
+    '    const typeDefs = `\n' +
+    '        input Voice {\n' +
+    '            id: Int!\n' +
+    '            record: String!\n' +
+    '            duration: Float!\n' +
+    '            mimeType: String!\n' +
+    '        }\n' +
+    '        type Query { deepmemo_upload(voice: Voice!): String }\n' +
+    '    `;\n' +
+    '\n' +
+    '    const resolvers = {\n' +
+    '        Query: { deepmemo_upload: async (parent, { voice: {\n' +
+    '            id, record, duration, mimeType\n' +
+    '        } }, contextValue, info) => {\n' +
+    '            let inputFormat;\n' +
+    "            if (mimeType.includes('audio/webm')) {\n" +
+    "                inputFormat = 'webm';\n" +
+    "            } else if (mimeType.includes('audio/aac')) {\n" +
+    "                inputFormat = 'aac';\n" +
+    "            } else if (mimeType.includes('audio/mp4')) {\n" +
+    "                inputFormat = 'mp4';\n" +
+    "            } else return 'not supported type';\n" +
+    '            return new Promise((res, rej) => {\n' +
+    '                    const stream = new PassThrough();\n' +
+    '                    let chunkData = [];\n' +
+    "                    stream.on('data', chunk => {\n" +
+    '                        chunkData.push(chunk);\n' +
+    '                    });\n' +
+    '                    ffmpeg()\n' +
+    '                        .input(base64ToStream(record))\n' +
+    '                        .inputFormat(inputFormat)\n' +
+    '                        // .output(stream)\n' +
+    "                        .outputFormat('mp3')\n" +
+    "                        .on('end', () => {\n" +
+    '                            stream.end();\n' +
+    '                            const byteArray = Buffer.concat(chunkData);\n' +
+    '                            const form = new FormData();\n' +
+    "                            form.append('file', byteArray, { type: 'audio/mp3', filename: `${id}.mp3` });\n" +
+    '                            axios.post(`http://${deep.client.path.slice(0, -4)}/file`, form, {\n' +
+    '                                headers: {\n' +
+    '                                    linkId: id,\n' +
+    '                                    Authorization: contextValue?.headers?.authorization,\n' +
+    "                                    // 'Content-Length': dataAsString.length,\n" +
+    "                                    // 'Content-Type': 'multipart/form-data'\n" +
+    "                                    // 'Content-Type': 'audio/mp3',\n" +
+    '                                    ...form.getHeaders(),\n' +
+    '                                },\n' +
+    '                            })\n' +
+    '                                .then((r) => {\n' +
+    "                                    res('done');\n" +
+    '                                })\n' +
+    '                                .catch((e) => {\n' +
+    '                                    console.error(e);\n' +
+    "                                    rej('error');\n" +
+    '                                });\n' +
+    '                        })\n' +
+    '                        .pipe(stream, { end: true });\n' +
+    '                        // .run();\n' +
+    '                // });\n' +
+    '            });\n' +
+    '        } },\n' +
+    '    };\n' +
+    '    \n' +
+    '    const context = ({ req }) => { return { headers: req.headers }; };\n' +
+    '    \n' +
+    '    const generateApolloServer = () => {\n' +
+    '        return new ApolloServer({\n' +
+    '            introspection: true,\n' +
+    '            typeDefs, \n' +
+    '            resolvers,\n' +
+    '            context,\n' +
+    '            plugins: [\n' +
+    '                ApolloServerPluginLandingPageGraphQLPlayground(),\n' +
+    '            ],\n' +
+    '        });\n' +
+    '    };\n' +
+    '\n' +
+    '    const router = express.Router();\n' +
+    '    const apolloServer = generateApolloServer();\n' +
+    '    await apolloServer.start();\n' +
+    "    apolloServer.applyMiddleware({ app: router, path: '/' });\n" +
+    '    router.handle(req, res);\n' +
+    '}',
+  data: {
+    routeString: '/deepmemo-upload',
+    path: '/http-call',
+    originalUrl: '/deepmemo-upload?query=%7B__typename%7D',
+    baseUrl: '/deepmemo-upload',
+    handlerId: 1758,
+    routeId: 1761,
+    router: 1759
+  }
+}
+http call result undefined
+http call options {
+  jwt: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwczovL2hhc3VyYS5pby9qd3QvY2xhaW1zIjp7IngtaGFzdXJhLWFsbG93ZWQtcm9sZXMiOlsiYWRtaW4iXSwieC1oYXN1cmEtZGVmYXVsdC1yb2xlIjoiYWRtaW4iLCJ4LWhhc3VyYS11c2VyLWlkIjoiMTc3MiJ9LCJpYXQiOjE3MTk1NzgwMDh9.0qZdG69EXP_L5DHW_UJd51YNTRR1WycSv2Fjt1G4o6o',
+  code: 'async (req, res, next, { deep, require, gql }) => {\n' +
+    "    const { PassThrough, Readable } = require('stream');\n" +
+    "    const express = require('express');\n" +
+    "    const http = require('http');\n" +
+    "    const ApolloServer = require('apollo-server-express').ApolloServer;\n" +
+    "    const { ApolloServerPluginDrainHttpServer, ApolloServerPluginLandingPageGraphQLPlayground } = require('apollo-server-core');\n" +
+    "    const axios = require('axios');\n" +
+    "    const ffmpeg = require('fluent-ffmpeg');\n" +
+    "    const FormData = require('form-data');\n" +
+    '\n' +
+    '    function base64ToStream(base64String) {\n' +
+    "        const base64Data = base64String.replace(/^data:[^;]+;base64,/, '');\n" +
+    "        const binaryData = Buffer.from(base64Data, 'base64');\n" +
+    '        const stream = new Readable();\n' +
+    '\n' +
+    '        stream.push(binaryData);\n' +
+    '        stream.push(null);\n' +
+    '\n' +
+    '        return stream;\n' +
+    '    }\n' +
+    '\n' +
+    '    const typeDefs = `\n' +
+    '        input Voice {\n' +
+    '            id: Int!\n' +
+    '            record: String!\n' +
+    '            duration: Float!\n' +
+    '            mimeType: String!\n' +
+    '        }\n' +
+    '        type Query { deepmemo_upload(voice: Voice!): String }\n' +
+    '    `;\n' +
+    '\n' +
+    '    const resolvers = {\n' +
+    '        Query: { deepmemo_upload: async (parent, { voice: {\n' +
+    '            id, record, duration, mimeType\n' +
+    '        } }, contextValue, info) => {\n' +
+    '            let inputFormat;\n' +
+    "            if (mimeType.includes('audio/webm')) {\n" +
+    "                inputFormat = 'webm';\n" +
+    "            } else if (mimeType.includes('audio/aac')) {\n" +
+    "                inputFormat = 'aac';\n" +
+    "            } else if (mimeType.includes('audio/mp4')) {\n" +
+    "                inputFormat = 'mp4';\n" +
+    "            } else return 'not supported type';\n" +
+    '            return new Promise((res, rej) => {\n' +
+    '                    const stream = new PassThrough();\n' +
+    '                    let chunkData = [];\n' +
+    "                    stream.on('data', chunk => {\n" +
+    '                        chunkData.push(chunk);\n' +
+    '                    });\n' +
+    '                    ffmpeg()\n' +
+    '                        .input(base64ToStream(record))\n' +
+    '                        .inputFormat(inputFormat)\n' +
+    '                        // .output(stream)\n' +
+    "                        .outputFormat('mp3')\n" +
+    "                        .on('end', () => {\n" +
+    '                            stream.end();\n' +
+    '                            const byteArray = Buffer.concat(chunkData);\n' +
+    '                            const form = new FormData();\n' +
+    "                            form.append('file', byteArray, { type: 'audio/mp3', filename: `${id}.mp3` });\n" +
+    '                            axios.post(`http://${deep.client.path.slice(0, -4)}/file`, form, {\n' +
+    '                                headers: {\n' +
+    '                                    linkId: id,\n' +
+    '                                    Authorization: contextValue?.headers?.authorization,\n' +
+    "                                    // 'Content-Length': dataAsString.length,\n" +
+    "                                    // 'Content-Type': 'multipart/form-data'\n" +
+    "                                    // 'Content-Type': 'audio/mp3',\n" +
+    '                                    ...form.getHeaders(),\n' +
+    '                                },\n' +
+    '                            })\n' +
+    '                                .then((r) => {\n' +
+    "                                    res('done');\n" +
+    '                                })\n' +
+    '                                .catch((e) => {\n' +
+    '                                    console.error(e);\n' +
+    "                                    rej('error');\n" +
+    '                                });\n' +
+    '                        })\n' +
+    '                        .pipe(stream, { end: true });\n' +
+    '                        // .run();\n' +
+    '                // });\n' +
+    '            });\n' +
+    '        } },\n' +
+    '    };\n' +
+    '    \n' +
+    '    const context = ({ req }) => { return { headers: req.headers }; };\n' +
+    '    \n' +
+    '    const generateApolloServer = () => {\n' +
+    '        return new ApolloServer({\n' +
+    '            introspection: true,\n' +
+    '            typeDefs, \n' +
+    '            resolvers,\n' +
+    '            context,\n' +
+    '            plugins: [\n' +
+    '                ApolloServerPluginLandingPageGraphQLPlayground(),\n' +
+    '            ],\n' +
+    '        });\n' +
+    '    };\n' +
+    '\n' +
+    '    const router = express.Router();\n' +
+    '    const apolloServer = generateApolloServer();\n' +
+    '    await apolloServer.start();\n' +
+    "    apolloServer.applyMiddleware({ app: router, path: '/' });\n" +
+    '    router.handle(req, res);\n' +
+    '}',
+  data: {
+    routeString: '/deepmemo-upload',
+    path: '/http-call',
+    originalUrl: '/deepmemo-upload?query=%7B__typename%7D',
+    baseUrl: '/deepmemo-upload',
+    handlerId: 1758,
+    routeId: 1761,
+    router: 1759
+  }
+}
+http call result undefined
+http call options {
+  jwt: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwczovL2hhc3VyYS5pby9qd3QvY2xhaW1zIjp7IngtaGFzdXJhLWFsbG93ZWQtcm9sZXMiOlsiYWRtaW4iXSwieC1oYXN1cmEtZGVmYXVsdC1yb2xlIjoiYWRtaW4iLCJ4LWhhc3VyYS11c2VyLWlkIjoiMTc3MiJ9LCJpYXQiOjE3MTk1NzgwMDh9.0qZdG69EXP_L5DHW_UJd51YNTRR1WycSv2Fjt1G4o6o',
+  code: 'async (req, res, next, { deep, require, gql }) => {\n' +
+    "    const { PassThrough, Readable } = require('stream');\n" +
+    "    const express = require('express');\n" +
+    "    const http = require('http');\n" +
+    "    const ApolloServer = require('apollo-server-express').ApolloServer;\n" +
+    "    const { ApolloServerPluginDrainHttpServer, ApolloServerPluginLandingPageGraphQLPlayground } = require('apollo-server-core');\n" +
+    "    const axios = require('axios');\n" +
+    "    const ffmpeg = require('fluent-ffmpeg');\n" +
+    "    const FormData = require('form-data');\n" +
+    '\n' +
+    '    function base64ToStream(base64String) {\n' +
+    "        const base64Data = base64String.replace(/^data:[^;]+;base64,/, '');\n" +
+    "        const binaryData = Buffer.from(base64Data, 'base64');\n" +
+    '        const stream = new Readable();\n' +
+    '\n' +
+    '        stream.push(binaryData);\n' +
+    '        stream.push(null);\n' +
+    '\n' +
+    '        return stream;\n' +
+    '    }\n' +
+    '\n' +
+    '    const typeDefs = `\n' +
+    '        input Voice {\n' +
+    '            id: Int!\n' +
+    '            record: String!\n' +
+    '            duration: Float!\n' +
+    '            mimeType: String!\n' +
+    '        }\n' +
+    '        type Query { deepmemo_upload(voice: Voice!): String }\n' +
+    '    `;\n' +
+    '\n' +
+    '    const resolvers = {\n' +
+    '        Query: { deepmemo_upload: async (parent, { voice: {\n' +
+    '            id, record, duration, mimeType\n' +
+    '        } }, contextValue, info) => {\n' +
+    '            let inputFormat;\n' +
+    "            if (mimeType.includes('audio/webm')) {\n" +
+    "                inputFormat = 'webm';\n" +
+    "            } else if (mimeType.includes('audio/aac')) {\n" +
+    "                inputFormat = 'aac';\n" +
+    "            } else if (mimeType.includes('audio/mp4')) {\n" +
+    "                inputFormat = 'mp4';\n" +
+    "            } else return 'not supported type';\n" +
+    '            return new Promise((res, rej) => {\n' +
+    '                    const stream = new PassThrough();\n' +
+    '                    let chunkData = [];\n' +
+    "                    stream.on('data', chunk => {\n" +
+    '                        chunkData.push(chunk);\n' +
+    '                    });\n' +
+    '                    ffmpeg()\n' +
+    '                        .input(base64ToStream(record))\n' +
+    '                        .inputFormat(inputFormat)\n' +
+    '                        // .output(stream)\n' +
+    "                        .outputFormat('mp3')\n" +
+    "                        .on('end', () => {\n" +
+    '                            stream.end();\n' +
+    '                            const byteArray = Buffer.concat(chunkData);\n' +
+    '                            const form = new FormData();\n' +
+    "                            form.append('file', byteArray, { type: 'audio/mp3', filename: `${id}.mp3` });\n" +
+    '                            axios.post(`http://${deep.client.path.slice(0, -4)}/file`, form, {\n' +
+    '                                headers: {\n' +
+    '                                    linkId: id,\n' +
+    '                                    Authorization: contextValue?.headers?.authorization,\n' +
+    "                                    // 'Content-Length': dataAsString.length,\n" +
+    "                                    // 'Content-Type': 'multipart/form-data'\n" +
+    "                                    // 'Content-Type': 'audio/mp3',\n" +
+    '                                    ...form.getHeaders(),\n' +
+    '                                },\n' +
+    '                            })\n' +
+    '                                .then((r) => {\n' +
+    "                                    res('done');\n" +
+    '                                })\n' +
+    '                                .catch((e) => {\n' +
+    '                                    console.error(e);\n' +
+    "                                    rej('error');\n" +
+    '                                });\n' +
+    '                        })\n' +
+    '                        .pipe(stream, { end: true });\n' +
+    '                        // .run();\n' +
+    '                // });\n' +
+    '            });\n' +
+    '        } },\n' +
+    '    };\n' +
+    '    \n' +
+    '    const context = ({ req }) => { return { headers: req.headers }; };\n' +
+    '    \n' +
+    '    const generateApolloServer = () => {\n' +
+    '        return new ApolloServer({\n' +
+    '            introspection: true,\n' +
+    '            typeDefs, \n' +
+    '            resolvers,\n' +
+    '            context,\n' +
+    '            plugins: [\n' +
+    '                ApolloServerPluginLandingPageGraphQLPlayground(),\n' +
+    '            ],\n' +
+    '        });\n' +
+    '    };\n' +
+    '\n' +
+    '    const router = express.Router();\n' +
+    '    const apolloServer = generateApolloServer();\n' +
+    '    await apolloServer.start();\n' +
+    "    apolloServer.applyMiddleware({ app: router, path: '/' });\n" +
+    '    router.handle(req, res);\n' +
+    '}',
+  data: {
+    routeString: '/deepmemo-upload',
+    path: '/http-call',
+    originalUrl: '/deepmemo-upload?query=%7B__typename%7D',
+    baseUrl: '/deepmemo-upload',
+    handlerId: 1758,
+    routeId: 1761,
+    router: 1759
+  }
+}
+http call result undefined
+http call options {
+  jwt: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwczovL2hhc3VyYS5pby9qd3QvY2xhaW1zIjp7IngtaGFzdXJhLWFsbG93ZWQtcm9sZXMiOlsiYWRtaW4iXSwieC1oYXN1cmEtZGVmYXVsdC1yb2xlIjoiYWRtaW4iLCJ4LWhhc3VyYS11c2VyLWlkIjoiMTc3MiJ9LCJpYXQiOjE3MTk1NzgwMDh9.0qZdG69EXP_L5DHW_UJd51YNTRR1WycSv2Fjt1G4o6o',
+  code: 'async (req, res, next, { deep, require, gql }) => {\n' +
+    "    const { PassThrough, Readable } = require('stream');\n" +
+    "    const express = require('express');\n" +
+    "    const http = require('http');\n" +
+    "    const ApolloServer = require('apollo-server-express').ApolloServer;\n" +
+    "    const { ApolloServerPluginDrainHttpServer, ApolloServerPluginLandingPageGraphQLPlayground } = require('apollo-server-core');\n" +
+    "    const axios = require('axios');\n" +
+    "    const ffmpeg = require('fluent-ffmpeg');\n" +
+    "    const FormData = require('form-data');\n" +
+    '\n' +
+    '    function base64ToStream(base64String) {\n' +
+    "        const base64Data = base64String.replace(/^data:[^;]+;base64,/, '');\n" +
+    "        const binaryData = Buffer.from(base64Data, 'base64');\n" +
+    '        const stream = new Readable();\n' +
+    '\n' +
+    '        stream.push(binaryData);\n' +
+    '        stream.push(null);\n' +
+    '\n' +
+    '        return stream;\n' +
+    '    }\n' +
+    '\n' +
+    '    const typeDefs = `\n' +
+    '        input Voice {\n' +
+    '            id: Int!\n' +
+    '            record: String!\n' +
+    '            duration: Float!\n' +
+    '            mimeType: String!\n' +
+    '        }\n' +
+    '        type Query { deepmemo_upload(voice: Voice!): String }\n' +
+    '    `;\n' +
+    '\n' +
+    '    const resolvers = {\n' +
+    '        Query: { deepmemo_upload: async (parent, { voice: {\n' +
+    '            id, record, duration, mimeType\n' +
+    '        } }, contextValue, info) => {\n' +
+    '            let inputFormat;\n' +
+    "            if (mimeType.includes('audio/webm')) {\n" +
+    "                inputFormat = 'webm';\n" +
+    "            } else if (mimeType.includes('audio/aac')) {\n" +
+    "                inputFormat = 'aac';\n" +
+    "            } else if (mimeType.includes('audio/mp4')) {\n" +
+    "                inputFormat = 'mp4';\n" +
+    "            } else return 'not supported type';\n" +
+    '            return new Promise((res, rej) => {\n' +
+    '                    const stream = new PassThrough();\n' +
+    '                    let chunkData = [];\n' +
+    "                    stream.on('data', chunk => {\n" +
+    '                        chunkData.push(chunk);\n' +
+    '                    });\n' +
+    '                    ffmpeg()\n' +
+    '                        .input(base64ToStream(record))\n' +
+    '                        .inputFormat(inputFormat)\n' +
+    '                        // .output(stream)\n' +
+    "                        .outputFormat('mp3')\n" +
+    "                        .on('end', () => {\n" +
+    '                            stream.end();\n' +
+    '                            const byteArray = Buffer.concat(chunkData);\n' +
+    '                            const form = new FormData();\n' +
+    "                            form.append('file', byteArray, { type: 'audio/mp3', filename: `${id}.mp3` });\n" +
+    '                            axios.post(`http://${deep.client.path.slice(0, -4)}/file`, form, {\n' +
+    '                                headers: {\n' +
+    '                                    linkId: id,\n' +
+    '                                    Authorization: contextValue?.headers?.authorization,\n' +
+    "                                    // 'Content-Length': dataAsString.length,\n" +
+    "                                    // 'Content-Type': 'multipart/form-data'\n" +
+    "                                    // 'Content-Type': 'audio/mp3',\n" +
+    '                                    ...form.getHeaders(),\n' +
+    '                                },\n' +
+    '                            })\n' +
+    '                                .then((r) => {\n' +
+    "                                    res('done');\n" +
+    '                                })\n' +
+    '                                .catch((e) => {\n' +
+    '                                    console.error(e);\n' +
+    "                                    rej('error');\n" +
+    '                                });\n' +
+    '                        })\n' +
+    '                        .pipe(stream, { end: true });\n' +
+    '                        // .run();\n' +
+    '                // });\n' +
+    '            });\n' +
+    '        } },\n' +
+    '    };\n' +
+    '    \n' +
+    '    const context = ({ req }) => { return { headers: req.headers }; };\n' +
+    '    \n' +
+    '    const generateApolloServer = () => {\n' +
+    '        return new ApolloServer({\n' +
+    '            introspection: true,\n' +
+    '            typeDefs, \n' +
+    '            resolvers,\n' +
+    '            context,\n' +
+    '            plugins: [\n' +
+    '                ApolloServerPluginLandingPageGraphQLPlayground(),\n' +
+    '            ],\n' +
+    '        });\n' +
+    '    };\n' +
+    '\n' +
+    '    const router = express.Router();\n' +
+    '    const apolloServer = generateApolloServer();\n' +
+    '    await apolloServer.start();\n' +
+    "    apolloServer.applyMiddleware({ app: router, path: '/' });\n" +
+    '    router.handle(req, res);\n' +
+    '}',
+  data: {
+    routeString: '/deepmemo-upload',
+    path: '/http-call',
+    originalUrl: '/deepmemo-upload?query=%7B__typename%7D',
+    baseUrl: '/deepmemo-upload',
+    handlerId: 1758,
+    routeId: 1761,
+    router: 1759
+  }
+}
+http call result undefined
+http call options {
+  jwt: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwczovL2hhc3VyYS5pby9qd3QvY2xhaW1zIjp7IngtaGFzdXJhLWFsbG93ZWQtcm9sZXMiOlsiYWRtaW4iXSwieC1oYXN1cmEtZGVmYXVsdC1yb2xlIjoiYWRtaW4iLCJ4LWhhc3VyYS11c2VyLWlkIjoiMTc3MiJ9LCJpYXQiOjE3MTk1NzgwMDh9.0qZdG69EXP_L5DHW_UJd51YNTRR1WycSv2Fjt1G4o6o',
+  code: 'async (req, res, next, { deep, require, gql }) => {\n' +
+    "    const { PassThrough, Readable } = require('stream');\n" +
+    "    const express = require('express');\n" +
+    "    const http = require('http');\n" +
+    "    const ApolloServer = require('apollo-server-express').ApolloServer;\n" +
+    "    const { ApolloServerPluginDrainHttpServer, ApolloServerPluginLandingPageGraphQLPlayground } = require('apollo-server-core');\n" +
+    "    const axios = require('axios');\n" +
+    "    const ffmpeg = require('fluent-ffmpeg');\n" +
+    "    const FormData = require('form-data');\n" +
+    '\n' +
+    '    function base64ToStream(base64String) {\n' +
+    "        const base64Data = base64String.replace(/^data:[^;]+;base64,/, '');\n" +
+    "        const binaryData = Buffer.from(base64Data, 'base64');\n" +
+    '        const stream = new Readable();\n' +
+    '\n' +
+    '        stream.push(binaryData);\n' +
+    '        stream.push(null);\n' +
+    '\n' +
+    '        return stream;\n' +
+    '    }\n' +
+    '\n' +
+    '    const typeDefs = `\n' +
+    '        input Voice {\n' +
+    '            id: Int!\n' +
+    '            record: String!\n' +
+    '            duration: Float!\n' +
+    '            mimeType: String!\n' +
+    '        }\n' +
+    '        type Query { deepmemo_upload(voice: Voice!): String }\n' +
+    '    `;\n' +
+    '\n' +
+    '    const resolvers = {\n' +
+    '        Query: { deepmemo_upload: async (parent, { voice: {\n' +
+    '            id, record, duration, mimeType\n' +
+    '        } }, contextValue, info) => {\n' +
+    '            let inputFormat;\n' +
+    "            if (mimeType.includes('audio/webm')) {\n" +
+    "                inputFormat = 'webm';\n" +
+    "            } else if (mimeType.includes('audio/aac')) {\n" +
+    "                inputFormat = 'aac';\n" +
+    "            } else if (mimeType.includes('audio/mp4')) {\n" +
+    "                inputFormat = 'mp4';\n" +
+    "            } else return 'not supported type';\n" +
+    '            return new Promise((res, rej) => {\n' +
+    '                    const stream = new PassThrough();\n' +
+    '                    let chunkData = [];\n' +
+    "                    stream.on('data', chunk => {\n" +
+    '                        chunkData.push(chunk);\n' +
+    '                    });\n' +
+    '                    ffmpeg()\n' +
+    '                        .input(base64ToStream(record))\n' +
+    '                        .inputFormat(inputFormat)\n' +
+    '                        // .output(stream)\n' +
+    "                        .outputFormat('mp3')\n" +
+    "                        .on('end', () => {\n" +
+    '                            stream.end();\n' +
+    '                            const byteArray = Buffer.concat(chunkData);\n' +
+    '                            const form = new FormData();\n' +
+    "                            form.append('file', byteArray, { type: 'audio/mp3', filename: `${id}.mp3` });\n" +
+    '                            axios.post(`http://${deep.client.path.slice(0, -4)}/file`, form, {\n' +
+    '                                headers: {\n' +
+    '                                    linkId: id,\n' +
+    '                                    Authorization: contextValue?.headers?.authorization,\n' +
+    "                                    // 'Content-Length': dataAsString.length,\n" +
+    "                                    // 'Content-Type': 'multipart/form-data'\n" +
+    "                                    // 'Content-Type': 'audio/mp3',\n" +
+    '                                    ...form.getHeaders(),\n' +
+    '                                },\n' +
+    '                            })\n' +
+    '                                .then((r) => {\n' +
+    "                                    res('done');\n" +
+    '                                })\n' +
+    '                                .catch((e) => {\n' +
+    '                                    console.error(e);\n' +
+    "                                    rej('error');\n" +
+    '                                });\n' +
+    '                        })\n' +
+    '                        .pipe(stream, { end: true });\n' +
+    '                        // .run();\n' +
+    '                // });\n' +
+    '            });\n' +
+    '        } },\n' +
+    '    };\n' +
+    '    \n' +
+    '    const context = ({ req }) => { return { headers: req.headers }; };\n' +
+    '    \n' +
+    '    const generateApolloServer = () => {\n' +
+    '        return new ApolloServer({\n' +
+    '            introspection: true,\n' +
+    '            typeDefs, \n' +
+    '            resolvers,\n' +
+    '            context,\n' +
+    '            plugins: [\n' +
+    '                ApolloServerPluginLandingPageGraphQLPlayground(),\n' +
+    '            ],\n' +
+    '        });\n' +
+    '    };\n' +
+    '\n' +
+    '    const router = express.Router();\n' +
+    '    const apolloServer = generateApolloServer();\n' +
+    '    await apolloServer.start();\n' +
+    "    apolloServer.applyMiddleware({ app: router, path: '/' });\n" +
+    '    router.handle(req, res);\n' +
+    '}',
+  data: {
+    routeString: '/deepmemo-upload',
+    path: '/http-call',
+    originalUrl: '/deepmemo-upload?query=%7B__typename%7D',
+    baseUrl: '/deepmemo-upload',
+    handlerId: 1758,
+    routeId: 1761,
+    router: 1759
+  }
+}
+http call result undefined
+http call options {
+  jwt: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwczovL2hhc3VyYS5pby9qd3QvY2xhaW1zIjp7IngtaGFzdXJhLWFsbG93ZWQtcm9sZXMiOlsiYWRtaW4iXSwieC1oYXN1cmEtZGVmYXVsdC1yb2xlIjoiYWRtaW4iLCJ4LWhhc3VyYS11c2VyLWlkIjoiMTc3MiJ9LCJpYXQiOjE3MTk1NzgwMDh9.0qZdG69EXP_L5DHW_UJd51YNTRR1WycSv2Fjt1G4o6o',
+  code: 'async (req, res, next, { deep, require, gql }) => {\n' +
+    "    const { PassThrough, Readable } = require('stream');\n" +
+    "    const express = require('express');\n" +
+    "    const http = require('http');\n" +
+    "    const ApolloServer = require('apollo-server-express').ApolloServer;\n" +
+    "    const { ApolloServerPluginDrainHttpServer, ApolloServerPluginLandingPageGraphQLPlayground } = require('apollo-server-core');\n" +
+    "    const axios = require('axios');\n" +
+    "    const ffmpeg = require('fluent-ffmpeg');\n" +
+    "    const FormData = require('form-data');\n" +
+    '\n' +
+    '    function base64ToStream(base64String) {\n' +
+    "        const base64Data = base64String.replace(/^data:[^;]+;base64,/, '');\n" +
+    "        const binaryData = Buffer.from(base64Data, 'base64');\n" +
+    '        const stream = new Readable();\n' +
+    '\n' +
+    '        stream.push(binaryData);\n' +
+    '        stream.push(null);\n' +
+    '\n' +
+    '        return stream;\n' +
+    '    }\n' +
+    '\n' +
+    '    const typeDefs = `\n' +
+    '        input Voice {\n' +
+    '            id: Int!\n' +
+    '            record: String!\n' +
+    '            duration: Float!\n' +
+    '            mimeType: String!\n' +
+    '        }\n' +
+    '        type Query { deepmemo_upload(voice: Voice!): String }\n' +
+    '    `;\n' +
+    '\n' +
+    '    const resolvers = {\n' +
+    '        Query: { deepmemo_upload: async (parent, { voice: {\n' +
+    '            id, record, duration, mimeType\n' +
+    '        } }, contextValue, info) => {\n' +
+    '            let inputFormat;\n' +
+    "            if (mimeType.includes('audio/webm')) {\n" +
+    "                inputFormat = 'webm';\n" +
+    "            } else if (mimeType.includes('audio/aac')) {\n" +
+    "                inputFormat = 'aac';\n" +
+    "            } else if (mimeType.includes('audio/mp4')) {\n" +
+    "                inputFormat = 'mp4';\n" +
+    "            } else return 'not supported type';\n" +
+    '            return new Promise((res, rej) => {\n' +
+    '                    const stream = new PassThrough();\n' +
+    '                    let chunkData = [];\n' +
+    "                    stream.on('data', chunk => {\n" +
+    '                        chunkData.push(chunk);\n' +
+    '                    });\n' +
+    '                    ffmpeg()\n' +
+    '                        .input(base64ToStream(record))\n' +
+    '                        .inputFormat(inputFormat)\n' +
+    '                        // .output(stream)\n' +
+    "                        .outputFormat('mp3')\n" +
+    "                        .on('end', () => {\n" +
+    '                            stream.end();\n' +
+    '                            const byteArray = Buffer.concat(chunkData);\n' +
+    '                            const form = new FormData();\n' +
+    "                            form.append('file', byteArray, { type: 'audio/mp3', filename: `${id}.mp3` });\n" +
+    '                            axios.post(`http://${deep.client.path.slice(0, -4)}/file`, form, {\n' +
+    '                                headers: {\n' +
+    '                                    linkId: id,\n' +
+    '                                    Authorization: contextValue?.headers?.authorization,\n' +
+    "                                    // 'Content-Length': dataAsString.length,\n" +
+    "                                    // 'Content-Type': 'multipart/form-data'\n" +
+    "                                    // 'Content-Type': 'audio/mp3',\n" +
+    '                                    ...form.getHeaders(),\n' +
+    '                                },\n' +
+    '                            })\n' +
+    '                                .then((r) => {\n' +
+    "                                    res('done');\n" +
+    '                                })\n' +
+    '                                .catch((e) => {\n' +
+    '                                    console.error(e);\n' +
+    "                                    rej('error');\n" +
+    '                                });\n' +
+    '                        })\n' +
+    '                        .pipe(stream, { end: true });\n' +
+    '                        // .run();\n' +
+    '                // });\n' +
+    '            });\n' +
+    '        } },\n' +
+    '    };\n' +
+    '    \n' +
+    '    const context = ({ req }) => { return { headers: req.headers }; };\n' +
+    '    \n' +
+    '    const generateApolloServer = () => {\n' +
+    '        return new ApolloServer({\n' +
+    '            introspection: true,\n' +
+    '            typeDefs, \n' +
+    '            resolvers,\n' +
+    '            context,\n' +
+    '            plugins: [\n' +
+    '                ApolloServerPluginLandingPageGraphQLPlayground(),\n' +
+    '            ],\n' +
+    '        });\n' +
+    '    };\n' +
+    '\n' +
+    '    const router = express.Router();\n' +
+    '    const apolloServer = generateApolloServer();\n' +
+    '    await apolloServer.start();\n' +
+    "    apolloServer.applyMiddleware({ app: router, path: '/' });\n" +
+    '    router.handle(req, res);\n' +
+    '}',
+  data: {
+    routeString: '/deepmemo-upload',
+    path: '/http-call',
+    originalUrl: '/deepmemo-upload?query=%7B__typename%7D',
+    baseUrl: '/deepmemo-upload',
+    handlerId: 1758,
+    routeId: 1761,
+    router: 1759
+  }
+}
+http call result undefined
+http call options {
+  jwt: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwczovL2hhc3VyYS5pby9qd3QvY2xhaW1zIjp7IngtaGFzdXJhLWFsbG93ZWQtcm9sZXMiOlsiYWRtaW4iXSwieC1oYXN1cmEtZGVmYXVsdC1yb2xlIjoiYWRtaW4iLCJ4LWhhc3VyYS11c2VyLWlkIjoiMTc3MiJ9LCJpYXQiOjE3MTk1NzgwMDh9.0qZdG69EXP_L5DHW_UJd51YNTRR1WycSv2Fjt1G4o6o',
+  code: 'async (req, res, next, { deep, require, gql }) => {\n' +
+    "    const { PassThrough, Readable } = require('stream');\n" +
+    "    const express = require('express');\n" +
+    "    const http = require('http');\n" +
+    "    const ApolloServer = require('apollo-server-express').ApolloServer;\n" +
+    "    const { ApolloServerPluginDrainHttpServer, ApolloServerPluginLandingPageGraphQLPlayground } = require('apollo-server-core');\n" +
+    "    const axios = require('axios');\n" +
+    "    const ffmpeg = require('fluent-ffmpeg');\n" +
+    "    const FormData = require('form-data');\n" +
+    '\n' +
+    '    function base64ToStream(base64String) {\n' +
+    "        const base64Data = base64String.replace(/^data:[^;]+;base64,/, '');\n" +
+    "        const binaryData = Buffer.from(base64Data, 'base64');\n" +
+    '        const stream = new Readable();\n' +
+    '\n' +
+    '        stream.push(binaryData);\n' +
+    '        stream.push(null);\n' +
+    '\n' +
+    '        return stream;\n' +
+    '    }\n' +
+    '\n' +
+    '    const typeDefs = `\n' +
+    '        input Voice {\n' +
+    '            id: Int!\n' +
+    '            record: String!\n' +
+    '            duration: Float!\n' +
+    '            mimeType: String!\n' +
+    '        }\n' +
+    '        type Query { deepmemo_upload(voice: Voice!): String }\n' +
+    '    `;\n' +
+    '\n' +
+    '    const resolvers = {\n' +
+    '        Query: { deepmemo_upload: async (parent, { voice: {\n' +
+    '            id, record, duration, mimeType\n' +
+    '        } }, contextValue, info) => {\n' +
+    '            let inputFormat;\n' +
+    "            if (mimeType.includes('audio/webm')) {\n" +
+    "                inputFormat = 'webm';\n" +
+    "            } else if (mimeType.includes('audio/aac')) {\n" +
+    "                inputFormat = 'aac';\n" +
+    "            } else if (mimeType.includes('audio/mp4')) {\n" +
+    "                inputFormat = 'mp4';\n" +
+    "            } else return 'not supported type';\n" +
+    '            return new Promise((res, rej) => {\n' +
+    '                    const stream = new PassThrough();\n' +
+    '                    let chunkData = [];\n' +
+    "                    stream.on('data', chunk => {\n" +
+    '                        chunkData.push(chunk);\n' +
+    '                    });\n' +
+    '                    ffmpeg()\n' +
+    '                        .input(base64ToStream(record))\n' +
+    '                        .inputFormat(inputFormat)\n' +
+    '                        // .output(stream)\n' +
+    "                        .outputFormat('mp3')\n" +
+    "                        .on('end', () => {\n" +
+    '                            stream.end();\n' +
+    '                            const byteArray = Buffer.concat(chunkData);\n' +
+    '                            const form = new FormData();\n' +
+    "                            form.append('file', byteArray, { type: 'audio/mp3', filename: `${id}.mp3` });\n" +
+    '                            axios.post(`http://${deep.client.path.slice(0, -4)}/file`, form, {\n' +
+    '                                headers: {\n' +
+    '                                    linkId: id,\n' +
+    '                                    Authorization: contextValue?.headers?.authorization,\n' +
+    "                                    // 'Content-Length': dataAsString.length,\n" +
+    "                                    // 'Content-Type': 'multipart/form-data'\n" +
+    "                                    // 'Content-Type': 'audio/mp3',\n" +
+    '                                    ...form.getHeaders(),\n' +
+    '                                },\n' +
+    '                            })\n' +
+    '                                .then((r) => {\n' +
+    "                                    res('done');\n" +
+    '                                })\n' +
+    '                                .catch((e) => {\n' +
+    '                                    console.error(e);\n' +
+    "                                    rej('error');\n" +
+    '                                });\n' +
+    '                        })\n' +
+    '                        .pipe(stream, { end: true });\n' +
+    '                        // .run();\n' +
+    '                // });\n' +
+    '            });\n' +
+    '        } },\n' +
+    '    };\n' +
+    '    \n' +
+    '    const context = ({ req }) => { return { headers: req.headers }; };\n' +
+    '    \n' +
+    '    const generateApolloServer = () => {\n' +
+    '        return new ApolloServer({\n' +
+    '            introspection: true,\n' +
+    '            typeDefs, \n' +
+    '            resolvers,\n' +
+    '            context,\n' +
+    '            plugins: [\n' +
+    '                ApolloServerPluginLandingPageGraphQLPlayground(),\n' +
+    '            ],\n' +
+    '        });\n' +
+    '    };\n' +
+    '\n' +
+    '    const router = express.Router();\n' +
+    '    const apolloServer = generateApolloServer();\n' +
+    '    await apolloServer.start();\n' +
+    "    apolloServer.applyMiddleware({ app: router, path: '/' });\n" +
+    '    router.handle(req, res);\n' +
+    '}',
+  data: {
+    routeString: '/deepmemo-upload',
+    path: '/http-call',
+    originalUrl: '/deepmemo-upload?query=%7B__typename%7D',
+    baseUrl: '/deepmemo-upload',
+    handlerId: 1758,
+    routeId: 1761,
+    router: 1759
+  }
+}
+http call result undefined
+http call options {
+  jwt: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwczovL2hhc3VyYS5pby9qd3QvY2xhaW1zIjp7IngtaGFzdXJhLWFsbG93ZWQtcm9sZXMiOlsiYWRtaW4iXSwieC1oYXN1cmEtZGVmYXVsdC1yb2xlIjoiYWRtaW4iLCJ4LWhhc3VyYS11c2VyLWlkIjoiMTc3MiJ9LCJpYXQiOjE3MTk1NzgwMDh9.0qZdG69EXP_L5DHW_UJd51YNTRR1WycSv2Fjt1G4o6o',
+  code: 'async (req, res, next, { deep, require, gql }) => {\n' +
+    "    const { PassThrough, Readable } = require('stream');\n" +
+    "    const express = require('express');\n" +
+    "    const http = require('http');\n" +
+    "    const ApolloServer = require('apollo-server-express').ApolloServer;\n" +
+    "    const { ApolloServerPluginDrainHttpServer, ApolloServerPluginLandingPageGraphQLPlayground } = require('apollo-server-core');\n" +
+    "    const axios = require('axios');\n" +
+    "    const ffmpeg = require('fluent-ffmpeg');\n" +
+    "    const FormData = require('form-data');\n" +
+    '\n' +
+    '    function base64ToStream(base64String) {\n' +
+    "        const base64Data = base64String.replace(/^data:[^;]+;base64,/, '');\n" +
+    "        const binaryData = Buffer.from(base64Data, 'base64');\n" +
+    '        const stream = new Readable();\n' +
+    '\n' +
+    '        stream.push(binaryData);\n' +
+    '        stream.push(null);\n' +
+    '\n' +
+    '        return stream;\n' +
+    '    }\n' +
+    '\n' +
+    '    const typeDefs = `\n' +
+    '        input Voice {\n' +
+    '            id: Int!\n' +
+    '            record: String!\n' +
+    '            duration: Float!\n' +
+    '            mimeType: String!\n' +
+    '        }\n' +
+    '        type Query { deepmemo_upload(voice: Voice!): String }\n' +
+    '    `;\n' +
+    '\n' +
+    '    const resolvers = {\n' +
+    '        Query: { deepmemo_upload: async (parent, { voice: {\n' +
+    '            id, record, duration, mimeType\n' +
+    '        } }, contextValue, info) => {\n' +
+    '            let inputFormat;\n' +
+    "            if (mimeType.includes('audio/webm')) {\n" +
+    "                inputFormat = 'webm';\n" +
+    "            } else if (mimeType.includes('audio/aac')) {\n" +
+    "                inputFormat = 'aac';\n" +
+    "            } else if (mimeType.includes('audio/mp4')) {\n" +
+    "                inputFormat = 'mp4';\n" +
+    "            } else return 'not supported type';\n" +
+    '            return new Promise((res, rej) => {\n' +
+    '                    const stream = new PassThrough();\n' +
+    '                    let chunkData = [];\n' +
+    "                    stream.on('data', chunk => {\n" +
+    '                        chunkData.push(chunk);\n' +
+    '                    });\n' +
+    '                    ffmpeg()\n' +
+    '                        .input(base64ToStream(record))\n' +
+    '                        .inputFormat(inputFormat)\n' +
+    '                        // .output(stream)\n' +
+    "                        .outputFormat('mp3')\n" +
+    "                        .on('end', () => {\n" +
+    '                            stream.end();\n' +
+    '                            const byteArray = Buffer.concat(chunkData);\n' +
+    '                            const form = new FormData();\n' +
+    "                            form.append('file', byteArray, { type: 'audio/mp3', filename: `${id}.mp3` });\n" +
+    '                            axios.post(`http://${deep.client.path.slice(0, -4)}/file`, form, {\n' +
+    '                                headers: {\n' +
+    '                                    linkId: id,\n' +
+    '                                    Authorization: contextValue?.headers?.authorization,\n' +
+    "                                    // 'Content-Length': dataAsString.length,\n" +
+    "                                    // 'Content-Type': 'multipart/form-data'\n" +
+    "                                    // 'Content-Type': 'audio/mp3',\n" +
+    '                                    ...form.getHeaders(),\n' +
+    '                                },\n' +
+    '                            })\n' +
+    '                                .then((r) => {\n' +
+    "                                    res('done');\n" +
+    '                                })\n' +
+    '                                .catch((e) => {\n' +
+    '                                    console.error(e);\n' +
+    "                                    rej('error');\n" +
+    '                                });\n' +
+    '                        })\n' +
+    '                        .pipe(stream, { end: true });\n' +
+    '                        // .run();\n' +
+    '                // });\n' +
+    '            });\n' +
+    '        } },\n' +
+    '    };\n' +
+    '    \n' +
+    '    const context = ({ req }) => { return { headers: req.headers }; };\n' +
+    '    \n' +
+    '    const generateApolloServer = () => {\n' +
+    '        return new ApolloServer({\n' +
+    '            introspection: true,\n' +
+    '            typeDefs, \n' +
+    '            resolvers,\n' +
+    '            context,\n' +
+    '            plugins: [\n' +
+    '                ApolloServerPluginLandingPageGraphQLPlayground(),\n' +
+    '            ],\n' +
+    '        });\n' +
+    '    };\n' +
+    '\n' +
+    '    const router = express.Router();\n' +
+    '    const apolloServer = generateApolloServer();\n' +
+    '    await apolloServer.start();\n' +
+    "    apolloServer.applyMiddleware({ app: router, path: '/' });\n" +
+    '    router.handle(req, res);\n' +
+    '}',
+  data: {
+    routeString: '/deepmemo-upload',
+    path: '/http-call',
+    originalUrl: '/deepmemo-upload?query=%7B__typename%7D',
+    baseUrl: '/deepmemo-upload',
+    handlerId: 1758,
+    routeId: 1761,
+    router: 1759
+  }
+}
+http call result undefined
+http call options {
+  jwt: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwczovL2hhc3VyYS5pby9qd3QvY2xhaW1zIjp7IngtaGFzdXJhLWFsbG93ZWQtcm9sZXMiOlsiYWRtaW4iXSwieC1oYXN1cmEtZGVmYXVsdC1yb2xlIjoiYWRtaW4iLCJ4LWhhc3VyYS11c2VyLWlkIjoiMTc3MiJ9LCJpYXQiOjE3MTk1NzgwMDh9.0qZdG69EXP_L5DHW_UJd51YNTRR1WycSv2Fjt1G4o6o',
+  code: 'async (req, res, next, { deep, require, gql }) => {\n' +
+    "    const { PassThrough, Readable } = require('stream');\n" +
+    "    const express = require('express');\n" +
+    "    const http = require('http');\n" +
+    "    const ApolloServer = require('apollo-server-express').ApolloServer;\n" +
+    "    const { ApolloServerPluginDrainHttpServer, ApolloServerPluginLandingPageGraphQLPlayground } = require('apollo-server-core');\n" +
+    "    const axios = require('axios');\n" +
+    "    const ffmpeg = require('fluent-ffmpeg');\n" +
+    "    const FormData = require('form-data');\n" +
+    '\n' +
+    '    function base64ToStream(base64String) {\n' +
+    "        const base64Data = base64String.replace(/^data:[^;]+;base64,/, '');\n" +
+    "        const binaryData = Buffer.from(base64Data, 'base64');\n" +
+    '        const stream = new Readable();\n' +
+    '\n' +
+    '        stream.push(binaryData);\n' +
+    '        stream.push(null);\n' +
+    '\n' +
+    '        return stream;\n' +
+    '    }\n' +
+    '\n' +
+    '    const typeDefs = `\n' +
+    '        input Voice {\n' +
+    '            id: Int!\n' +
+    '            record: String!\n' +
+    '            duration: Float!\n' +
+    '            mimeType: String!\n' +
+    '        }\n' +
+    '        type Query { deepmemo_upload(voice: Voice!): String }\n' +
+    '    `;\n' +
+    '\n' +
+    '    const resolvers = {\n' +
+    '        Query: { deepmemo_upload: async (parent, { voice: {\n' +
+    '            id, record, duration, mimeType\n' +
+    '        } }, contextValue, info) => {\n' +
+    '            let inputFormat;\n' +
+    "            if (mimeType.includes('audio/webm')) {\n" +
+    "                inputFormat = 'webm';\n" +
+    "            } else if (mimeType.includes('audio/aac')) {\n" +
+    "                inputFormat = 'aac';\n" +
+    "            } else if (mimeType.includes('audio/mp4')) {\n" +
+    "                inputFormat = 'mp4';\n" +
+    "            } else return 'not supported type';\n" +
+    '            return new Promise((res, rej) => {\n' +
+    '                    const stream = new PassThrough();\n' +
+    '                    let chunkData = [];\n' +
+    "                    stream.on('data', chunk => {\n" +
+    '                        chunkData.push(chunk);\n' +
+    '                    });\n' +
+    '                    ffmpeg()\n' +
+    '                        .input(base64ToStream(record))\n' +
+    '                        .inputFormat(inputFormat)\n' +
+    '                        // .output(stream)\n' +
+    "                        .outputFormat('mp3')\n" +
+    "                        .on('end', () => {\n" +
+    '                            stream.end();\n' +
+    '                            const byteArray = Buffer.concat(chunkData);\n' +
+    '                            const form = new FormData();\n' +
+    "                            form.append('file', byteArray, { type: 'audio/mp3', filename: `${id}.mp3` });\n" +
+    '                            axios.post(`http://${deep.client.path.slice(0, -4)}/file`, form, {\n' +
+    '                                headers: {\n' +
+    '                                    linkId: id,\n' +
+    '                                    Authorization: contextValue?.headers?.authorization,\n' +
+    "                                    // 'Content-Length': dataAsString.length,\n" +
+    "                                    // 'Content-Type': 'multipart/form-data'\n" +
+    "                                    // 'Content-Type': 'audio/mp3',\n" +
+    '                                    ...form.getHeaders(),\n' +
+    '                                },\n' +
+    '                            })\n' +
+    '                                .then((r) => {\n' +
+    "                                    res('done');\n" +
+    '                                })\n' +
+    '                                .catch((e) => {\n' +
+    '                                    console.error(e);\n' +
+    "                                    rej('error');\n" +
+    '                                });\n' +
+    '                        })\n' +
+    '                        .pipe(stream, { end: true });\n' +
+    '                        // .run();\n' +
+    '                // });\n' +
+    '            });\n' +
+    '        } },\n' +
+    '    };\n' +
+    '    \n' +
+    '    const context = ({ req }) => { return { headers: req.headers }; };\n' +
+    '    \n' +
+    '    const generateApolloServer = () => {\n' +
+    '        return new ApolloServer({\n' +
+    '            introspection: true,\n' +
+    '            typeDefs, \n' +
+    '            resolvers,\n' +
+    '            context,\n' +
+    '            plugins: [\n' +
+    '                ApolloServerPluginLandingPageGraphQLPlayground(),\n' +
+    '            ],\n' +
+    '        });\n' +
+    '    };\n' +
+    '\n' +
+    '    const router = express.Router();\n' +
+    '    const apolloServer = generateApolloServer();\n' +
+    '    await apolloServer.start();\n' +
+    "    apolloServer.applyMiddleware({ app: router, path: '/' });\n" +
+    '    router.handle(req, res);\n' +
+    '}',
+  data: {
+    routeString: '/deepmemo-upload',
+    path: '/http-call',
+    originalUrl: '/deepmemo-upload?query=%7B__typename%7D',
+    baseUrl: '/deepmemo-upload',
+    handlerId: 1758,
+    routeId: 1761,
+    router: 1759
+  }
+}
+http call result undefined
+http call options {
+  jwt: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwczovL2hhc3VyYS5pby9qd3QvY2xhaW1zIjp7IngtaGFzdXJhLWFsbG93ZWQtcm9sZXMiOlsiYWRtaW4iXSwieC1oYXN1cmEtZGVmYXVsdC1yb2xlIjoiYWRtaW4iLCJ4LWhhc3VyYS11c2VyLWlkIjoiMTc3MiJ9LCJpYXQiOjE3MTk1NzgwMDh9.0qZdG69EXP_L5DHW_UJd51YNTRR1WycSv2Fjt1G4o6o',
+  code: 'async (req, res, next, { deep, require, gql }) => {\n' +
+    "    const { PassThrough, Readable } = require('stream');\n" +
+    "    const express = require('express');\n" +
+    "    const http = require('http');\n" +
+    "    const ApolloServer = require('apollo-server-express').ApolloServer;\n" +
+    "    const { ApolloServerPluginDrainHttpServer, ApolloServerPluginLandingPageGraphQLPlayground } = require('apollo-server-core');\n" +
+    "    const axios = require('axios');\n" +
+    "    const ffmpeg = require('fluent-ffmpeg');\n" +
+    "    const FormData = require('form-data');\n" +
+    '\n' +
+    '    function base64ToStream(base64String) {\n' +
+    "        const base64Data = base64String.replace(/^data:[^;]+;base64,/, '');\n" +
+    "        const binaryData = Buffer.from(base64Data, 'base64');\n" +
+    '        const stream = new Readable();\n' +
+    '\n' +
+    '        stream.push(binaryData);\n' +
+    '        stream.push(null);\n' +
+    '\n' +
+    '        return stream;\n' +
+    '    }\n' +
+    '\n' +
+    '    const typeDefs = `\n' +
+    '        input Voice {\n' +
+    '            id: Int!\n' +
+    '            record: String!\n' +
+    '            duration: Float!\n' +
+    '            mimeType: String!\n' +
+    '        }\n' +
+    '        type Query { deepmemo_upload(voice: Voice!): String }\n' +
+    '    `;\n' +
+    '\n' +
+    '    const resolvers = {\n' +
+    '        Query: { deepmemo_upload: async (parent, { voice: {\n' +
+    '            id, record, duration, mimeType\n' +
+    '        } }, contextValue, info) => {\n' +
+    '            let inputFormat;\n' +
+    "            if (mimeType.includes('audio/webm')) {\n" +
+    "                inputFormat = 'webm';\n" +
+    "            } else if (mimeType.includes('audio/aac')) {\n" +
+    "                inputFormat = 'aac';\n" +
+    "            } else if (mimeType.includes('audio/mp4')) {\n" +
+    "                inputFormat = 'mp4';\n" +
+    "            } else return 'not supported type';\n" +
+    '            return new Promise((res, rej) => {\n' +
+    '                    const stream = new PassThrough();\n' +
+    '                    let chunkData = [];\n' +
+    "                    stream.on('data', chunk => {\n" +
+    '                        chunkData.push(chunk);\n' +
+    '                    });\n' +
+    '                    ffmpeg()\n' +
+    '                        .input(base64ToStream(record))\n' +
+    '                        .inputFormat(inputFormat)\n' +
+    '                        // .output(stream)\n' +
+    "                        .outputFormat('mp3')\n" +
+    "                        .on('end', () => {\n" +
+    '                            stream.end();\n' +
+    '                            const byteArray = Buffer.concat(chunkData);\n' +
+    '                            const form = new FormData();\n' +
+    "                            form.append('file', byteArray, { type: 'audio/mp3', filename: `${id}.mp3` });\n" +
+    '                            axios.post(`http://${deep.client.path.slice(0, -4)}/file`, form, {\n' +
+    '                                headers: {\n' +
+    '                                    linkId: id,\n' +
+    '                                    Authorization: contextValue?.headers?.authorization,\n' +
+    "                                    // 'Content-Length': dataAsString.length,\n" +
+    "                                    // 'Content-Type': 'multipart/form-data'\n" +
+    "                                    // 'Content-Type': 'audio/mp3',\n" +
+    '                                    ...form.getHeaders(),\n' +
+    '                                },\n' +
+    '                            })\n' +
+    '                                .then((r) => {\n' +
+    "                                    res('done');\n" +
+    '                                })\n' +
+    '                                .catch((e) => {\n' +
+    '                                    console.error(e);\n' +
+    "                                    rej('error');\n" +
+    '                                });\n' +
+    '                        })\n' +
+    '                        .pipe(stream, { end: true });\n' +
+    '                        // .run();\n' +
+    '                // });\n' +
+    '            });\n' +
+    '        } },\n' +
+    '    };\n' +
+    '    \n' +
+    '    const context = ({ req }) => { return { headers: req.headers }; };\n' +
+    '    \n' +
+    '    const generateApolloServer = () => {\n' +
+    '        return new ApolloServer({\n' +
+    '            introspection: true,\n' +
+    '            typeDefs, \n' +
+    '            resolvers,\n' +
+    '            context,\n' +
+    '            plugins: [\n' +
+    '                ApolloServerPluginLandingPageGraphQLPlayground(),\n' +
+    '            ],\n' +
+    '        });\n' +
+    '    };\n' +
+    '\n' +
+    '    const router = express.Router();\n' +
+    '    const apolloServer = generateApolloServer();\n' +
+    '    await apolloServer.start();\n' +
+    "    apolloServer.applyMiddleware({ app: router, path: '/' });\n" +
+    '    router.handle(req, res);\n' +
+    '}',
+  data: {
+    routeString: '/deepmemo-upload',
+    path: '/http-call',
+    originalUrl: '/deepmemo-upload?query=%7B__typename%7D',
+    baseUrl: '/deepmemo-upload',
+    handlerId: 1758,
+    routeId: 1761,
+    router: 1759
+  }
+}
+http call result undefined
+http call options {
+  jwt: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwczovL2hhc3VyYS5pby9qd3QvY2xhaW1zIjp7IngtaGFzdXJhLWFsbG93ZWQtcm9sZXMiOlsiYWRtaW4iXSwieC1oYXN1cmEtZGVmYXVsdC1yb2xlIjoiYWRtaW4iLCJ4LWhhc3VyYS11c2VyLWlkIjoiMTc3MiJ9LCJpYXQiOjE3MTk1NzgwMDh9.0qZdG69EXP_L5DHW_UJd51YNTRR1WycSv2Fjt1G4o6o',
+  code: 'async (req, res, next, { deep, require, gql }) => {\n' +
+    "    const { PassThrough, Readable } = require('stream');\n" +
+    "    const express = require('express');\n" +
+    "    const http = require('http');\n" +
+    "    const ApolloServer = require('apollo-server-express').ApolloServer;\n" +
+    "    const { ApolloServerPluginDrainHttpServer, ApolloServerPluginLandingPageGraphQLPlayground } = require('apollo-server-core');\n" +
+    "    const axios = require('axios');\n" +
+    "    const ffmpeg = require('fluent-ffmpeg');\n" +
+    "    const FormData = require('form-data');\n" +
+    '\n' +
+    '    function base64ToStream(base64String) {\n' +
+    "        const base64Data = base64String.replace(/^data:[^;]+;base64,/, '');\n" +
+    "        const binaryData = Buffer.from(base64Data, 'base64');\n" +
+    '        const stream = new Readable();\n' +
+    '\n' +
+    '        stream.push(binaryData);\n' +
+    '        stream.push(null);\n' +
+    '\n' +
+    '        return stream;\n' +
+    '    }\n' +
+    '\n' +
+    '    const typeDefs = `\n' +
+    '        input Voice {\n' +
+    '            id: Int!\n' +
+    '            record: String!\n' +
+    '            duration: Float!\n' +
+    '            mimeType: String!\n' +
+    '        }\n' +
+    '        type Query { deepmemo_upload(voice: Voice!): String }\n' +
+    '    `;\n' +
+    '\n' +
+    '    const resolvers = {\n' +
+    '        Query: { deepmemo_upload: async (parent, { voice: {\n' +
+    '            id, record, duration, mimeType\n' +
+    '        } }, contextValue, info) => {\n' +
+    '            let inputFormat;\n' +
+    "            if (mimeType.includes('audio/webm')) {\n" +
+    "                inputFormat = 'webm';\n" +
+    "            } else if (mimeType.includes('audio/aac')) {\n" +
+    "                inputFormat = 'aac';\n" +
+    "            } else if (mimeType.includes('audio/mp4')) {\n" +
+    "                inputFormat = 'mp4';\n" +
+    "            } else return 'not supported type';\n" +
+    '            return new Promise((res, rej) => {\n' +
+    '                    const stream = new PassThrough();\n' +
+    '                    let chunkData = [];\n' +
+    "                    stream.on('data', chunk => {\n" +
+    '                        chunkData.push(chunk);\n' +
+    '                    });\n' +
+    '                    ffmpeg()\n' +
+    '                        .input(base64ToStream(record))\n' +
+    '                        .inputFormat(inputFormat)\n' +
+    '                        // .output(stream)\n' +
+    "                        .outputFormat('mp3')\n" +
+    "                        .on('end', () => {\n" +
+    '                            stream.end();\n' +
+    '                            const byteArray = Buffer.concat(chunkData);\n' +
+    '                            const form = new FormData();\n' +
+    "                            form.append('file', byteArray, { type: 'audio/mp3', filename: `${id}.mp3` });\n" +
+    '                            axios.post(`http://${deep.client.path.slice(0, -4)}/file`, form, {\n' +
+    '                                headers: {\n' +
+    '                                    linkId: id,\n' +
+    '                                    Authorization: contextValue?.headers?.authorization,\n' +
+    "                                    // 'Content-Length': dataAsString.length,\n" +
+    "                                    // 'Content-Type': 'multipart/form-data'\n" +
+    "                                    // 'Content-Type': 'audio/mp3',\n" +
+    '                                    ...form.getHeaders(),\n' +
+    '                                },\n' +
+    '                            })\n' +
+    '                                .then((r) => {\n' +
+    "                                    res('done');\n" +
+    '                                })\n' +
+    '                                .catch((e) => {\n' +
+    '                                    console.error(e);\n' +
+    "                                    rej('error');\n" +
+    '                                });\n' +
+    '                        })\n' +
+    '                        .pipe(stream, { end: true });\n' +
+    '                        // .run();\n' +
+    '                // });\n' +
+    '            });\n' +
+    '        } },\n' +
+    '    };\n' +
+    '    \n' +
+    '    const context = ({ req }) => { return { headers: req.headers }; };\n' +
+    '    \n' +
+    '    const generateApolloServer = () => {\n' +
+    '        return new ApolloServer({\n' +
+    '            introspection: true,\n' +
+    '            typeDefs, \n' +
+    '            resolvers,\n' +
+    '            context,\n' +
+    '            plugins: [\n' +
+    '                ApolloServerPluginLandingPageGraphQLPlayground(),\n' +
+    '            ],\n' +
+    '        });\n' +
+    '    };\n' +
+    '\n' +
+    '    const router = express.Router();\n' +
+    '    const apolloServer = generateApolloServer();\n' +
+    '    await apolloServer.start();\n' +
+    "    apolloServer.applyMiddleware({ app: router, path: '/' });\n" +
+    '    router.handle(req, res);\n' +
+    '}',
+  data: {
+    routeString: '/deepmemo-upload',
+    path: '/http-call',
+    originalUrl: '/deepmemo-upload?query=%7B__typename%7D',
+    baseUrl: '/deepmemo-upload',
+    handlerId: 1758,
+    routeId: 1761,
+    router: 1759
+  }
+}
+http call result undefined
+http call options {
+  jwt: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwczovL2hhc3VyYS5pby9qd3QvY2xhaW1zIjp7IngtaGFzdXJhLWFsbG93ZWQtcm9sZXMiOlsiYWRtaW4iXSwieC1oYXN1cmEtZGVmYXVsdC1yb2xlIjoiYWRtaW4iLCJ4LWhhc3VyYS11c2VyLWlkIjoiMTc3MiJ9LCJpYXQiOjE3MTk1NzgwMDh9.0qZdG69EXP_L5DHW_UJd51YNTRR1WycSv2Fjt1G4o6o',
+  code: 'async (req, res, next, { deep, require, gql }) => {\n' +
+    "    const { PassThrough, Readable } = require('stream');\n" +
+    "    const express = require('express');\n" +
+    "    const http = require('http');\n" +
+    "    const ApolloServer = require('apollo-server-express').ApolloServer;\n" +
+    "    const { ApolloServerPluginDrainHttpServer, ApolloServerPluginLandingPageGraphQLPlayground } = require('apollo-server-core');\n" +
+    "    const axios = require('axios');\n" +
+    "    const ffmpeg = require('fluent-ffmpeg');\n" +
+    "    const FormData = require('form-data');\n" +
+    '\n' +
+    '    function base64ToStream(base64String) {\n' +
+    "        const base64Data = base64String.replace(/^data:[^;]+;base64,/, '');\n" +
+    "        const binaryData = Buffer.from(base64Data, 'base64');\n" +
+    '        const stream = new Readable();\n' +
+    '\n' +
+    '        stream.push(binaryData);\n' +
+    '        stream.push(null);\n' +
+    '\n' +
+    '        return stream;\n' +
+    '    }\n' +
+    '\n' +
+    '    const typeDefs = `\n' +
+    '        input Voice {\n' +
+    '            id: Int!\n' +
+    '            record: String!\n' +
+    '            duration: Float!\n' +
+    '            mimeType: String!\n' +
+    '        }\n' +
+    '        type Query { deepmemo_upload(voice: Voice!): String }\n' +
+    '    `;\n' +
+    '\n' +
+    '    const resolvers = {\n' +
+    '        Query: { deepmemo_upload: async (parent, { voice: {\n' +
+    '            id, record, duration, mimeType\n' +
+    '        } }, contextValue, info) => {\n' +
+    '            let inputFormat;\n' +
+    "            if (mimeType.includes('audio/webm')) {\n" +
+    "                inputFormat = 'webm';\n" +
+    "            } else if (mimeType.includes('audio/aac')) {\n" +
+    "                inputFormat = 'aac';\n" +
+    "            } else if (mimeType.includes('audio/mp4')) {\n" +
+    "                inputFormat = 'mp4';\n" +
+    "            } else return 'not supported type';\n" +
+    '            return new Promise((res, rej) => {\n' +
+    '                    const stream = new PassThrough();\n' +
+    '                    let chunkData = [];\n' +
+    "                    stream.on('data', chunk => {\n" +
+    '                        chunkData.push(chunk);\n' +
+    '                    });\n' +
+    '                    ffmpeg()\n' +
+    '                        .input(base64ToStream(record))\n' +
+    '                        .inputFormat(inputFormat)\n' +
+    '                        // .output(stream)\n' +
+    "                        .outputFormat('mp3')\n" +
+    "                        .on('end', () => {\n" +
+    '                            stream.end();\n' +
+    '                            const byteArray = Buffer.concat(chunkData);\n' +
+    '                            const form = new FormData();\n' +
+    "                            form.append('file', byteArray, { type: 'audio/mp3', filename: `${id}.mp3` });\n" +
+    '                            axios.post(`http://${deep.client.path.slice(0, -4)}/file`, form, {\n' +
+    '                                headers: {\n' +
+    '                                    linkId: id,\n' +
+    '                                    Authorization: contextValue?.headers?.authorization,\n' +
+    "                                    // 'Content-Length': dataAsString.length,\n" +
+    "                                    // 'Content-Type': 'multipart/form-data'\n" +
+    "                                    // 'Content-Type': 'audio/mp3',\n" +
+    '                                    ...form.getHeaders(),\n' +
+    '                                },\n' +
+    '                            })\n' +
+    '                                .then((r) => {\n' +
+    "                                    res('done');\n" +
+    '                                })\n' +
+    '                                .catch((e) => {\n' +
+    '                                    console.error(e);\n' +
+    "                                    rej('error');\n" +
+    '                                });\n' +
+    '                        })\n' +
+    '                        .pipe(stream, { end: true });\n' +
+    '                        // .run();\n' +
+    '                // });\n' +
+    '            });\n' +
+    '        } },\n' +
+    '    };\n' +
+    '    \n' +
+    '    const context = ({ req }) => { return { headers: req.headers }; };\n' +
+    '    \n' +
+    '    const generateApolloServer = () => {\n' +
+    '        return new ApolloServer({\n' +
+    '            introspection: true,\n' +
+    '            typeDefs, \n' +
+    '            resolvers,\n' +
+    '            context,\n' +
+    '            plugins: [\n' +
+    '                ApolloServerPluginLandingPageGraphQLPlayground(),\n' +
+    '            ],\n' +
+    '        });\n' +
+    '    };\n' +
+    '\n' +
+    '    const router = express.Router();\n' +
+    '    const apolloServer = generateApolloServer();\n' +
+    '    await apolloServer.start();\n' +
+    "    apolloServer.applyMiddleware({ app: router, path: '/' });\n" +
+    '    router.handle(req, res);\n' +
+    '}',
+  data: {
+    routeString: '/deepmemo-upload',
+    path: '/http-call',
+    originalUrl: '/deepmemo-upload?query=%7B__typename%7D',
+    baseUrl: '/deepmemo-upload',
+    handlerId: 1758,
+    routeId: 1761,
+    router: 1759
+  }
+}
+http call result undefined
