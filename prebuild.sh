@@ -1,5 +1,6 @@
 touch prebuild-is-started.txt;
 rm prebuild-is-ready.txt;
+nvm install && nvm use
 npm i -g npm@latest;
 npm run gitpod-init;
 docker pull deepf/deeplinks:main;
