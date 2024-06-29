@@ -1,6 +1,7 @@
 touch prebuild-is-started.txt;
 rm prebuild-is-ready.txt;
 echo "Making sure correct versions of node and nvm are used...";
+wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash;
 nvm install && nvm use && npm i -g npm@latest;
 echo "Applied versions of node and npm:";
 node -v && npm -v;
