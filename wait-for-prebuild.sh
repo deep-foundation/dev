@@ -1,3 +1,5 @@
+./ensure-node-version.sh
+
 sleep 2
 
 if [ ! -f prebuild-is-started.txt ]
