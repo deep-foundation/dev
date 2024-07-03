@@ -1,6 +1,5 @@
 touch prebuild-is-started.txt
 rm prebuild-is-ready.txt
-./ensure-node-version.sh
 npm run gitpod-init
 docker pull deepf/deeplinks:main
 docker run -v $(pwd)/packages/deeplinks:/deeplinks --rm --name links --entrypoint "sh" deepf/deeplinks:main -c "cp -r /snapshots/* /deeplinks/snapshots/ && chown -R 33333:33333 /deeplinks/snapshots/";
