@@ -79,12 +79,12 @@ When all tasks are done, you can open Deep.Case App using `PORTS` tab:
   nvm install && nvm use
   npm i -g npm@latest
   npm ci
-  npm run packages | tee packages.log.txt
+  npm run packages | tee local.packages.log.txt
   npm run local | tee local.log.txt
   ```
   Run migrations while `npm run local` is executed (for example in separate terminal or `screen`).
   ```
-  npm run local-migrate
+  npm run local-migrate | tee local.migrations.log.txt
   ```
 ### Launch/Restart
 ```
