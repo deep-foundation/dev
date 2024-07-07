@@ -89,7 +89,8 @@ When all tasks are done, you can open Deep.Case App using `PORTS` tab:
   ```
   Run migrations while `npm run local` is executed (for example in separate terminal or `screen`).
   ```
-  nvm install && nvm use
+  cd dev
+  nvm use
   npm run local-migrate | tee local.migrations.log.txt
   ```
 ### Launch/Restart
