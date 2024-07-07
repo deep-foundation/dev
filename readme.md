@@ -52,7 +52,7 @@ When all tasks are done, you can open Deep.Case App using `PORTS` tab:
   export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
   [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
   ```
-- Install docker and docker-compose  
+- [Install docker and docker-compose](https://docs.docker.com/engine/install)  
   If you have Docker Desktop with `docker compose` (not `docker-compose`) you should enable this setting in Docker Desktop:
   ![image](https://github.com/deep-foundation/dev/assets/66206278/a860fef9-0c5b-4569-9a94-0b42257bac42)
   Or use this command (if your are on linux):
