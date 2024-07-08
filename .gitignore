@@ -7,5 +7,6 @@ prebuild-is-started.txt
 gitpod-prebuild.log.txt
 gitpod-start.log.txt
 local.log.txt
-packages.log.txt
+local.packages.log.txt
+local.migrations.log.txt
 log.txt
